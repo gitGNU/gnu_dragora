@@ -1,0 +1,28 @@
+# Build recipe for musl.
+#
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program = musl
+version = 20121216
+release = 1
+
+tarname = ${program}-${version}.tar.lz
+tardir = /storage/dragora/sources
+jobs = 1
+
+[build]
+cd $srcdir
+
+./configure $configure_args --syslibdir=/library
+
+make -j${jobs}
+make install
+
+# Adjust the toolchain (if necessary)
+if [ -x /tools/bin/adjust-toolchain ]; then \
+  /tools/bin/adjust-toolchain ; \
+fi
+

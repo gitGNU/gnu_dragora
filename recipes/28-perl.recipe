@@ -1,0 +1,90 @@
+# Build recipe for perl.
+#
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program = perl
+version = 5.16.2
+release = 1
+
+tarname = ${program}-${version}.tar.lz
+tardir = /storage/dragora/sources
+patchdir = /storage/dragora/patches
+jobs = 1
+
+docs = AUTHORS Artistic Changes Copying README README.linux
+destdir = /package/${program}-${version}
+docdir = ${destdir}/documents/${program}-${version}
+
+[build]
+cd $srcdir
+
+# Look for the static libc
+zcat ${patchdir}/perl-linux-static.sh.gz | patch -p0
+
+# Don't use -fstack-protector
+zcat ${patchdir}/perl-fnostack-protector.gz | patch -p0
+
+# less of busybox doesn't support the '-R' option
+zcat ${patchdir}/perl-less_nooption.gz | patch -p0
+
+# Don't use the internal copy of the zlib
+sed -i \
+ -e "s|BUILD_ZLIB\s*= True|BUILD_ZLIB = False|" \
+ -e "s|INCLUDE\s*= ./zlib-src|INCLUDE    = /include|" \
+ -e "s|LIB\s*= ./zlib-src|LIB        = /library|" \
+ cpan/Compress-Raw-Zlib/config.in
+
+./Configure -des \
+ -Uuseshrplib \
+ -Uusedl \
+ -Uusethreads \
+ -Uuseithreads \
+ -Uinstallusrbinperl \
+ -Uusevendorprefix \
+ -Duselargefiles \
+ -Dusemymalloc=n \
+ -A ccflags="-D_GNU_SOURCE -D_BSD_SOURCE -DNO_PERL_MALLOC_ENV -DNDEBUG" \
+ -A ldflags="-static" \
+ -Doptimize="$flags" \
+ -Dprefix='' \
+ -Dbin=/executable \
+ -Dprivlib=/library/perl5 \
+ -Darchlib=/library/perl5 \
+ -Dsitelib=/library/perl5/site_perl \
+ -Dsitearch=/library/perl5/site_perl \
+ -Dman1dir=/documents/man/man1 \
+ -Dman3dir=/documents/man/man3 \
+ -Dpager=/executable/less
+
+make -j${jobs}
+make install DESTDIR=$destdir
+
+# Replace hard links
+( cd ${destdir}/executable && \
+  mv perl perl${version} && \
+  ln -sf perl${version} perl ; \
+  ln -sf c2ph pstruct ; \
+  ln -sf s2p psed ; \
+)
+
+# Compress and link manual pages (if needed)
+if [ -d ${destdir}/documents/man ] ; then \
+  ( cd ${destdir}/documents/man && \
+    find . -type f -name '*.?' -exec gzip -9 {} \; ; \
+  ) ; \
+fi
+
+# Replace hard links on manual pages
+( cd ${destdir}/documents//man/man1 && \
+  ln -sf c2ph.1.gz pstruct.1.gz ; \
+  ln -sf s2p.1.gz psed.1.gz ; \
+)
+
+# Copy the documentation
+mkdir -p $docdir && cp -a $docs $docdir
+
+reclinker -rf /package/${program}-${version} /
+

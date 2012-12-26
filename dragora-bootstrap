@@ -1,0 +1,170 @@
+#! /bin/sh
+#  Build a custom GNU/Linux distribution from scratch
+#
+#  Copyright (C) 2012  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Functions
+usage() {
+  printf '%s\n' \
+   "dragora-bootstrap - Build a custom GNU/Linux distribution from scratch." \
+   ""                                                                        \
+   "Usage: dragora-bootstrap [options]"                                      \
+   ""                                                                        \
+   "Options:"                                                                \
+   "  -h, --help                 display this help and exit"                 \
+   "  -V, --version              output version information and exit"        \
+   "      --stage=<n>            set the stage number to build (0 or 1)"     \
+   "      --root=<dir>           set the root directory where to build"      \
+   "      --tmpdir=<dir>         temporary directory where to uncompress"    \
+   "                             the sources (by default: /tmp/sources)"     \
+   "  -k, --keep                 keep temporary directory"                   \
+   "  -f, --file                 build a specified file"                     \
+   "  -j<n>                      parallel jobs for the compiler"             \
+   ""
+}
+
+check_arg() {
+  if [ ! "$1" ]; then
+    echo "Error: '$2' requires an argument. See '--help'" >&2
+    exit 1
+  fi
+}
+
+clean_dir() {
+  # Delete temporary directories (default)
+  if [ "$KEEPDIR" = "KEEPDIR_NO" ]; then
+    local name
+    name=${1##*/}    ## 00-name
+    name=${name#*-}  ## name
+    cd $ROOT/
+    echo "Cleaning ${TMPDIR}/$name ..."
+    rm -rf ${TMPDIR}/${name}*
+  fi
+}
+
+# Variables - default values
+STAGE=""
+ROOT=""
+TMPDIR=/tmp/sources
+ARCHIVE=${PWD}/archive
+PATCHDIR=${PWD}/patches
+STAGEDIR=${PWD}/stage
+SRCDIR=${PWD}/sources
+KEEPDIR=KEEPDIR_NO
+TARGET="$(gcc -dumpmachine | sed -e 's/-[^-]*/-custom/')"
+jobs=-j1
+
+# Options
+while :
+do
+  case "$1" in
+    --stage=*)
+      STAGE=${1#*=}
+      check_arg "$STAGE" "--stage="
+      shift
+      ;;
+    --root=*)
+      ROOT=${1#*=}
+      check_arg "$ROOT" "--root="
+      shift
+      ;;
+    --tmpdir=*)
+      TMPDIR=${1#*=}
+      check_arg "$TMPDIR" "--tmpdir="
+      shift
+      ;;
+    -k|--keep)
+      KEEPDIR=KEEPDIR
+      shift
+      ;;
+    -j[1-9])
+      jobs=$1
+      check_arg "$jobs" "$1"
+      shift
+      ;;
+    -f|--file)
+      FILE=${2##*/}
+      check_arg "$FILE" "$1"
+      shift 2
+      ;;
+    -h|--help|-\?)
+      usage
+      exit
+      ;;
+    -V|--version)
+      echo "dragora-bootstrap 1.0"
+      echo "Copyright (C) 2012 Matias A. Fonzo."
+      echo "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
+      echo "This is free software: you are free to change and redistribute it."
+      echo "There is NO WARRANTY, to the extent permitted by law."
+      exit
+      ;;
+    --)  ## End of all options
+      shift
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1 (See '--help')" >&2
+      shift
+      ;;
+    *)   ## Stop while loop
+      break
+      ;;
+  esac
+done
+
+if [ "$STAGE" = "0" ] || [ "$STAGE" = "1" ]; then
+  if [ -z "$ROOT" ]; then
+    echo "You need to specify a root directory where to build. See '--help'" >&2
+    exit 1
+  fi
+  echo "Building temporary system [Stage ${STAGE}] ..."
+
+  set -e;  ## Exit immediately on any error (default)
+
+  echo "Creating directories: ${ROOT}/tools ${TMPDIR} ..."
+  mkdir -p ${ROOT}/tools $TMPDIR
+
+  echo "Making symlink: /tools -> ${ROOT}/tools ..."
+  ln -sf ${ROOT}/tools /
+
+  PATH=/tools/bin:/bin:/usr/bin
+  export PATH
+
+  if [ "$FILE" = "" ]; then
+    for buildscript in ${STAGEDIR}/${STAGE}/??-* ; do
+      if [ -f "$buildscript" ]; then
+        echo "Building $buildscript ..."
+        LC_ALL=POSIX . $buildscript
+        clean_dir $buildscript
+      fi
+    done
+  else
+    if [ ! -f "${STAGEDIR}/${STAGE}/$FILE" ]; then
+      echo "File (${FILE}) not found on ${STAGEDIR}/${STAGE}/."
+      exit 1
+    fi
+    echo "Building ${STAGEDIR}/${STAGE}/$FILE ..."
+    LC_ALL=POSIX . ${STAGEDIR}/${STAGE}/$FILE
+    clean_dir $FILE
+  fi
+
+  echo "Done [Stage ${STAGE}]"
+else
+  usage
+  exit
+fi
+

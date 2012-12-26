@@ -1,0 +1,51 @@
+# Build recipe for zlib.
+#
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program = zlib
+version = 1.2.7
+release = 1
+
+tarname = ${program}-${version}.tar.lz
+tardir = /storage/dragora/sources
+patchdir = /storage/dragora/patches
+jobs = 1
+
+docs = ChangeLog FAQ README doc/*.txt
+destdir = /package/${program}-${version}
+docdir = ${destdir}/documents/${program}-${version}
+
+[build]
+cd $srcdir
+zcat ${patchdir}/zlib-mandir.gz | patch -p0
+
+CFLAGS="$flags" \
+./configure \
+ --prefix='' \
+ --libdir=/library \
+ --includedir=/include \
+ --static
+
+make -j${jobs} mandir=/documents/man
+make install mandir=/documents/man DESTDIR=$destdir
+
+# Compress and link manual pages (if needed)
+if [ -d ${destdir}/documents/man ] ; then \
+  ( cd ${destdir}/documents/man && \
+    find . -type f -exec gzip -9 {} \; && \
+    find . -type l | while read file ; do \
+      ln -sf $$(readlink $$file).gz $${file}.gz && \
+      rm $$file ; \
+    done ; \
+  ) ; \
+fi
+
+# Copy the documentation
+mkdir -p $docdir
+cp -a $docs $docdir
+
+reclinker -rf /package/${program}-${version} /
+

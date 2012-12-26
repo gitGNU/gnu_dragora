@@ -1,0 +1,62 @@
+#! /bin/sh
+#  Copyright (C) 2012  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Autodetermine the path of /tools
+if [ ! -L /tools ]; then
+  echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
+  exit 1
+fi
+if [ -L /tools ] && [ ! -e /tools ]; then
+  echo "/tools is a dangling symlink."
+  exit 1
+fi
+ROOT=$(readlink /tools | sed 's/\/tools//')
+
+echo "Mounting virtual file systems ..."
+mount -v --bind /dev ${ROOT}/kernel/devices
+mount -v -t devpts devpts ${ROOT}/kernel/devices/pts
+mount -v -t tmpfs shm ${ROOT}/kernel/devices/shm
+mount -v -t proc proc ${ROOT}/kernel/process
+mount -v -t sysfs sysfs ${ROOT}/kernel/objects
+(
+  cd ${ROOT}/storage
+  mkdir -p dragora/archive dragora/patches dragora/recipes dragora/sources
+)
+mount -v --bind "$(pwd)/archive" ${ROOT}/storage/dragora/archive
+mount -v --bind "$(pwd)/patches" ${ROOT}/storage/dragora/patches
+mount -v --bind "$(pwd)/recipes" ${ROOT}/storage/dragora/recipes
+mount -v --bind "$(pwd)/sources" ${ROOT}/storage/dragora/sources
+
+echo "Entering chroot (${ROOT})..."
+chroot $ROOT /tools/bin/env -i \
+ PATH=/executable:/tools/bin \
+ SHELL=/executable/sh \
+ TERM="$TERM" \
+ PS1='\u:\w\$ ' \
+ HOME=/users/root \
+ LC_ALL=POSIX \
+ /executable/sh --login
+
+umount ${ROOT}/kernel/devices/pts
+umount ${ROOT}/kernel/devices/shm
+umount ${ROOT}/kernel/devices
+umount ${ROOT}/kernel/process
+umount ${ROOT}/kernel/objects
+umount ${ROOT}/storage/dragora/archive
+umount ${ROOT}/storage/dragora/patches
+umount ${ROOT}/storage/dragora/recipes
+umount ${ROOT}/storage/dragora/sources
+

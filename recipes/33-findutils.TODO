@@ -1,0 +1,50 @@
+# Build recipe for findutils.
+#
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program = findutils
+version = 4.5.10
+release = 1
+
+tarname = ${program}-${version}.tar.lz
+tardir = /storage/dragora/sources
+patchdir = /storage/dragora/patches
+jobs = 1
+
+#docs = AUTHORS COPYING ChangeLog FUTURES LIMITATIONS NEWS POSIX.STD PROBLEMS README
+destdir = /package/${program}-${version}
+#docdir = ${destdir}/documents/${program}-${version}
+
+[build]
+cd $srcdir
+
+./configure $configure_args --disable-nls gl_cv_func_working_mktime=yes
+
+make -j${jobs}
+make install DESTDIR=$destdir
+
+# Compress info documents (if needed)
+if [ -d ${destdir}/documents/info ] ; then \
+  rm -f ${destdir}/documents/info/dir && \
+  gzip -9 ${destdir}/documents/info/* ; \
+fi
+
+# Compress and link manual pages (if needed)
+if [ -d ${destdir}/documents/man ] ; then \
+  ( cd ${destdir}/documents/man && \
+    find . -type f -exec gzip -9 {} \; && \
+    find . -type l | while read file ; do \
+      ln -sf $$(readlink $$file).gz $${file}.gz && \
+      rm $$file ; \
+    done ; \
+  ) ; \
+fi
+
+# Copy the documentation
+#mkdir -p $docdir && cp -a $docs $docdir
+
+#reclinker -rf /package/${program}-${version} /
+

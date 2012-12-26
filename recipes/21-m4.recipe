@@ -1,0 +1,57 @@
+# Build recipe for m4.
+#
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program = m4
+version = 1.4.16
+release = 1
+
+tarname = ${program}-${version}.tar.lz
+tardir = /storage/dragora/sources
+jobs = 1
+
+docs = AUTHORS BACKLOG COPYING ChangeLog NEWS README THANKS TODO
+destdir = /package/${program}-${version}
+docdir = ${destdir}/documents/${program}-${version}
+
+[build]
+cd $srcdir
+
+# Fix a gnulib error in order to build against Musl
+for file in freadahead.c fseterr.c ; do \
+  rm -f lib/$$file && \
+  touch lib/$$file ; \
+done
+echo "void close_stdin(void) {}" > lib/closein.c
+
+CC="gcc -static" CFLAGS="$flags" \
+./configure $configure_args
+
+make -j${jobs}
+make install DESTDIR=$destdir
+
+# Compress info documents (if needed)
+if [ -d ${destdir}/documents/info ] ; then \
+  rm -f ${destdir}/documents/info/dir && \
+  gzip -9 ${destdir}/documents/info/* ; \
+fi
+
+# Compress and link manual pages (if needed)
+if [ -d ${destdir}/documents/man ] ; then \
+  ( cd ${destdir}/documents/man && \
+    find . -type f -exec gzip -9 {} \; && \
+    find . -type l | while read file ; do \
+      ln -sf $$(readlink $$file).gz $${file}.gz && \
+      rm $$file ; \
+    done ; \
+  ) ; \
+fi
+
+# Copy the documentation
+mkdir -p $docdir && cp -a $docs $docdir
+
+reclinker -rf /package/${program}-${version} /
+

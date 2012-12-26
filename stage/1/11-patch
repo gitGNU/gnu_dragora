@@ -1,0 +1,19 @@
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=2.6.1
+
+# Uncompression
+rm -rf ${TMPDIR}/patch-${version}
+tar xf ${SRCDIR}/patch-${version}.tar.?z* -C $TMPDIR
+
+# Build
+cd ${TMPDIR}/patch-${version}
+
+./configure --prefix=/tools
+
+make $jobs
+make install
+

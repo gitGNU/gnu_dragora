@@ -1,0 +1,23 @@
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=20121216
+
+# Uncompression
+rm -rf ${TMPDIR}/musl-${version}
+tar xf ${SRCDIR}/musl-${version}.tar.?z* -C $TMPDIR
+
+# Build
+cd ${TMPDIR}/musl-${version}
+
+CROSS_COMPILE="${TARGET}-" \
+./configure \
+ --prefix=/tools \
+ --libdir=/tools/library \
+ --syslibdir=/tools/library
+
+make $jobs
+make install
+

@@ -1,0 +1,141 @@
+# Build recipe for GCC.
+#
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program = gcc
+version = 4.7.2
+release = 1
+
+tarname = ${program}-${version}.tar.lz
+tardir = /storage/dragora/sources
+patchdir = /storage/dragora/patches
+jobs = 1
+
+docs = COPYING* README
+destdir = /package/${program}-${version}
+docdir = ${destdir}/documents/${program}-${version}
+
+machine_type = $$(gcc -dumpmachine)
+
+[build]
+cd $srcdir
+
+#zcat ${patchdir}/gcc-4.7.2-musl.gz | patch -p0
+zcat ${patchdir}/gcc-4.7.2-tls.gz | patch -p0
+zcat ${patchdir}/gcc-nofixincludes.gz | patch -p0
+zcat ${patchdir}/gcc-libiberty.gz | patch -p0
+
+# x86
+for file in \
+ gcc/config/linux.h gcc/config/i386/linux.h gcc/config/i386/linux64.h gcc/config/i386/sysv4.h ; \
+do \
+  sed -i \
+      -e 's@/usr@/@g' \
+      -e 's@lib/ld-linux.so.2@library/ld-musl-i386.so.1@' \
+      -e 's@lib64/ld-linux-x86-64.so.2@library/ld-musl-x86_64.so.1@' \
+      $$file ; \
+done
+
+# MIPS
+for file in gcc/config/mips/linux64.h gcc/config/mips/linux.h ; do \
+  sed -i \
+      -e 's@/usr@/@g' \
+      -e 's@lib/ld.so.1@library/ld-musl-mips.so.1@' \
+      -e 's@lib64/ld.so.1@library/ld-musl-mips.so.1@' \
+      $$file ; \
+done
+
+# ARM
+for file in gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h ; do \
+  sed -i \
+      -e 's@/usr@/@g' \
+      -e 's@lib/ld-linux.so.2@library/ld-musl-arm.so.1@' \
+      -e 's@lib/ld-linux.so.3@library/ld-musl-arm.so.1@' \
+      $$file ; \
+done
+
+# Avoid specific Glibc code
+( cd libstdc++-v3/config/os && \
+  mv gnu-linux gnu-linux.orig ; \
+  cp -r generic gnu-linux ; \
+)
+
+rm -rf ../gcc-build
+mkdir ../gcc-build
+cd ../gcc-build
+
+../${program}-${version}/configure $configure_args \
+ --enable-threads=posix \
+ --enable-__cxa_atexit \
+ --enable-clocale=generic \
+ --enable-languages=c,c++ \
+ --enable-checking=release \
+ --enable-libssp \
+ --enable-tls \
+ --with-native-system-header-dir=/include \
+ --with-system-zlib \
+ --disable-shared \
+ --disable-multilib \
+ --disable-nls \
+ --disable-libstdcxx-pch \
+ --disable-libmudflap
+
+#make -j${jobs} bootstrap2-lean BOOT_LDFLAGS="-static" LDFLAGS="-static"
+make -j${jobs} bootstrap2-lean
+
+make install DESTDIR=$destdir
+
+if [ -d ${destdir}/lib64 ]; then \
+  ( cd $destdir ; \
+    mkdir -p library ; \
+    mv lib64/* library/ ; \
+    rmdir lib64 || : ; \
+  ) ; \
+fi
+
+# To compatibility
+( cd ${destdir}/executable || exit 1 ; \
+  mv gcc gcc-${version} ; \
+  ln -sf gcc-${version} gcc ; \
+  ln -sf gcc cc ; \
+  ln -sf gcc-${version} ${machine_type}-gcc ; \
+  ln -sf gcc-${version} ${machine_type}-gcc-${version} ; \
+  mv g++ g++-gcc-${version} ; \
+  ln -sf g++-gcc-${version} g++ ; \
+  ln -sf g++ c++ ; \
+  ln -sf g++-gcc-${version} ${machine_type}-g++ ; \
+  ln -sf g++-gcc-${version} ${machine_type}-c++ ; \
+)
+( cd ${destdir}/library && ln -sf ../executable/cpp . ; )
+
+# Compress info documents (if needed)
+if [ -d ${destdir}/documents/info ] ; then \
+  rm -f ${destdir}/documents/info/dir && \
+  gzip -9 ${destdir}/documents/info/* ; \
+fi
+
+# Compress and link manual pages (if needed)
+if [ -d ${destdir}/documents/man ] ; then \
+  ( cd ${destdir}/documents/man && \
+    find . -type f -exec gzip -9 {} \; && \
+    find . -type l | while read file ; do \
+      ln -sf $$(readlink $$file).gz $${file}.gz && \
+      rm $$file ; \
+    done ; \
+  ) ; \
+fi
+
+# Copy the documentation
+( mkdir -p $docdir ; \
+  cd ${tmpdir}/${program}-${version} && \
+  cp -a $docs $docdir ; \
+)
+
+# Delete temporary build directory
+#cd $tmpdir && rm -rf gcc-build
+
+reclinker -rf /package/${program}-${version} /
+

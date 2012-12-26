@@ -1,0 +1,23 @@
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=5.11
+
+# Uncompression
+rm -rf ${TMPDIR}/file-${version}
+tar xf ${SRCDIR}/file-${version}.tar.?z* -C $TMPDIR
+
+# Build
+cd ${TMPDIR}/file-${version}
+
+CC="gcc -D_GNU_SOURCE -D_BSD_SOURCE" \
+./configure \
+ --prefix=/tools \
+ --libdir=/tools/library \
+ --disable-fsect-man5
+
+make $jobs V=1
+make install
+

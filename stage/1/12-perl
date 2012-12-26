@@ -1,0 +1,28 @@
+# Copyright (C) 2012 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=5.16.2
+
+# Uncompression
+rm -rf ${TMPDIR}/perl-${version}
+tar xf ${SRCDIR}/perl-${version}.tar.?z* -C $TMPDIR
+
+# Build
+cd ${TMPDIR}/perl-${version}
+
+zcat ${PATCHDIR}/perl-fnostack-protector.gz | patch -p0
+zcat ${PATCHDIR}/perl-linux.sh.gz | patch -p0
+
+./Configure -des \
+ -Dprefix=/tools \
+ -Dprivlib=/tools/library/perl5 \
+ -Dsitelib=/tools/library/perl5/site_perl \
+ -Accflags="-D_GNU_SOURCE -D_BSD_SOURCE"
+
+make $jobs
+
+cp perl cpan/podlators/pod2man /tools/bin
+mkdir -p /tools/library/perl5 && cp -R lib/* /tools/library/perl5
+
