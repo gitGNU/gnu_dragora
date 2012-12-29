@@ -19,7 +19,7 @@ docdir = ${destdir}/documents/${program}-${version}
 
 [build]
 cd $srcdir
-zcat ${patchdir}/bzip2-paths.gz | patch -p0
+patch -Np0 -i ${patchdir}/bzip2-paths
 
 make CC="gcc -static"
 make install PREFIX=$destdir

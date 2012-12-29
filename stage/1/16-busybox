@@ -16,9 +16,9 @@ cd ${TMPDIR}/busybox-${version} || cd ${TMPDIR}/busybox
 make mrproper
 
 # Patch to include lzip support
-zcat ${PATCHDIR}/busybox-1.20.2_lzip-1.gz | patch -p1
+patch -Np1 -i ${PATCHDIR}/busybox-1.20.2_lzip-1
 
-zcat ${ARCHIVE}/busybox-config_stage1.gz > .config
+cat ${ARCHIVE}/busybox-config_stage1 > .config
 make oldconfig
 
 make $jobs HOSTCC="gcc -D_GNU_SOURCE" busybox

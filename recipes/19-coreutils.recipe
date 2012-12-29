@@ -20,7 +20,7 @@ docdir = ${destdir}/documents/${program}-${version}
 
 [build]
 
-zcat ${patchdir}/coreutils-charset_alias-path.gz | patch -p0
+patch -Np0 -i ${patchdir}/coreutils-charset_alias-path
 
 cd $srcdir
 

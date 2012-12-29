@@ -12,8 +12,8 @@ tar xf ${SRCDIR}/perl-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/perl-${version}
 
-zcat ${PATCHDIR}/perl-fnostack-protector.gz | patch -p0
-zcat ${PATCHDIR}/perl-linux.sh.gz | patch -p0
+patch -Np0 -i ${PATCHDIR}/perl-fnostack-protector
+patch -Np0 -i ${PATCHDIR}/perl-linux.sh
 
 ./Configure -des \
  -Dprefix=/tools \

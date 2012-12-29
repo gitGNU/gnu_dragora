@@ -18,7 +18,7 @@ destdir = /package/${program}-headers-${version}
 [build]
 cd $srcdir
 
-zcat ${patchdir}/linux-headers-vmlinux.sh.gz | patch -p0
+patch -Np0 -i ${patchdir}/linux-headers-vmlinux.sh
 
 make mrproper
 make headers_check

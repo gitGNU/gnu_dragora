@@ -21,7 +21,7 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-zcat ${patchdir}/psmisc-pstree.c.gz | patch -p0
+patch -Np0 -i ${patchdir}/psmisc-pstree.c
 
 CC="gcc -static" CFLAGS="$flags" ./configure $configure_args
 

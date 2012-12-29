@@ -20,7 +20,7 @@ docdir = ${destdir}/documents/${program}-${version}
 
 [build]
 cd $srcdir
-zcat ${patchdir}/zlib-mandir.gz | patch -p0
+patch -Np0 -i ${patchdir}/zlib-mandir
 
 CFLAGS="$flags" \
 ./configure \

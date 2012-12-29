@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/linux-libre-${version}-gnu.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/linux-${version}
 
-zcat ${PATCHDIR}/linux-headers-vmlinux.sh.gz | patch -p0
+patch -Np0 -i ${PATCHDIR}/linux-headers-vmlinux.sh
 
 make mrproper
 make headers_check

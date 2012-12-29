@@ -22,13 +22,13 @@ docdir = ${destdir}/documents/${program}-${version}
 cd $srcdir
 
 # Look for the static libc
-zcat ${patchdir}/perl-linux-static.sh.gz | patch -p0
+patch -Np0 -i ${patchdir}/perl-linux-static.sh
 
 # Don't use -fstack-protector
-zcat ${patchdir}/perl-fnostack-protector.gz | patch -p0
+patch -Np0 -i ${patchdir}/perl-fnostack-protector
 
 # less of busybox doesn't support the '-R' option
-zcat ${patchdir}/perl-less_nooption.gz | patch -p0
+patch -Np0 -i ${patchdir}/perl-less_nooption
 
 # Don't use the internal copy of the zlib
 sed -i \

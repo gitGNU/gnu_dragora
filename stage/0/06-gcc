@@ -12,9 +12,9 @@ tar xf ${SRCDIR}/gcc-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/gcc-${version}
 
-#zcat ${PATCHDIR}/gcc-4.7.2-musl.gz | patch -p0
-zcat ${PATCHDIR}/gcc-4.7.2-tls.gz | patch -p0
-zcat ${PATCHDIR}/gcc-nofixincludes.gz | patch -p0
+#patch -Np0 -i ${PATCHDIR}/gcc-4.7.2-musl
+patch -Np0 -i ${PATCHDIR}/gcc-4.7.2-tls
+patch -Np0 -i ${PATCHDIR}/gcc-nofixincludes
 
 # x86
 for file in \
@@ -80,7 +80,7 @@ done
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h \
  > $(dirname $(${TARGET}-gcc -print-libgcc-file-name))/include-fixed/limits.h
 
-zcat ${PATCHDIR}/gcc-fomit-frame-pointer.gz | patch -p0
+patch -Np0 -i ${PATCHDIR}/gcc-fomit-frame-pointer
 
 rm -rf ../gcc-build
 mkdir ../gcc-build
