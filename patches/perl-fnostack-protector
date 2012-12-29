@@ -1,0 +1,42 @@
+--- Configure.orig	2012-10-25 23:44:14.000000000 -0300
++++ Configure	2012-11-12 20:18:21.000000000 -0300
+@@ -5110,7 +5110,7 @@
+ 	# as that way the compiler can do the right implementation dependant
+ 	# thing. (NWC)
+ 	case "$gccversion" in
+-	?*)	set stack-protector -fstack-protector
++	?*)	set stack-protector -fnostack-protector
+ 		eval $checkccflag
+ 		;;
+ 	esac
+@@ -5252,12 +5252,12 @@
+ 	;;
+ *) dflt="$ldflags";;
+ esac
+-# See note above about -fstack-protector
++# See note above about -fnostack-protector
+ case "$ccflags" in
+-*-fstack-protector*) 
++*-fnostack-protector*) 
+ 	case "$dflt" in
+-	*-fstack-protector*) ;; # Don't add it again
+-	*) dflt="$dflt -fstack-protector" ;; 
++	*-fnostack-protector*) ;; # Don't add it again
++	*) dflt="$dflt -fnostack-protector" ;; 
+ 	esac
+ 	;;
+ esac
+@@ -8044,10 +8044,10 @@
+ 	esac
+ 
+ 	case "$ldflags" in
+-	*-fstack-protector*)
++	*-fnostack-protector*)
+ 	    case "$dflt" in
+-			*-fstack-protector*) ;; # Don't add it again
+-			*) dflt="$dflt -fstack-protector" ;; 
++			*-fnostack-protector*) ;; # Don't add it again
++			*) dflt="$dflt -fnostack-protector" ;; 
+ 		esac
+ 		;;
+ 	esac

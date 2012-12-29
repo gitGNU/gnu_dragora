@@ -1,0 +1,255 @@
+--- gcc/config/i386/linux.h.orig	2011-06-03 15:30:39.000000000 -0300
++++ gcc/config/i386/linux.h	2012-12-18 21:14:24.000000000 -0300
+@@ -22,3 +22,5 @@
+ 
+ #define GNU_USER_LINK_EMULATION "elf_i386"
+ #define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++
++#define MUSL_DYNAMIC_LINKER "/library/ld-musl-i386.so.1"
+--- gcc/config/i386/linux64.h.orig	2011-07-07 12:38:34.000000000 -0300
++++ gcc/config/i386/linux64.h	2012-12-18 21:14:24.000000000 -0300
+@@ -31,3 +31,7 @@
+ #define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+ #define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux-x86-64.so.2"
+ #define GLIBC_DYNAMIC_LINKERX32 "/libx32/ld-linux-x32.so.2"
++
++#define MUSL_DYNAMIC_LINKER32 "/library/ld-musl-i386.so.1"
++#define MUSL_DYNAMIC_LINKER64 "/library/ld-musl-x86_64.so.1"
++#define MUSL_DYNAMIC_LINKERX32 "/library/ld-musl-x32.so.1"
+--- gcc/config/arm/linux-eabi.h.orig	2011-11-02 12:03:19.000000000 -0300
++++ gcc/config/arm/linux-eabi.h	2012-12-18 21:14:24.000000000 -0300
+@@ -64,6 +64,10 @@
+ #undef  GLIBC_DYNAMIC_LINKER
+ #define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.3"
+ 
++/* Musl has no "classic" (i.e. broken) mode */
++#undef  MUSL_DYNAMIC_LINKER
++#define MUSL_DYNAMIC_LINKER "/library/ld-musl-arm.so.1"
++
+ /* At this point, bpabi.h will have clobbered LINK_SPEC.  We want to
+    use the GNU/Linux version, not the generic BPABI version.  */
+ #undef  LINK_SPEC
+--- gcc/config/arm/linux-elf.h.orig	2011-04-11 15:46:05.000000000 -0300
++++ gcc/config/arm/linux-elf.h	2012-12-18 21:14:24.000000000 -0300
+@@ -61,6 +61,8 @@
+ 
+ #define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
+ 
++#define MUSL_DYNAMIC_LINKER "/library/ld-musl-arm.so.1"
++
+ #define LINUX_TARGET_LINK_SPEC  "%{h*} \
+    %{static:-Bstatic} \
+    %{shared:-shared} \
+--- gcc/config/mips/linux.h.orig	2011-07-19 15:00:27.000000000 -0300
++++ gcc/config/mips/linux.h	2012-12-18 21:14:24.000000000 -0300
+@@ -19,3 +19,4 @@
+ <http://www.gnu.org/licenses/>.  */
+ 
+ #define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define MUSL_DYNAMIC_LINKER "/library/ld-musl-mips.so.1"
+--- gcc/config/mips/linux64.h.orig	2011-07-19 15:00:27.000000000 -0300
++++ gcc/config/mips/linux64.h	2012-12-18 21:14:24.000000000 -0300
+@@ -26,8 +26,11 @@
+ #define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
+ #define GLIBC_DYNAMIC_LINKER64 "/lib64/ld.so.1"
+ #define GLIBC_DYNAMIC_LINKERN32 "/lib32/ld.so.1"
++#define MUSL_DYNAMIC_LINKER32 "/library/ld-musl-mips.so.1"
++#define MUSL_DYNAMIC_LINKER64 "/library/ld-musl-mips.so.1"
++#define MUSL_DYNAMIC_LINKERX32 "/library/ld-musl-x32.so.1"
+ #define UCLIBC_DYNAMIC_LINKERN32 "/lib32/ld-uClibc.so.0"
+ #define BIONIC_DYNAMIC_LINKERN32 "/system/bin/linker32"
+ #define GNU_USER_DYNAMIC_LINKERN32 \
+-  CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKERN32, UCLIBC_DYNAMIC_LINKERN32, \
++  CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKERN32, MUSL_DYNAMIC_LINKERN32, UCLIBC_DYNAMIC_LINKERN32, \
+ 			 BIONIC_DYNAMIC_LINKERN32)
+--- gcc/config/linux.h.orig	2012-08-14 10:59:04.000000000 -0300
++++ gcc/config/linux.h	2012-12-18 21:14:24.000000000 -0300
+@@ -33,10 +33,12 @@
+ #define OPTION_GLIBC  (DEFAULT_LIBC == LIBC_GLIBC)
+ #define OPTION_UCLIBC (DEFAULT_LIBC == LIBC_UCLIBC)
+ #define OPTION_BIONIC (DEFAULT_LIBC == LIBC_BIONIC)
++#define OPTION_MUSL   (DEFAULT_LIBC == LIBC_MUSL)
+ #else
+ #define OPTION_GLIBC  (linux_libc == LIBC_GLIBC)
+ #define OPTION_UCLIBC (linux_libc == LIBC_UCLIBC)
+ #define OPTION_BIONIC (linux_libc == LIBC_BIONIC)
++#define OPTION_MUSL   (linux_libc == LIBC_MUSL)
+ #endif
+ 
+ #define GNU_USER_TARGET_OS_CPP_BUILTINS()			\
+@@ -54,18 +56,21 @@
+    uClibc or Bionic is the default C library and whether
+    -muclibc or -mglibc or -mbionic has been passed to change the default.  */
+ 
+-#define CHOOSE_DYNAMIC_LINKER1(LIBC1, LIBC2, LIBC3, LD1, LD2, LD3)	\
+-  "%{" LIBC2 ":" LD2 ";:%{" LIBC3 ":" LD3 ";:" LD1 "}}"
++#define CHOOSE_DYNAMIC_LINKER1(LIBC1, LIBC2, LIBC3, LIBC4, LD1, LD2, LD3, LD4) \
++  "%{" LIBC2 ":" LD2 ";:%{" LIBC3 ":" LD3 ";:%{" LIBC4 ":" LD4 ";:" LD1 "}}}"
+ 
+ #if DEFAULT_LIBC == LIBC_GLIBC
+-#define CHOOSE_DYNAMIC_LINKER(G, U, B) \
+-  CHOOSE_DYNAMIC_LINKER1 ("mglibc", "muclibc", "mbionic", G, U, B)
++#define CHOOSE_DYNAMIC_LINKER(G, U, B, M) \
++  CHOOSE_DYNAMIC_LINKER1 ("mglibc", "muclibc", "mbionic", "mmusl", G, U, B, M)
+ #elif DEFAULT_LIBC == LIBC_UCLIBC
+-#define CHOOSE_DYNAMIC_LINKER(G, U, B) \
+-  CHOOSE_DYNAMIC_LINKER1 ("muclibc", "mglibc", "mbionic", U, G, B)
++#define CHOOSE_DYNAMIC_LINKER(G, U, B, M) \
++  CHOOSE_DYNAMIC_LINKER1 ("muclibc", "mglibc", "mbionic", "mmusl", U, G, B, M)
+ #elif DEFAULT_LIBC == LIBC_BIONIC
+-#define CHOOSE_DYNAMIC_LINKER(G, U, B) \
+-  CHOOSE_DYNAMIC_LINKER1 ("mbionic", "mglibc", "muclibc", B, G, U)
++#define CHOOSE_DYNAMIC_LINKER(G, U, B, M) \
++  CHOOSE_DYNAMIC_LINKER1 ("mbionic", "mglibc", "muclibc", "mmusl", B, G, U, M)
++#elif DEFAULT_LIBC == LIBC_MUSL
++#define CHOOSE_DYNAMIC_LINKER(G, U, B, M) \
++  CHOOSE_DYNAMIC_LINKER1 ("mmusl", "mbionic", "mglibc", "muclibc", B, G, U, M)
+ #else
+ #error "Unsupported DEFAULT_LIBC"
+ #endif /* DEFAULT_LIBC */
+@@ -85,16 +90,16 @@
+ 
+ #define GNU_USER_DYNAMIC_LINKER						\
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKER, UCLIBC_DYNAMIC_LINKER,	\
+-			 BIONIC_DYNAMIC_LINKER)
++			 BIONIC_DYNAMIC_LINKER, MUSL_DYNAMIC_LINKER)
+ #define GNU_USER_DYNAMIC_LINKER32					\
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKER32, UCLIBC_DYNAMIC_LINKER32, \
+-			 BIONIC_DYNAMIC_LINKER32)
++			 BIONIC_DYNAMIC_LINKER32, MUSL_DYNAMIC_LINKER32)
+ #define GNU_USER_DYNAMIC_LINKER64					\
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKER64, UCLIBC_DYNAMIC_LINKER64, \
+-			 BIONIC_DYNAMIC_LINKER64)
++			 BIONIC_DYNAMIC_LINKER64, MUSL_DYNAMIC_LINKER64)
+ #define GNU_USER_DYNAMIC_LINKERX32					\
+   CHOOSE_DYNAMIC_LINKER (GLIBC_DYNAMIC_LINKERX32, UCLIBC_DYNAMIC_LINKERX32, \
+-			 BIONIC_DYNAMIC_LINKERX32)
++			 BIONIC_DYNAMIC_LINKERX32, MUSL_DYNAMIC_LINKERX32)
+ 
+ /* Determine whether the entire c99 runtime
+    is present in the runtime library.  */
+--- gcc/config/linux.opt.orig	2010-09-29 11:51:52.000000000 -0300
++++ gcc/config/linux.opt	2012-12-18 21:14:24.000000000 -0300
+@@ -30,3 +30,7 @@
+ muclibc
+ Target Report RejectNegative Var(linux_libc,LIBC_UCLIBC) Negative(mbionic)
+ Use uClibc C library
++
++mmusl
++Target Report RejectNegative Var(linux_libc,LIBC_MUSL) Negative(mglibc)
++Use musl C library
+--- gcc/config.gcc.orig	2012-09-12 06:03:54.000000000 -0300
++++ gcc/config.gcc	2012-12-18 21:15:02.000000000 -0300
+@@ -522,7 +522,7 @@
+ esac
+ 
+ # Common C libraries.
+-tm_defines="$tm_defines LIBC_GLIBC=1 LIBC_UCLIBC=2 LIBC_BIONIC=3"
++tm_defines="$tm_defines LIBC_GLIBC=1 LIBC_UCLIBC=2 LIBC_BIONIC=3 LIBC_MUSL=4"
+ 
+ # Common parts for widely ported systems.
+ case ${target} in
+@@ -612,7 +612,7 @@
+       native_system_header_dir=/include
+       ;;
+   esac
+-  # glibc / uclibc / bionic switch.
++  # glibc / uclibc / bionic / musl switch.
+   # uclibc and bionic aren't usable for GNU/Hurd and neither for GNU/k*BSD.
+   case $target in
+     *linux*)
+@@ -625,8 +625,11 @@
+     *-*-*uclibc*)
+       tm_defines="$tm_defines DEFAULT_LIBC=LIBC_UCLIBC"
+       ;;
++    *-*-*musl*)
++      tm_defines="$tm_defines DEFAULT_LIBC=LIBC_MUSL"
++      ;;
+     *)
+-      tm_defines="$tm_defines DEFAULT_LIBC=LIBC_GLIBC"
++      tm_defines="$tm_defines DEFAULT_LIBC=LIBC_MUSL"
+       ;;
+   esac
+   # Assume that glibc or uClibc or Bionic are being used and so __cxa_atexit
+--- gcc/ginclude/stddef.h.orig	2012-02-11 22:06:04.000000000 -0300
++++ gcc/ginclude/stddef.h	2012-12-18 21:14:24.000000000 -0300
+@@ -184,6 +184,7 @@
+ #ifndef _GCC_SIZE_T
+ #ifndef _SIZET_
+ #ifndef __size_t
++#ifndef __DEFINED_size_t /* musl */
+ #define __size_t__	/* BeOS */
+ #define __SIZE_T__	/* Cray Unicos/Mk */
+ #define _SIZE_T
+@@ -200,6 +201,7 @@
+ #define ___int_size_t_h
+ #define _GCC_SIZE_T
+ #define _SIZET_
++#define __DEFINED_size_t /* musl */
+ #if (defined (__FreeBSD__) && (__FreeBSD__ >= 5)) \
+   || defined(__FreeBSD_kernel__)
+ /* __size_t is a typedef on FreeBSD 5, must not trash it. */
+@@ -215,6 +217,7 @@
+ typedef long ssize_t;
+ #endif /* __BEOS__ */
+ #endif /* !(defined (__GNUG__) && defined (size_t)) */
++#endif /* __DEFINED_size_t */
+ #endif /* __size_t */
+ #endif /* _SIZET_ */
+ #endif /* _GCC_SIZE_T */
+--- libitm/config/linux/x86/tls.h.orig	2011-11-08 08:13:41.000000000 -0300
++++ libitm/config/linux/x86/tls.h	2012-12-18 21:14:24.000000000 -0300
+@@ -25,16 +25,19 @@
+ #ifndef LIBITM_X86_TLS_H
+ #define LIBITM_X86_TLS_H 1
+ 
+-#if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2, 10)
++#if defined(__GLIBC_PREREQ)
++#if __GLIBC_PREREQ(2, 10)
+ /* Use slots in the TCB head rather than __thread lookups.
+    GLIBC has reserved words 10 through 13 for TM.  */
+ #define HAVE_ARCH_GTM_THREAD 1
+ #define HAVE_ARCH_GTM_THREAD_DISP 1
+ #endif
++#endif
+ 
+ #include "config/generic/tls.h"
+ 
+-#if defined(__GLIBC_PREREQ) && __GLIBC_PREREQ(2, 10)
++#if defined(__GLIBC_PREREQ)
++#if __GLIBC_PREREQ(2, 10)
+ namespace GTM HIDDEN {
+ 
+ #ifdef __x86_64__
+@@ -101,5 +104,6 @@
+ 
+ } // namespace GTM
+ #endif /* >= GLIBC 2.10 */
++#endif
+ 
+ #endif // LIBITM_X86_TLS_H
+--- libitm/config/arm/hwcap.cc.orig	2011-12-15 00:24:05.000000000 -0300
++++ libitm/config/arm/hwcap.cc	2012-12-18 21:14:24.000000000 -0300
+@@ -40,7 +40,11 @@
+ 
+ #ifdef __linux__
+ #include <unistd.h>
++#ifdef __GLIBC__
+ #include <sys/fcntl.h>
++#else
++#include <fcntl.h>
++#endif
+ #include <elf.h>
+ 
+ static void __attribute__((constructor))
+--- libgomp/config/posix/time.c.orig	2009-04-09 12:00:19.000000000 -0300
++++ libgomp/config/posix/time.c	2012-12-18 21:14:24.000000000 -0300
+@@ -28,6 +28,8 @@
+    The following implementation uses the most simple POSIX routines.
+    If present, POSIX 4 clocks should be used instead.  */
+ 
++#define _POSIX_C_SOURCE 199309L /* for clocks */
++
+ #include "libgomp.h"
+ #include <unistd.h>
+ #if TIME_WITH_SYS_TIME

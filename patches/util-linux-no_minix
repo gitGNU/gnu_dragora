@@ -1,0 +1,391 @@
+--- disk-utils/Makemodule.am.orig	2012-09-20 10:16:51.000000000 -0300
++++ disk-utils/Makemodule.am	2012-10-18 15:21:55.000000000 -0300
+@@ -1,19 +1,4 @@
+ 
+-sbin_PROGRAMS += fsck.minix
+-dist_man_MANS += disk-utils/fsck.minix.8
+-fsck_minix_SOURCES = \
+-	disk-utils/fsck.minix.c \
+-	disk-utils/minix_programs.h \
+-	lib/ismounted.c
+-fsck_minix_LDADD = $(LDADD) libcommon.la
+-
+-sbin_PROGRAMS += mkfs.minix
+-dist_man_MANS += disk-utils/mkfs.minix.8
+-mkfs_minix_SOURCES = \
+-	disk-utils/minix_programs.h \
+-	disk-utils/mkfs.minix.c
+-mkfs_minix_LDADD = $(LDADD) libcommon.la
+-
+ sbin_PROGRAMS += mkfs
+ dist_man_MANS += disk-utils/mkfs.8
+ mkfs_SOURCES = disk-utils/mkfs.c
+--- Makefile.in.orig	2012-10-10 10:00:54.000000000 -0300
++++ Makefile.in	2012-10-18 15:21:19.000000000 -0300
+@@ -83,8 +83,8 @@
+ sbin_PROGRAMS = $(am__EXEEXT_26) $(am__EXEEXT_27) $(am__EXEEXT_28) \
+ 	$(am__EXEEXT_29) $(am__EXEEXT_30) $(am__EXEEXT_31) \
+ 	$(am__EXEEXT_32) $(am__EXEEXT_33) $(am__EXEEXT_34) \
+-	$(am__EXEEXT_35) $(am__EXEEXT_36) fsck.minix$(EXEEXT) \
+-	mkfs.minix$(EXEEXT) mkfs$(EXEEXT) mkfs.bfs$(EXEEXT) \
++	$(am__EXEEXT_35) $(am__EXEEXT_36) \
++	mkfs$(EXEEXT) mkfs.bfs$(EXEEXT) \
+ 	mkswap$(EXEEXT) $(am__EXEEXT_37) $(am__EXEEXT_38) \
+ 	$(am__EXEEXT_39) $(am__EXEEXT_40) $(am__EXEEXT_41) \
+ 	$(am__EXEEXT_42) $(am__EXEEXT_43) $(am__EXEEXT_44) \
+@@ -539,7 +539,7 @@
+ 	libblkid/src/partitions/blkid_parttypes.h \
+ 	libblkid/src/partitions/bsd.c libblkid/src/partitions/dos.c \
+ 	libblkid/src/partitions/dos.h libblkid/src/partitions/gpt.c \
+-	libblkid/src/partitions/mac.c libblkid/src/partitions/minix.c \
++	libblkid/src/partitions/mac.c \
+ 	libblkid/src/partitions/partitions.c \
+ 	libblkid/src/partitions/partitions.h \
+ 	libblkid/src/partitions/sgi.c \
+@@ -565,7 +565,6 @@
+ 	libblkid/src/superblocks/linux_raid.c \
+ 	libblkid/src/superblocks/lsi_raid.c \
+ 	libblkid/src/superblocks/luks.c libblkid/src/superblocks/lvm.c \
+-	libblkid/src/superblocks/minix.c \
+ 	libblkid/src/superblocks/netware.c \
+ 	libblkid/src/superblocks/nilfs.c \
+ 	libblkid/src/superblocks/ntfs.c \
+@@ -620,7 +619,6 @@
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-dos.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-gpt.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-mac.lo \
+-@BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-minix.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-partitions.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-sgi.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/libblkid_la-solaris_x86.lo \
+@@ -649,7 +647,6 @@
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-lsi_raid.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-luks.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-lvm.lo \
+-@BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-minix.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-netware.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-nilfs.lo \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/libblkid_la-ntfs.lo \
+@@ -1146,10 +1143,6 @@
+ fsck_cramfs_OBJECTS = $(am_fsck_cramfs_OBJECTS)
+ @BUILD_CRAMFS_TRUE@fsck_cramfs_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+ @BUILD_CRAMFS_TRUE@	libcommon.la
+-am_fsck_minix_OBJECTS = disk-utils/fsck.minix.$(OBJEXT) \
+-	lib/ismounted.$(OBJEXT)
+-fsck_minix_OBJECTS = $(am_fsck_minix_OBJECTS)
+-fsck_minix_DEPENDENCIES = $(am__DEPENDENCIES_2) libcommon.la
+ am__fsfreeze_SOURCES_DIST = sys-utils/fsfreeze.c
+ @LINUX_TRUE@am_fsfreeze_OBJECTS = sys-utils/fsfreeze.$(OBJEXT)
+ fsfreeze_OBJECTS = $(am_fsfreeze_OBJECTS)
+@@ -1296,9 +1289,6 @@
+ mkfs_cramfs_OBJECTS = $(am_mkfs_cramfs_OBJECTS)
+ @BUILD_CRAMFS_TRUE@mkfs_cramfs_DEPENDENCIES = $(am__DEPENDENCIES_2) \
+ @BUILD_CRAMFS_TRUE@	libcommon.la
+-am_mkfs_minix_OBJECTS = disk-utils/mkfs.minix.$(OBJEXT)
+-mkfs_minix_OBJECTS = $(am_mkfs_minix_OBJECTS)
+-mkfs_minix_DEPENDENCIES = $(am__DEPENDENCIES_2) libcommon.la
+ am_mkswap_OBJECTS = disk-utils/mkswap-mkswap.$(OBJEXT)
+ mkswap_OBJECTS = $(am_mkswap_OBJECTS)
+ mkswap_DEPENDENCIES = $(am__DEPENDENCIES_2) libcommon.la \
+@@ -2114,7 +2104,7 @@
+ 	$(elvtune_SOURCES) $(fallocate_SOURCES) $(fdformat_SOURCES) \
+ 	$(fdisk_SOURCES) $(fdisk_static_SOURCES) $(findfs_SOURCES) \
+ 	$(findmnt_SOURCES) $(flock_SOURCES) $(fsck_SOURCES) \
+-	$(fsck_cramfs_SOURCES) $(fsck_minix_SOURCES) \
++	$(fsck_cramfs_SOURCES) \
+ 	$(fsfreeze_SOURCES) $(fstrim_SOURCES) $(getopt_SOURCES) \
+ 	$(hexdump_SOURCES) $(hwclock_SOURCES) $(ionice_SOURCES) \
+ 	$(ipcmk_SOURCES) $(ipcrm_SOURCES) $(ipcs_SOURCES) \
+@@ -2124,7 +2114,7 @@
+ 	$(losetup_static_SOURCES) $(lsblk_SOURCES) $(lscpu_SOURCES) \
+ 	$(lslocks_SOURCES) $(mcookie_SOURCES) $(mesg_SOURCES) \
+ 	$(mkfs_SOURCES) $(mkfs_bfs_SOURCES) $(mkfs_cramfs_SOURCES) \
+-	$(mkfs_minix_SOURCES) $(mkswap_SOURCES) $(more_SOURCES) \
++	$(mkswap_SOURCES) $(more_SOURCES) \
+ 	$(mount_SOURCES) $(mount_static_SOURCES) $(mountpoint_SOURCES) \
+ 	$(namei_SOURCES) $(newgrp_SOURCES) $(partx_SOURCES) \
+ 	$(pg_SOURCES) $(pivot_root_SOURCES) $(prlimit_SOURCES) \
+@@ -2181,7 +2171,7 @@
+ 	$(am__fdisk_SOURCES_DIST) $(am__fdisk_static_SOURCES_DIST) \
+ 	$(am__findfs_SOURCES_DIST) $(am__findmnt_SOURCES_DIST) \
+ 	$(flock_SOURCES) $(am__fsck_SOURCES_DIST) \
+-	$(am__fsck_cramfs_SOURCES_DIST) $(fsck_minix_SOURCES) \
++	$(am__fsck_cramfs_SOURCES_DIST) \
+ 	$(am__fsfreeze_SOURCES_DIST) $(am__fstrim_SOURCES_DIST) \
+ 	$(getopt_SOURCES) $(hexdump_SOURCES) \
+ 	$(am__hwclock_SOURCES_DIST) $(am__ionice_SOURCES_DIST) \
+@@ -2194,7 +2184,7 @@
+ 	$(am__lsblk_SOURCES_DIST) $(am__lscpu_SOURCES_DIST) \
+ 	$(am__lslocks_SOURCES_DIST) $(mcookie_SOURCES) \
+ 	$(am__mesg_SOURCES_DIST) $(mkfs_SOURCES) $(mkfs_bfs_SOURCES) \
+-	$(am__mkfs_cramfs_SOURCES_DIST) $(mkfs_minix_SOURCES) \
++	$(am__mkfs_cramfs_SOURCES_DIST) \
+ 	$(mkswap_SOURCES) $(am__more_SOURCES_DIST) \
+ 	$(am__mount_SOURCES_DIST) $(am__mount_static_SOURCES_DIST) \
+ 	$(am__mountpoint_SOURCES_DIST) $(namei_SOURCES) \
+@@ -2308,8 +2298,8 @@
+ 	misc-utils/lsblk.8 misc-utils/uuidgen.1 misc-utils/uuidd.8 \
+ 	misc-utils/blkid.8 misc-utils/findfs.8 misc-utils/wipefs.8 \
+ 	misc-utils/findmnt.8 misc-utils/kill.1 misc-utils/rename.1 \
+-	misc-utils/getopt.1 disk-utils/fsck.minix.8 \
+-	disk-utils/mkfs.minix.8 disk-utils/mkfs.8 disk-utils/isosize.8 \
++	misc-utils/getopt.1 \
++	disk-utils/mkfs.8 disk-utils/isosize.8 \
+ 	disk-utils/mkfs.bfs.8 disk-utils/mkswap.8 \
+ 	disk-utils/swaplabel.8 disk-utils/fsck.8 disk-utils/elvtune.8 \
+ 	disk-utils/raw.8 disk-utils/blockdev.8 disk-utils/fdformat.8 \
+@@ -2557,7 +2547,7 @@
+ 	include/fileutils.h include/ismounted.h include/linux_reboot.h \
+ 	include/linux_version.h include/list.h include/loopdev.h \
+ 	include/mangle.h include/match.h include/mbsalign.h \
+-	include/md5.h include/minix.h include/nls.h include/optutils.h \
++	include/md5.h include/nls.h include/optutils.h \
+ 	include/pager.h include/pamfail.h include/path.h \
+ 	include/pathnames.h include/procutils.h include/randutils.h \
+ 	include/rpmatch.h include/setproctitle.h include/strutils.h \
+@@ -2589,7 +2579,6 @@
+ 	$(am__append_163) $(am__append_165) $(am__append_168) \
+ 	$(am__append_170) $(am__append_175) $(am__append_178) \
+ 	$(am__append_180) $(am__append_182) misc-utils/getopt.1 \
+-	disk-utils/fsck.minix.8 disk-utils/mkfs.minix.8 \
+ 	disk-utils/mkfs.8 disk-utils/isosize.8 disk-utils/mkfs.bfs.8 \
+ 	disk-utils/mkswap.8 $(am__append_189) $(am__append_193) \
+ 	$(am__append_195) $(am__append_197) $(am__append_200) \
+@@ -2726,7 +2715,6 @@
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/dos.h \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/gpt.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/mac.c \
+-@BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/minix.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/partitions.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/partitions.h \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/partitions/sgi.c \
+@@ -2756,7 +2744,6 @@
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/lsi_raid.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/luks.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/lvm.c \
+-@BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/minix.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/netware.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/nilfs.c \
+ @BUILD_LIBBLKID_TRUE@	libblkid/src/superblocks/ntfs.c \
+@@ -3236,17 +3223,6 @@
+ 	misc-utils/getopt-parse.bash \
+ 	misc-utils/getopt-parse.tcsh
+ 
+-fsck_minix_SOURCES = \
+-	disk-utils/fsck.minix.c \
+-	disk-utils/minix_programs.h \
+-	lib/ismounted.c
+-
+-fsck_minix_LDADD = $(LDADD) libcommon.la
+-mkfs_minix_SOURCES = \
+-	disk-utils/minix_programs.h \
+-	disk-utils/mkfs.minix.c
+-
+-mkfs_minix_LDADD = $(LDADD) libcommon.la
+ mkfs_SOURCES = disk-utils/mkfs.c
+ isosize_SOURCES = disk-utils/isosize.c
+ isosize_LDADD = $(LDADD) libcommon.la
+@@ -3546,9 +3522,6 @@
+ libblkid/src/partitions/libblkid_la-mac.lo:  \
+ 	libblkid/src/partitions/$(am__dirstamp) \
+ 	libblkid/src/partitions/$(DEPDIR)/$(am__dirstamp)
+-libblkid/src/partitions/libblkid_la-minix.lo:  \
+-	libblkid/src/partitions/$(am__dirstamp) \
+-	libblkid/src/partitions/$(DEPDIR)/$(am__dirstamp)
+ libblkid/src/partitions/libblkid_la-partitions.lo:  \
+ 	libblkid/src/partitions/$(am__dirstamp) \
+ 	libblkid/src/partitions/$(DEPDIR)/$(am__dirstamp)
+@@ -3639,9 +3612,6 @@
+ libblkid/src/superblocks/libblkid_la-lvm.lo:  \
+ 	libblkid/src/superblocks/$(am__dirstamp) \
+ 	libblkid/src/superblocks/$(DEPDIR)/$(am__dirstamp)
+-libblkid/src/superblocks/libblkid_la-minix.lo:  \
+-	libblkid/src/superblocks/$(am__dirstamp) \
+-	libblkid/src/superblocks/$(DEPDIR)/$(am__dirstamp)
+ libblkid/src/superblocks/libblkid_la-netware.lo:  \
+ 	libblkid/src/superblocks/$(am__dirstamp) \
+ 	libblkid/src/superblocks/$(DEPDIR)/$(am__dirstamp)
+@@ -4346,13 +4316,8 @@
+ fsck.cramfs$(EXEEXT): $(fsck_cramfs_OBJECTS) $(fsck_cramfs_DEPENDENCIES) $(EXTRA_fsck_cramfs_DEPENDENCIES) 
+ 	@rm -f fsck.cramfs$(EXEEXT)
+ 	$(AM_V_CCLD)$(LINK) $(fsck_cramfs_OBJECTS) $(fsck_cramfs_LDADD) $(LIBS)
+-disk-utils/fsck.minix.$(OBJEXT): disk-utils/$(am__dirstamp) \
+-	disk-utils/$(DEPDIR)/$(am__dirstamp)
+ lib/ismounted.$(OBJEXT): lib/$(am__dirstamp) \
+ 	lib/$(DEPDIR)/$(am__dirstamp)
+-fsck.minix$(EXEEXT): $(fsck_minix_OBJECTS) $(fsck_minix_DEPENDENCIES) $(EXTRA_fsck_minix_DEPENDENCIES) 
+-	@rm -f fsck.minix$(EXEEXT)
+-	$(AM_V_CCLD)$(LINK) $(fsck_minix_OBJECTS) $(fsck_minix_LDADD) $(LIBS)
+ sys-utils/fsfreeze.$(OBJEXT): sys-utils/$(am__dirstamp) \
+ 	sys-utils/$(DEPDIR)/$(am__dirstamp)
+ fsfreeze$(EXEEXT): $(fsfreeze_OBJECTS) $(fsfreeze_DEPENDENCIES) $(EXTRA_fsfreeze_DEPENDENCIES) 
+@@ -4507,11 +4472,6 @@
+ mkfs.cramfs$(EXEEXT): $(mkfs_cramfs_OBJECTS) $(mkfs_cramfs_DEPENDENCIES) $(EXTRA_mkfs_cramfs_DEPENDENCIES) 
+ 	@rm -f mkfs.cramfs$(EXEEXT)
+ 	$(AM_V_CCLD)$(LINK) $(mkfs_cramfs_OBJECTS) $(mkfs_cramfs_LDADD) $(LIBS)
+-disk-utils/mkfs.minix.$(OBJEXT): disk-utils/$(am__dirstamp) \
+-	disk-utils/$(DEPDIR)/$(am__dirstamp)
+-mkfs.minix$(EXEEXT): $(mkfs_minix_OBJECTS) $(mkfs_minix_DEPENDENCIES) $(EXTRA_mkfs_minix_DEPENDENCIES) 
+-	@rm -f mkfs.minix$(EXEEXT)
+-	$(AM_V_CCLD)$(LINK) $(mkfs_minix_OBJECTS) $(mkfs_minix_LDADD) $(LIBS)
+ disk-utils/mkswap-mkswap.$(OBJEXT): disk-utils/$(am__dirstamp) \
+ 	disk-utils/$(DEPDIR)/$(am__dirstamp)
+ mkswap$(EXEEXT): $(mkswap_OBJECTS) $(mkswap_DEPENDENCIES) $(EXTRA_mkswap_DEPENDENCIES) 
+@@ -5201,12 +5161,10 @@
+ 	-rm -f disk-utils/fdformat.$(OBJEXT)
+ 	-rm -f disk-utils/fsck-fsck.$(OBJEXT)
+ 	-rm -f disk-utils/fsck.cramfs.$(OBJEXT)
+-	-rm -f disk-utils/fsck.minix.$(OBJEXT)
+ 	-rm -f disk-utils/isosize.$(OBJEXT)
+ 	-rm -f disk-utils/mkfs.$(OBJEXT)
+ 	-rm -f disk-utils/mkfs.bfs.$(OBJEXT)
+ 	-rm -f disk-utils/mkfs.cramfs.$(OBJEXT)
+-	-rm -f disk-utils/mkfs.minix.$(OBJEXT)
+ 	-rm -f disk-utils/mkswap-mkswap.$(OBJEXT)
+ 	-rm -f disk-utils/partx-partx.$(OBJEXT)
+ 	-rm -f disk-utils/raw.$(OBJEXT)
+@@ -5361,8 +5319,6 @@
+ 	-rm -f libblkid/src/partitions/libblkid_la-gpt.lo
+ 	-rm -f libblkid/src/partitions/libblkid_la-mac.$(OBJEXT)
+ 	-rm -f libblkid/src/partitions/libblkid_la-mac.lo
+-	-rm -f libblkid/src/partitions/libblkid_la-minix.$(OBJEXT)
+-	-rm -f libblkid/src/partitions/libblkid_la-minix.lo
+ 	-rm -f libblkid/src/partitions/libblkid_la-partitions.$(OBJEXT)
+ 	-rm -f libblkid/src/partitions/libblkid_la-partitions.lo
+ 	-rm -f libblkid/src/partitions/libblkid_la-sgi.$(OBJEXT)
+@@ -5419,8 +5375,6 @@
+ 	-rm -f libblkid/src/superblocks/libblkid_la-luks.lo
+ 	-rm -f libblkid/src/superblocks/libblkid_la-lvm.$(OBJEXT)
+ 	-rm -f libblkid/src/superblocks/libblkid_la-lvm.lo
+-	-rm -f libblkid/src/superblocks/libblkid_la-minix.$(OBJEXT)
+-	-rm -f libblkid/src/superblocks/libblkid_la-minix.lo
+ 	-rm -f libblkid/src/superblocks/libblkid_la-netware.$(OBJEXT)
+ 	-rm -f libblkid/src/superblocks/libblkid_la-netware.lo
+ 	-rm -f libblkid/src/superblocks/libblkid_la-nilfs.$(OBJEXT)
+@@ -5706,12 +5660,10 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/fdformat.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/fsck-fsck.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/fsck.cramfs.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/fsck.minix.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/isosize.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/mkfs.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/mkfs.bfs.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/mkfs.cramfs.Po@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/mkfs.minix.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/mkswap-mkswap.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/partx-partx.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@disk-utils/$(DEPDIR)/raw.Po@am__quote@
+@@ -5830,7 +5782,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-dos.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-gpt.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-mac.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-minix.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-partitions.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-sgi.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/partitions/$(DEPDIR)/libblkid_la-solaris_x86.Plo@am__quote@
+@@ -5859,7 +5810,6 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-lsi_raid.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-luks.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-lvm.Plo@am__quote@
+-@AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-minix.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-netware.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-nilfs.Plo@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@libblkid/src/superblocks/$(DEPDIR)/libblkid_la-ntfs.Plo@am__quote@
+@@ -6237,13 +6187,6 @@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -c -o libblkid/src/partitions/libblkid_la-mac.lo `test -f 'libblkid/src/partitions/mac.c' || echo '$(srcdir)/'`libblkid/src/partitions/mac.c
+ 
+-libblkid/src/partitions/libblkid_la-minix.lo: libblkid/src/partitions/minix.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -MT libblkid/src/partitions/libblkid_la-minix.lo -MD -MP -MF libblkid/src/partitions/$(DEPDIR)/libblkid_la-minix.Tpo -c -o libblkid/src/partitions/libblkid_la-minix.lo `test -f 'libblkid/src/partitions/minix.c' || echo '$(srcdir)/'`libblkid/src/partitions/minix.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libblkid/src/partitions/$(DEPDIR)/libblkid_la-minix.Tpo libblkid/src/partitions/$(DEPDIR)/libblkid_la-minix.Plo
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libblkid/src/partitions/minix.c' object='libblkid/src/partitions/libblkid_la-minix.lo' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -c -o libblkid/src/partitions/libblkid_la-minix.lo `test -f 'libblkid/src/partitions/minix.c' || echo '$(srcdir)/'`libblkid/src/partitions/minix.c
+-
+ libblkid/src/partitions/libblkid_la-partitions.lo: libblkid/src/partitions/partitions.c
+ @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -MT libblkid/src/partitions/libblkid_la-partitions.lo -MD -MP -MF libblkid/src/partitions/$(DEPDIR)/libblkid_la-partitions.Tpo -c -o libblkid/src/partitions/libblkid_la-partitions.lo `test -f 'libblkid/src/partitions/partitions.c' || echo '$(srcdir)/'`libblkid/src/partitions/partitions.c
+ @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libblkid/src/partitions/$(DEPDIR)/libblkid_la-partitions.Tpo libblkid/src/partitions/$(DEPDIR)/libblkid_la-partitions.Plo
+@@ -6440,13 +6383,6 @@
+ @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+ @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -c -o libblkid/src/superblocks/libblkid_la-lvm.lo `test -f 'libblkid/src/superblocks/lvm.c' || echo '$(srcdir)/'`libblkid/src/superblocks/lvm.c
+ 
+-libblkid/src/superblocks/libblkid_la-minix.lo: libblkid/src/superblocks/minix.c
+-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -MT libblkid/src/superblocks/libblkid_la-minix.lo -MD -MP -MF libblkid/src/superblocks/$(DEPDIR)/libblkid_la-minix.Tpo -c -o libblkid/src/superblocks/libblkid_la-minix.lo `test -f 'libblkid/src/superblocks/minix.c' || echo '$(srcdir)/'`libblkid/src/superblocks/minix.c
+-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libblkid/src/superblocks/$(DEPDIR)/libblkid_la-minix.Tpo libblkid/src/superblocks/$(DEPDIR)/libblkid_la-minix.Plo
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='libblkid/src/superblocks/minix.c' object='libblkid/src/superblocks/libblkid_la-minix.lo' libtool=yes @AMDEPBACKSLASH@
+-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -c -o libblkid/src/superblocks/libblkid_la-minix.lo `test -f 'libblkid/src/superblocks/minix.c' || echo '$(srcdir)/'`libblkid/src/superblocks/minix.c
+-
+ libblkid/src/superblocks/libblkid_la-netware.lo: libblkid/src/superblocks/netware.c
+ @am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libblkid_la_CFLAGS) $(CFLAGS) -MT libblkid/src/superblocks/libblkid_la-netware.lo -MD -MP -MF libblkid/src/superblocks/$(DEPDIR)/libblkid_la-netware.Tpo -c -o libblkid/src/superblocks/libblkid_la-netware.lo `test -f 'libblkid/src/superblocks/netware.c' || echo '$(srcdir)/'`libblkid/src/superblocks/netware.c
+ @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) libblkid/src/superblocks/$(DEPDIR)/libblkid_la-netware.Tpo libblkid/src/superblocks/$(DEPDIR)/libblkid_la-netware.Plo
+--- libblkid/src/Makemodule.am.orig	2012-09-20 10:16:51.000000000 -0300
++++ libblkid/src/Makemodule.am	2012-10-18 15:29:30.000000000 -0300
+@@ -35,7 +35,6 @@
+ 	libblkid/src/partitions/dos.h \
+ 	libblkid/src/partitions/gpt.c \
+ 	libblkid/src/partitions/mac.c \
+-	libblkid/src/partitions/minix.c \
+ 	libblkid/src/partitions/partitions.c \
+ 	libblkid/src/partitions/partitions.h \
+ 	libblkid/src/partitions/sgi.c \
+@@ -66,7 +65,6 @@
+ 	libblkid/src/superblocks/lsi_raid.c \
+ 	libblkid/src/superblocks/luks.c \
+ 	libblkid/src/superblocks/lvm.c \
+-	libblkid/src/superblocks/minix.c \
+ 	libblkid/src/superblocks/netware.c \
+ 	libblkid/src/superblocks/nilfs.c \
+ 	libblkid/src/superblocks/ntfs.c \
+--- libblkid/src/partitions/partitions.c.orig	2012-09-20 10:16:51.000000000 -0300
++++ libblkid/src/partitions/partitions.c	2012-10-18 15:56:45.000000000 -0300
+@@ -129,8 +129,7 @@
+ 	&ultrix_pt_idinfo,
+ 	&bsd_pt_idinfo,
+ 	&unixware_pt_idinfo,
+-	&solaris_x86_pt_idinfo,
+-	&minix_pt_idinfo
++	&solaris_x86_pt_idinfo
+ };
+ 
+ /*
+--- libblkid/src/partitions/partitions.h.orig	2012-06-11 07:06:53.000000000 -0300
++++ libblkid/src/partitions/partitions.h	2012-10-18 15:56:59.000000000 -0300
+@@ -55,7 +55,6 @@
+ extern const struct blkid_idinfo sgi_pt_idinfo;
+ extern const struct blkid_idinfo mac_pt_idinfo;
+ extern const struct blkid_idinfo dos_pt_idinfo;
+-extern const struct blkid_idinfo minix_pt_idinfo;
+ extern const struct blkid_idinfo gpt_pt_idinfo;
+ extern const struct blkid_idinfo ultrix_pt_idinfo;
+ 
+--- libblkid/src/partitions/dos.c.orig	2012-06-11 07:06:53.000000000 -0300
++++ libblkid/src/partitions/dos.c	2012-10-18 15:56:13.000000000 -0300
+@@ -29,7 +29,6 @@
+ 	{ BLKID_OPENBSD_PARTITION, &bsd_pt_idinfo },
+ 	{ BLKID_UNIXWARE_PARTITION, &unixware_pt_idinfo },
+ 	{ BLKID_SOLARIS_X86_PARTITION, &solaris_x86_pt_idinfo },
+-	{ BLKID_MINIX_PARTITION, &minix_pt_idinfo }
+ };
+ 
+ static inline int is_extended(struct dos_partition *p)
+--- libblkid/src/superblocks/superblocks.c.orig	2012-09-20 10:16:51.000000000 -0300
++++ libblkid/src/superblocks/superblocks.c	2012-10-18 16:11:40.000000000 -0300
+@@ -125,7 +125,6 @@
+ 	&ntfs_idinfo,
+ 	&cramfs_idinfo,
+ 	&romfs_idinfo,
+-	&minix_idinfo,
+ 	&gfs_idinfo,
+ 	&gfs2_idinfo,
+ 	&ocfs_idinfo,
+--- libblkid/src/superblocks/superblocks.h.orig	2012-09-20 10:16:51.000000000 -0300
++++ libblkid/src/superblocks/superblocks.h	2012-10-18 16:11:48.000000000 -0300
+@@ -43,7 +43,6 @@
+ extern const struct blkid_idinfo iso9660_idinfo;
+ extern const struct blkid_idinfo udf_idinfo;
+ extern const struct blkid_idinfo vxfs_idinfo;
+-extern const struct blkid_idinfo minix_idinfo;
+ extern const struct blkid_idinfo vfat_idinfo;
+ extern const struct blkid_idinfo ufs_idinfo;
+ extern const struct blkid_idinfo hpfs_idinfo;

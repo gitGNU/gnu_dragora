@@ -1,0 +1,37 @@
+#
+#                 Runtime Configuration file for Chef
+#
+# Chef looks for this file in:
+#	1 - $HOME/.chefrc
+#	2 - ${sysconfdir}/chefrc
+
+# FIRST SECTION: Default options
+# Uncomment each option you want set.
+# The command line options override those specified in this file.
+
+#	--keep                 keep (don't delete) srcdir
+
+#	--quiet                suppress all messages
+
+	--strip=sections       types of symbols to be stripped from object files
+
+#	--tmpdir=/tmp/sources  temporary directory for compilation
+
+#	--verbose              be verbose (a 2nd -v gives more)
+
+
+# SECOND SECTION: Definitions of parameters.
+# Whitespace around the parameter name and value is ignored.
+# Value can be a list of words with embedded spaces.
+# Syntax: <name> = <value>
+
+	configure_args = --prefix='' \
+                         --libdir=/library \
+                         --libexecdir=/library \
+                         --bindir=/executable \
+                         --sbindir=/executable \
+                         --sysconfdir=/config \
+                         --includedir=/include \
+                         --localstatedir=/variable \
+                         --mandir=/documents/man \
+                         --infodir=/documents/info

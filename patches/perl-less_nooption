@@ -1,0 +1,15 @@
+--- Configure.orig	2012-10-25 23:44:14.000000000 -0300
++++ Configure	2012-11-24 08:39:34.000000000 -0300
+@@ -2461,9 +2461,9 @@
+ esac
+ case "$less" in
+ '')	;;
+-*)	if $less -R </dev/null >/dev/null; then
+-	       echo "Substituting less -R for less."
+-	       less="$less -R"
++*)	if $less </dev/null >/dev/null; then
++	       echo "Substituting less for less."
++	       less="$less"
+ 	       _less=$less
+ 	fi
+ 	;;
