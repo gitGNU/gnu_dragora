@@ -9,7 +9,7 @@ program = bzip2
 version = 1.0.6
 release = 1
 
-tarname = ${program}-${version}.tar.lz
+tarname = ${program}-${version}.tar.bz2
 tardir = /storage/dragora/sources
 patchdir = /storage/dragora/patches
 

@@ -9,7 +9,7 @@ program = gawk
 version = 4.0.1
 release = 1
 
-tarname = ${program}-${version}.tar.lz
+tarname = ${program}-${version}.tar.bz2
 tardir = /storage/dragora/sources
 jobs = 1
 

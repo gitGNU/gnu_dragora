@@ -9,7 +9,7 @@ program = util-linux
 version = 2.22.1
 release = 1
 
-tarname = ${program}-${version}.tar.lz
+tarname = ${program}-${version}.tar.bz2
 tardir = /storage/dragora/sources
 archive = /storage/dragora/archive
 patchdir = /storage/dragora/patches
