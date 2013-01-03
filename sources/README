@@ -1,0 +1,25 @@
+All tar files are distributed, maintained, and updated in:
+
+      rsync://antifaz.usla.org.ar/dragora/dragora-current/sources
+
+Later, it is spread by the mirrors. Especially at:
+
+         http://mirror.fsf.org/dragora/dragora-current/sources
+                                  or
+        rsync://mirror.fsf.org/dragora/dragora-current/sources
+
+Uses the utility wget(1) to obtain all the files via the HTTP protocol:
+# wget -r -nd -np -A .tar.bz2 http://mirror.fsf.org/dragora/dragora-current/sources
+
+Or uses the tool rsync(1) to get all the files via the RSYNC protocol:
+# rsync -rvaiz rsync://mirror.fsf.org/dragora/dragora-current/sources/ .
+
+The tarballs are stored in the current working directory. It is suggested
+to have cloned the repository (previously), and you are in the "sources/"
+directory.
+
+To check the integrity of all the tarballs using sha1sum(1), type:
+# sha1sum -c SHA1SUMS.TXT
+
+You can found more mirrors at http://dragora.org/en/mirrdev.html
+
