@@ -20,7 +20,7 @@ for file in \
  gcc/config/linux.h gcc/config/i386/linux.h gcc/config/i386/linux64.h gcc/config/i386/sysv4.h ; \
 do \
   sed -i \
-   -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+   -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
    -e 's@lib/ld-linux.so.2@library/ld-musl-i386.so.1@' \
    -e 's@lib64/ld-linux-x86-64.so.2@library/ld-musl-x86_64.so.1@' \
    -e 's@/usr@/tools@g' $file
@@ -34,7 +34,7 @@ done
 # MIPS
 for file in gcc/config/mips/linux64.h gcc/config/mips/linux.h ; do
   sed -i \
-      -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
       -e 's@lib/ld.so.1@library/ld-musl-mips.so.1@' \
       -e 's@lib64/ld.so.1@library/ld-musl-mips.so.1@' \
       -e 's@/usr@/tools@g' $file
@@ -48,7 +48,7 @@ done
 # ARM
 for file in gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h ; do
   sed -i \
-      -e 's@/lib\(64\)\?\(32\)\?/ld@/tools&@g' \
+      -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
       -e 's@lib/ld-linux.so.2@library/ld-musl-arm.so.1@' \
       -e 's@lib/ld-linux.so.3@library/ld-musl-arm.so.1@' \
       -e 's@/usr@/tools@g' $file
