@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012-2013 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -16,7 +16,7 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-CC="${TARGET}-gcc -D_GNU_SOURCE" \
+CC="${TARGET}-gcc -D_GNU_SOURCE -I/tools/include" \
 AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
 ../binutils-${version}/configure \
@@ -30,7 +30,7 @@ RANLIB="${TARGET}-ranlib" \
 
 make $jobs && make install
 
-# Re-adjust the linker for the Stage 1
+# Re-adjust the linker for the final system
 make -C ld clean
 make -C ld LIB_PATH=/library
 cp -f ld/ld-new /tools/bin

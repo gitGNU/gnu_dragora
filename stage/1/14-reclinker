@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012-2013 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -12,6 +12,6 @@ tar xf ${SRCDIR}/reclinker-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/reclinker-${version}
 
-sh make.sh
+sh make.sh CC="gcc -I/tools/include"
 install -m 755 reclinker /tools/bin
 

@@ -19,6 +19,7 @@ for file in freadahead.c fseterr.c ; do
 done
 echo "void close_stdin(void) {}" > lib/closein.c
 
+CC="gcc -I/tools/include" \
 ./configure \
  --prefix=/tools \
  --libdir=/tools/library

@@ -1,4 +1,4 @@
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012-2013 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -21,6 +21,6 @@ patch -Np1 -i ${PATCHDIR}/busybox-1.20.2_lzip-1
 cat ${ARCHIVE}/busybox-config_stage1 > .config
 make oldconfig
 
-make $jobs HOSTCC="gcc -D_GNU_SOURCE" busybox
-make HOSTCC="gcc -D_GNU_SOURCE" CONFIG_PREFIX=/tools install
+make $jobs HOSTCC="gcc -D_GNU_SOURCE -I/tools/include" busybox
+make HOSTCC="gcc -D_GNU_SOURCE -I/tools/include" CONFIG_PREFIX=/tools install
 
