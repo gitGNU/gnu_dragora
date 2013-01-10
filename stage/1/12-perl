@@ -13,13 +13,16 @@ tar xf ${SRCDIR}/perl-${version}.tar.?z* -C $TMPDIR
 cd ${TMPDIR}/perl-${version}
 
 patch -Np0 -i ${PATCHDIR}/perl-fnostack-protector
-patch -Np0 -i ${PATCHDIR}/perl-linux.sh
+patch -Np0 -i ${PATCHDIR}/perl-linux-static.sh
 
 ./Configure -des \
+ -Uuseshrplib \
+ -Uusedl \
  -Dprefix=/tools \
  -Dprivlib=/tools/library/perl5 \
  -Dsitelib=/tools/library/perl5/site_perl \
- -Accflags="-D_GNU_SOURCE -D_BSD_SOURCE -I/tools/include"
+ -Accflags="-D_GNU_SOURCE -D_BSD_SOURCE -I/tools/include" \
+ -A ldflags="-static"
 
 make $jobs
 

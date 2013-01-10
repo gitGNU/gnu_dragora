@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/make-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/make-${version}
 
-CC="gcc -D_GNU_SOURCE -I/tools/include" \
+CC="gcc -static -D_GNU_SOURCE -I/tools/include" \
 ./configure --prefix=/tools --disable-nls
 
 make $jobs

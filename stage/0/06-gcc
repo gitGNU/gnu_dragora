@@ -111,7 +111,7 @@ RANLIB="${TARGET}-ranlib" \
  --without-ppl \
  --without-cloog
 
-make $jobs
+make $jobs BOOT_LDFLAGS="-static" LDFLAGS="-static"
 make install
 
 # Necessary symlink

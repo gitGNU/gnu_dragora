@@ -13,10 +13,12 @@ tar xf ${SRCDIR}/file-${version}.tar.?z* -C $TMPDIR
 cd ${TMPDIR}/file-${version}
 
 CC="gcc -D_GNU_SOURCE -D_BSD_SOURCE -I/tools/include" \
+LDFLAGS="-Wl,-static" \
 ./configure \
  --prefix=/tools \
  --libdir=/tools/library \
- --disable-fsect-man5
+ --disable-fsect-man5 \
+ --disable-shared
 
 make $jobs V=1
 make install

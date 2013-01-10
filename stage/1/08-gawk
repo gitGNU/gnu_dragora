@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/gawk-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/gawk-${version}
 
-CC="gcc -I/tools/include" \
+CC="gcc -static -I/tools/include" \
 ./configure \
  --prefix=/tools \
  --libexecdir=/tools/library \

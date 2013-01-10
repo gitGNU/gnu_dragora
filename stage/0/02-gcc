@@ -99,7 +99,7 @@ cd ../gcc-build
  --without-ppl \
  --without-cloog
 
-make $jobs
+make $jobs BOOT_LDFLAGS="-static" LDFLAGS="-static"
 make install
 
 # Just in case
