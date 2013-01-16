@@ -9,7 +9,7 @@ program = chef
 version = 0.1-pre19
 release = 1
 
-tarname = ${program}-${version}.tar.bz2
+tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
 archive = /storage/dragora/archive
 jobs = 1

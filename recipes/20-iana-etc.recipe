@@ -9,7 +9,7 @@ program = iana-etc
 version = 2.30
 release = 1
 
-tarname = ${program}-${version}.tar.bz2
+tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
 
 docs = COPYING CREDITS NEWS README VERSION

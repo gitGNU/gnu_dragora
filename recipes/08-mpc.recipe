@@ -9,7 +9,7 @@ program = mpc
 version = 1.0.1
 release = 1
 
-tarname = ${program}-${version}.tar.bz2
+tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
 jobs = 1
 

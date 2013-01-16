@@ -9,7 +9,7 @@ program = findutils
 version = 4.5.10
 release = 1
 
-tarname = ${program}-${version}.tar.bz2
+tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
 patchdir = /storage/dragora/patches
 jobs = 1

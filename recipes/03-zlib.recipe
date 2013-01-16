@@ -9,7 +9,7 @@ program = zlib
 version = 1.2.7
 release = 1
 
-tarname = ${program}-${version}.tar.bz2
+tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
 patchdir = /storage/dragora/patches
 jobs = 1

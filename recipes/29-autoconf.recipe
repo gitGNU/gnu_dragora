@@ -9,7 +9,7 @@ program = autoconf
 version = 2.69
 release = 1
 
-tarname = ${program}-${version}.tar.bz2
+tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
 jobs = 1
 
