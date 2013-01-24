@@ -26,5 +26,5 @@ You can found more mirrors at http://dragora.org/en/mirrdev.html
 Note:
      The tarballs are distributed in POSIX format,
      lzip (http://lzip.nongnu.org/lzip.html) is used for
-     higher compression. You can found a copy of lzip in
+     higher compression. You can find a copy of lzip in
      gzip format under the directory "sources/".
