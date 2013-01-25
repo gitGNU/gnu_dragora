@@ -13,7 +13,7 @@
 
 #	--quiet                suppress all messages
 
-	--strip=sections       types of symbols to be stripped from object files
+#	--strip=sections       types of symbols to be stripped from object files
 
 #	--tmpdir=/tmp/sources  temporary directory for compilation
 
