@@ -21,7 +21,7 @@ directory.
 To check the integrity of all the tarballs using sha1sum(1), type:
 # sha1sum -c SHA1SUMS.TXT
 
-You can found more mirrors at http://dragora.org/en/mirrdev.html
+You can find more mirrors at http://dragora.org/en/mirrdev.html
 
 Note:
      The tarballs are distributed in POSIX format,
