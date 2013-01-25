@@ -14,6 +14,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+set -e;  ## Exit on any error
+
 # Autodetermine the path of /tools
 if [ ! -L /tools ]; then
   echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
@@ -23,16 +25,7 @@ if [ -L /tools ] && [ ! -e /tools ]; then
   echo "/tools is a dangling symlink."
   exit 1
 fi
-ROOT=$(readlink /tools | sed 's/\/tools//')
-
-set -e;  ## Exit on any error
-
-echo "Mounting virtual file systems ..."
-mount -n -v --bind /dev ${ROOT}/kernel/devices
-mount -n -v -t devpts devpts ${ROOT}/kernel/devices/pts
-mount -n -v -t tmpfs shm ${ROOT}/kernel/devices/shm
-mount -n -v -t proc proc ${ROOT}/kernel/process
-mount -n -v -t sysfs sysfs ${ROOT}/kernel/objects
+ROOT=$(readlink /tools | sed -e 's/\/tools//' -e 's/^/\//')
 
 echo "Mounting directories ..."
 mkdir -p \
@@ -40,12 +33,19 @@ mkdir -p \
  ${ROOT}/storage/dragora/patches \
  ${ROOT}/storage/dragora/recipes \
  ${ROOT}/storage/dragora/sources
-mount -n -v --bind "$(pwd)/archive" ${ROOT}/storage/dragora/archive
-mount -n -v --bind "$(pwd)/patches" ${ROOT}/storage/dragora/patches
-mount -n -v --bind "$(pwd)/recipes" ${ROOT}/storage/dragora/recipes
-mount -n -v --bind "$(pwd)/sources" ${ROOT}/storage/dragora/sources
+mount -o bind "$(pwd)/archive" ${ROOT}/storage/dragora/archive
+mount -o bind "$(pwd)/patches" ${ROOT}/storage/dragora/patches
+mount -o bind "$(pwd)/recipes" ${ROOT}/storage/dragora/recipes
+mount -o bind "$(pwd)/sources" ${ROOT}/storage/dragora/sources
 
-echo "Entering chroot (${ROOT})..."
+echo "Mounting virtual file systems ..."
+mount -o bind /dev ${ROOT}/kernel/devices
+mount -t devpts devpts ${ROOT}/kernel/devices/pts
+mount -t tmpfs shm ${ROOT}/kernel/devices/shm
+mount -t proc proc ${ROOT}/kernel/process
+mount -t sysfs sysfs ${ROOT}/kernel/objects
+
+echo "Entering chroot (${ROOT}) ..."
 chroot $ROOT /tools/bin/env -i \
  PATH=/executable:/tools/bin \
  SHELL=/executable/sh \
@@ -55,15 +55,15 @@ chroot $ROOT /tools/bin/env -i \
  LC_ALL=POSIX \
  /executable/sh --login
 
-umount ${ROOT}/kernel/devices/pts
-umount ${ROOT}/kernel/devices/shm
-umount ${ROOT}/kernel/devices
-umount ${ROOT}/kernel/process
-umount ${ROOT}/kernel/objects
 umount ${ROOT}/storage/dragora/archive
 umount ${ROOT}/storage/dragora/patches
 umount ${ROOT}/storage/dragora/recipes
 umount ${ROOT}/storage/dragora/sources
+umount ${ROOT}/kernel/objects
+umount ${ROOT}/kernel/process
+umount ${ROOT}/kernel/devices/shm
+umount ${ROOT}/kernel/devices/pts
+umount ${ROOT}/kernel/devices
 
-echo
+echo;  ## A new line for the prompt
 
