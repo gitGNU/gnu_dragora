@@ -14,8 +14,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-set -e;  ## Exit on any error
-
 # Autodetermine the path of /tools
 if [ ! -L /tools ]; then
   echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
@@ -26,6 +24,17 @@ if [ -L /tools ] && [ ! -e /tools ]; then
   exit 1
 fi
 ROOT=$(readlink /tools | sed -e 's/\/tools//' -e 's/^/\//')
+
+# Functions
+_umount() {
+  NODE="$1"
+  echo "Unmounting $NODE ..."
+  if ! umount $NODE ; then
+    echo "Forcing ..."
+    sleep 1
+    umount -f $NODE
+  fi
+}
 
 echo "Mounting directories ..."
 mkdir -p \
@@ -55,15 +64,15 @@ chroot $ROOT /tools/bin/env -i \
  LC_ALL=POSIX \
  /executable/sh --login
 
-umount ${ROOT}/storage/dragora/archive
-umount ${ROOT}/storage/dragora/patches
-umount ${ROOT}/storage/dragora/recipes
-umount ${ROOT}/storage/dragora/sources
-umount ${ROOT}/kernel/objects
-umount ${ROOT}/kernel/process
-umount ${ROOT}/kernel/devices/shm
-umount ${ROOT}/kernel/devices/pts
-umount ${ROOT}/kernel/devices
+_umount ${ROOT}/storage/dragora/archive
+_umount ${ROOT}/storage/dragora/patches
+_umount ${ROOT}/storage/dragora/recipes
+_umount ${ROOT}/storage/dragora/sources
+_umount ${ROOT}/kernel/objects
+_umount ${ROOT}/kernel/process
+_umount ${ROOT}/kernel/devices/shm
+_umount ${ROOT}/kernel/devices/pts
+_umount ${ROOT}/kernel/devices
 
 echo;  ## A new line for the prompt
 
