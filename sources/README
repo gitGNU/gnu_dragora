@@ -8,8 +8,8 @@ Later, it is spread by the mirrors. Especially at:
                                   or
         rsync://mirror.fsf.org/dragora/dragora-current/sources
 
-Uses the utility wget(1) to obtain all the files via the HTTP protocol:
-# wget -r -nd -np -A .tar.lz http://mirror.fsf.org/dragora/dragora-current/sources
+Uses GNU wget(1) to obtain all the files via the HTTP protocol:
+# wget -w 1 -r -nd -np -R .html http://mirror.fsf.org/dragora/dragora-current/sources/
 
 Or uses the tool rsync(1) to get all the files via the RSYNC protocol:
 # rsync -rvaiz rsync://mirror.fsf.org/dragora/dragora-current/sources/ .
