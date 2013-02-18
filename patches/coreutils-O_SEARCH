@@ -1,0 +1,20 @@
+--- lib/savewd.c.orig	2013-01-02 09:34:46.000000000 -0300
++++ lib/savewd.c	2013-02-17 17:19:59.000000000 -0300
+@@ -47,7 +47,7 @@
+     case INITIAL_STATE:
+       /* Save the working directory, or prepare to fall back if possible.  */
+       {
+-        int fd = open_safer (".", O_SEARCH);
++        int fd = open_safer (".", 0);
+         if (0 <= fd)
+           {
+             wd->state = FD_STATE;
+@@ -107,7 +107,7 @@
+       || (options & (HAVE_WORKING_O_NOFOLLOW ? SAVEWD_CHDIR_NOFOLLOW : 0)))
+     {
+       fd = open (dir,
+-                 (O_SEARCH | O_DIRECTORY | O_NOCTTY | O_NONBLOCK
++                 (0 | O_DIRECTORY | O_NOCTTY | O_NONBLOCK
+                   | (options & SAVEWD_CHDIR_NOFOLLOW ? O_NOFOLLOW : 0)));
+ 
+       if (open_result)
