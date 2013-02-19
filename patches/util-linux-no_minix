@@ -20,19 +20,19 @@
  sbin_PROGRAMS += mkfs
  dist_man_MANS += disk-utils/mkfs.8
  mkfs_SOURCES = disk-utils/mkfs.c
---- Makefile.in.orig	2012-10-10 10:00:54.000000000 -0300
-+++ Makefile.in	2012-10-18 15:21:19.000000000 -0300
+--- Makefile.in.orig	2013-02-18 19:08:59.000000000 -0300
++++ Makefile.in	2013-02-18 19:13:37.000000000 -0300
 @@ -83,8 +83,8 @@
- sbin_PROGRAMS = $(am__EXEEXT_26) $(am__EXEEXT_27) $(am__EXEEXT_28) \
- 	$(am__EXEEXT_29) $(am__EXEEXT_30) $(am__EXEEXT_31) \
- 	$(am__EXEEXT_32) $(am__EXEEXT_33) $(am__EXEEXT_34) \
--	$(am__EXEEXT_35) $(am__EXEEXT_36) fsck.minix$(EXEEXT) \
+ sbin_PROGRAMS = $(am__EXEEXT_27) $(am__EXEEXT_28) $(am__EXEEXT_29) \
+ 	$(am__EXEEXT_30) $(am__EXEEXT_31) $(am__EXEEXT_32) \
+ 	$(am__EXEEXT_33) $(am__EXEEXT_34) $(am__EXEEXT_35) \
+-	$(am__EXEEXT_36) $(am__EXEEXT_37) fsck.minix$(EXEEXT) \
 -	mkfs.minix$(EXEEXT) mkfs$(EXEEXT) mkfs.bfs$(EXEEXT) \
-+	$(am__EXEEXT_35) $(am__EXEEXT_36) \
++	$(am__EXEEXT_36) $(am__EXEEXT_37) \
 +	mkfs$(EXEEXT) mkfs.bfs$(EXEEXT) \
- 	mkswap$(EXEEXT) $(am__EXEEXT_37) $(am__EXEEXT_38) \
- 	$(am__EXEEXT_39) $(am__EXEEXT_40) $(am__EXEEXT_41) \
- 	$(am__EXEEXT_42) $(am__EXEEXT_43) $(am__EXEEXT_44) \
+ 	mkswap$(EXEEXT) $(am__EXEEXT_38) $(am__EXEEXT_39) \
+ 	$(am__EXEEXT_40) $(am__EXEEXT_41) $(am__EXEEXT_42) \
+ 	$(am__EXEEXT_43) $(am__EXEEXT_44) $(am__EXEEXT_45) \
 @@ -539,7 +539,7 @@
  	libblkid/src/partitions/blkid_parttypes.h \
  	libblkid/src/partitions/bsd.c libblkid/src/partitions/dos.c \
