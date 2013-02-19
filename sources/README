@@ -19,7 +19,7 @@ to have cloned the repository (previously), and you are in the "sources/"
 directory.
 
 To check the integrity of all the tarballs using sha1sum(1), type:
-# sha1sum -c SHA1SUMS.TXT
+# sha1sum -c SHA1SUMS
 
 You can find more mirrors at http://dragora.org/en/mirrdev.html
 
