@@ -1,12 +1,12 @@
 # Build recipe for findutils.
 #
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012-2013 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
 program = findutils
-version = 4.5.10
+version = 4.5.11
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -14,13 +14,17 @@ tardir = /storage/dragora/sources
 patchdir = /storage/dragora/patches
 jobs = 1
 
-#docs = AUTHORS COPYING ChangeLog FUTURES LIMITATIONS NEWS POSIX.STD PROBLEMS README
+docs = AUTHORS COPYING ChangeLog NEWS README* THANKS TODO
 destdir = /package/${program}-${version}
-#docdir = ${destdir}/documents/${program}-${version}
+docdir = ${destdir}/documents/${program}-${version}
 
 [build]
 cd $srcdir
 
+# http://www.openwall.com/lists/musl/2013/02/22/1
+patch -Np0 -i ${patchdir}/findutils-O_SEARCH
+
+CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args --disable-nls gl_cv_func_working_mktime=yes
 
 make -j${jobs}
@@ -44,7 +48,7 @@ if [ -d ${destdir}/documents/man ] ; then \
 fi
 
 # Copy the documentation
-#mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p $docdir && cp -a $docs $docdir
 
-#reclinker -rf /package/${program}-${version} /
+reclinker -rf /package/${program}-${version} /
 
