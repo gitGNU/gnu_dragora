@@ -29,7 +29,7 @@ patch -Np0 -i ${patchdir}/util-linux-no_cpuset
 patch -Np0 -i ${patchdir}/util-linux-no_minix
 
 # To work with agetty and blkid
-cat ${archive}/ttydefaults.h > include/ttydefaults.h
+cat ${archive}/include/ttydefaults.h > include/ttydefaults.h
 patch -Np0 -i ${patchdir}/util-linux-ttyutils.h
 
 # More patches in order to work with Musl

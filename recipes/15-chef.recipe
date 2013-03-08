@@ -28,7 +28,7 @@ make install DESTDIR=$destdir
 
 # Add our custom config
 mkdir -p ${destdir}/config
-cat ${archive}/chefrc > ${destdir}/config/chefrc
+cat ${archive}/config/chefrc > ${destdir}/config/chefrc
 
 rm -f ${destdir}/documents/info/dir ;		# Redundancy
 gzip -9 ${destdir}/documents/info/chef.info ;	# Compress .info documents

@@ -19,5 +19,5 @@ cd ${TMPDIR}/chef-${version}
 make $jobs
 make install
 
-cat ${ARCHIVE}/chefrc > /tools/config/chefrc
+cat ${ARCHIVE}/config/chefrc > /tools/config/chefrc
 
