@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = musl
-version = 20130306
+version = 20130310
 release = 1
 
 tarname = ${program}-${version}.tar.lz
