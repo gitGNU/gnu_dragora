@@ -21,6 +21,9 @@ cd $srcdir
 make -j${jobs}
 make install
 
+# To print shared library dependencies
+ln -sf /library/libc.so ${destdir}/executable/ldd
+
 # Adjust the toolchain (if necessary)
 if [ -x /tools/bin/adjust-toolchain ]; then \
   /tools/bin/adjust-toolchain ; \
