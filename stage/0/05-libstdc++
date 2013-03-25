@@ -1,0 +1,43 @@
+# Copyright (C) 2013 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=4.8.0
+
+# Uncompression
+rm -rf ${TMPDIR}/gcc-${version}
+tar xf ${SRCDIR}/gcc-${version}.tar.?z* -C $TMPDIR
+
+# Build
+cd ${TMPDIR}/gcc-${version}
+
+# Avoid specific Glibc code
+( cd libstdc++-v3/config/os
+  rm -rf gnu-linux
+  ln -sf generic gnu-linux
+)
+
+rm -rf ../gcc-build
+mkdir ../gcc-build
+cd ../gcc-build
+
+CXX="${TARGET}-g++" \
+AR="${TARGET}-ar" \
+RANLIB="${TARGET}-ranlib" \
+../gcc-${version}/libstdc++-v3/configure \
+ --prefix=/tools \
+ --libdir=/tools/library \
+ --libexecdir=/tools/library \
+ --host=$TARGET \
+ --disable-multilib \
+ --disable-nls \
+ --disable-shared \
+ --disable-libstdcxx-threads \
+ --disable-libstdcxx-pch \
+ --disable-libstdcxx-verbose \
+ --with-gxx-include-dir=/tools/${TARGET}/include/c++/gcc-${version}
+
+make $jobs BOOT_LDFLAGS="-static" LDFLAGS="-static"
+make install
+

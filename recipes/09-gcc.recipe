@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = gcc
-version = 4.7.2
+version = 4.8.0
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -72,6 +72,7 @@ cd ../gcc-build
  --enable-clocale=generic \
  --enable-languages=c,c++ \
  --enable-checking=release \
+ --enable-libitm \
  --enable-libssp \
  --enable-tls \
  --with-native-system-header-dir=/include \
@@ -80,7 +81,9 @@ cd ../gcc-build
  --disable-multilib \
  --disable-nls \
  --disable-libstdcxx-pch \
- --disable-libmudflap
+ --disable-libstdcxx-verbose \
+ --disable-libmudflap \
+ --disable-libsanitizer
 
 make -j${jobs} bootstrap2-lean BOOT_LDFLAGS="-static" LDFLAGS="-static"
 
