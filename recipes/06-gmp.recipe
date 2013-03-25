@@ -24,8 +24,7 @@ CFLAGS="$flags" \
 CXXFLAGS="$flags" \
 ./configure $configure_args \
  --disable-shared \
- --enable-cxx \
- --enable-mpbsd
+ --enable-cxx
 
 make -j${jobs}
 make check
