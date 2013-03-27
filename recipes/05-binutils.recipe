@@ -1,16 +1,17 @@
 # Build recipe for binutils.
 #
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012-2013 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
 program = binutils
-version = 2.23.1
+version = 2.23.2
 release = 1
 
 tarname = ${program}-${version}.tar.lz
 tardir = /storage/dragora/sources
+patchdir = /storage/dragora/patches
 jobs = 1
 
 docs = COPYING* README
@@ -21,6 +22,9 @@ machine_type = $$(gcc -dumpmachine)
 
 [build]
 cd $srcdir
+
+# Do not fail if "makeinfo" is not available
+patch -Np1 -i ${patchdir}/binutils-makeinfo_nofails
 
 # Suppress the installation of the outdated standards.info file,
 # the newer one is provided by autoconf
