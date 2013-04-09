@@ -20,7 +20,7 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-CC="gcc -static" CFLAGS="$flags" \
+CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args
 
 make -j${jobs}

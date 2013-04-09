@@ -35,8 +35,7 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-CC="gcc -D_GNU_SOURCE" \
-CFLAGS="$flags" \
+CFLAGS="$flags -D_GNU_SOURCE" \
 ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
  --with-docdir=/documents/${program}-${version} \
  --with-lib-path=/library \

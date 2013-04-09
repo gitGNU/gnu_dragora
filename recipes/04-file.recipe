@@ -20,8 +20,8 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-CC="gcc -D_GNU_SOURCE -D_BSD_SOURCE" \
-CFLAGS="$flags" \
+CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
+LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
  --datadir=/config \
  --disable-shared \

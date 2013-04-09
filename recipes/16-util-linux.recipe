@@ -40,8 +40,8 @@ patch -Np0 -i ${patchdir}/util-linux-pg.c
 # Change the path location for adjtime
 sed -i 's@etc/adjtime@config/adjtime@g' $$(grep -rl '/etc/adjtime' .)
 
-CC="gcc -static -Dversionsort=alphasort -D__GNU_LIBRARY__=5 -DMAXNAMLEN=255" \
-CFLAGS="$flags" \
+CFLAGS="$flags -Dversionsort=alphasort -D__GNU_LIBRARY__=5 -DMAXNAMLEN=255" \
+LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
  --enable-fs-paths-default="/executable" \
  --enable-libuuid \

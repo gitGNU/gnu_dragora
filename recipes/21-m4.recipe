@@ -27,7 +27,7 @@ for file in freadahead.c fseterr.c ; do \
 done
 echo "void close_stdin(void) {}" > lib/closein.c
 
-CC="gcc -static" CFLAGS="$flags" \
+CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args
 
 make -j${jobs}

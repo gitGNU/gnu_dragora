@@ -20,9 +20,12 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-CFLAGS="$flags" CXXFLAGS="$flags" \
+CFLAGS="$flags" \
+CXXFLAGS="$flags" \
+LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
  --docdir=/documents/${program}-${version} \
+ --enable-static \
  --disable-shared \
  --disable-nls \
  --without-emacs \

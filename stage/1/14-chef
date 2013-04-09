@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/chef-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/chef-${version}
 
-./configure CXX="g++ -static -I/tools/include" \
+./configure CXXFLAGS="$CXXFLAGS -static" CPPFLAGS="-I/tools/include" \
  --prefix=/tools \
  --sysconfdir=/tools/config
 

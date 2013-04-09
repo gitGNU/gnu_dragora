@@ -21,7 +21,7 @@ docdir = ${destdir}/documents/${program}-${version}
 cd $srcdir
 patch -Np0 -i ${patchdir}/bzip2-paths
 
-make CC="gcc -static"
+make LDFLAGS="-Wl,-static"
 make install PREFIX=$destdir
 
 install -D -m 755 bzip2 ${destdir}/executable/bzip2

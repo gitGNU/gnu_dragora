@@ -25,9 +25,8 @@ patch -Np0 -i ${patchdir}/coreutils-O_SEARCH
 
 # Note: stdbuf(1) refuses to compiled as static, due to libstdbuf.so.
 
-CC="gcc -D_GNU_SOURCE -D_BSD_SOURCE" \
-CFLAGS="$flags" \
-LDFLAGS="-static" \
+CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
+LDFLAGS="-Wl,-static" \
 FORCE_UNSAFE_CONFIGURE=1 \
 ./configure $configure_args \
  --without-gmp \

@@ -20,7 +20,7 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-./configure $configure_args CXX="g++ -static" CXXFLAGS="$flags"
+./configure $configure_args LDFLAGS="-Wl,-static" CXXFLAGS="$flags"
 
 make -j${jobs}
 make install DESTDIR=$destdir

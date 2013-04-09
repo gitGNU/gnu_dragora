@@ -20,9 +20,8 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-CC="gcc -D_GNU_SOURCE" \
-CFLAGS="$flags" \
-CXXFLAGS="$flags" \
+CFLAGS="$flags -D_GNU_SOURCE" \
+CXXFLAGS="$flags -D_GNU_SOURCE" \
 ./configure $configure_args \
  --without-debug \
  --without-shared \

@@ -12,7 +12,8 @@ tar xf ${SRCDIR}/patch-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/patch-${version}
 
-CC="gcc -static -I/tools/include" \
+LDFLAGS="-Wl,-static" \
+CPPFLAGS="-I/tools/include" \
 ./configure --prefix=/tools
 
 make $jobs

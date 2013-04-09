@@ -22,7 +22,8 @@ srcdir = ${tmpdir}/${program}-4.13
 [build]
 cd $srcdir
 
-CC="gcc -static" CFLAGS="$flags" ./configure $configure_args --disable-nls
+CFLAGS="$flags" LDFLAGS="-Wl,-static" \
+./configure $configure_args --disable-nls
 
 make -j${jobs} V=1
 make install DESTDIR=$destdir

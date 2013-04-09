@@ -26,7 +26,7 @@ cd $srcdir
 # updating the timestamp on the file man/diff.1
 touch man/diff.1
 
-CC="gcc -static" CFLAGS="$flags" ./configure $configure_args \
+CFLAGS="$flags" LDFLAGS="-Wl,-static" ./configure $configure_args \
  --disable-nls gl_cv_func_working_mktime=yes
 
 make -j${jobs} V=1

@@ -20,7 +20,7 @@ docdir = ${destdir}/documents/${program}-${version}
 [build]
 cd $srcdir
 
-CFLAGS="$flags" LDFLAGS="-static" \
+CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args --disable-nls
 
 make -j${jobs}
