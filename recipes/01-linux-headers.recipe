@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = linux
-version = 3.8.3
+version = 3.4.39
 release = 1
 
 tarname = ${program}-libre-${version}-gnu.tar.lz
@@ -18,7 +18,7 @@ destdir = /package/${program}-headers-${version}
 [build]
 cd $srcdir
 
-patch -Np0 -i ${patchdir}/linux-headers-vmlinux.sh
+#patch -Np0 -i ${patchdir}/linux-headers-vmlinux.sh
 
 make mrproper
 make headers_check
