@@ -1,0 +1,45 @@
+.
+|-- bin -> executable/
+|-- boot/
+|-- config/
+|-- dev -> kernel/devices/
+|-- documents/
+|   |-- info/
+|   `-- man/
+|-- executable/
+|-- home/
+|   `-- root/
+|-- include/
+|-- kernel/
+|   |-- devices/
+|   |-- objects/
+|   `-- process/
+|-- lib -> library/
+|-- lib64 -> library/
+|-- library/
+|   `-- pkgconfig/
+|-- local/
+|   |-- README
+|   |-- bin/
+|   |-- etc/
+|   |-- games/
+|   |-- include/
+|   |-- lib/
+|   |-- man -> share/man/
+|   |-- sbin/
+|   |-- share/
+|   |   `-- man/
+|   `-- src/
+|-- lost+found/
+|-- package/
+|-- proc -> kernel/process/
+|-- share/
+|   |-- info -> ../documents/info/
+|   |-- man -> ../documents/man/
+|   `-- pkgconfig -> ../library/pkgconfig/
+|-- storage/
+|-- sys -> kernel/objects/
+|-- tmp/
+`-- usr -> ./
+
+41 directories, 1 file

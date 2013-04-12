@@ -60,7 +60,7 @@ chroot $ROOT /tools/bin/env -i \
  SHELL=/executable/sh \
  TERM="$TERM" \
  PS1='\u:\w\$ ' \
- HOME=/users/root \
+ HOME=/home/root \
  LC_ALL=POSIX \
  /executable/sh --login
 
