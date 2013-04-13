@@ -37,11 +37,6 @@ _umount() {
 }
 
 echo "Mounting directories ..."
-mkdir -p \
- ${ROOT}/storage/dragora/archive \
- ${ROOT}/storage/dragora/patches \
- ${ROOT}/storage/dragora/recipes \
- ${ROOT}/storage/dragora/sources
 mount -o bind "$(pwd)/archive" ${ROOT}/storage/dragora/archive
 mount -o bind "$(pwd)/patches" ${ROOT}/storage/dragora/patches
 mount -o bind "$(pwd)/recipes" ${ROOT}/storage/dragora/recipes
