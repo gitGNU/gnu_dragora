@@ -24,11 +24,6 @@ cd $srcdir
 # Note on --disable-rcp, -disable-rlogin, --disable-rsh
 # These options produce compilation errors.
 
-# Note on --disable-tftp
-# This option requires the non-POSIX header: tftp.h
-# The header is not included on Musl
-patch -Np0 -i ${patchdir}/inetutils-no_tftp
-
 # Without a specific identifier used in Glibc
 patch -Np0 -i ${patchdir}/inetutils-WTMP_FILE
 
@@ -41,7 +36,6 @@ LDFLAGS="-Wl,-static" \
  --disable-rcp \
  --disable-rlogin \
  --disable-rsh \
- --disable-tftp \
  --enable-servers=no
 
 make -j${jobs} V=1
