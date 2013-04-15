@@ -56,14 +56,22 @@ clean_dir() {
 }
 
 # Variables - default values
-PWD=${0%/*}
+case "$0" in  ## Allow the execution from another directory
+  /*)
+    CWD=${0%/*}
+    ;;
+  *)
+    CWD=$(pwd)/${0#./}
+    CWD=$(dirname $CWD)
+    ;;
+esac
 STAGE=""
 ROOT=""
 TMPDIR=/tmp/sources
-ARCHIVE=${PWD}/archive
-PATCHDIR=${PWD}/patches
-STAGEDIR=${PWD}/stage
-SRCDIR=${PWD}/sources
+ARCHIVE=${CWD}/archive
+PATCHDIR=${CWD}/patches
+STAGEDIR=${CWD}/stage
+SRCDIR=${CWD}/sources
 KEEPDIR=KEEPDIR_NO
 TARGET="$(gcc -dumpmachine | sed -e 's/-[^-]*/-custom/')"
 jobs=-j1
@@ -106,7 +114,7 @@ do
       exit
       ;;
     -V|--version)
-      echo "dragora-bootstrap 1.1"
+      echo "dragora-bootstrap 1.2"
       echo "Copyright (C) 2012-2013 Matias A. Fonzo."
       echo "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
