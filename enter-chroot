@@ -37,37 +37,37 @@ _umount() {
 }
 
 echo "Mounting directories ..."
-mount -o bind "$(pwd)/archive" ${ROOT}/storage/dragora/archive
-mount -o bind "$(pwd)/patches" ${ROOT}/storage/dragora/patches
-mount -o bind "$(pwd)/recipes" ${ROOT}/storage/dragora/recipes
-mount -o bind "$(pwd)/sources" ${ROOT}/storage/dragora/sources
+mount -o bind "$(pwd)/archive" ${ROOT}/src/dragora/archive
+mount -o bind "$(pwd)/patches" ${ROOT}/src/dragora/patches
+mount -o bind "$(pwd)/recipes" ${ROOT}/src/dragora/recipes
+mount -o bind "$(pwd)/sources" ${ROOT}/src/dragora/sources
 
 echo "Mounting virtual file systems ..."
-mount -o bind /dev ${ROOT}/kernel/devices
-mount -t devpts devpts ${ROOT}/kernel/devices/pts
-mount -t tmpfs shm ${ROOT}/kernel/devices/shm
-mount -t proc proc ${ROOT}/kernel/process
-mount -t sysfs sysfs ${ROOT}/kernel/objects
+mount -o bind /dev ${ROOT}/dev
+mount -t devpts devpts ${ROOT}/dev/pts
+mount -t tmpfs shm ${ROOT}/dev/shm
+mount -t proc proc ${ROOT}/proc
+mount -t sysfs sysfs ${ROOT}/sys
 
 echo "Entering chroot (${ROOT}) ..."
 chroot $ROOT /tools/bin/env -i \
- PATH=/executable:/tools/bin \
- SHELL=/executable/sh \
+ PATH=/bin:/sbin:/tools/bin \
+ SHELL=/bin/sh \
  TERM="$TERM" \
  PS1='\u:\w\$ ' \
- HOME=/home/root \
+ HOME=/root \
  LC_ALL=POSIX \
- /executable/sh --login
+ /bin/sh --login
 
-_umount ${ROOT}/storage/dragora/archive
-_umount ${ROOT}/storage/dragora/patches
-_umount ${ROOT}/storage/dragora/recipes
-_umount ${ROOT}/storage/dragora/sources
-_umount ${ROOT}/kernel/objects
-_umount ${ROOT}/kernel/process
-_umount ${ROOT}/kernel/devices/shm
-_umount ${ROOT}/kernel/devices/pts
-_umount ${ROOT}/kernel/devices
+_umount ${ROOT}/src/dragora/archive
+_umount ${ROOT}/src/dragora/patches
+_umount ${ROOT}/src/dragora/recipes
+_umount ${ROOT}/src/dragora/sources
+_umount ${ROOT}/sys
+_umount ${ROOT}/proc
+_umount ${ROOT}/dev/shm
+_umount ${ROOT}/dev/pts
+_umount ${ROOT}/dev
 
 echo;  ## A new line for the prompt
 
