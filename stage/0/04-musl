@@ -15,8 +15,8 @@ cd ${TMPDIR}/musl-${version}
 CROSS_COMPILE="${TARGET}-" \
 ./configure \
  --prefix=/tools \
- --libdir=/tools/library \
- --syslibdir=/tools/library
+ --libdir=/tools/lib \
+ --syslibdir=/tools/lib
 
 make $jobs
 make install

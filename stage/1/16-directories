@@ -4,9 +4,9 @@
 # to copy, distribute and modify it.
 
 echo "Uncompressing structure of directories ..."
-if [ ! -f ${ARCHIVE}/dirstructure.tar.gz ]; then
-  echo "${ARCHIVE}/dirstructure.tar.gz is not a regular file."
+if [ ! -f ${ARCHIVE}/_hierarchyfs.tar.gz ]; then
+  echo "${ARCHIVE}/_hierarchyfs.tar.gz is not a regular file."
   exit 1
 fi
-cd $ROOT && tar xf ${ARCHIVE}/dirstructure.tar.gz
+cd $ROOT && tar xf ${ARCHIVE}/_hierarchyfs.tar.gz
 

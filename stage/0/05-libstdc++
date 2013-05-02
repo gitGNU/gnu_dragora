@@ -27,8 +27,8 @@ AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
 ../gcc-${version}/libstdc++-v3/configure \
  --prefix=/tools \
- --libdir=/tools/library \
- --libexecdir=/tools/library \
+ --libdir=/tools/lib \
+ --libexecdir=/tools/lib \
  --host=$TARGET \
  --disable-multilib \
  --disable-nls \

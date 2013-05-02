@@ -23,8 +23,8 @@ CFLAGS="$CFLAGS -D_GNU_SOURCE" \
 ../binutils-${version}/configure LDFLAGS="--static" \
  --prefix=/tools \
  --target=$TARGET \
- --libdir=/tools/library \
- --with-lib-path=/tools/library \
+ --libdir=/tools/lib \
+ --with-lib-path=/tools/lib \
  --with-sysroot=$ROOT \
  --disable-shared \
  --disable-nls \
@@ -35,8 +35,8 @@ CFLAGS="$CFLAGS -D_GNU_SOURCE" \
 make $jobs
 
 if [ "$(uname -m)" = "x86_64" ]; then
-  mkdir -p /tools/library
-  ln -s -f library /tools/lib64
+  mkdir -p /tools/lib
+  ln -s -f lib /tools/lib64
 fi
 
 make install

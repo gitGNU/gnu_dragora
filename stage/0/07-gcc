@@ -21,13 +21,13 @@ for file in \
 do \
   sed -i \
    -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
-   -e 's@lib/ld-linux.so.2@library/ld-musl-i386.so.1@' \
-   -e 's@lib64/ld-linux-x86-64.so.2@library/ld-musl-x86_64.so.1@' \
+   -e 's@lib/ld-linux.so.2@lib/ld-musl-i386.so.1@' \
+   -e 's@lib64/ld-linux-x86-64.so.2@lib/ld-musl-x86_64.so.1@' \
    -e 's@/usr@/tools@g' $file
   echo '
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 "/tools/library/"
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
 #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
 done
 
@@ -35,13 +35,13 @@ done
 for file in gcc/config/mips/linux64.h gcc/config/mips/linux.h ; do
   sed -i \
       -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
-      -e 's@lib/ld.so.1@library/ld-musl-mips.so.1@' \
-      -e 's@lib64/ld.so.1@library/ld-musl-mips.so.1@' \
+      -e 's@lib/ld.so.1@lib/ld-musl-mips.so.1@' \
+      -e 's@lib64/ld.so.1@lib/ld-musl-mips.so.1@' \
       -e 's@/usr@/tools@g' $file
   echo '
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 "/tools/library/"
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
 #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
 done
 
@@ -49,13 +49,13 @@ done
 for file in gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h ; do
   sed -i \
       -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
-      -e 's@lib/ld-linux.so.2@library/ld-musl-arm.so.1@' \
-      -e 's@lib/ld-linux.so.3@library/ld-musl-arm.so.1@' \
+      -e 's@lib/ld-linux.so.2@lib/ld-musl-arm.so.1@' \
+      -e 's@lib/ld-linux.so.3@lib/ld-musl-arm.so.1@' \
       -e 's@/usr@/tools@g' $file
   echo '
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
-#define STANDARD_STARTFILE_PREFIX_1 "/tools/library/"
+#define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
 #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
 done
 
@@ -93,8 +93,8 @@ AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
 ../gcc-${version}/configure \
  --prefix=/tools \
- --libdir=/tools/library \
- --libexecdir=/tools/library \
+ --libdir=/tools/lib \
+ --libexecdir=/tools/lib \
  --with-local-prefix=/tools \
  --with-native-system-header-dir=/tools/include \
  --with-mpfr-include=$(pwd)/../gcc-${version}/mpfr/src \

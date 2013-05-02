@@ -23,7 +23,7 @@ LDFLAGS="-Wl,-static" \
 CPPFLAGS="-I/tools/include" \
 ./configure \
  --prefix=/tools \
- --libdir=/tools/library
+ --libdir=/tools/lib
 
 make $jobs
 make install

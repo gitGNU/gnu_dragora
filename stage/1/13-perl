@@ -19,13 +19,13 @@ patch -Np0 -i ${PATCHDIR}/perl-linux-static.sh
  -Uuseshrplib \
  -Uusedl \
  -Dprefix=/tools \
- -Dprivlib=/tools/library/perl5 \
- -Dsitelib=/tools/library/perl5/site_perl \
+ -Dprivlib=/tools/lib/perl5 \
+ -Dsitelib=/tools/lib/perl5/site_perl \
  -Accflags="-D_GNU_SOURCE -D_BSD_SOURCE -I/tools/include" \
  -A ldflags="-static"
 
 make $jobs
 
 cp perl cpan/podlators/pod2man /tools/bin
-mkdir -p /tools/library/perl5 && cp -R lib/* /tools/library/perl5
+mkdir -p /tools/lib/perl5 && cp -R lib/* /tools/lib/perl5
 

@@ -24,8 +24,8 @@ AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
 ../binutils-${version}/configure LDFLAGS="--static" \
  --prefix=/tools \
- --libdir=/tools/library \
- --with-lib-path=/tools/library \
+ --libdir=/tools/lib \
+ --with-lib-path=/tools/lib \
  --disable-shared \
  --disable-werror \
  --disable-nls \
@@ -36,6 +36,6 @@ make $jobs && make install
 
 # Re-adjust the linker for the final system
 make -C ld clean
-make -C ld LIB_PATH=/library
+make -C ld LIB_PATH=/lib
 cp -f ld/ld-new /tools/bin
 

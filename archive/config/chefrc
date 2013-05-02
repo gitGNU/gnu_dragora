@@ -26,12 +26,12 @@
 # Syntax: <name> = <value>
 
 	configure_args = --prefix='' \
-                         --libdir=/library \
-                         --libexecdir=/library \
-                         --bindir=/executable \
-                         --sbindir=/executable \
-                         --sysconfdir=/config \
+                         --libdir=/lib \
+                         --libexecdir=/lib \
+                         --bindir=/bin \
+                         --sbindir=/sbin \
+                         --sysconfdir=/etc \
                          --includedir=/include \
-                         --localstatedir=/variable \
-                         --mandir=/documents/man \
-                         --infodir=/documents/info
+                         --localstatedir=/var \
+                         --mandir=/share/man \
+                         --infodir=/share/info
