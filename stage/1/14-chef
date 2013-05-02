@@ -13,11 +13,10 @@ tar xf ${SRCDIR}/chef-${version}.tar.?z* -C $TMPDIR
 cd ${TMPDIR}/chef-${version}
 
 ./configure CXXFLAGS="$CXXFLAGS -static" CPPFLAGS="-I/tools/include" \
- --prefix=/tools \
- --sysconfdir=/tools/config
+ --prefix=/tools
 
 make $jobs
 make install
 
-cat ${ARCHIVE}/config/chefrc > /tools/config/chefrc
+cat ${ARCHIVE}/chef/etc/chefrc > /tools/etc/chefrc
 

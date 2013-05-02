@@ -29,9 +29,9 @@ make -j${jobs}
 make install DESTDIR=$destdir
 
 # To compatibility with flex's predecessor, lex
-if [ -f ${archive}/executable/lex ]; then \
-  install -m 755 ${archive}/executable/lex ${destdir}/executable && \
-  ln -s libfl.a ${destdir}/library/libl.a ; \
+if [ -f ${archive}/flex/bin/lex ]; then \
+  install -m 755 ${archive}/flex/bin/lex ${destdir}/bin && \
+  ln -s libfl.a ${destdir}/lib/libl.a ; \
 fi
 
 # Compress info documents (if needed)
