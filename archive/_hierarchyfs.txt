@@ -2,6 +2,8 @@
 |-- bin/
 |-- boot/
 |-- dev/
+|   |-- pts/
+|   `-- shm/
 |-- etc/
 |-- home/
 |-- include/
@@ -97,4 +99,4 @@
     |-- spool/
     `-- tmp -> ../tmp/
 
-95 directories, 2 files
+97 directories, 2 files
