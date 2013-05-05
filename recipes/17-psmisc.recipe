@@ -10,13 +10,11 @@ version = 22.20
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
-patchdir = /storage/dragora/patches
 jobs = 1
 
 docs = AUTHORS COPYING NEWS README
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -29,10 +27,10 @@ CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 make -j${jobs}
 make install DESTDIR=$destdir
 
-gzip -9 ${destdir}/documents/man/man1/* ;	# Compress manual pages
+gzip -9 ${destdir}/share/man/man1/* ;	# Compress manual pages
 
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

@@ -10,37 +10,36 @@ version = 1.22.2
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 
 docs = BUG-REPORT COPYING ChangeLog FDL LICENSES NEWS PROBLEMS PROJECTS README TODO
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
 
 CFLAGS="$flags" CXXFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
- --docdir=/documents/${program}-${version} \
+ --docdir=/share/doc/${program}-${version} \
  --without-x
 
 make
 make install DESTDIR=$destdir
 
 # Compatibility symlinks for xman(1)
-ln -sf eqn     ${destdir}/executable/geqn
-ln -sf tbl     ${destdir}/executable/gtbl
-ln -sf soelim  ${destdir}/executable/zsoelim
+ln -sf eqn     ${destdir}/bin/geqn
+ln -sf tbl     ${destdir}/bin/gtbl
+ln -sf soelim  ${destdir}/bin/zsoelim
 
 # Compress info documents (if needed)
-if [ -d ${destdir}/documents/info ] ; then \
-  rm -f ${destdir}/documents/info/dir && \
-  gzip -9 ${destdir}/documents/info/* ; \
+if [ -d ${destdir}/share/info ] ; then \
+  rm -f ${destdir}/share/info/dir && \
+  gzip -9 ${destdir}/share/info/* ; \
 fi
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -52,5 +51,5 @@ fi
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

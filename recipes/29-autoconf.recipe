@@ -10,12 +10,11 @@ version = 2.69
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 jobs = 1
 
 docs = AUTHORS BUGS COPYING* ChangeLog NEWS README TODO THANKS
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -26,14 +25,14 @@ make -j${jobs}
 make install DESTDIR=$destdir
 
 # Compress info documents (if needed)
-if [ -d ${destdir}/documents/info ] ; then \
-  rm -f ${destdir}/documents/info/dir && \
-  gzip -9 ${destdir}/documents/info/* ; \
+if [ -d ${destdir}/share/info ] ; then \
+  rm -f ${destdir}/share/info/dir && \
+  gzip -9 ${destdir}/share/info/* ; \
 fi
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -45,5 +44,5 @@ fi
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

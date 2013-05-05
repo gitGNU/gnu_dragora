@@ -10,12 +10,11 @@ version = 13
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 jobs = 1
 
 docs = COPYING NEWS README TODO
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -33,18 +32,18 @@ make install DESTDIR=$destdir
 
 # Make symlinks in one place (compatibility with module-init-tools)
 for target in depmod insmod modinfo modprobe rmmod lsmod ; do \
-  ln -sf kmod ${destdir}/executable/$$target ; \
+  ln -sf kmod ${destdir}/bin/$$target ; \
 done
 
 # Compress info documents (if needed)
-if [ -d ${destdir}/documents/info ] ; then \
-  rm -f ${destdir}/documents/info/dir && \
-  gzip -9 ${destdir}/documents/info/* ; \
+if [ -d ${destdir}/share/info ] ; then \
+  rm -f ${destdir}/share/info/dir && \
+  gzip -9 ${destdir}/share/info/* ; \
 fi
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -56,5 +55,5 @@ fi
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

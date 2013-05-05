@@ -10,12 +10,11 @@ version = 4.2.2
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 jobs = 1
 
 docs = AUTHORS BUGS COPYING ChangeLog NEWS README THANKS
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -26,12 +25,12 @@ CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 make -j${jobs}
 make install DESTDIR=$destdir
 
-rm -f ${destdir}/documents/info/dir ;		# Redundancy
-gzip -9 ${destdir}/documents/info/* ;		# Compress .info documents
-gzip -9 ${destdir}/documents/man/man1/sed.1 ;	# Compress manual page
+rm -f ${destdir}/share/info/dir ;		# Redundancy
+gzip -9 ${destdir}/share/info/* ;		# Compress .info documents
+gzip -9 ${destdir}/share/man/man1/sed.1 ;	# Compress manual page
 
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

@@ -10,13 +10,11 @@ version = 5.16.3
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
-patchdir = /storage/dragora/patches
 jobs = 1
 
 docs = AUTHORS Artistic Changes Copying README README.linux
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -48,20 +46,20 @@ sed -i \
  -A ldflags="-static" \
  -Doptimize="$flags" \
  -Dprefix='' \
- -Dbin=/executable \
- -Dprivlib=/library/perl5 \
- -Darchlib=/library/perl5 \
- -Dsitelib=/library/perl5/site_perl \
- -Dsitearch=/library/perl5/site_perl \
- -Dman1dir=/documents/man/man1 \
- -Dman3dir=/documents/man/man3 \
- -Dpager=/executable/less
+ -Dbin=/bin \
+ -Dprivlib=/lib/perl5 \
+ -Darchlib=/lib/perl5 \
+ -Dsitelib=/lib/perl5/site_perl \
+ -Dsitearch=/lib/perl5/site_perl \
+ -Dman1dir=/share/man/man1 \
+ -Dman3dir=/share/man/man3 \
+ -Dpager=/bin/less
 
 make -j${jobs}
 make install DESTDIR=$destdir
 
 # Replace hard links
-( cd ${destdir}/executable && \
+( cd ${destdir}/bin && \
   mv perl perl${version} && \
   ln -sf perl${version} perl ; \
   ln -sf c2ph pstruct ; \
@@ -69,14 +67,14 @@ make install DESTDIR=$destdir
 )
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -name '*.?' -exec gzip -9 {} \; ; \
   ) ; \
 fi
 
 # Replace hard links on manual pages
-( cd ${destdir}/documents//man/man1 && \
+( cd ${destdir}/share/man/man1 && \
   ln -sf c2ph.1.gz pstruct.1.gz ; \
   ln -sf s2p.1.gz psed.1.gz ; \
 )
@@ -84,5 +82,5 @@ fi
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

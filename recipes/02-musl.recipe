@@ -10,19 +10,18 @@ version = 0.9.10
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 jobs = 1
 
 [build]
 cd $srcdir
 
-./configure $configure_args --syslibdir=/library
+./configure $configure_args --syslibdir=/lib
 
 make -j${jobs}
 make install
 
 # To print shared library dependencies
-ln -sf /library/libc.so /executable/ldd
+ln -sf /lib/libc.so /bin/ldd
 
 # Adjust the toolchain (if necessary)
 if [ -x /tools/bin/adjust-toolchain ]; then \

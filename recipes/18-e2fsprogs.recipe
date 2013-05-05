@@ -10,12 +10,11 @@ version = 1.42.7
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 jobs = 1
 
 docs = COPYING README RELEASE-NOTES 
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -37,8 +36,8 @@ make install DESTDIR=$destdir
 make install-libs DESTDIR=$destdir
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -50,5 +49,5 @@ fi
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

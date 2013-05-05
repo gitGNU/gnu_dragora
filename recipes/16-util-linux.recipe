@@ -10,14 +10,11 @@ version = 2.22.2
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
-archive = /storage/dragora/archive
-patchdir = /storage/dragora/patches
 jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS README*
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -43,7 +40,7 @@ sed -i 's@etc/adjtime@config/adjtime@g' $$(grep -rl '/etc/adjtime' .)
 CFLAGS="$flags -Dversionsort=alphasort -D__GNU_LIBRARY__=5 -DMAXNAMLEN=255" \
 LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
- --enable-fs-paths-default="/executable" \
+ --enable-fs-paths-default=/bin \
  --enable-libuuid \
  --enable-libblkid \
  --enable-libmount \
@@ -63,17 +60,16 @@ LDFLAGS="-Wl,-static" \
  --enable-write
 
 make -j${jobs} V=1
-make install \
- usrbin_execdir=/executable \
- usrsbin_execdir=/executable \
- DESTDIR=$destdir
+make install usrbin_execdir=/bin \
+             usrsbin_execdir=/sbin \
+             DESTDIR=$destdir
 
 # Create empty directory for uuidd
-mkdir -p ${destdir}/variable/uuidd
+mkdir -p ${destdir}/var/uuidd
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -85,5 +81,5 @@ fi
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

@@ -10,12 +10,11 @@ version = 5.14
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 jobs = 1
 
 docs = AUTHORS COPYING ChangeLog MAINT NEWS README
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -23,7 +22,6 @@ cd $srcdir
 CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
 LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
- --datadir=/config \
  --disable-shared \
  --enable-fsect-man5
 
@@ -31,8 +29,8 @@ make -j${jobs} V=1
 make install DESTDIR=$destdir
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -45,5 +43,5 @@ fi
 mkdir -p $docdir
 cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

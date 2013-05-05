@@ -10,37 +10,34 @@ version = 1.0.6
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
-patchdir = /storage/dragora/patches
 
 docs = CHANGES LICENSE README manual.html
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
-patch -Np0 -i ${patchdir}/bzip2-paths
 
 make LDFLAGS="-Wl,-static"
 make install PREFIX=$destdir
 
-install -D -m 755 bzip2 ${destdir}/executable/bzip2
+install -D -m 755 bzip2 ${destdir}/bin/bzip2
 
 # Replace hard links
-( cd ${destdir}/executable && \
+( cd ${destdir}/bin && \
   rm -f bunzip2 bzcat ; \
   ln -s bzip2 bunzip2 ; \
   ln -s bzip2 bzcat ; \
 )
 
 # Compress and link manual pages
-gzip -9 ${destdir}/documents/man/man?/*
-( cd ${destdir}/documents/man/man1 && \
+gzip -9 ${destdir}/share/man?/*
+( cd ${destdir}/share/man/man1 && \
   ln -sf bzip2.1.gz bzcat.1.gz ; \
   ln -sf bzip2.1.gz bzip2recover.1.gz ; \
 )
 # Replace hard links
-( cd ${destdir}/documents/man/man1 && \
+( cd ${destdir}/share/man/man1 && \
   ln -sf bzmore.1.gz bzless.1.gz ; \
   ln -sf bzgrep.1.gz bzegrep.1.gz ; \
   ln -sf bzgrep.1.gz bzfgrep.1.gz ; \
@@ -50,5 +47,5 @@ gzip -9 ${destdir}/documents/man/man?/*
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

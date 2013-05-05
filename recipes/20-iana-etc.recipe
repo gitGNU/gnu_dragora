@@ -10,21 +10,20 @@ version = 2.30
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
 
 docs = COPYING CREDITS NEWS README VERSION
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
 
 make
-mkdir -p ${destdir}/config
-cp protocols services ${destdir}/config
+mkdir -p ${destdir}/etc
+cp protocols services ${destdir}/etc
 
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

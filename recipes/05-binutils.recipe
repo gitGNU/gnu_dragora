@@ -10,13 +10,11 @@ version = 2.23.2
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
-patchdir = /storage/dragora/patches
 jobs = 1
 
 docs = COPYING* README
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 machine_type = $$(gcc -dumpmachine)
 
@@ -38,7 +36,7 @@ cd ../binutils-build
 CFLAGS="$flags -D_GNU_SOURCE" \
 ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
  --with-docdir=/documents/${program}-${version} \
- --with-lib-path=/library \
+ --with-lib-path=/lib \
  --disable-shared \
  --disable-multilib \
  --disable-werror \
@@ -50,8 +48,8 @@ make tooldir=/${machine_type} install DESTDIR=$destdir
 
 if [ -d ${destdir}/lib64 ]; then \
   ( cd $destdir ; \
-    mkdir -p library ; \
-    mv lib64/* library/ ; \
+    mkdir -p lib ; \
+    mv lib64/* lib/ ; \
     rmdir lib64 || : ; \
   ) ; \
 fi
@@ -61,26 +59,26 @@ mkdir -p ${destdir}/include && \
 cp -p ../binutils-${version}/include/libiberty.h ${destdir}/include
 
 # Replace hard-links
-( cd ${destdir}/executable && \
+( cd ${destdir}/bin && \
   rm -f ld ; ln -sf ld.bfd ld ; \
 )
 ( cd ${destdir}/${machine_type}/bin && \
   for file in * ; do \
-    if [ -x ../../executable/$$file ]; then \
-      rm -f $$file && ln -s ../../executable/$$file . ; \
+    if [ -x ../../bin/$$file ]; then \
+      rm -f $$file && ln -s ../../bin/$$file . ; \
     fi ; \
   done ; \
 )
 
 # Compress info documents (if needed)
-if [ -d ${destdir}/documents/info ] ; then \
-  rm -f ${destdir}/documents/info/dir && \
-  gzip -9 ${destdir}/documents/info/* ; \
+if [ -d ${destdir}/share/info ] ; then \
+  rm -f ${destdir}/share/info/dir && \
+  gzip -9 ${destdir}/share/info/* ; \
 fi
 
 # Compress and link manual pages (if needed)
-if [ -d ${destdir}/documents/man ] ; then \
-  ( cd ${destdir}/documents/man && \
+if [ -d ${destdir}/share/man ] ; then \
+  ( cd ${destdir}/share/man && \
     find . -type f -exec gzip -9 {} \; && \
     find . -type l | while read file ; do \
       ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -98,5 +96,5 @@ fi
 # Delete temporary build directory
 #cd $tmpdir && rm -rf binutils-build
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

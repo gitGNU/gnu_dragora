@@ -10,13 +10,11 @@ version = 0.1-pre19
 release = 1
 
 tarname = ${program}-${version}.tar.lz
-tardir = /storage/dragora/sources
-archive = /storage/dragora/archive
 jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS README
-destdir = /package/${program}-${version}
-docdir = ${destdir}/documents/${program}-${version}
+destdir = /pkg/${program}-${version}
+docdir = ${destdir}/share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -27,15 +25,14 @@ make -j${jobs}
 make install DESTDIR=$destdir
 
 # Add our custom config
-mkdir -p ${destdir}/config
-cat ${archive}/config/chefrc > ${destdir}/config/chefrc
+install -D -m 644 ${archive}/chef/etc/chefrc ${destdir}/etc/chefrc
 
-rm -f ${destdir}/documents/info/dir ;		# Redundancy
-gzip -9 ${destdir}/documents/info/chef.info ;	# Compress .info documents
-gzip -9 ${destdir}/documents/man/man1/chef.1 ;	# Compress manual page
+rm -f ${destdir}/share/info/dir ;		# Redundancy
+gzip -9 ${destdir}/share/info/chef.info ;	# Compress .info documents
+gzip -9 ${destdir}/share/man/man1/chef.1 ;	# Compress manual page
 
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 

@@ -10,10 +10,8 @@ version = 3.4.39
 release = 1
 
 tarname = ${program}-libre-${version}-gnu.tar.lz
-tardir = /storage/dragora/sources
-patchdir = /storage/dragora/patches
 
-destdir = /package/${program}-headers-${version}
+destdir = /pkg/${program}-headers-${version}
 
 [build]
 cd $srcdir
@@ -24,5 +22,5 @@ make mrproper
 make headers_check
 make INSTALL_HDR_PATH=$destdir headers_install
 
-reclinker -rf /package/${program}-headers-${version} /
+reclinker -rf /pkg/${program}-headers-${version} /
 
