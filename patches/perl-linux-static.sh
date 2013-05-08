@@ -1,5 +1,5 @@
---- hints/linux.sh.orig	2012-10-11 15:20:45.000000000 -0300
-+++ hints/linux.sh	2012-11-24 09:38:49.000000000 -0300
+--- hints/linux.sh.orig	2013-03-04 12:16:22.000000000 -0300
++++ hints/linux.sh	2013-05-08 11:28:30.000000000 -0300
 @@ -66,10 +66,7 @@
  # We don't use __GLIBC__ and  __GLIBC_MINOR__ because they
  # are insufficiently precise to distinguish things like
@@ -8,7 +8,7 @@
 -    libc=`ls -l /lib/libc.so.6 | awk '{print $NF}'`
 -    libc=/lib/$libc
 -fi
-+libc=${prefix}/library/libc.a
++libc=${prefix}/lib/libc.a
  
  # Configure may fail to find lstat() since it's a static/inline
  # function in <sys/stat.h>.
@@ -32,5 +32,5 @@
 +
 +locincpth=""
 +loclibpth=""
-+glibpth="${prefix}/library"
++glibpth="${prefix}/lib"
 +usrinc="${prefix}/include"
