@@ -18,6 +18,8 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
+patch -Np0 -i ${patchdir}/bzip2-mandir
+
 make LDFLAGS="-Wl,-static"
 make install PREFIX=$destdir
 
@@ -31,7 +33,7 @@ install -D -m 755 bzip2 ${destdir}/bin/bzip2
 )
 
 # Compress and link manual pages
-gzip -9 ${destdir}/share/man?/*
+gzip -9 ${destdir}/share/man/man?/*
 ( cd ${destdir}/share/man/man1 && \
   ln -sf bzip2.1.gz bzcat.1.gz ; \
   ln -sf bzip2.1.gz bzip2recover.1.gz ; \
