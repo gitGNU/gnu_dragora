@@ -20,3 +20,6 @@ CPPFLAGS="-I/tools/include" \
 make $jobs
 make install
 
+# Add symlink compatibility
+ln -sf /tools/bin/make /tools/bin/gmake
+

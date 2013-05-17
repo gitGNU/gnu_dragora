@@ -25,6 +25,9 @@ CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 make -j${jobs}
 make install DESTDIR=$destdir
 
+# Symlink compatibility
+ln -sf ${destdir}/bin/make ${destdir}/bin/gmake
+
 # Compress info documents (if needed)
 if [ -d ${destdir}/share/info ] ; then \
   rm -f ${destdir}/share/info/dir && \
