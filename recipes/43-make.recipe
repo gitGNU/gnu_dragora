@@ -26,7 +26,7 @@ make -j${jobs}
 make install DESTDIR=$destdir
 
 # Symlink compatibility
-ln -sf ${destdir}/bin/make ${destdir}/bin/gmake
+ln -sf make ${destdir}/bin/gmake
 
 # Compress info documents (if needed)
 if [ -d ${destdir}/share/info ] ; then \
