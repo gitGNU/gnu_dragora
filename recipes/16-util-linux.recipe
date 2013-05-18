@@ -20,19 +20,19 @@ docdir = ${destdir}/share/doc/${program}-${version}
 cd $srcdir
 
 # Don't build cpuset, has specific code for Glibc
-patch -Np0 -i ${patchdir}/util-linux-no_cpuset
+patch -Np0 -i ${patchdir}/util-linux/util-linux-no_cpuset
 
 # The minix support is giving errors with Musl
-patch -Np0 -i ${patchdir}/util-linux-no_minix
+patch -Np0 -i ${patchdir}/util-linux/util-linux-no_minix
 
 # To work with agetty and blkid
 cat ${archive}/util-linux/include/ttydefaults.h > include/ttydefaults.h
-patch -Np0 -i ${patchdir}/util-linux-ttyutils.h
+patch -Np0 -i ${patchdir}/util-linux/util-linux-ttyutils.h
 
 # More patches in order to work with Musl
-patch -Np0 -i ${patchdir}/util-linux-cfdisk_sighandler
-patch -Np0 -i ${patchdir}/util-linux-display.c
-patch -Np0 -i ${patchdir}/util-linux-pg.c
+patch -Np0 -i ${patchdir}/util-linux/util-linux-cfdisk_sighandler
+patch -Np0 -i ${patchdir}/util-linux/util-linux-display.c
+patch -Np0 -i ${patchdir}/util-linux/util-linux-pg.c
 
 # Change the path location for adjtime
 sed -i 's@etc/adjtime@config/adjtime@g' $$(grep -rl '/etc/adjtime' .)

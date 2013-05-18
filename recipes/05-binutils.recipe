@@ -22,7 +22,7 @@ machine_type = $$(gcc -dumpmachine)
 cd $srcdir
 
 # Do not fail if "makeinfo" is not available
-patch -Np1 -i ${patchdir}/binutils-makeinfo_nofails
+patch -Np1 -i ${patchdir}/binutils/binutils-makeinfo_nofails
 
 # Suppress the installation of the outdated standards.info file,
 # the newer one is provided by autoconf

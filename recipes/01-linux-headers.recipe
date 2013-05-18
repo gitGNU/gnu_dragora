@@ -16,7 +16,10 @@ destdir = /pkg/${program}-headers-${version}
 [build]
 cd $srcdir
 
-#patch -Np0 -i ${patchdir}/linux-headers-vmlinux.sh
+# Uncomment this line to patch a non-POSIX signal
+# used in the script vmlinux.sh (only valid in
+# some kernel versions)
+#patch -Np0 -i ${patchdir}/linux/linux-headers-vmlinux.sh
 
 make mrproper
 make headers_check

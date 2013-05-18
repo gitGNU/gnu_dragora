@@ -21,9 +21,9 @@ machine_type = $$(gcc -dumpmachine)
 [build]
 cd $srcdir
 
-patch -Np0 -i ${patchdir}/gcc-4.7.2-tls
-patch -Np0 -i ${patchdir}/gcc-nofixincludes
-patch -Np0 -i ${patchdir}/gcc-libiberty
+patch -Np0 -i ${patchdir}/gcc/gcc-4.7.2-tls
+patch -Np0 -i ${patchdir}/gcc/gcc-nofixincludes
+patch -Np0 -i ${patchdir}/gcc/gcc-libiberty
 
 # x86
 for file in \

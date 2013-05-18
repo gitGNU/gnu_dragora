@@ -12,8 +12,8 @@ tar xf ${SRCDIR}/perl-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/perl-${version}
 
-patch -Np0 -i ${PATCHDIR}/perl-fnostack-protector
-patch -Np0 -i ${PATCHDIR}/perl-linux-static.sh
+patch -Np0 -i ${PATCHDIR}/perl/perl-fnostack-protector
+patch -Np0 -i ${PATCHDIR}/perl/perl-linux-static.sh
 
 ./Configure -des \
  -Uuseshrplib \

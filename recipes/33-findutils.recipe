@@ -20,7 +20,7 @@ docdir = ${destdir}/share/doc/${program}-${version}
 cd $srcdir
 
 # http://www.openwall.com/lists/musl/2013/02/22/1
-patch -Np0 -i ${patchdir}/findutils-O_SEARCH
+patch -Np0 -i ${patchdir}/findutils/findutils-O_SEARCH
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args --disable-nls gl_cv_func_working_mktime=yes

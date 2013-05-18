@@ -12,7 +12,10 @@ tar xf ${SRCDIR}/linux-libre-${version}-gnu.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/linux-${version}
 
-#patch -Np0 -i ${PATCHDIR}/linux-headers-vmlinux.sh
+# Uncomment this line to patch a non-POSIX signal
+# used in the script vmlinux.sh (only valid in
+# some kernel versions)
+#patch -Np0 -i ${PATCHDIR}/linux/linux-headers-vmlinux.sh
 
 make mrproper
 make headers_check

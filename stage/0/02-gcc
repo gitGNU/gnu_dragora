@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/gcc-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/gcc-${version}
 
-patch -Np0 -i ${PATCHDIR}/gcc-nofixincludes
+patch -Np0 -i ${PATCHDIR}/gcc/gcc-nofixincludes
 
 # x86
 for file in \

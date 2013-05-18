@@ -12,8 +12,8 @@ tar xf ${SRCDIR}/gcc-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/gcc-${version}
 
-patch -Np0 -i ${PATCHDIR}/gcc-4.7.2-tls
-patch -Np0 -i ${PATCHDIR}/gcc-nofixincludes
+patch -Np0 -i ${PATCHDIR}/gcc/gcc-4.7.2-tls
+patch -Np0 -i ${PATCHDIR}/gcc/gcc-nofixincludes
 
 # x86
 for file in \
@@ -79,7 +79,7 @@ done
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h \
  > $(dirname $(${TARGET}-gcc -print-libgcc-file-name))/include-fixed/limits.h
 
-patch -Np0 -i ${PATCHDIR}/gcc-fomit-frame-pointer
+patch -Np0 -i ${PATCHDIR}/gcc/gcc-fomit-frame-pointer
 
 # Do not build the .info files. They are not needed here         
 sed -i 's/BUILD_INFO=info/BUILD_INFO=/' gcc/configure

@@ -23,7 +23,7 @@ cd $srcdir
 # These options produce compilation errors.
 
 # Without a specific identifier used in Glibc
-patch -Np0 -i ${patchdir}/inetutils-WTMP_FILE
+patch -Np0 -i ${patchdir}/inetutils/inetutils-WTMP_FILE
 
 CFLAGS="$flags" \
 LDFLAGS="-Wl,-static" \

@@ -20,13 +20,13 @@ docdir = ${destdir}/share/doc/${program}-${version}
 cd $srcdir
 
 # Look for the static libc
-patch -Np0 -i ${patchdir}/perl-linux-static.sh
+patch -Np0 -i ${patchdir}/perl/perl-linux-static.sh
 
 # Don't use -fstack-protector
-patch -Np0 -i ${patchdir}/perl-fnostack-protector
+patch -Np0 -i ${patchdir}/perl/perl-fnostack-protector
 
 # less of busybox doesn't support the '-R' option
-patch -Np0 -i ${patchdir}/perl-less_nooption
+patch -Np0 -i ${patchdir}/perl/perl-less_nooption
 
 # Don't use the internal copy of the zlib
 sed -i \

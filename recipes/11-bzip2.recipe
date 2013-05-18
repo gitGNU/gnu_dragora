@@ -18,7 +18,7 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-patch -Np0 -i ${patchdir}/bzip2-mandir
+patch -Np0 -i ${patchdir}/bzip2/bzip2-mandir
 
 make LDFLAGS="-Wl,-static"
 make install PREFIX=$destdir

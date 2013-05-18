@@ -19,7 +19,7 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-patch -Np0 -i ${patchdir}/psmisc-pstree.c
+patch -Np0 -i ${patchdir}/psmisc/psmisc-pstree.c
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args
