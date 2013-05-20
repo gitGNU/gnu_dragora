@@ -20,17 +20,20 @@ docdir = ${destdir}/share/doc/${program}-${version}
 cd $srcdir
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args --disable-shared --disable-nls
+./configure $configure_args \
+ --enable-static \
+ --disable-shared \
+ --disable-nls \
+ --without-libintl-prefix \
+ --without-libsigsegv-prefix
 
 make -j${jobs}
 make install DESTDIR=$destdir
 
-# Replace hard links with soft links
+# Replace hard link with soft link
 ( cd ${destdir}/bin && \
   mv gawk gawk-${version} && \
   ln -sf gawk-${version} gawk ; \
-  mv pgawk pgawk-${version} && \
-  ln -sf pgawk-${version} pgawk ; \
 )
 
 # Compress info documents (if needed)
@@ -50,11 +53,8 @@ if [ -d ${destdir}/share/man ] ; then \
   ) ; \
 fi
 
-# Add some links
-( cd ${destdir}/share/man/man1 && \
-  ln -sf gawk.1.gz awk.1.gz ; \
-  ln -sf gawk.1.gz pgawk.1.gz ; \
-)
+# To compatibility
+ln -sf gawk.1.gz ${destdir}/share/man/man1/awk.1.gz
 
 # Copy the documentation
 mkdir -p $docdir && cp -a $docs $docdir

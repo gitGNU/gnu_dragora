@@ -17,8 +17,11 @@ CPPFLAGS="-I/tools/include" \
 ./configure \
  --prefix=/tools \
  --libexecdir=/tools/lib \
+ --enable-static \
  --disable-shared \
- --disable-nls
+ --disable-nls \
+ --without-libintl-prefix \
+ --without-libsigsegv-prefix
 
 make $jobs
 make install
