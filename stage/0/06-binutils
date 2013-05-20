@@ -13,7 +13,7 @@ tar xf ${SRCDIR}/binutils-${version}.tar.?z* -C $TMPDIR
 cd ${TMPDIR}/binutils-${version}
 
 # Do not fail if "makeinfo" is not available
-patch -Np1 -i ${PATCHDIR}/binutils-makeinfo_nofails
+patch -Np1 -i ${PATCHDIR}/binutils/binutils-makeinfo_nofails
 
 rm -rf ../binutils-build
 mkdir ../binutils-build
