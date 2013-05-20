@@ -12,7 +12,7 @@ release = 1
 tarname = ${program}-${version}.tar.lz
 jobs = 1
 
-docs = AUTHORS COPYING ChangeLog FUTURES LIMITATIONS NEWS POSIX.STD PROBLEMS README
+docs = AUTHORS COPYING ChangeLog NEWS POSIX.STD README TODO
 destdir = /pkg/${program}-${version}
 docdir = ${destdir}/share/doc/${program}-${version}
 
@@ -20,7 +20,7 @@ docdir = ${destdir}/share/doc/${program}-${version}
 cd $srcdir
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args --disable-nls
+./configure $configure_args --disable-shared --disable-nls
 
 make -j${jobs}
 make install DESTDIR=$destdir

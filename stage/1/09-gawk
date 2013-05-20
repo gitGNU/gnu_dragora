@@ -17,6 +17,7 @@ CPPFLAGS="-I/tools/include" \
 ./configure \
  --prefix=/tools \
  --libexecdir=/tools/lib \
+ --disable-shared \
  --disable-nls
 
 make $jobs
