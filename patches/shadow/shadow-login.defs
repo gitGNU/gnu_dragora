@@ -1,0 +1,49 @@
+--- etc/login.defs.orig	2010-03-30 18:22:16.000000000 -0300
++++ etc/login.defs	2013-05-28 09:57:36.000000000 -0300
+@@ -9,7 +9,7 @@
+ # Note: When PAM is used, some modules may enfore a minimal delay (e.g.
+ #       pam_unix enforces a 2s delay)
+ #
+-FAIL_DELAY		3
++FAIL_DELAY		2
+ 
+ #
+ # Enable logging and display of /var/log/faillog login failure info.
+@@ -24,7 +24,7 @@
+ #
+ # Enable logging of successful logins
+ #
+-LOG_OK_LOGINS		no
++LOG_OK_LOGINS		yes
+ 
+ #
+ # Enable logging and display of /var/log/lastlog login time info.
+@@ -118,7 +118,7 @@
+ #   Directory where mailboxes reside, _or_ name of file, relative to the
+ #   home directory.  If you _do_ define both, MAIL_DIR takes precedence.
+ #
+-MAIL_DIR	/var/spool/mail
++MAIL_DIR	/var/mail
+ #MAIL_FILE	.mail
+ 
+ #
+@@ -149,8 +149,8 @@
+ # *REQUIRED*  The default PATH settings, for superuser and normal users.
+ #
+ # (they are minimal, add the rest in the shell startup files)
+-ENV_SUPATH	PATH=/sbin:/bin:/usr/sbin:/usr/bin
+-ENV_PATH	PATH=/bin:/usr/bin
++ENV_SUPATH	PATH=/local/sbin:/local/bin:/sbin:/bin
++ENV_PATH	PATH=/local/bin:/bin
+ 
+ #
+ # Terminal permissions
+@@ -309,7 +309,7 @@
+ # Note: If you use PAM, it is recommended to use a value consistent with
+ # the PAM modules configuration.
+ #
+-#ENCRYPT_METHOD DES
++ENCRYPT_METHOD SHA512
+ 
+ #
+ # Only works if ENCRYPT_METHOD is set to SHA256 or SHA512.
