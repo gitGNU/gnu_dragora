@@ -5,6 +5,8 @@
 |   |-- pts/
 |   `-- shm/
 |-- etc/
+|   |-- group
+|   `-- passwd
 |-- home/
 |-- include/
 |-- lib/
@@ -99,4 +101,4 @@
     |-- spool/
     `-- tmp -> ../tmp/
 
-97 directories, 2 files
+97 directories, 4 files
