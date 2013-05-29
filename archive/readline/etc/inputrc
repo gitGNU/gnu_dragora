@@ -1,0 +1,64 @@
+# /etc/inputrc: Initialization file used by readline(3)
+#
+# This file controls the behaviour of line input editing for programs
+# that use the GNU Readline library. For more information, see the
+# manual page - section INITIALIZATION FILE
+#
+
+# Controls what happens when readline wants to ring the terminal bell
+#
+# Value: none, visible, audible
+#
+set bell-style visible
+
+# Enable the eight-bit input
+#
+# Value: on, off
+#
+set input-meta on
+
+# Allow iso-latin1 characters to be inserted
+# rather than converted to prefix-meta sequences
+#
+# Value: on, off
+#
+set convert-meta off
+
+# Display characters with the eighth bit set directly
+# rather than as meta-prefixed characters
+#
+# Value: on, off
+#
+set output-meta on
+
+# If there are more than X possible completions for
+# a word, ask the user if he wants to see all of them
+#
+# Value: <integer greater than or equal to zero>
+#
+set completion-query-items 130
+
+# Use a single line for display, scrolling the input
+# horizontally on a single screen line when it becomes
+# longer than the screen width
+#
+# Value: on, off
+#
+set horizontal-scroll-mode on
+
+# Linux console
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[5~": beginning-of-history
+"\e[6~": end-of-history
+"\e[3~": delete-char
+"\e[2~": quoted-insert
+
+# Xterm
+"\eOH": beginning-of-line
+"\eOF": end-of-line
+
+# Aterm / Eterm
+"\eOd": backward-word
+"\eOc": forward-word
+
