@@ -1,3 +1,3 @@
-#!/executable/sh
-exec /executable/flex -l "$@"
+#! /bin/sh
+exec /bin/flex -l "$@"
 
