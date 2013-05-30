@@ -1,0 +1,4 @@
+
+  Besides patches (differences), the "patches" directory contains
+configuration files, also known as .config, used by the recipes.
+
