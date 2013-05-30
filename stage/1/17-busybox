@@ -18,7 +18,7 @@ make mrproper
 # Patch to include lzip support
 patch -Np1 -i ${PATCHDIR}/busybox/busybox-1.20.2_lzip-1
 
-cat ${ARCHIVE}/busybox/busybox-config_stage1 > .config
+cat ${PATCHDIR}/busybox/busybox-config_stage1 > .config
 make oldconfig
 
 make $jobs V=1 HOSTCFLAGS="-D_GNU_SOURCE" busybox
