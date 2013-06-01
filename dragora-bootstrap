@@ -16,6 +16,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+LC_ALL=C
+export LC_ALL
+
 # Functions
 usage() {
   printf '%s\n' \
@@ -114,7 +117,7 @@ do
       exit
       ;;
     -V|--version)
-      echo "dragora-bootstrap 1.2"
+      echo "dragora-bootstrap 1.3"
       echo "Copyright (C) 2012-2013 Matias A. Fonzo."
       echo "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
@@ -157,7 +160,7 @@ if [ "$STAGE" = "0" ] || [ "$STAGE" = "1" ]; then
     for buildscript in ${STAGEDIR}/${STAGE}/??-* ; do
       if [ -f "$buildscript" ]; then
         echo "Building $buildscript ..."
-        LC_ALL=POSIX . $buildscript
+        . $buildscript
         clean_dir $buildscript
       fi
     done
@@ -167,7 +170,7 @@ if [ "$STAGE" = "0" ] || [ "$STAGE" = "1" ]; then
       exit 1
     fi
     echo "Building ${STAGEDIR}/${STAGE}/$FILE ..."
-    LC_ALL=POSIX . ${STAGEDIR}/${STAGE}/$FILE
+    . ${STAGEDIR}/${STAGE}/$FILE
     clean_dir $FILE
   fi
 

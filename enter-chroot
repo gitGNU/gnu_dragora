@@ -14,6 +14,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+LC_ALL=C
+export LC_ALL
+
 # Autodetermine the path of /tools
 if [ ! -L /tools ]; then
   echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
@@ -56,7 +59,7 @@ chroot $ROOT /tools/bin/env -i \
  TERM="$TERM" \
  PS1='\u:\w\$ ' \
  HOME=/root \
- LC_ALL=POSIX \
+ LC_ALL=C \
  /bin/sh --login
 
 _umount ${ROOT}/src/dragora/archive
