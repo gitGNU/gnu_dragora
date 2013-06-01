@@ -26,16 +26,20 @@ if [ -L /tools ] && [ ! -e /tools ]; then
   echo "/tools is a dangling symlink."
   exit 1
 fi
-ROOT=$(readlink /tools | sed -e 's/\/tools//' -e 's/^/\//')
+# Reads the link of /tools without including the last string "/tools"
+ROOT=$(readlink /tools | sed -e 's/\/tools//')
 
 # Functions
 _umount() {
   NODE="$1"
-  echo "Unmounting $NODE ..."
-  if ! umount $NODE ; then
-    echo "Forcing ..."
-    sleep 1
-    umount -f $NODE
+  if mount | grep -q "$NODE" ; then
+    echo "Unmounting $NODE ..."
+    umount $NODE
+    if [ $? -ne 0 ]; then
+      echo "Forcing ..."
+      sleep 1
+      umount -f $NODE
+    fi
   fi
 }
 
