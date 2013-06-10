@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = zutils
-version = 1.0-rc6
+version = 1.0
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -19,7 +19,7 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-./configure $configure_args CXX="g++ -static" CXXFLAGS="$flags"
+./configure $configure_args CXXFLAGS="$flags" LDFLAGS="-Wl,-static"
 
 make -j${jobs}
 make install DESTDIR=$destdir
