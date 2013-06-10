@@ -37,7 +37,6 @@ _umount() {
     umount $NODE
     if [ $? -ne 0 ]; then
       echo "Forcing ..."
-      sleep 1
       umount -f $NODE
     fi
   fi
