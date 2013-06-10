@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = gzip
-version = 1.5
+version = 1.6
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -19,7 +19,7 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-CC="gcc -static" CFLAGS="$flags" \
+CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args --program-transform-name='s/^z/gz/'
 
 make -j${jobs}
