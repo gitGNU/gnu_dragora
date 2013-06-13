@@ -2,6 +2,8 @@
 |-- bin/
 |-- boot/
 |-- dev/
+|   |-- console
+|   |-- null
 |   |-- pts/
 |   `-- shm/
 |-- etc/
@@ -101,4 +103,4 @@
     |-- spool/
     `-- tmp -> ../tmp/
 
-97 directories, 4 files
+97 directories, 6 files
