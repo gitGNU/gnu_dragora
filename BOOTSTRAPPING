@@ -1,0 +1,125 @@
+                             BOOTSTRAPPING
+                       Version 0.1, 13 June 2013
+
+
+Copyright (C)  2013  Matias A. Fonzo
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled "GNU
+Free Documentation License".
+
+
+  1. Introduction
+  2. Requirements
+  3. Temporary system
+  4. dragora-bootstrap
+  5. enter-chroot
+  6. Final system
+
+
+  1. Introduction.
+
+  The bootstrap process brings to you a flexible way to build the
+distribution from scratch and learn.  This file describes the
+procedure along with the corresponding instructions.
+
+  The main goal of this process is to separate ourselves from
+the host system; that is to say, the system that we're running.
+Mainly the C library or other libraries that could risk
+contaminating the new system that will get built.
+
+  There are two necessary phases: the first one, where the
+essential tools that define the "temporary system" are built.
+And the second one, where the "final system" gets built, using
+the tools from the temporary system.
+
+  2. Requirements.
+
+
+  3. Temporary system.
+
+  The temporary system has two stages, in the stage 0 the so
+called cross-compiler gets built. That is, the main toolchain,
+composed by binutils, gcc, kernel headers and the C library
+"musl".  In the stage 1, the tools for the temporary system
+are provided, compiled.
+
+  4. dragora-bootstrap.
+
+  dragora-bootstrap is the script to carry out the building of
+the temporary system, the stages 0 and 1.  It provides an
+automatic way to build the tools.  It is invoked like this:
+
+  ./dragora-bootstrap --root=<directory> --stage=<number>
+
+  <directory> is the directory where the building will take place
+and <number> is the stage that is going to be built (0 or 1).
+
+  By default <directory> is equivalent to `mkdir -p ${ROOT}/tools',
+where the built tools will be stored.  A symbolic link /tools is
+created with the purpose of avoiding additional lines and making
+the reading in the construction order easier.
+
+  To speed the process, the compiler can be sent parallel jobs
+using the -j flag.  It would be the number of processors +1.
+
+  If you want to test, build a specific file uses the -f flag,
+combined with the stage number.  Like --stage=<n> -f <filename>.
+
+  Attention: if the building process is interrupted and it were
+necessary to start all again, it would be required to manually
+delete the specified directory to build once again, since the
+script doesn't previously delete <directory>.
+
+  5. enter-chroot.
+
+  The enter-chroot script is used when the building of stages 0
+and 1 ends, to enter the temporary system.  This doesn't mean the
+script can be used to access the final system.  However, the tool
+determines the root of the symbolic link /tools, simple enter by
+typing:
+
+  ./enter-chroot
+
+  The purpose of enter-chroot is to prepare and mount various
+file systems to operate the chroot environment.  The virtual
+file systems that get mounted are:
+
+  Furthermore, the directories that contain the data of the
+distribution are made available in the environment.
+
+  6. Final system.
+
+  Once inside the temporary system we can begin building what
+will turn into the final system.  A tool called chef is used to
+process the recipes of the programs; these recipes, as well as
+patches and sources, are available in the directory /src/dragora.
+
+  To begin building the final system we are going to use chef,
+typing:
+
+  chef flags="" /src/dragora/recipes/*.recipe
+
+  This command starts the building of each recipe of the software
+that will make up the final system.
+
+  If you desire to send more than one job to the compiler,
+the chef flag jobs=<n> can be used.
+
+  If we want to use compilation flags, for instance using more
+than one job for the compiler, we type:
+
+  chef flags="-O2 -mtune=generic" jobs=3 /src/dragora/recipes/*.recipe
+
+  For more information about the options of chef, type `chef --help'.
+
+  In this instance, if we were successful, it will be possible to
+delete the /tools directory that is related to everything for the
+temporary system.
+
+  It is time to enjoy of our system!
+
+  The details of the final system are described in the DESIGN file.
+
