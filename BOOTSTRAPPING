@@ -1,5 +1,5 @@
                              BOOTSTRAPPING
-                       Version 0.1, 13 June 2013
+                       Version 0.2, 18 June 2013
 
 
 Copyright (C)  2013  Matias A. Fonzo
@@ -37,6 +37,13 @@ the tools from the temporary system.
 
   2. Requirements.
 
+  - Hard drive space: About 4GB.
+  - An OS distribution with compilation support.
+  - GCC 4 required.
+  - Git to clone the repository.
+  - The sources distributed by the project (recommended).
+  - Root access.
+  - Time and patience.
 
   3. Temporary system.
 
@@ -85,7 +92,8 @@ typing:
 
   The purpose of enter-chroot is to prepare and mount various
 file systems to operate the chroot environment.  The virtual
-file systems that get mounted are:
+file systems that get mounted are: devtmpfs, devpts, shm, proc,
+and sysfs.
 
   Furthermore, the directories that contain the data of the
 distribution are made available in the environment.
