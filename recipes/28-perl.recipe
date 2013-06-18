@@ -32,7 +32,7 @@ patch -Np0 -i ${patchdir}/perl/perl-less_nooption
 sed -i \
  -e "s|BUILD_ZLIB\s*= True|BUILD_ZLIB = False|" \
  -e "s|INCLUDE\s*= ./zlib-src|INCLUDE    = /include|" \
- -e "s|LIB\s*= ./zlib-src|LIB        = /library|" \
+ -e "s|LIB\s*= ./zlib-src|LIB        = /lib|" \
  cpan/Compress-Raw-Zlib/config.in
 
 ./Configure -des \
