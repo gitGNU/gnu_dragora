@@ -64,6 +64,10 @@ make install usrbin_execdir=/bin \
 # Create empty directory for uuidd
 mkdir -p ${destdir}/var/uuidd
 
+# Include the file on the package to work with
+# agetty, blkid and other programs
+cat ${archive}/util-linux/include/ttydefaults.h > ${destdir}/include/ttydefaults.h
+
 # Compress and link manual pages (if needed)
 if [ -d ${destdir}/share/man ] ; then \
   ( cd ${destdir}/share/man && \
