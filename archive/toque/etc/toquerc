@@ -1,23 +1,25 @@
 #
-#                 Runtime Configuration file for Chef
+#                 Runtime Configuration file for Toque
 #
-# Chef looks for this file in:
-#	1 - $HOME/.chefrc
-#	2 - ${sysconfdir}/chefrc
+# Toque looks for this file in:
+#	1 - $HOME/.toquerc
+#	2 - ${sysconfdir}/toquerc
 
 # FIRST SECTION: Default options
 # Uncomment each option you want set.
 # The command line options override those specified in this file.
 
-#	--keep                 keep (don't delete) srcdir
+#	--keep                  keep (don't delete) srcdir
 
-#	--quiet                suppress all messages
+#	--outdir=/tmp/packages  directory where packages are written
 
-#	--strip=sections       types of symbols to be stripped from object files
+#	--quiet                 suppress all messages
 
-#	--tmpdir=/tmp/sources  temporary directory for compilation
+#	--strip=sections        types of symbols to be stripped from object files
 
-#	--verbose              be verbose (a 2nd -v gives more)
+#	--tmpdir=/tmp/sources   temporary directory for compilation
+
+#	--verbose               be verbose (a 2nd -v gives more)
 
 
 # SECOND SECTION: Definitions of parameters.
@@ -41,4 +43,3 @@
 archive = /src/dragora/archive
 patchdir = /src/dragora/patches
 tardir = /src/dragora/sources
-
