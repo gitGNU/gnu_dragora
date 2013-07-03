@@ -13,7 +13,7 @@ tar xf ${SRCDIR}/toque-${version}.tar.?z* -C $TMPDIR
 cd ${TMPDIR}/toque-${version}
 
 ./configure \
- CXXFLAGS="$CXXFLAGS -static" CPPFLAGS="-I/tools/include" \
+ CXXFLAGS="$flags -static" CPPFLAGS="-I/tools/include" \
   --prefix=/tools
 
 make $jobs

@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/make-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/make-${version}
 
-CFLAGS="$CFLAGS -D_GNU_SOURCE" \
+CFLAGS="$flags -D_GNU_SOURCE" \
 LDFLAGS="-Wl,-static" \
 CPPFLAGS="-I/tools/include" \
 ./configure --prefix=/tools --disable-nls

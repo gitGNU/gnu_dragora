@@ -12,6 +12,6 @@ tar xf ${SRCDIR}/reclinker-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/reclinker-${version}
 
-sh make.sh CFLAGS="$CFLAGS -static" CPPFLAGS="-I/tools/include"
+sh make.sh CFLAGS="$flags -static" CPPFLAGS="-I/tools/include"
 install -m 755 reclinker /tools/bin
 
