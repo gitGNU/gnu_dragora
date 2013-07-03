@@ -1,6 +1,6 @@
 # Build recipe for psmisc.
 #
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012-2013 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -19,10 +19,10 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-patch -Np0 -i ${patchdir}/psmisc/psmisc-pstree.c
-
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args
+./configure $configure_args \
+ --disable-harden-flags \
+ --disable-nls
 
 make -j${jobs}
 make install DESTDIR=$destdir
