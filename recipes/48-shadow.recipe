@@ -25,7 +25,7 @@ patch -Np0 -i ${patchdir}/shadow/shadow-login.defs
 # ruserok(3) is missing from Musl
 patch -Np0 -i ${patchdir}/shadow/shadow-no_rlogin
 
-# Add missing headers in utmpc.c
+# Add missing headers in utmp.c
 patch -Np0 -i ${patchdir}/shadow/shadow-utmp.c
 
 # Disable the installation of the groups program and its man pages,
