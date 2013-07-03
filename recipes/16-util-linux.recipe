@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = util-linux
-version = 2.22.2
+version = 2.23.1
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -19,22 +19,13 @@ docdir = ${destdir}/share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-# Don't build cpuset, has specific code for Glibc
-patch -Np0 -i ${patchdir}/util-linux/util-linux-no_cpuset
-
-# The minix support is giving errors with Musl
-patch -Np0 -i ${patchdir}/util-linux/util-linux-no_minix
+# A set of patches in order to compile against Musl
+patch -Np1 -i ${patchdir}/util-linux/util-linux.patch
 
 # To work with agetty and blkid
 cat ${archive}/util-linux/include/ttydefaults.h > include/ttydefaults.h
-patch -Np0 -i ${patchdir}/util-linux/util-linux-ttyutils.h
 
-# More patches in order to work with Musl
-patch -Np0 -i ${patchdir}/util-linux/util-linux-cfdisk_sighandler
-patch -Np0 -i ${patchdir}/util-linux/util-linux-display.c
-patch -Np0 -i ${patchdir}/util-linux/util-linux-pg.c
-
-CFLAGS="$flags -Dversionsort=alphasort -D__GNU_LIBRARY__=5 -DMAXNAMLEN=255" \
+CFLAGS="$flags -D_GNU_SOURCE" \
 LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
  --enable-fs-paths-default=/bin \
@@ -52,9 +43,9 @@ LDFLAGS="-Wl,-static" \
  --disable-kill \
  --disable-eject \
  --disable-use-tty-group \
- --enable-arch \
  --enable-reset \
- --enable-write
+ --enable-write \
+ ac_have_cpu_set_t=no
 
 make -j${jobs} V=1
 make install usrbin_execdir=/bin \
