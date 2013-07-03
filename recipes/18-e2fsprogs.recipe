@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = e2fsprogs
-version = 1.42.7
+version = 1.42.8
 release = 1
 
 tarname = ${program}-${version}.tar.lz
