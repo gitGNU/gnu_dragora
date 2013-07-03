@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = less
-version = 451
+version = 458
 release = 1
 
 tarname = ${program}-${version}.tar.lz
