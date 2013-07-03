@@ -6,10 +6,10 @@
 # to copy, distribute and modify it.
 
 program = linux
-version = 3.4.39
+version = 3.4.51
 release = 1
 
-tarname = ${program}-libre-${version}-gnu.tar.lz
+tarname = ${program}-libre-${version}-gnu1.tar.lz
 
 destdir = /pkg/${program}-headers-${version}
 
