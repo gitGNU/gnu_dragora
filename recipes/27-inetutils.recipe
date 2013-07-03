@@ -22,9 +22,6 @@ cd $srcdir
 # Note on --disable-rcp, -disable-rlogin, --disable-rsh
 # These options produce compilation errors.
 
-# Without a specific identifier used in Glibc
-patch -Np0 -i ${patchdir}/inetutils/inetutils-WTMP_FILE
-
 CFLAGS="$flags" \
 LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
