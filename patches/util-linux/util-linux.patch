@@ -41,13 +41,13 @@ diff -aur util-linux-2.23.1.org/fdisks/fdisksunlabel.c util-linux-2.23.1/fdisks/
      if (array[0] == -1) {
  	fdisk_info(cxt, _("No partitions defined"));
 diff -aur util-linux-2.23.1.org/include/ttyutils.h util-linux-2.23.1/include/ttyutils.h
---- util-linux-2.23.1.org/include/ttyutils.h	2013-07-01 21:37:58.433000002 +0000
-+++ util-linux-2.23.1/include/ttyutils.h	2013-07-01 21:48:42.328000002 +0000
+--- util-linux-2.23.1.org/include/ttyutils.h	2013-05-27 10:45:06.000000000 -0300
++++ util-linux-2.23.1/include/ttyutils.h	2013-07-05 12:19:54.000000000 -0300
 @@ -10,6 +10,7 @@
  #include <stdlib.h>
  #include <termios.h>
  #include <limits.h>
-+#include "ttydefaults.h"
++#include <sys/ttydefaults.h>
  #ifdef HAVE_SYS_IOCTL_H
  #include <sys/ioctl.h>
  #endif
