@@ -25,5 +25,9 @@ make mrproper
 make headers_check
 make INSTALL_HDR_PATH=$destdir headers_install
 
+# Remove cruft
+find ${destdir}/include \
+ -type f \( -name .install -o -name ..install.cmd \) | xargs rm -f
+
 reclinker -rf /pkg/${program}-headers-${version} /
 
