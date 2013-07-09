@@ -81,7 +81,8 @@ cd ../gcc-build
  --disable-libstdcxx-pch \
  --disable-libstdcxx-verbose \
  --disable-libmudflap \
- --disable-libsanitizer
+ --disable-libsanitizer \
+ --disable-install-libiberty
 
 make -j${jobs} bootstrap2-lean BOOT_LDFLAGS="-static" LDFLAGS="-static"
 make install DESTDIR=$destdir
