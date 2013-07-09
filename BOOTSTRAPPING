@@ -1,5 +1,5 @@
                              BOOTSTRAPPING
-                       Version 0.2, 18 June 2013
+                       Version 0.3, 09 July 2013
 
 
 Copyright (C)  2013  Matias A. Fonzo
@@ -75,6 +75,9 @@ using the -j flag.  It would be the number of processors +1.
   If you want to test, build a specific file uses the -f flag,
 combined with the stage number.  Like --stage=<n> -f <filename>.
 
+  If you want to pass custom CFLAGS/CXXFLAGS, export the common
+variable "$flags" on the command line before to start the build.
+
   Attention: if the building process is interrupted and it were
 necessary to start all again, it would be required to manually
 delete the specified directory to build once again, since the
@@ -101,27 +104,27 @@ distribution are made available in the environment.
   6. Final system.
 
   Once inside the temporary system we can begin building what
-will turn into the final system.  A tool called chef is used to
+will turn into the final system.  A tool called toque is used to
 process the recipes of the programs; these recipes, as well as
 patches and sources, are available in the directory /src/dragora.
 
-  To begin building the final system we are going to use chef,
+  To begin building the final system we are going to use toque,
 typing:
 
-  chef flags="" /src/dragora/recipes/*.recipe
+  toque flags="" /src/dragora/recipes/*.recipe
 
   This command starts the building of each recipe of the software
 that will make up the final system.
 
   If you desire to send more than one job to the compiler,
-the chef flag jobs=<n> can be used.
+the toque flag jobs=<n> can be used.
 
   If we want to use compilation flags, for instance using more
 than one job for the compiler, we type:
 
-  chef flags="-O2 -mtune=generic" jobs=3 /src/dragora/recipes/*.recipe
+  toque flags="-Os" jobs=3 /src/dragora/recipes/*.recipe
 
-  For more information about the options of chef, type `chef --help'.
+  For more information about the options of toque, type `toque --help'.
 
   In this instance, if we were successful, it will be possible to
 delete the /tools directory that is related to everything for the
