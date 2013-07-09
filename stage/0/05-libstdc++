@@ -36,7 +36,7 @@ RANLIB="${TARGET}-ranlib" \
  --disable-libstdcxx-threads \
  --disable-libstdcxx-pch \
  --disable-libstdcxx-verbose \
- --with-gxx-include-dir=/tools/${TARGET}/include/c++/gcc-${version}
+ --with-gxx-include-dir=/tools/${TARGET}/include/c++/${version}
 
 make $jobs BOOT_LDFLAGS="-static" LDFLAGS="-static"
 make install

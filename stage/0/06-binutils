@@ -26,6 +26,7 @@ RANLIB="${TARGET}-ranlib" \
  --prefix=/tools \
  --libdir=/tools/lib \
  --with-lib-path=/tools/lib \
+ --with-sysroot \
  --disable-shared \
  --disable-werror \
  --disable-nls \

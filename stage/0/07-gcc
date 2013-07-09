@@ -89,6 +89,7 @@ mkdir ../gcc-build
 cd ../gcc-build
 
 CC="${TARGET}-gcc" \
+CXX="${TARGET}-g++" \
 AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
 ../gcc-${version}/configure \
