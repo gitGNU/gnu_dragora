@@ -14,7 +14,7 @@ jobs = 1
 
 docs = ANNOUNCE AUTHORS NEWS README TO-DO
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -45,7 +45,7 @@ ln -sf libncursesw.a ${destdir}/lib/libcursesw.a
 ln -sf libncurses.a ${destdir}/lib/libcurses.a
 
 # Copy the documentation
-mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
 reclinker -rf /pkg/${program}-${version} /
 

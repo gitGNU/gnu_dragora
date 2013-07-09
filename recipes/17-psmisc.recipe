@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING NEWS README
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -30,7 +30,7 @@ make install DESTDIR=$destdir
 gzip -9 ${destdir}/share/man/man1/* ;	# Compress manual pages
 
 # Copy the documentation
-mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
 reclinker -rf /pkg/${program}-${version} /
 

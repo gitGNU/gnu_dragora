@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS POSIX.STD README TODO
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -57,7 +57,7 @@ fi
 ln -sf gawk.1.gz ${destdir}/share/man/man1/awk.1.gz
 
 # Copy the documentation
-mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
 reclinker -rf /pkg/${program}-${version} /
 

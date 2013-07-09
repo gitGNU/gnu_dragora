@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS README* THANKS TODO
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -39,7 +39,7 @@ gzip -9 ${destdir}/share/man/man1/*.1
 )
 
 # Copy the documentation
-mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
 reclinker -rf /pkg/${program}-${version} /
 

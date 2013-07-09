@@ -15,12 +15,12 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS README THANKS
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
 
-./configure $configure_args --docdir=/share/doc/${program}-${version}
+./configure $configure_args --docdir=$docdir
 
 make -j${jobs}
 make install DESTDIR=$destdir
@@ -51,7 +51,7 @@ if [ -d ${destdir}/share/man ] ; then \
 fi
 
 # Copy the documentation
-mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
 reclinker -rf /pkg/${program}-${version} /
 

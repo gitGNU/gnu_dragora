@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS BUGS COPYING* ChangeLog NEWS PATCHES README TODO VERSION
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
@@ -23,7 +23,7 @@ CFLAGS="$flags" \
 ./configure $configure_args \
  --disable-shared \
  --enable-thread-safe \
- --docdir=/share/doc/${program}-${version}
+ --docdir=$docdir
 
 make -j${jobs}
 make check
@@ -47,7 +47,7 @@ if [ -d ${destdir}/share/man ] ; then \
 fi
 
 # Copy the documentation
-mkdir -p $docdir && cp -a $docs $docdir
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
 reclinker -rf /pkg/${program}-${version} /
 

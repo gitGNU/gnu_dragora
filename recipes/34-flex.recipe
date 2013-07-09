@@ -13,7 +13,7 @@ tarname = ${program}-${version}.tar.lz
 jobs = 1
 
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir

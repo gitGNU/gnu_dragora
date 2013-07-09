@@ -14,7 +14,7 @@ jobs = 1
 
 docs = COPYING* README
 destdir = /pkg/${program}-${version}
-docdir = ${destdir}/share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 machine_type = $$(gcc -dumpmachine)
 
@@ -35,7 +35,7 @@ cd ../binutils-build
 
 CFLAGS="$flags -D_GNU_SOURCE" \
 ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
- --with-docdir=/documents/${program}-${version} \
+ --with-docdir=$docdir \
  --with-lib-path=/lib \
  --disable-shared \
  --disable-multilib \
@@ -88,9 +88,9 @@ if [ -d ${destdir}/share/man ] ; then \
 fi
 
 # Copy the documentation
-( mkdir -p $docdir ; \
+( mkdir -p ${destdir}${docdir} ; \
   cd ${tmpdir}/${program}-${version} && \
-  cp -a $docs $docdir ; \
+  cp -a $docs ${destdir}${docdir} ; \
 )
 
 # Delete temporary build directory
