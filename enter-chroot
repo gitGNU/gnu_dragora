@@ -57,7 +57,7 @@ mount -t sysfs sysfs ${ROOT}/sys
 
 echo "Entering chroot (${ROOT}) ..."
 chroot $ROOT /tools/bin/env -i \
- PATH=/bin:/sbin:/tools/bin \
+ PATH=/bin:/sbin:/tools/bin:/tools/sbin \
  SHELL=/bin/sh \
  TERM="$TERM" \
  PS1='\u:\w\$ ' \
