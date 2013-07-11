@@ -1,0 +1,103 @@
+--- src/Makefile.orig	2010-04-11 06:30:27.000000000 -0300
++++ src/Makefile	2013-07-04 19:01:38.000000000 -0300
+@@ -9,25 +9,22 @@
+ #
+ 
+ CPPFLAGS =
+-CFLAGS	?= -ansi -O2 -fomit-frame-pointer
++CFLAGS	?= -ansi -Os
+ override CFLAGS += -W -Wall -D_GNU_SOURCE
+-STATIC	=
++STATIC	= -Wl,-static
+ 
+ # For some known distributions we do not build all programs, otherwise we do.
+ BIN	=
+ SBIN	= init halt shutdown runlevel killall5 fstab-decode
+-USRBIN	= last mesg
++USRBIN	= mesg
+ 
+-MAN1	= last.1 lastb.1 mesg.1
++MAN1	= mesg.1
+ MAN5	= initscript.5 inittab.5
+ MAN8	= halt.8 init.8 killall5.8 pidof.8 poweroff.8 reboot.8 runlevel.8
+ MAN8	+= shutdown.8 telinit.8 fstab-decode.8
+ 
+ ifeq ($(DISTRO),)
+-BIN	+= mountpoint
+ SBIN	+= sulogin bootlogd
+-USRBIN	+= utmpdump wall
+-MAN1	+= utmpdump.1 mountpoint.1 wall.1
+ MAN8	+= sulogin.8 bootlogd.8
+ endif
+ 
+@@ -92,16 +89,16 @@
+ init:		LDLIBS += $(INITLIBS) $(STATIC)
+ init:		init.o init_utmp.o
+ 
+-halt:		halt.o ifdown.o hddown.o utmp.o reboot.h
++killall5:	LDLIBS += $(STATIC)
++killall5:	killall5.o
+ 
+-last:		last.o oldutmp.h
++halt:		LDLIBS += $(STATIC)
++halt:		halt.o ifdown.o hddown.o utmp.o reboot.h
+ 
++mesg:		LDLIBS += $(STATIC)
+ mesg:		mesg.o
+ 
+-mountpoint:	mountpoint.o
+-
+-utmpdump:	utmpdump.o
+-
++runlevel:	LDLIBS += $(STATIC)
+ runlevel:	runlevel.o
+ 
+ sulogin:	LDLIBS += $(SULOGINLIBS) $(STATIC)
+@@ -109,11 +106,15 @@
+ 
+ wall:		dowall.o wall.o
+ 
++shutdown:	LDLIBS += $(STATIC)
+ shutdown:	dowall.o shutdown.o utmp.o reboot.h
+ 
+-bootlogd:	LDLIBS += -lutil
++bootlogd:	LDLIBS += -lutil $(STATIC)
+ bootlogd:	bootlogd.o
+ 
++fstab-decode:	LDLIBS += $(STATIC)
++fstab-decode:	fstab-decode.o
++
+ sulogin.o:	CPPFLAGS += $(SELINUX_DEF)
+ sulogin.o:	sulogin.c 
+ 
+@@ -155,9 +156,6 @@
+ 		ln -sf halt $(ROOT)/sbin/poweroff
+ 		ln -sf init $(ROOT)/sbin/telinit
+ 		ln -sf /sbin/killall5 $(ROOT)/bin/pidof
+-		if [ ! -f $(ROOT)/usr/bin/lastb ]; then \
+-			ln -sf last $(ROOT)/usr/bin/lastb; \
+-		fi
+ 		$(INSTALL_DIR) $(ROOT)/usr/include/
+ 		$(INSTALL_DATA) initreq.h $(ROOT)/usr/include/
+ 		$(INSTALL_DIR) $(ROOT)$(MANDIR)/man1/
+--- src/ifdown.c.orig	2010-03-23 11:37:01.000000000 -0300
++++ src/ifdown.c	2013-07-04 18:32:42.000000000 -0300
+@@ -30,7 +30,7 @@
+ #include <sys/ioctl.h>
+ #include <sys/socket.h>
+ #include <sys/time.h>
+-#include <sys/errno.h>
++#include <errno.h>
+ 
+ #include <net/if.h>
+ #include <netinet/in.h>
+--- src/init.c.orig	2010-04-13 06:48:54.000000000 -0300
++++ src/init.c	2013-07-04 18:31:33.000000000 -0300
+@@ -46,6 +46,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <termios.h>
++#include <sys/ttydefaults.h>
+ #include <utmp.h>
+ #include <ctype.h>
+ #include <stdarg.h>
