@@ -1,0 +1,7 @@
+jfsutils - El sistema de archivos desarrollado por IBM.
+
+JFS (del Inglés Journaling File System) es un sistema de archivos con
+registro por diario desarrollado por IBM y usado en sus servidores.
+Fue diseñado con la idea de conseguir servidores de alto rendimiento
+y servidores de archivos de altas prestaciones, asociados a negocios.
+

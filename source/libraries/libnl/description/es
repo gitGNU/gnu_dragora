@@ -1,0 +1,6 @@
+libnl - Librería netlink.
+
+libnl es una librería para aplicaciones de tratamiento de sockets netlink.
+La librería provee una interfaz para mensajes en crudo y varias interfaces
+específicas de la familia netlink.
+

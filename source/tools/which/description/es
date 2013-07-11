@@ -1,0 +1,5 @@
+which - Utilidad para mostrar la ruta completa de los comandos.
+
+Which muestra la ruta completa de los comandos (del
+intérprete de comandos) instalados en tu PATH.
+

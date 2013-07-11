@@ -1,0 +1,5 @@
+gcc_libs - Librerías compartidas de C/C++.
+
+Este paquete contiene las librerías de C/C++ requerido por
+muchos programas.
+

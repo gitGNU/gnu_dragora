@@ -1,0 +1,5 @@
+libetpan - Library for all kind mailbox access.
+
+libEtPan! is mainly a library that will handle all kind of mailbox access.
+For example: IMAPrev4, POP3, NNTP, mbox, MH.
+

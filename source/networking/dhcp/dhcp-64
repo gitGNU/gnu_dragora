@@ -1,0 +1,167 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.2.3-P2
+ARCH=${ARCH:-x86_64}
+B=3
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+PKG=${TMP}/package-dhcp
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/dhcp-${V}
+lzip -cd ${CWD}/dhcp-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/dhcp-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Apply this patch to use iproute2 instead of
+# the deprecated "ifconfig/route":
+#zcat ${CWD}/dhclient-to-iproute2.diff.gz | patch -p1 --verbose
+
+# A better patch from BLFS, thanks!:
+zcat ${CWD}/dhcp-4.2.3-iproute2-1.patch.gz | patch -p1 --verbose
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --sysconfdir=/etc \
+ --sbindir=/sbin \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --with-srv-lease-file=/var/state/dhcp/dhcpd.leases \
+ --with-srv6-lease-file=/var/state/dhcp/dhcpd6.leases \
+ --with-cli-lease-file=/var/state/dhcp/dhclient.leases \
+ --with-cli6-lease-file=/var/state/dhcp/dhclient6.leases \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+)
+
+# Add runit services:
+mkdir -p ${PKG}/etc/sv/dhclient
+
+install -m 755 ${CWD}/config/dhclient/run \
+ ${PKG}/etc/sv/dhclient/run.new
+
+mkdir -p ${PKG}/etc/runit/runsvdir/default
+( cd ${PKG}/etc/runit/runsvdir/default
+  ln -sf /etc/sv/dhclient .
+)
+
+# Add "empty" configuration files:
+mkdir -p ${PKG}/etc
+cat ${CWD}/config/dhclient.conf > ${PKG}/etc/dhclient.conf
+cat ${CWD}/config/dhcpd.conf > ${PKG}/etc/dhcpd.conf
+
+# Add the dhclient script:
+mkdir -p ${PKG}/sbin
+cp -a client/scripts/linux ${PKG}/sbin/dhclient-script
+
+# This is required by dhcpd:
+mkdir -p ${PKG}/var/state/dhcp
+touch ${PKG}/var/state/dhcp/dhcpd.leases.new
+rm -f ${PKG}/var/state/dhcp/dhcpd.leases
+
+# Set permissions:
+find ${PKG}/sbin -type f -exec chmod -v 0750 '{}' +
+
+# Fix man-pages (just in case):
+find ${PKG}/usr/man -type f -exec chmod -v 0644 '{}' +
+# Compress man-pages:
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/dhcp-${V}/examples
+cp -a \
+ LICENSE README RELNOTES \
+ ${PKG}/usr/doc/dhcp-${V}
+# Add examples:
+cp -a \
+ client/dhclient.conf server/dhcpd.conf \
+ ${PKG}/usr/doc/dhcp-${V}/examples
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Make the post-install script:
+mkdir -p ${PKG}/install
+cat << "EOF" > ${PKG}/install/post-install
+# Handle config files:
+config() {
+  local new old
+  new="$1"
+  old=${1%.new}
+  if [ ! -r $old ]; then
+    mv $new $old
+  elif [ "$(md5sum $old | cut -f 1 -d ' ')" = "$(md5sum $new | cut -f 1 -d ' ')" ]; then
+    rm $new
+  else
+    echo "You have a new config file \"${ROOT}/${new}\" at your consideration."
+  fi
+}
+
+config var/state/dhcp/dhcpd.leases.new
+rm -f var/state/dhcp/dhcpd.leases.new
+
+config etc/sv/dhclient/run.new
+
+EOF
+
+cd $PKG
+makepkg -l ${OUT}/dhcp-${V%%-*}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,5 @@
+libusb-compat - Libusb-0.1 compatibility library.
+
+A compatibility layer allowing applications written for
+libusb-0.1 to work with libusb-1.0.
+

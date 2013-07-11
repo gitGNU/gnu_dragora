@@ -1,0 +1,6 @@
+xcb-util - Funciones de utilidad XCB.
+
+El módulo xcb-util proporciona un número de librerías que sientan sobre
+la cima de libxcb, el corazón de la librería del protocolo X, y algunas
+bibliotecas de extensión.
+

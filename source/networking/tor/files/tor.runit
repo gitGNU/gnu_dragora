@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# tor:  Anonymizing communication service.
+#
+
+if [ -x /usr/bin/tor ]; then
+  exec /usr/bin/tor --quiet
+fi
+

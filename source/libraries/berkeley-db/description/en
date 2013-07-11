@@ -1,0 +1,6 @@
+db - Berkeley database library.
+
+Berkeley DB is a programmatic toolkit that
+provides embedded database support for
+client/server applications.
+

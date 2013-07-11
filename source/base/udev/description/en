@@ -1,0 +1,9 @@
+udev - Dynamic device management.
+
+Udev is the device manager for the Linux 2.6 kernel series.
+Its primary function is managing device nodes in /dev.
+
+It is the successor of devfs and hotplug, which means that
+it handles the /dev directory and all user space actions
+when adding/removing devices, including firmware load.
+

@@ -1,0 +1,11 @@
+cmake - Sistema de Make de código-abierto.
+
+CMake es una familia de herramientas diseñadas para construir,
+probar y empaquetar software.
+
+CMake es usado para controlar el proceso de compilación del
+software usando una plataforma simple y el compilador
+independiente de archivos de configuración.
+
+La página oficial de CMake es:  http://www.cmake.org
+

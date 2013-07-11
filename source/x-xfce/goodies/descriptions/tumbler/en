@@ -1,0 +1,4 @@
+tumbler - Thumbnail service.
+
+Tumbler is a D-Bus service for applications to request thumbnails.
+

@@ -1,0 +1,105 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.11.6
+ARCH=${ARCH:-x86_64}
+B=1
+
+PKG=${TMP}/package-automake
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/automake-${V}
+tar xvf ${CWD}/automake-${V}.tar.lz -C $TMP
+
+cd ${TMP}/automake-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+./configure \
+ --prefix=/usr \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/automake-${V} \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+if [[ -n $CHECK ]]; then
+  make check;
+fi
+make install DESTDIR=$PKG
+
+# Replace hard links to soft links:
+SHORT_VER=${V:0:4}
+( cd ${PKG}/usr/bin
+  mv aclocal aclocal-${SHORT_VER}
+  ln -sf aclocal-${SHORT_VER} aclocal
+  mv automake automake-${SHORT_VER}
+  ln -sf automake-${SHORT_VER} automake
+)
+
+# Compress GNU info documents:
+( cd ${PKG}/usr/info ; rm -f dir ; gzip -9N * )
+
+# Compress man-pages:
+gzip -9N ${PKG}/usr/man/man?/*
+
+# Link some man-pages:
+( cd ${PKG}/usr/man/man1
+  rm -f aclocal.1.gz automake.1.gz
+  ln -sf aclocal-${SHORT_VER}.1.gz aclocal.1.gz
+  ln -sf automake-${SHORT_VER}.1.gz automake.1.gz
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/automake-${V}
+cp -a \
+ AUTHORS COPYING ChangeLog NEWS README TODO THANKS \
+ ${PKG}/usr/doc/automake-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/automake-${V}-${ARCH}-${B}.tlz
+

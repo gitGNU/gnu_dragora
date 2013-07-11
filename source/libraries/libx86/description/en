@@ -1,0 +1,4 @@
+libx86 - library for executing real-mode x86 code.
+
+libx86 is a hardware-independent library for executing real-mode x86 code.
+

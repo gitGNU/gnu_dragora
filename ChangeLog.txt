@@ -1,0 +1,3195 @@
+~ Legend ~
+
+    I = Package included.         RB = Package rebuilt.
+    U = Package upgraded.         RV = Package reverted.
+    R = Package recompiled.       RM = Package removed.
+
+                         --@--
+
+
+[ Wed 14 Nov 2012 @ 21:06:10 UTC ] : 193
+
+  U: upgrades/icedtea6-1.10.10. Since our last version of Icedtea6 1.10.6,
+     this is a security update, including various bug fixes.
+
+  U: upgrades/icedtea-web-1.1.7. Security release. It resolves
+     the following issues:
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-4540
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3422
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3423
+
+  U: upgrades/libxslt-1.1.27. Security release, with important bug fixes.
+
+[ Tue 13 Nov 2012 @ 22:05:33 UTC ] : 192
+
+  R: upgrades/libxml2-2.7.8. Double free vulnerability in libxml2 2.7.8
+     allows remote attackers to cause a denial of service or possibly
+     have unspecified other impact via vectors related to XPath handling.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-4494
+
+     Note: the issue is from 2010 but the important thing is to resolve, no?.
+
+     An Off-by-one error have been discovered that allows remote attackers
+     to execute arbitrary code or cause a denial of service.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-0216
+
+     Integer overflow allows context-dependent attackers to cause a
+     denial of service (crash) and possibly execute arbitrary code
+     via a crafted XML file that triggers a heap-based buffer
+     overflow when adding a new namespace node, related to handling
+     of XPath expressions. 
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1944
+
+     Multiple integer overflows in libxml2 allows remote attackers to
+     cause a denial of service or possibly have unspecified other
+     impact via unknown vectors.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3102
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3905
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2807
+
+[ Thu 01 Nov 2012 @ 01:38:40 UTC ] : 191
+
+  U: upgrades/automake-1.11.6. This is a bug-fixing release,
+     fixing a security issue (CVE-2012-3386) relevant for
+     packages using Automake.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3386
+
+  U: upgrades/dbus-1.4.24. Sebastian Krahmer discovered that DBus
+     incorrectly handled environment variables when running with
+     elevated privileges. A local attacker could possibly exploit
+     this flaw with a setuid binary and gain root privileges.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3524
+
+  U: upgrades/dhcp-4.2.4. This is a fix security release,
+     more information and details can be found at:
+
+     * http://kb.isc.org/article/AA-00792
+
+  U: upgrades/freetype-2.4.10. A minor release, fixing
+     mainly a problem for GhostScript.
+
+  U: upgrades/gnutls-2.12.20. A newer version containing
+     important bug fixes.
+
+  U: upgrades/libexif-0.6.21. Fixed a number of security and stability
+     issues due to buffer overflows, bad pointer dereferences and
+     division-by-zero (CVE-2012-2812, CVE-2012-2813, CVE-2012-2814,
+     CVE-2012-2836, CVE-2012-2837, CVE-2012-2840, CVE-2012-2841,
+     CVE-2012-2845).
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2812
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2813
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2814
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2836
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2837
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2840
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2841
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2845
+
+  U: upgrades/libpng-1.4.12. A security fix release,
+     containing the solution for:
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3045
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3048
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3386
+
+  U: upgrades/openssl-1.0.0j. A flaw in the OpenSSL handling
+     of CBC mode ciphersuites in TLS 1.1, 1.2 and DTLS can be
+     exploited in a denial of service attack on both clients
+     and servers. The fix was developed by Stephen Henson of
+     the OpenSSL core team.
+
+     Note: TLS is only affected in OpenSSL 1.0.1 and later.
+
+  U: upgrades/patch-2.7.1. This version contains various bug fixes,
+     and resolves a security issue (CVE-2010-4651).
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-4651
+
+  U: upgrades/pidgin-2.10.6. Since our last version of Pidgin 2.10.3,
+     this is a security update, including fixes and the solution for:
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2214
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-3374
+
+  R: upgrades/slocate-3.1. Slocate does not properly manage database
+     entries that specify names of files in protected directories,
+     which allows local users to obtain the names of private files.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-0227
+
+  U: upgrades/tiff-3.9.7. Multiple integer overflows in tiff_getimage.c
+     allows to remote attackers to execute arbitrary code via a crafted
+     tile size in a TIFF file, which is not properly handled by the
+     gtTileSeparate or gtStripSeparate function, leading to a heap-based
+     buffer overflow. 
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-1173
+
+  U: upgrades/xinetd-2.3.15. Thomas Swan of FedEx reported a service
+     disclosure flaw in Xinetd. Xinetd allows for services to be
+     configured with the TCPMUX or TCPMUXPLUS service types,
+     which makes those services available on port 1.
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-0862
+
+[ Sat 21 Apr 2012 @ 20:15:12 UTC ] : 190
+
+Dragora version 2.2 -- released!
+
+Thanks to all those who helped in the Project:
+finding bugs, spreading information about them
+and reporting them.  Thank you! :-)
+
+[ Fri 20 Apr 2012 @ 16:35:16 UTC ] : 189
+
+  U: base/man-pages-3.39.
+
+  RB: base/runitscheme-3.3. Save the system time
+      before to stop the services (Stage 3).
+
+  U: devel/ruby-1.9.3_p194.
+
+  U: networking/openssl-1.0.0i.
+
+[ Tue 17 Apr 2012 @ 16:28:52 UTC ] : 188
+
+  R: x-libraries/notification-daemon-0.5.0. Recompiled in order to work.
+     Thanks to kaltorak.
+
+[ Mon 16 Apr 2012 @ 13:03:22 UTC ] : 187
+
+  U: tools/lm_sensors-3.3.2. This version works in recent kernels.
+     Thanks to kaltorak.
+
+[ Mon 16 Apr 2012 @ 12:59:22 UTC ] : 186
+
+  RB: isolinux{,64}/initrd.img.
+
+     - The kernel images have been optimized for the size
+       rather than for the speed.
+
+[ Sun 15 Apr 2012 @ 18:00:31 UTC ] : 185
+
+  U: kernel/kernel-3.2.15(-libre).
+
+  R: libraries/glibc-2.13_20110720.
+
+[ Wed 11 Apr 2012 @ 17:28:51 UTC ] : 184
+
+  U: devel/git-1.7.9.6.
+
+  U: libraries/libgphoto2-2.4.13.
+
+  U: networking/links-2.6.
+
+  U: x-applications/gtkam-0.1.18.
+
+  U: x-applications/transmission-2.51.
+
+  U: x-xorg/driver/xf86-video-nouveau-20120322.
+
+[ Mon 09 Apr 2012 @ 21:07:54 UTC ] : 183
+
+  R: x-xfce/thunar-1.3.0. A security issue (CVE-2011-1588),
+     has been fixed.
+
+  U: x-xfce/xfce4-power-manager-1.0.11.
+
+  U: x-xfce-goodies/ristretto-0.3.6.
+
+  U: x-xfce-goodies/thunar-volman-0.6.1.
+
+  U: x-xfce-goodies/tumbler-0.1.24.
+
+  U: x-xfce-goodies/xfce4-netload-plugin-1.1.0.
+
+[ Mon 09 Apr 2012 @ 18:05:12 UTC ] : 182
+
+  RB: tools/polkit-0.102. The file "40-power.pkla" (located
+      on /etc/polkit-1/localauthority/50-local.d), contains
+      new rules. So.. `xfce4-power-manager' can work now.
+
+[ Sun 08 Apr 2012 @ 23:15:15 UTC ] : 181
+
+  RB: base/runitscheme-3.3. The hardware clock is now set from the Stage 2.
+
+  U: kernel/kernel-3.2.14(-libre).
+
+  R: libraries/glibc-2.13_20110720.
+
+  U: libraries/tzdatabase-2012c.
+
+[ Wed 04 Apr 2012 @ 17:51:47 UTC ] : 180
+
+  RM: x-applications/gnash-0.8.10. Gnash has been moved
+      to the "plus" directory.
+
+[ Wed 04 Apr 2012 @ 17:31:10 UTC ] : 179
+
+  I: libraries/nettle-2.4. Required by gnutls-2.12.18.
+
+  I: networking/gnutls-2.12.18.
+
+  U: x-applications/claws-mail-3.8.0cvs39. Configured with GnuTLS support.
+
+  U: x-applications/claws-mail-extra-plugins-3.8.0.
+
+  R: x-applications/pidgin-2.10.3. Recompiled with `--enable-gnutls'.
+
+  U: x-libraries/libdrm-2.4.33.
+
+[ Thu 29 Mar 2012 @ 17:27:25 UTC ] : 178
+
+  U: java/icedtea-web-1.1.5.
+
+  U: tools/gawk-4.0.1.
+
+  R: x-applications/abiword-2.8.6. The documentation for abiword,
+     has been added.
+
+[ Wed 28 Mar 2012 @ 17:38:04 UTC ] : 177
+
+  U: base/e2fsprogs-1.42.2.
+
+  U: networking/gnupg1-1.4.12.
+
+  U: networking/gnupg2-2.0.19.
+
+  U: networking/libassuan-2.0.3.
+
+  U: x-applications/pidgin-2.10.3.
+
+[ Tue 27 Mar 2012 @ 16:07:22 UTC ] : 176
+
+  U: base/coreutils-8.16.
+
+  U: base/lvm2-2.02.95.
+
+  U: base/man-pages-3.38.
+
+  U: media/ffmpeg-0.8.10.
+
+  U: media/mpg123-1.13.7.
+
+  U: tools/xfsprogs-3.1.8.
+
+[ Thu 22 Mar 2012 @ 19:20:27 UTC ] : 175
+
+  I: libraries/fribidi-0.19.2. Required by abiword.
+
+  I: libraries/wv-1.2.9. Required by abiword.
+
+  I: x-applications/abiword-2.8.6. The basic support.
+
+  R: x-applications/xterm-278. Reconfigured.
+
+[ Wed 21 Mar 2012 @ 19:38:20 UTC ] : 174
+
+  R: base/bash-4.2. Recompiled with patch level 24.
+
+  U: libraries/libpng-1.4.10.
+
+  R: libraries/libxml2-2.7.8. A security issue, has been fixed.
+
+  U: x-libraries/librsvg-2.35.2.
+
+[ Sat 17 Mar 2012 @ 16:57:15 UTC ] : 173
+
+  U: networking/openssl-1.0.0h.
+
+  U: x-applications/pidgin-2.10.2.
+
+  U: x-applications/transmission-2.50.
+
+  U: x-xfce-goodies/ristretto-0.3.5.
+
+  U: x-xorg/lib/libXcursor-1.1.13.
+
+[ Fri 16 Mar 2012 @ 16:26:38 UTC ] : 172
+
+  U: base/kbd-1.15.3. The translation files of `keyconfig',
+     have been converted to "utf8".
+
+  RB: tools/gpm-20090311. The translation files of `gpmconfig',
+      have been converted to "utf8".
+
+  RB: x-xorg/util/xorgxconf-1.5. The translation files of `wmconfig',
+      have been converted to "utf8".
+
+[ Thu 15 Mar 2012 @ 12:18:23 UTC ] : 171
+
+  U: kernel/kernel-3.2.11(-libre).
+
+  R: libraries/glibc-2.13_20110720. The translation files of `tzconfig',
+     have been converted to "utf8" during the build process.
+
+[ Mon 12 Mar 2012 @ 17:55:18 UTC ] : 170
+
+  RB: tools/polkit-0.102. Added rules to allow the restart and shutdown.
+
+  RB: tools/polkit-gnome-0.102.
+      The file "polkit-gnome-authentication-agent-1.desktop", was added.
+
+  RB: x-xfce/terminal-0.4.8. Patched:
+
+      - Don't add mailto when copying to clipboard (Xfce bug #7909).
+
+  RB: x-xfce/xfce4-power-manager-1.0.10. The permission for the binary
+      "xfpm-power-backlight-helper", has been fixed.
+
+[ Fri 09 Mar 2012 @ 18:11:05 UTC ] : 169
+
+  U: tools/dbus-1.4.18.
+
+  U: tools/grep-2.11.
+
+  U: tools/sudo-1.8.4p2.
+
+  RB: x-applications/icecat-10.0. Removed incompatible extensions.
+
+  R: x-libraries/fontconfig-2.8.0. Added more fonts to the search path dir.
+
+  U: x-libraries/freetype-2.4.9.
+
+  R: x-xfce/xfce-utils-4.8.3. Applied patches from upstream.
+
+  R: x-xfce/xfce4-session-4.8.3. Applied patches from upstream.
+
+  R: x-xfce/xfwm4-4.8.3. Applied patches from upstream.
+
+[ Wed 07 Mar 2012 @ 11:29:13 UTC ] : 168
+
+  R: base/bash-4.2. Use the curses library instead of the termcap.
+
+  R: base/inetutils-1.9. Recompiled without termcap.
+
+  RM: libraries/termcap-compat-1.2.3. No more required, I think.
+
+  U: libraries/tzdatabase-2012b.
+
+  U: networking/nfs-utils-1.2.5.
+
+[ Fri 02 Mar 2012 @ 03:10:49 UTC ] : 167
+
+Dragora 2.2.0 Release Candidate 1, has been released!
+
+  RB: isolinux{,64}/initrd.img.
+
+     - BusyBox has been updated to the version 1.19.4.
+     - ISOLINUX has been updated to the version 4.05.
+     - sfdisk was removed in favor of parted.
+     - lunzip has been replaced by clzip. Required by "pkg remove".
+     - udev is now included.
+     - The installer is now capable of mounting non-root partitions.
+     - Enhanced installer dialogues.
+       Thanks to leo_rockway, and Pablo Rivero.
+     - Various fixes.
+
+[ Thu 01 Mar 2012 @ 19:33:15 UTC ] : 166
+
+  RB: base/runitscheme-3.3.
+
+      - /etc/runit/1:
+
+        * Don't try to use a swap partition or a swap file before fsck(8).
+        * Minor changes.
+
+[ Wed 29 Feb 2012 @ 20:25:20 UTC ] : 165
+
+  U: java/icedtea-web-1.1. Upgraded from hg.
+
+  U: x-applications/gnash-0.8.10.
+
+  U: x-xorg/lib/pixman-0.24.4.
+
+  U: x-xorg/xserver/xorg-server-1.11.4.
+
+  U: x-xorg/xserver/xorg-server-xephyr-1.11.4.
+
+  U: x-xorg/xserver/xorg-server-xnest-1.11.4.
+
+  U: x-xorg/xserver/xorg-server-xvfb-1.11.4.
+
+[ Wed 29 Feb 2012 @ 16:26:27 UTC ] : 164
+
+  U: java/icedtea6-1.10.6.
+
+  U: libraries/boost-1.49.0.
+
+  R: libraries/openmpi-1.5.4. Recompiled against boost-1.49.0.
+
+  R: x-xorg/lib/libxcb-1.8. Recompiled with an upstream patch:
+
+     - Fallback to TCP if no protocol is specified
+       and the UNIX connection fails.
+
+[ Tue 28 Feb 2012 @ 20:58:43 UTC ] : 163
+
+  RB: base/runitscheme-3.3.
+
+      - /etc/runit/1:
+
+        * Do not override the terminal settings using setterm(1).
+
+  RB: base/udev-175. A clean up on the 55-dragora.rules.
+
+[ Tue 28 Feb 2012 @ 20:30:53 UTC ] : 162
+
+  U: kernel/kernel-3.2.8(-libre).
+
+  R: libraries/glibc-2.13_20110720.
+
+[ Mon 27 Feb 2012 @ 16:49:56 UTC ] : 161
+
+  R: devel/m4-1.4.16. Recompiled against libsigsegv-2.10, just in case.
+
+  U: libraries/libsigsegv-2.10. Upgraded and configured with
+     the option `--libdir=/lib{,64}'.
+
+  R: tools/diffutils-3.2. Recompiled against libsigsegv-2.10, just in case.
+
+  R: tools/gawk-4.0.0. Recompiled against libsigsegv-2.10, just in case.
+ 
+[ Mon 27 Feb 2012 @ 15:02:32 UTC ] : 160
+
+  U: x-libraries/libwnck-2.30.7.
+
+  U: x-xorg/util/xdg-user-dirs-0.14.
+
+  U: x-xorg/util/xdg-utils-20111209.
+
+[ Sun 26 Feb 2012 @ 20:57:38 UTC ] : 159
+
+  R: base/bash-4.2. Recompiled against termcap-compat.
+
+  R: base/inetutils-1.9. Recompiled against termcap-compat.
+
+  R: libraries/termcap-compat-1.2.3. The libraries are now under /lib{,64}.
+
+[ Fri 24 Feb 2012 @ 19:08:35 UTC ] : 158
+
+  U: base/grub2-rev3964. Upgraded from bzr.
+
+  U: base/lvm2-2.02.93.
+
+  RB: networking/bluez-4.98. The `simple-agent' script has been added.
+      Thanks to kaltorak for the suggestion.
+
+[ Thu 23 Feb 2012 @ 16:24:47 UTC ] : 157
+
+  U: base/lvm2-2.02.92.
+
+  U: base/shadow-4.1.5.
+
+  U: tools/file-5.11.
+
+[ Tue 21 Feb 2012 @ 18:45:18 UTC ] : 156
+
+  U: kernel/kernel-3.2.7(-libre).
+
+  R: libraries/glibc-2.13_20110720.
+
+[ Mon 20 Feb 2012 @ 19:35:18 UTC ] : 155
+
+  RB: base/runit-scheme-3.3. The package name has been changed to "runitscheme".
+
+  RB: base/util-linux-2.19.1. The description files have been adapted
+      to "util-linux", rather than the previous name "util-linux-ng".
+
+[ Sun 19 Feb 2012 @ 22:39:11 UTC ] : 154
+
+  R: libraries/glibc-2.13_20110720. Some hard links have been
+     replaced with soft links. This was causing undesirable
+     messages ("Invalid cross-device link") during the
+     package uncompression on the installer of Dragora.
+     The problem occurs when we have multiple partitions
+     mounted at the installation time.
+
+     Thanks to gustavo_cm for the bug report.
+
+[ Sun 19 Feb 2012 @ 19:50:10 UTC ] : 153
+
+  U: base/e2fsprogs-1.42.1.
+
+  U: libraries/libevent-2.0.17.
+
+  U: tools/man-db-2.6.1.
+
+[ Sun 19 Feb 2012 @ 16:27:10 UTC ] : 152
+
+  U: devel/git-1.7.9.1.
+
+  R: x-applications/vim-gvim-7.3. Recompiled with the patch level 444.
+
+[ Tue 14 Feb 2012 @ 21:39:47 UTC ] : 151
+
+  U: kernel/kernel-3.2.6(-libre).
+
+  R: libraries/glibc-2.13_20110720.
+
+[ Mon 13 Feb 2012 @ 20:26:57 UTC ] : 150
+
+  U: base/lvm2-2.02.91.
+
+  U: devel/ruby-1.9.3_p105.
+
+  U: printing/ghostscript-9.05.
+
+  U: x-xfce/garcon-0.1.10.
+
+  U: x-xfce/gtk-xfce-engine-2.99.1.
+
+  U: x-xfce/xfce4-session-4.8.3.
+
+[ Sat 11 Feb 2012 @ 17:48:15 UTC ] : 149
+
+  U: x-libraries/libdrm-2.4.31.
+
+  R: x-libraries/mesa-7.11.2.
+
+  I: x-xorg/driver/xf86-video-nouveau-20120109. In agreement
+     to quidam of Trisquel, Nouveau is now free (as in freedom).
+     Nouveau is back!.
+
+[ Fri 10 Feb 2012 @ 19:21:28 UTC ] : 148
+
+  RB: base/etc-2.6. The default hostname "dragora", has been
+      switched to "rafaela". The current codename. ;-)
+
+  R: libraries/glib-1.2.10. Recompiled using a better patch.
+
+  I: tools/acpid-2.0.14.
+
+  RB: x-xfce/xfce-utils-4.8.3. Recompiled with the option
+      `--disable-xfconf-migration'.
+
+  RB: x-xfce/xfwm4-4.8.3. The new file (/etc/xdg/autostart/xfwm4.desktop)
+      introduced in the change #143, has been modified.
+
+[ Thu 09 Feb 2012 @ 21:46:30 UTC ] : 147
+
+  U: networking/ethtool-3.2.
+
+  U: networking/iproute2-3.2.0.
+
+  U: networking/iptables-1.4.12.2.
+
+  R: networking/openfwwf-5.2. Just in case.
+
+  R: networking/wpa_supplicant-0.7.3. Just in case.
+
+[ Thu 09 Feb 2012 @ 20:12:57 UTC ] : 146
+
+  U: kernel/kernel-3.2.5(-libre).
+
+  R: libraries/glibc-2.13_20110720.
+
+[ Wed 08 Feb 2012 @ 13:25:54 UTC ] : 145
+
+  U: x-applications/icecat-10.0.
+
+  U: x-applications/xulrunner-10.0.
+
+[ Tue 07 Feb 2012 @ 20:56:10 UTC ] : 144
+
+  U: devel/lua-5.2.0.
+
+  U: devel/mercurial-2.1.
+
+  U: libraries/pcre-8.21.
+
+  U: media/libvorbis-1.3.3.
+
+  U: networking/fetchmail-6.3.21.
+
+[ Tue 07 Feb 2012 @ 16:52:19 UTC ] : 143
+
+  U: tools/hdparm-9.39.
+
+  RB: x-xfce/xfce-utils-4.8.3.
+
+  RB: x-xfce/xfwm4-4.8.3. Now providing a clean and better way
+      to handle the window decorations under Xfce.
+
+[ Tue 07 Feb 2012 @ 15:39:04 UTC ] : 142
+
+  R: x-libraries/gdk-pixbuf-2.24.1. Recompiled with upstream patches:
+
+     - Allow gi users to use "get_pixels". More information at:
+       https://bugzilla.gnome.org/show_bug.cgi?id=662009
+     - Use ngettext.
+
+  R: x-libraries/jasper-1.900.1. Recompiled with new patches.
+
+  R: x-libraries/pango-1.29.4. Recompiled with upstream patches:
+
+     - Make ATSUI backend compile again.
+     - Fix zero-width spaces cause missing characters.
+
+[ Mon 06 Feb 2012 @ 20:08:33 UTC ] : 141
+
+  U: modules/python/urwid-1.0.1.
+
+  U: networking/wicd-1.7.1.
+
+  U: x-applications/gimp-2.6.12.
+
+  U: x-libraries/babl-0.1.6.
+
+  U: x-libraries/gegl-0.1.8.
+
+  U: x-libraries/gtk2+-2.24.10.
+
+[ Sat 04 Feb 2012 @ 18:17:18 UTC ] : 140
+
+  R: base/bash-4.2. Restored a previous behavior, see:
+     http://lists.gnu.org/archive/html/bug-bash/2011-12/msg00079.html
+
+  U: base/module-init-tools-20111217. The latest version from git.
+
+  U: libraries/gmp-5.0.3.
+
+  R: libraries/mpfr-3.0.1. Just in case.
+
+[ Fri 03 Feb 2012 @ 20:38:22 UTC ] : 139
+
+  U: base/lvm2-2.02.90.
+
+  RB: base/runit-scheme-3.3.
+
+      - The PATH is now exported for the runit init scripts.
+      - Use the correct order in the syntax of hwclock(8),
+        invoked by /etc/rc.d/rc.clock.
+
+  RB: base/udev-175. Make sure to create the /dev/{cdrom,dvd} symlinks.
+
+[ Thu 02 Feb 2012 @ 17:30:37 UTC ] : 138
+
+  U: devel/automake-1.11.3.
+
+  R: kernel/kernel-2.6.38.8(-libre). Reconfigured, more fine-tuned.
+
+[ Tue 31 Jan 2012 @ 18:14:55 UTC ] : 137
+
+  R: libraries/glibc-2.13_20110720. Recompiled without experimental
+     malloc, and recompiled without NSS crypt support. Sorry,
+     I don't trust in the current stability of nss-3.13.1.
+
+  U: libraries/zlib-1.2.6.
+
+  R: networking/dhcp-4.2.3. Applied a better patch to deal with iproute2.
+
+  U: tools/sudo-1.8.3p2.
+
+[ Sun 29 Jan 2012 @ 22:27:07 UTC ] : 136
+
+  R: devel/cvs-1.11.23. Fix a security issue,
+     http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2010-3846
+
+  RB: networking/iproute2-2.6.38. Fix broken "arpd" symlink.
+
+  R: printing/hplip-3.11.12. Make symlinks with absolute path names.
+
+  RB: tools/bzip2-1.0.6. Fix broken "bzcat" symlink.
+
+  U: plus/emacs-23.4.
+
+[ Sun 29 Jan 2012 @ 20:39:22 UTC ] : 135
+
+  U: java/icedtea-web-1.1. Upgraded from mercurial, in order to work
+     with the new XULRunner API.
+
+  R: tools/gzip-1.4. Reconfigured with a standard option, adding
+     the prefix "gz" to the utilities of gzip. The hardcode was
+     removed from the build script, avoiding conflicts with the
+     zutils package.
+
+  R: tools/texinfo-4.13a.
+
+     - Don't provide the cron.weekly file for update the .info
+       documents. This is already done during the boot.
+     - Recompiled with the optimization level '-O3'.
+
+  R: x-applications/xulrunner-9.0.1. Reconfigured to use the system libraries.
+
+[ Sat 28 Jan 2012 @ 18:24:10 UTC ] : 134
+
+  U: base/lvm2-2.02.89.
+
+  U: devel/automake-1.11.2.
+
+  U: devel/gdb-7.4.
+
+  U: networking/curl-7.24.0.
+
+  U: x-libraries/libdrm-2.4.30.
+
+  U: x-xorg/lib/libxcb-1.8.
+
+  U: x-xorg/proto/xcb-proto-1.7.
+
+  R: x-xorg/util/xcb-util-keysyms-0.3.8. Patched to recognise
+     ISO_Level5-keysyms as modifiers in xcb_is_modifier_key.
+     https://bugs.freedesktop.org/show_bug.cgi?id=39177
+
+[ Fri 27 Jan 2012 @ 18:11:31 UTC ] : 133
+
+  R: networking/ppp-2.4.5. Just in case.
+
+  R: networking/rp-pppoe-3.10.
+
+     - Plugin "rp-pppoe.so", deactivated. Already provided by
+       the ppp-2.4.5 package (under /usr/lib{,64}/pppd/2.4.5/).
+     - The search path for ifconfig(1), has been fixed.
+
+     Thanks to Evgeniy Philippov.
+
+[ Thu 26 Jan 2012 @ 18:21:14 UTC ] : 132
+
+  U: java/icedtea6-1.10.5.
+
+  R: x-applications/icecat-9.0.1. Reconfigured to use the system libraries.
+
+[ Wed 25 Jan 2012 @ 17:13:13 UTC ] : 131
+
+  U: libraries/alsa-lib-1.0.25.
+
+  U: libraries/alsa-oss-1.0.25.
+
+  U: libraries/alsa-plugins-1.0.25.
+
+  U: tools/alsa-utils-1.0.25.
+
+  U: x-libraries/gtk2+-2.24.9.
+
+  R: x-libraries/pango-1.29.4. Fix ChanContext backtrack matching with GPOS.
+
+  U: x-xfce/xfwm4-4.8.3.
+
+[ Tue 24 Jan 2012 @ 17:26:08 UTC ] : 130
+
+  U: base/mdadm-3.2.3.
+
+  U: devel/git-1.7.8.4.
+
+  U: networking/lftp-4.3.5.
+
+  U: printing/foomatic-db-20120123.
+
+  U: printing/foomatic-db-engine-20120123.
+
+  U: printing/foomatic-filters-20120123.
+
+  U: printing/hplip-3.11.12.
+
+  U: printing/poppler-0.18.3.
+
+  U: tools/sg3_utils-1.33.
+
+  U: x-applications/xterm-278.
+
+[ Sun 22 Jan 2012 @ 16:23:09 UTC ] : 129
+
+  R: libraries/libxml2-2.7.8. Fix a security issue,
+     http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3919
+
+  U: networking/openssl-1.0.0g.
+
+  U: tools/sqlite-3071000.
+
+  R: x-libraries/cairo-1.10_20110608. Cairo, has been patched
+     to get a decent performance.
+
+  U: x-xorg/lib/pixman-0.24.2.
+
+[ Mon 16 Jan 2012 @ 21:04:26 UTC ] : 128
+
+  RB: base/runit-scheme-3.3.
+
+      - /etc/runit/1:
+
+        * Try to mount FUSE from here, instead of /etc/runit/2.
+
+      - /etc/runit/2:
+
+        * Added console-kit-daemon.
+        * Added more lines for the proctitle log of runsvdir(8).
+        * /etc/runit/2, has been reorganized.
+
+  U: tools/pciutils-3.1.9.
+
+  U: tools/usbutils-005.
+
+[ Mon 16 Jan 2012 @ 20:26:24 UTC ] : 127
+
+In order to properly detect devices through HAL, some packages have been
+reconfigured. Previously, we used the User ID (UID) in the configuration
+files for D-BUS, rather than the name of the super-user (root). This is
+no supported in the current standard proposed by feedesktop.org for the
+XML files. So now, was reverted.
+
+  U: base/shadow-4.1.4.3.
+
+  RB: base/udev-175. The permission (0750) for udevadm(8), has been fixed.
+
+  U: networking/bluez-4.98.
+
+  U: networking/bluez-hcidump-2.2.
+
+  U: networking/dhcp-4.2.3. This is "dhcp-4.2.3-P2".
+
+  RB: networking/wicd-rev571.
+
+  RB: networking/wpa_supplicant-0.7.3.
+
+  RB: printing/cups-1.4.8.
+
+  RB: tools/consolekit-0.4.5.
+
+  R: tools/dbus-1.4.16. Reconfigured.
+
+  R: tools/hal-20111030. Reconfigured. Including support
+     for consolekit in its configuration file.
+
+  RB: tools/polkit-0.102.
+
+  RB: tools/rtkit-20110714.
+
+  RB: tools/udisks-1.0.4.
+
+  RB: tools/upower-0.9.15.
+
+  RB: x-libraries/gconf-2.32.4.
+
+[ Thu 12 Jan 2012 @ 11:40:13 UTC ] : 126
+
+  U: x-applications/geany-0.21.
+
+  U: x-applications/heybuddy-0.2.3.
+
+  U: x-applications/mtpaint-3.40.
+
+  U: x-applications/pidgin-2.10.1.
+
+  U: x-applications/scrotwm-0.10.0.
+
+  U: x-applications/transmission-2.42.
+
+  U: x-applications/xchat-rev1499.
+
+  U: x-applications/xterm-277.
+
+[ Wed 11 Jan 2012 @ 17:52:13 UTC ] : 125
+
+  U: modules/python/paramiko-1.7.7.1.
+
+  U: modules/python/pycrypto-2.4.1.
+
+  U: networking/tor-0.2.2.35.
+
+  U: x-xfce-goodies/ristretto-0.3.1.
+
+  U: x-xfce-goodies/tumbler-0.1.23.
+
+[ Mon 09 Jan 2012 @ 20:31:55 UTC ] : 124
+
+  U: base/coreutils-8.15.
+
+  U: libraries/libpcap-1.2.1.
+
+  U: networking/curl-7.23.1.
+
+  U: networking/dhcp-4.2.3.
+
+  U: networking/lftp-4.3.4.
+
+  U: networking/openssl-1.0.0f.
+
+  U: networking/tcpdump-4.2.1.
+
+  U: tools/pdlzip-1.3.
+
+  U: x-libraries/gdk-pixbuf-2.24.1.
+
+  U: x-xorg/xserver/xorg-server-1.11.3.
+
+  U: x-xorg/xserver/xorg-server-xephyr-1.11.3.
+
+  U: x-xorg/xserver/xorg-server-xnest-1.11.3.
+
+  U: x-xorg/xserver/xorg-server-xvfb-1.11.3.
+
+[ Fri 06 Jan 2012 @ 16:47:27 UTC ] : 123
+
+  U: base/inetutils-1.9.
+
+  U: libraries/libevent-2.0.16.
+
+  U: tools/ddrescue-1.15.
+
+  U: tools/ed-1.6.
+
+  U: tools/file-5.10.
+
+  U: tools/intltool-0.50.0.
+
+  U: tools/moe-1.5pre1.
+
+  U: tools/polkit-gnome-0.102.
+
+  U: tools/rtkit-20110714.
+
+  U: tools/sg3_utils-1.32.
+
+  U: tools/strace-4.6.
+
+  U: tools/sudo-1.8.3p1.
+
+  U: tools/tudu-0.8.1.
+
+  U: tools/udisks-1.0.4.
+
+  U: tools/upower-0.9.15.
+
+[ Fri 30 Dec 2011 @ 16:16:58 UTC ] : 122
+
+  U: x-applications/icecat-9.0.1.
+
+  U: x-applications/xulrunner-9.0.1.
+
+  U: x-xfce/exo-0.7.0.
+
+  U: x-xfce/libxfce4ui-4.8.1.
+
+  U: x-xfce/xfconf-4.8.1.
+
+[ Sat 24 Dec 2011 @ 16:41:31 UTC ] : 121
+
+Merry Christmas to all!,
+
+  RB: java/icedtea-web-1.1.4. The dead symbolic link:
+      /usr/lib{,64}/plugins/mozilla/IcedTeaPlugin.so,
+      has been fixed.
+
+Cheers!
+
+[ Fri 23 Dec 2011 @ 19:52:52 UTC ] : 120
+
+  R: libraries/boost-1.48.0. Recompiled using new options.
+
+  R: libraries/openmpi-1.5.4. (Just in case).
+
+  U: x-applications/gnash-20111215. Upgraded from git.
+
+  U: x-libraries/sdl-1.2. The latest SDL snapshot from the series 1.2.
+
+[ Mon 19 Dec 2011 @ 17:41:33 UTC ] : 119
+
+  U: media/ffmpeg-0.8.7.
+
+  U: media/gst-ffmpeg-0.10.13.
+
+  U: media/gst-python-0.10.22.
+
+  U: media/lame-3.99.3.
+
+  U: media/libburn-1.1.8.
+
+  U: media/libdvdnav-4.2.0.
+
+  U: media/libdvdread-4.2.0.
+
+  U: media/libisofs-1.1.6.
+
+  U: media/libogg-1.3.0.
+
+  U: media/libsamplerate-0.1.8.
+
+  U: media/libsndfile-1.0.25.
+
+  U: media/libvpx-0.9.7p1.
+
+  U: media/mpg123-1.13.4.
+
+  U: media/x264-20111215.
+
+  U: media/xvidcore-1.3.2.
+
+  U: x-libraries/xine-lib-1.1.20.
+
+[ Thu 15 Dec 2011 @ 21:40:57 UTC ] : 118
+
+  R: kernel/kernel-2.6.38.8(-libre). Reconfigured, more fine-tuned.
+
+[ Tue 13 Dec 2011 @ 14:48:59 UTC ] : 117
+
+  U: java/icedtea-web-1.1.4.
+
+  U: java/icedtea6-1.10.4.
+
+[ Sat 10 Dec 2011 @ 20:35:50 UTC ] : 116
+
+  RB: base/gcc_libs-4.5.3.
+
+  U: devel/binutils-2.22.
+
+  R: devel/gcc-4.5.3. (Just in case).
+
+[ Sat 10 Dec 2011 @ 16:03:27 UTC ] : 115
+
+  U: base/e2fsprogs-1.42.
+
+  U: tools/dosfstools-3.0.12.
+
+  U: tools/xfsdump-3.0.6.
+
+  U: tools/xfsprogs-3.1.7.
+
+[ Mon 05 Dec 2011 @ 19:40:31 UTC ] : 114
+
+  U: plus/emacs-23.3b.
+
+[ Mon 05 Dec 2011 @ 17:10:59 UTC ] : 113
+
+  U: base/dialog-1.1-20111020.
+
+  U: libraries/ncurses-5.9_20110702. The version "_20111126" produces
+     undesirable results.
+
+  U: tools/mc-4.8.0. This version has been patched to support the lzip
+     file format. Also, this patch was proposed to the upstream.
+
+  RB: x-xorg/util/xorgxconf-1.5. Now including the path for the
+      wqy-zenhei fonts.
+
+[ Sat 03 Dec 2011 @ 16:33:01 UTC ] : 112
+
+  U: x-xfce/garcon-0.1.9.
+
+  U: x-xfce/gtk-xfce-engine-2.9.0.
+
+  U: x-xfce/libxfce4util-4.8.2.
+
+  U: x-xfce/xfce-utils-4.8.3.
+
+  U: x-xfce/xfce4-panel-4.8.6.
+
+  U: x-xfce/xfce4-session-4.8.2.
+
+  U: x-xfce/xfce4-settings-4.8.3.
+
+  U: x-xfce/xfdesktop-4.8.3.
+
+  U: x-xfce/xfwm4-4.8.2.
+
+  U: x-xfce-goodies/ristretto-0.3.0.
+
+  U: x-xfce-goodies/tumbler-0.1.22.
+
+  U: x-xfce-goodies/xfce4-notifyd-0.2.2.
+
+[ Thu 01 Dec 2011 @ 12:10:47 UTC ] : 111
+
+  U: x-applications/icecat-7.0.1.
+
+  U: x-applications/xulrunner-7.0.1.
+
+[ Wed 30 Nov 2011 @ 00:27:03 UTC ] : 110
+
+  U: x-libraries/mesa-7.11.2.
+
+  R: x-xorg/xserver/xorg-server-1.11.2. The font path
+     "/usr/share/fonts/X11/wqy-zenhei", has been added
+     by default.
+
+[ Tue 29 Nov 2011 @ 17:10:23 UTC ] : 109
+
+  R: base/bash-4.2. Recompiled with patch level 20.
+
+  U: libraries/ncurses-5.9_20111126.
+
+  I: x-applications/fcitx-3.6.3. Thanks to Xiaoy.
+
+  I: x-applications/wqy-zenhei-0.8.38.
+
+[ Fri 25 Nov 2011 @ 20:16:52 UTC ] : 108
+
+  U: libraries/boost-1.48.0.
+
+  R: libraries/openmpi-1.5.4.
+
+[ Fri 25 Nov 2011 @ 15:46:24 UTC ] : 107
+
+Some freedom issues has been resolved. For more information, take a look at:
+http://www.mail-archive.com/gnu-linux-libre@nongnu.org/msg01200.html
+
+  R: media/cdrkit-1.1.11.
+
+  R: media/lame-3.98.4.
+
+  R: x-libraries/sdl-1.2.14.
+
+[ Wed 23 Nov 2011 @ 18:51:06 UTC ] : 106
+
+  R: kernel/kernel-2.6.38.8(-libre). Reconfigured, with the options:
+
+     - Default SLAB allocator -> SLAB. (x86)
+     - The KSM for page merging, has been activated. (x86)
+     - The kernel modesetting (KMS) for the Intel i915 video driver,
+       has been activated. (x86, x86_64).
+
+[ Wed 23 Nov 2011 @ 15:55:33 UTC ] : 105
+
+  U: libraries/libsigc++-2.2.10.
+
+  U: libraries/libxml++-2.34.2.
+
+  U: libraries/nspr-4.8.9.
+
+  U: libraries/nss-3.13.1.
+
+  U: libraries/tzdatabase-2011n.
+
+[ Tue 22 Nov 2011 @ 16:24:40 UTC ] : 104
+
+  R: printing/cups-1.4.8. Recompiled against poppler-0.18.1. Just in case.
+
+  U: printing/poppler-0.18.1.
+
+  U: printing/poppler-data-0.4.5.
+
+  R: x-applications/epdfview-0.1.8. Recompiled against the new poppler-0.18.1.
+
+[ Tue 22 Nov 2011 @ 15:07:09 UTC ] : 103
+
+  U: base/coreutils-8.14.
+
+  U: libraries/pcre-8.20.
+
+  U: printing/cups-1.4.8.
+
+  U: printing/ghostscript-9.04_libre.
+
+  U: tools/grep-2.10.
+
+[ Sun 20 Nov 2011 @ 19:09:04 UTC ] : 102
+
+  U: x-xorg/util/xorgxconf-1.5.
+
+     - xorg.conf-vesa: Use the default font path established by Xorg.
+
+[ Sun 20 Nov 2011 @ 16:56:27 UTC ] : 101
+
+  U: devel/git-1.7.7.4.
+
+  U: devel/mercurial-2.0.
+
+  U: devel/tcl-8.5.11.
+
+  U: devel/tk-8.5.11.
+
+  R: networking/obexftp-0.23. Recompiled against perl-5.14.2.
+
+[ Fri 18 Nov 2011 @ 18:51:36 UTC ] : 100
+
+  U: devel/perl-5.14.2.
+
+  U: devel/ruby-1.9.3.
+
+     - Note: the name of the package has been changed from
+       "ruby-X.Y.Z-patchlevel" to "ruby-X.Y.Z_patchlevel".
+
+  R: devel/subversion-1.6.17. Recompiled against perl-5.14.2.
+
+  U: libraries/gdbm-1.10.
+
+  U: modules/perl/uri-1.59.
+
+  R: modules/perl/xml-parser-2.41. Recompiled against perl-5.14.2.
+
+  R: modules/perl/xml-simple-2.18. Recompiled against perl-5.14.2.
+
+  R: networking/irssi-0.8.15. Recompiled against perl-5.14.2.
+
+  U: x-libraries/mesa-7.11.1.
+
+[ Wed 16 Nov 2011 @ 16:12:34 UTC ] : 99
+
+  RB: base/runit-scheme-3.3.
+
+      - /etc/runit/2:
+
+        * Make sure to mount FUSE.
+        * Don't re-populate /sys using `udevadm trigger --action=add'.
+          I think this is no longer necessary with the latest versions of udev.
+
+  U: base/udev-175.
+
+  U: libraries/dbus-glib-0.98.
+
+  U: tools/dbus-1.4.16.
+
+  U: tools/hal-20111030.
+
+  U: x-libraries/gvfs-1.9.2. Update according to our version of Glib.
+
+[ Wed 16 Nov 2011 @ 11:35:05 UTC ] : 98
+
+  U: libraries/libcroco-0.6.3.
+
+  U: tools/sqlite-3070900.
+
+  U: x-libraries/gdk-pixbuf-2.24.0.
+
+  U: x-libraries/glew-1.7.0.
+
+  U: x-libraries/gtk2+-2.24.8.
+
+  U: x-libraries/librsvg-2.34.2.
+
+  R: x-libraries/mesa-demos-8.0.1.
+
+  U: x-libraries/pango-1.29.4.
+
+  U: x-libraries/vte-0.28.2.
+
+[ Tue 15 Nov 2011 @ 09:38:18 UTC ] : 97
+
+  R: libraries/expat-2.0.1. Patched.
+
+  U: x-libraries/freetype-2.4.8.
+
+  U: x-libraries/libdrm-2.4.27.
+
+  U: x-libraries/mesa-7.11.
+
+  U: x-xorg/app/sessreg-1.0.7.
+
+  U: x-xorg/app/x11perf-1.5.4.
+
+  U: x-xorg/app/xdm-1.1.11.
+
+  U: x-xorg/app/xdpyinfo-1.3.0.
+
+  U: x-xorg/app/xinit-1.3.1.
+
+  U: x-xorg/app/xset-1.2.2.
+
+  U: x-xorg/data/xkeyboard-config-2.4.1.
+
+  U: x-xorg/doc/xorg-sgml-doctools-1.10.
+
+  U: x-xorg/driver/xf86-input-synaptics-1.5.0.
+
+  U: x-xorg/driver/xf86-video-ati-6.14.3.
+
+  U: x-xorg/driver/xf86-video-glint-1.2.6.
+
+  U: x-xorg/driver/xf86-video-intel-2.16.0.
+
+  U: x-xorg/driver/xf86-video-savage-2.3.3.
+
+  U: x-xorg/lib/libX11-1.4.4.
+
+  U: x-xorg/lib/libXfont-1.4.4.
+
+  U: x-xorg/lib/libxcb-20110902.
+
+  U: x-xorg/lib/pixman-0.24.0.
+
+  U: x-xorg/proto/xcb-proto-2011110.
+
+  R: x-xorg/util/xcb-util-renderutil-0.3.8. Patched.
+
+  R: x-xorg/util/xcb-util-wm-0.3.8. Patched.
+
+  U: x-xorg/xserver/xorg-server-1.11.2.
+
+  U: x-xorg/xserver/xorg-server-xephyr-1.11.2.
+
+  U: x-xorg/xserver/xorg-server-xnest-1.11.2.
+
+  U: x-xorg/xserver/xorg-server-xvfb-1.11.2.
+
+[ Fri 23 Sep 2011 @ 20:37:51 UTC ] : 96
+
+  U: libraries/libgcrypt-1.5.0.
+
+  U: networking/gnupg2-2.0.18.
+
+  U: networking/gpgme-1.3.1.
+
+  U: networking/libassuan-2.0.2.
+
+  U: networking/rsync-3.0.9.
+
+[ Wed 21 Sep 2011 @ 19:39:01 UTC ] : 95
+
+  U: libraries/libevent-2.0.13.
+
+  U: libraries/libftdi-0.19.
+
+  U: libraries/libgsf-1.14.21.
+
+  U: libraries/libidn-1.22.
+
+  U: libraries/libnl-3.1.
+
+  U: libraries/libsigsegv-2.9.
+
+  U: libraries/libsoup-2.34.3.
+
+  U: libraries/pcre-8.13.
+
+  U: libraries/slang-2.2.4.
+
+[ Wed 21 Sep 2011 @ 17:36:10 UTC ] : 94
+
+  U: libraries/fuse-2.8.6.
+
+  U: libraries/gdbm-1.9.1.
+
+  U: libraries/iso_codes-3.28.
+
+  U: libraries/libatomic_ops-7.2alpha6.
+
+  U: libraries/libcap-2.22.
+
+  U: libraries/libcdio-20110913. Upgraded from git.
+
+  U: networking/lftp-4.3.2.
+
+  U: networking/tor-0.2.2.33.
+
+  U: networking/wget-1.13.4.
+
+  U: tools/mc-4.7.5.4.
+
+  U: tools/file-5.09.
+
+[ Sun 11 Sep 2011 @ 18:50:37 UTC ] : 93
+
+  U: base/coreutils-8.13.
+
+  U: libraries/boost-1.47.0.
+
+  U: libraries/libusb-20101224. Upgraded from git.
+
+  RM: libraries/libv4l-0.6.4. Replaced with the package: v4l-utils-0.8.5.
+
+  U: libraries/openmpi-1.5.4.
+
+  U: networking/dhcp-4.2.2.
+
+  U: tools/hal-20110810. Upgraded from git.
+
+  I: tools/v4l-utils-0.8.5.
+
+[ Thu 08 Sep 2011 @ 15:00:52 UTC ] : 92
+
+  U: base/dialog-1.1-20110707.
+
+  U: base/lvm2-2.02.88.
+
+  U: base/mdadm-3.2.2.
+
+  U: libraries/libarchive-2.8.5.
+
+  U: networking/openssh-5.9p1.
+
+  U: networking/openssl-1.0.0e.
+
+  U: networking/wget-1.13.3.
+
+  U: tools/diffutils-3.2.
+
+  U: tools/dosfstools-3.0.11.
+
+[ Tue 06 Sep 2011 @ 19:56:45 UTC ] : 91
+
+Sorry for the delay, it's time to continue...
+
+  RB: base/gcc_libs-4.5.3.
+
+  U: devel/binutils-2.21.1a.
+
+  R: devel/gcc-4.5.3. Just in case.
+
+  U: libraries/glibc-2.13_20110720. Upgraded with the latest
+     fixes from Git.
+
+  U: libraries/tzdatabase-2011i.
+
+[ Tue 02 Aug 2011 @ 19:31:53 UTC ] : 90
+
+  U: base/udev-173.
+
+  R: base/util-linux-2.19.1. Applied an official patch.
+
+  U: tools/dbus-1.4.14.
+
+  U: tools/polkit-0.102.
+
+  U: tools/udisks-1.0.3.
+
+  U: tools/upower-0.9.12.
+
+  R: x-libraries/gtk2+-2.24.5. Applied an official patch.
+
+[ Mon 01 Aug 2011 @ 21:00:15 UTC ] : 89
+
+  U: media/ffmpeg-0.8.1.
+
+  U: networking/nfs-utils-1.2.4.
+
+  U: tools/mc-4.7.5.3.
+
+  U: x-libraries/freetype-2.4.6.
+
+  U: x-xorg/xserver/xorg-server-20110729.
+
+  U: x-xorg/xserver/xorg-server-xephyr-20110729.
+
+  U: x-xorg/xserver/xorg-server-xnest-20110729.
+
+  U: x-xorg/xserver/xorg-server-xvfb-20110729.
+
+[ Fri 29 Jul 2011 @ 21:31:07 UTC ] : 88
+
+  U: java/icedtea-web-1.1.1.
+
+  U: java/icedtea6-1.10.3.
+
+  U: x-applications/gnash-20110727.
+
+  U: x-applications/icecat-5.0. Reconfigured.
+
+  R: x-applications/xulrunner-5.0. Reconfigured.
+
+[ Sat 23 Jul 2011 @ 00:24:37 UTC ] : 87
+
+  R: k/kernel-2.6.38.8(-libre). Reconfigured, optimized for the speed
+     rather than the size.
+
+[ Thu 21 Jul 2011 @ 19:57:06 UTC ] : 86
+
+  U: media/gst-ffmpeg-0.10.12.
+
+  U: tools/tmux-1.5.
+
+  U: x-applications/transmission-2.33.
+
+  U: plus/gtk-gnutella-0.97. Update and moved to the "plus" directory.
+
+[ Wed 20 Jul 2011 @ 16:04:09 UTC ] : 85
+
+  RB: base/etc-2.6. /etc/inputrc: Handle correctly the Del character
+      under linux consoles.
+
+  U: media/libburn-1.1.0.
+
+  U: media/libisofs-1.1.2.
+
+  R: x-xfce-goodies/xfburn-0.4.3. Recompiled against the newer
+     libisofs and the newer libburn.
+
+[ Tue 19 Jul 2011 @ 18:50:53 UTC ] : 84
+
+  U: base/grub2-1.99.
+
+  U: base/lilo-23.2.
+
+  U: devel/nasm-2.09.10.
+
+  U: x-applications/exaile-0.3.2.2.
+
+  U: x-applications/gnash-20110718. Upgraded from git.
+
+[ Sun 17 Jul 2011 @ 15:32:43 UTC ] : 83
+
+  U: devel/ruby-1.9.2-p290.
+
+  U: libraries/libpng-1.4.8. Security release.
+
+  U: x-xorg/driver/xf86-video-ast-0.93.9.
+
+[ Fri 15 Jul 2011 @ 20:12:04 UTC ] : 82
+
+  U: media/ffmpeg-0.8.
+
+  U: media/gst-plugins-base-0.10.35.
+
+  U: media/gst-plugins-good-0.10.30.
+
+  U: media/gstreamer-0.10.35.
+
+  U: x-applications/pidgin-2.9.0.
+
+  U: x-applications/transmission-2.32.
+
+[ Thu 14 Jul 2011 @ 20:07:34 UTC ] : 81
+
+  U: x-xorg/app/mkfontscale-1.0.9.
+
+  U: x-xorg/app/smproxy-1.0.5.
+
+  U: x-xorg/app/xkbcomp-1.2.3.
+
+  U: x-xorg/app/xman-1.1.2.
+
+  U: x-xorg/app/xprop-1.2.1.
+
+  U: x-xorg/app/xproto-7.0.22.
+
+  U: x-xorg/app/xrandr-1.3.5.
+
+  U: x-xorg/app/xwininfo-1.1.2.
+
+  U: x-xorg/doc/xorg-sgml-doctools-1.8.
+
+  U: x-xorg/driver/xf86-input-aiptek-1.4.1.
+
+  U: x-xorg/driver/xf86-input-mouse-1.7.1.
+
+  U: x-xorg/driver/xf86-input-synaptics-1.4.1.
+
+  U: x-xorg/lib/libXcursor-1.1.12.
+
+  U: x-xorg/lib/libXrandr-1.3.2.
+
+  U: x-xorg/lib/pixman-0.22.2.
+
+  U: x-xorg/proto/dri2proto-2.6.
+
+  U: x-xorg/proto/glproto-1.4.14.
+
+  U: x-xorg/util/util-macros-1.15.0.
+
+  U: x-xorg/xserver/xorg-server-20110713.
+
+  U: x-xorg/xserver/xorg-server-xephyr-20110713.
+
+  U: x-xorg/xserver/xorg-server-xnest-20110713.
+
+  U: x-xorg/xserver/xorg-server-xvfb-20110713.
+
+[ Wed 13 Jul 2011 @ 11:40:38 UTC ] : 80
+
+  U: libraries/ncurses-5.9_20110702.
+
+  U: tools/feh-1.14.2.
+
+  R: x-libraries/imlib2-1.4.4. Recompiled with --disable-amd64,
+     the assembler code seems buggy.
+
+[ Tue 12 Jul 2011 @ 16:19:16 UTC ] : 79
+
+  U: base/logrotate-3.8.0.
+
+  U: base/sysklogd-20100910. Upgraded from git, contains IPv6 support.
+
+  U: base/udev-172.
+
+  U: networking/bluez-4.95.
+
+  U: networking/bluez-hcidump-2.1.
+
+  R: networking/libetpan-1.0. Recompiled to support the Berkeley DB 4.8.
+
+  U: networking/polipo-1.0.4.1.
+
+  U: networking/wicd-rev571. Upgraded from git.
+
+  U: x-applications/claws-mail-3.7.9cvs35.
+
+  U: x-applications/claws-mail-extra-plugins-3.7.9.
+
+  U: x-xorg/util/xdg-utils-20110510. Upgraded from git, deleting bad
+     references of some web browsers.
+
+[ Fri 08 Jul 2011 @ 21:38:15 UTC ] : 78
+
+  R: libraries/glibc-2.13_20110222. Recompiled with a patch taken
+     from the upstream. Also, `tzconfig' has received his dose
+     of maintenance. ,-)
+
+  U: libraries/nspr-4.8.8.
+
+  U: libraries/nss-3.12.10.
+
+  U: tools/gpm-20090311. Upgraded from git.
+     We can consider this, as the version 1.20.7.
+
+[ Thu 07 Jul 2011 @ 17:14:11 UTC ] : 77
+
+  U: libraries/iso_codes-3.26.
+
+  R: libraries/libpng-1.4.7. Recompiled with APNG support.
+
+  U: libraries/libthai-0.1.15.
+
+  U: tools/gawk-4.0.0.
+
+  U: tools/tree-1.6.0.
+
+  U: x-libraries/cairo-1.10_20110608. Upgraded from git.
+
+  U: x-libraries/freetype-20110707. Upgraded from git.
+
+  U: x-libraries/pango-1.29.3.
+
+[ Thu 07 Jul 2011 @ 17:10:07 UTC ] : 76
+
+The name of the series has been renamed.
+
+  b -> base
+  d -> devel
+  k -> kernel
+  l -> libraries
+  n -> networking
+  t -> tools
+
+[ Thu 30 Jun 2011 @ 18:18:54 UTC ] : 75
+
+  RB: b/runit-scheme.
+
+      - /etc/runit/2:
+
+        * Don't exec runsvdir(8) from a function.
+        * We make sure that the /tmp directory has the correct
+          permissions (1777).
+
+  R: l/libgphoto2-2.4.11. Recompiled to put the udev parts
+     under /lib/udev.
+
+[ Thu 30 Jun 2011 @ 17:20:55 UTC ] : 74
+
+  U: modules/python/dbus-python-0.84.0.
+
+  R: modules/python/gobject-introspection-0.10.8.
+
+  U: modules/python/pygobject-2.28.6.
+
+  U: t/sqlite-3070701.
+
+  U: x-libraries/gconf-2.32.4.
+
+  U: x-libraries/gdk-pixbuf-2.23.5.
+
+  U: x-xorg/lib/libxcb-20110512.
+
+  U: x-xorg/proto/xcb-proto-20110613.
+
+  R: x-xorg/util/xcb-util-0.3.8.
+
+  R: x-xorg/util/xcb-util-image.
+
+  R: x-xorg/util/xcb-util-keysyms.
+
+  R: x-xorg/util/xcb-util-renderutil.
+
+  R: x-xorg/util/xcb-util-wm-0.3.8.
+
+[ Tue 28 Jun 2011 @ 17:26:52 UTC ] : 73
+
+  U: d/tcl-8.5.10.
+
+  U: d/tk-8.5.10.
+
+  U: l/tzdatabase-2011h.
+
+  U: n/lftp-4.3.1.
+
+  U: printing/cups-1.4.7.
+
+  U: printing/foomatic-db-20110627.
+
+  U: printing/foomatic-db-engine-20110627.
+
+  U: printing/foomatic-filters-20110627.
+
+  U: x-xfce/garcon-0.1.8.
+
+  U: x-xfce/terminal-0.4.8.
+
+  U: x-xfce/xfce-utils-4.8.2.
+
+  U: x-xfce/xfce4-panel-4.8.5.
+
+[ Mon 27 Jun 2011 @ 18:52:58 UTC ] : 72
+
+  U: d/git-1.7.5.4.
+
+  U: d/subversion-1.6.17.
+
+  U: l/dbus-glib-0.94.
+
+  U: l/neon-0.29.6.
+
+  U: media/pulseaudio-0.9.23.
+
+  U: x-applications/icecat-5.0.
+
+  U: x-applications/xulrunner-5.0.
+
+  U: x-libraries/freetype-2.4.5.
+
+[ Sat 25 Jun 2011 @ 18:44:02 UTC ] : 71
+
+  U: d/perl-5.14.1.
+
+  U: l/glibmm-2.28.2.
+
+  U: l/libsigc++-2.2.9.
+
+  U: l/libxml++-2.34.1.
+
+  R: modules/perl/uri-1.58. Recompiled against perl-5.14.1.
+
+  U: modules/perl/xml-parser-2.41.
+
+  R: modules/perl/xml-simple-2.18. Recompiled against perl-5.14.1.
+
+  R: n/irssi-0.8.15. Recompiled against perl-5.14.1.
+
+  R: n/obexftp-0.23. Recompiled against perl-5.14.1.
+
+  R: x-applications/vim-gvim-7.3. Recompiled with patch level 230.
+
+[ Thu 23 Jun 2011 @ 21:37:39 UTC ] : 70
+
+  I: ../plus/wxWidgets-2.9.1.
+
+  U: b/dcron-4.5.
+
+  U: l/lcms2-2.2.
+
+  U: n/curl-7.21.7.
+
+  U: t/grep-2.9.
+
+  U: t/lirc-0.9.0.
+
+  U: x-applications/gimp-2.6_20110610.
+     Upgraded from the (git) branch 2.6.
+
+  U: x-applications/scrotwm-0.9.32.
+
+  U: x-libraries/babl-0.1.4.
+
+  U: x-libraries/gegl-0.1.6.
+
+[ Tue 21 Jun 2011 @ 18:51:38 UTC ] : 69
+
+  I: n/nfs-utils-1.2.3.
+     Thanks for the build script to Thomas Bourdon.
+
+  I: n/portmap-6.0.
+     Another thanks to Thomas Bourdon.
+
+[ Sat 18 Jun 2011 @ 19:24:13 UTC ] : 68
+
+  U: java/icedtea-web-1.0.3.
+
+  U: java/icedtea6-1.10.2.
+
+  U: java/rhino-1_7R3.
+
+  U: l/gmp-5.0.2.
+
+  R: l/mpfr-3.0.1. Recompiled with the latest official patch.
+
+  U: t/usbutils-003.
+
+  U: x-libraries/gtk2+-2.24.5.
+
+  U: x-libraries/vte-0.28.1.
+
+[ Wed 15 Jun 2011 @ 23:27:10 UTC ] : 67
+
+  RB: b/gcc_libs-4.5.3.
+
+  U: d/binutils-2.21.52.0.2.
+
+  R: d/gcc-4.5.3.
+
+[ Wed 15 Jun 2011 @ 18:33:33 UTC ] : 66
+
+  RB: b/pkgsystem-2.6.
+
+     - upgrade:
+
+       * pkg_name(): Use "here strings" for packages with
+         four or more segments.
+       * date(1) has been replaced with the printf built-in.
+
+  U: l/libjpeg-turbo-1.1.1.
+
+  U: x-libraries/gdk-pixbuf-2.23.4.
+
+  U: x-libraries/mesa-7.10.3.
+
+  U: x-xfce/exo-0.6.2.
+
+  I: x-xfce/xfce4-power-manager-1.0.10.
+
+[ Tue 14 Jun 2011 @ 16:37:27 UTC ] : 65
+
+  U: l/libevent-2.0.12.
+
+  I: l/libpipeline-1.2.0. Now required by man-db.
+
+  U: t/dbus-1.4.12.
+
+  U: t/feh-1.14.1.
+
+  R: t/hal-20110410.
+
+  U: t/jfsutils-1.1.15.
+
+  U: t/less-444.
+
+  U: t/man-db-2.6.0.2.
+
+  U: t/sharutils-4.11.1.
+
+  U: t/sqlite-3070603.
+
+  U: t/sudo-1.8.1p2.
+
+  U: t/wcd-5.1.5.
+
+  U: x-libraries/gvfs-1.9.1.
+
+[ Sat 11 Jun 2011 @ 01:59:11 UTC ] : 64
+
+  U: emacs/emacs-23.3. Emacs has been moved to another directory called
+     "plus", this will be on CD number 2. ,-)
+
+  R: x-applications/icewm-1.3.7.
+
+  U: x-applications/scrotwm-0.9.28. The default Mod key is now the ALT key.
+
+  U: x-xorg/driver/xf86-video-nv-20110425. Upgraded from git.
+
+  R: x-xorg/util/xorg-cf-files-1.0.4. The config directory is located
+     under /etc/X11.
+
+[ Fri 10 Jun 2011 @ 20:48:26 UTC ] : 63
+
+  U: x-libraries/libdrm-2.4.26.
+
+  U: x-xorg/app/iceauth-1.0.5.
+
+  U: x-xorg/app/xauth-1.0.6.
+
+  U: x-xorg/app/xlsclients-1.1.2.
+
+  U: x-xorg/data/xkeyboard-config-2.3.
+
+  U: x-xorg/driver/xf86-input-acecad-1.5.0.
+
+  U: x-xorg/driver/xf86-input-aiptek-1.4.0.
+
+  R: x-xorg/driver/xf86-input-evdev-2.6.0.
+
+  U: x-xorg/driver/xf86-input-joystick-1.6.0.
+
+  R: x-xorg/driver/xf86-input-keyboard-1.6.0.
+
+  R: x-xorg/driver/xf86-input-mouse-1.7.0.
+
+  R: x-xorg/driver/xf86-input-synaptics-1.4.0.
+
+  R: x-xorg/driver/xf86-input-vmmouse-12.7.0.
+
+  U: x-xorg/driver/xf86-input-void-1.4.0.
+
+  R: x-xorg/driver/xf86-video-apm-1.2.3.
+
+  R: x-xorg/driver/xf86-video-ark-0.7.3.
+
+  R: x-xorg/driver/xf86-video-ast-0.91.10.
+
+  U: x-xorg/driver/xf86-video-ati-6.14.2.
+
+  R: x-xorg/driver/xf86-video-chips-1.2.4.
+
+  R: x-xorg/driver/xf86-video-cirrus-1.3.2.
+
+  R: x-xorg/driver/xf86-video-dummy-0.3.4.
+
+  R: x-xorg/driver/xf86-video-fbdev-0.4.2.
+
+  R: x-xorg/driver/xf86-video-geode-2.11.12.
+
+  R: x-xorg/driver/xf86-video-glint-1.2.5.
+
+  R: x-xorg/driver/xf86-video-i128-1.3.4.
+
+  R: x-xorg/driver/xf86-video-i740-1.3.2.
+
+  U: x-xorg/driver/xf86-video-intel-2.15.0.
+
+  U: x-xorg/driver/xf86-video-mach64-6.9.0.
+
+  R: x-xorg/driver/xf86-video-mga-1.4.13.
+
+  R: x-xorg/driver/xf86-video-neomagic-1.2.5.
+
+  R: x-xorg/driver/xf86-video-nv-2.1.18.
+
+  R: x-xorg/driver/xf86-video-openchrome-0.2.904.
+
+  R: x-xorg/driver/xf86-video-r128-6.8.1.
+
+  R: x-xorg/driver/xf86-video-rendition-4.2.4.
+
+  R: x-xorg/driver/xf86-video-s3-0.6.3.
+
+  R: x-xorg/driver/xf86-video-s3virge-1.10.4.
+
+  R: x-xorg/driver/xf86-video-savage-2.3.2.
+
+  R: x-xorg/driver/xf86-video-siliconmotion-1.7.5.
+
+  R: x-xorg/driver/xf86-video-sis-0.10.3.
+
+  R: x-xorg/driver/xf86-video-sisusb-0.9.4.
+
+  R: x-xorg/driver/xf86-video-tdfx-1.4.3.
+
+  R: x-xorg/driver/xf86-video-tga-1.2.1.
+
+  R: x-xorg/driver/xf86-video-trident-1.3.4.
+
+  R: x-xorg/driver/xf86-video-tseng-1.2.4.
+
+  R: x-xorg/driver/xf86-video-v4l-0.2.0.
+
+  R: x-xorg/driver/xf86-video-vesa-2.3.0.
+
+  R: x-xorg/driver/xf86-video-voodoo-1.2.4.
+
+  U: x-xorg/lib/libXext-1.3.0.
+
+  U: x-xorg/lib/libXi-1.4.3.
+
+  U: x-xorg/lib/pixman-0.22.0.
+
+  U: x-xorg/proto/dri2proto-2.4.
+
+  U: x-xorg/proto/glproto-1.4.13.
+
+  U: x-xorg/proto/inputproto-2.0.2.
+
+  U: x-xorg/proto/resourceproto-1.2.0.
+
+  U: x-xorg/proto/xf86driproto-2.1.1.
+
+  U: x-xorg/util/util-macros-1.14.0.
+
+  U: x-xorg/xserver/xorg-server-1.10.99.901.
+
+  U: x-xorg/xserver/xorg-server-xephyr-1.10.99.901.
+
+  U: x-xorg/xserver/xorg-server-xnest-1.10.99.901.
+
+  U: x-xorg/xserver/xorg-server-xvfb-1.10.99.901.
+
+[ Wed 08 Jun 2011 @ 20:51:43 UTC ] : 62
+
+  U: b/pkgsystem-2.6.
+
+     - remove:
+
+       * Handle those packages that do not have a post-install script,
+         this is on the pre-removal routine.
+       * The cat_except() function has been simplified.
+       * Minor changes.
+
+     - upgrade:
+
+       * Move the scripts of pre and post installation for easy removal.
+
+  U: l/apr-util-1.3.12.
+
+  U: l/apr1-1.4.5.
+
+     - Note: the name of the package has been changed.
+
+  U: l/glib2-2.28.8.
+
+[ Tue 07 Jun 2011 @ 21:58:14 UTC ] : 61
+
+  RB: b/runit-scheme. Delete the serverauth file between reboots.
+
+  R: x-xorg/app/xinit-1.3.0. Patched to create the server
+     auth file (serverauth) into /tmp.
+
+[ Tue 07 Jun 2011 @ 19:54:49 UTC ] : 60
+
+  RB: x-xfce/xfce4-settings-4.8.2. Rebuilt changing the Rodent icon
+      theme by Gnome icon theme.
+
+[ Tue 07 Jun 2011 @ 19:03:19 UTC ] : 59
+
+  U: d/python-2.6.7.
+
+  U: n/fetchmail-6.3.20.
+
+  U: n/nmap-5.51.
+
+  U: n/openssh-5.8p2.
+
+  U: x-applications/epdfview-0.1.8.
+
+  U: x-applications/heybuddy-0.2.1.
+
+[ Sat 04 Jun 2011 @ 23:47:47 UTC ] : 58
+
+  U: k/kernel-2.6.38.8(-libre).
+
+     - Note: A new kernel image is provided with the suffix "-gen" for
+             the 32-bit architecture. The SMP support was removed this
+             time, in order to provide a more consistent kernel for old
+             machines. If you need more power, try with the 64-bit. :-)
+
+  R: l/glibc-2.13_20110222.
+
+[ Fri 03 Jun 2011 @ 15:15:03 UTC ] : 57
+
+  RB b/runit-scheme-3.3. Don't invoke agetty(8) with the option '-8'.
+
+[ Fri 03 Jun 2011 @ 14:21:33 UTC ] : 56
+
+  RB b/runit-scheme-3.3.
+
+     - /etc/runit/1:
+
+       * Mount /dev/shm from here, rather than /etc/fstab.
+
+  RB: media/cdparanoia-10.2. Fixed library permissions.
+
+  U: n/dhcp-4.2.1.
+
+[ Fri 03 Jun 2011 @ 09:43:53 UTC ] : 55
+
+  U: b/_hierarchyfs-2.0. Added the directory "/dev/pts" and the
+     directory "/run/udev", just in case.
+
+  RB: b/etc-2.6. Added the user and the group "rtkit".
+
+  I: t/polkit-gnome-0.101-i486-1.tlz.
+
+  I: t/rtkit-0.10-i486-1.tlz
+
+[ Thu 02 Jun 2011 @ 18:01:37 UTC ] : 54
+
+  U: b/udev-171.
+
+  U: l/libgphoto2-2.4.11.
+
+  U: l/libsoup-2.34.2.
+
+  U: t/gphoto2-2.4.11.
+
+  U: t/upower-0.9.11.
+
+  U: x-libraries/gvfs-1.9.0.
+
+[ Wed 01 Jun 2011 @ 17:03:17 UTC ] : 53
+
+  U: b/lvm2-2.02.85.
+
+  U: b/mdadm-3.2.1.
+
+  U: l/libevent-2.0.11.
+
+  R: n/tor-0.2.1.30. Recompiled against libevent-2.0.11.
+
+  I: t/parallel-20110522.
+
+  U: t/parted-3.0.
+
+  U: t/tmux-1.4.
+
+  I: x-applications/gtk-gnutella-0.96.9.
+
+  I: x-applications/transmission-2.31.
+
+  U: x-libraries/gconf-2.32.3.
+
+[ Tue 31 May 2011 @ 17:11:28 UTC ] : 52
+
+  RB: b/pkgsystem-2.5.
+
+     - add:
+
+       * Added sanity check to see if the filesystem is in read-only mode.
+       * Show description files even in a clear environment.
+       * Solved the UTF-8 conversion for description files (if $LANG
+         is in UTF-8).
+       * Minor cleanup.
+
+     - remove:
+
+       * Added sanity check to see if the filesystem is in read-only mode.
+       * Compress (using lzip) the removed description files.
+
+     - upgrade:
+
+       * Added sanity check to see if the filesystem is in read-only mode.
+       * The usage of sed(1) has been removed from the pkg_name() function.
+       * upgrade now removes descriptions of old packages.
+       * Minor cleanup.
+
+[ Thu 26 May 2011 @ 21:47:17 UTC ] : 51
+
+  RB: media/xvidcore-1.3.1. Fixed library permissions.
+
+  U: x-applications/exaile-0.3.2.1.
+
+  U: x-applications/pidgin-2.7.11.
+
+  R: x-applications/squeeze-0.2.3.
+
+  U: x-applicationsxchat-rev1496(-svn).
+
+[ Thu 26 May 2011 @ 18:16:40 UTC ] : 50
+
+  R: l/boost-1.46.1. Recompiled against openmpi-1.5.3.
+
+  U: media/gst-plugins-bad-0.10.22.
+
+  U: media/gst-plugins-base-0.10.34.
+
+  U: media/gst-plugins-good-0.10.29.
+
+  U: media/gstreamer-0.10.34.
+
+  R: media/lame-3.98.4.
+
+  R: media/pulseaudio-0.9.22.
+
+[ Wed 25 May 2011 @ 18:07:24 UTC ] : 49
+
+These changes reflect the introduction of the new XCB library. Some
+packages need to be re-compiled against the new version of XCB.
+
+  U: d/pkg-config-0.26.
+
+  U: l/libpthread-stubs-20101223. This is the version 0.3 containing
+     small fixes from git.
+
+  R: modules/python/gobject-introspection-0.10.8. Recompiled with the
+     option --libdir=/usr/lib64 for the 64-bit architecture.
+
+  R: modules/python/py2cairo-1.10.0. Recompiled with --libdir=/usr/lib64.
+
+  R: modules/python/pygobject-2.28.4. Recompiled with --libdir=/usr/lib64.
+
+  R: modules/python/pygtk-2.24.0. Recompiled just in case. This is only
+     for the 64-bit architecture (x86_64).
+
+  R: x-libraries/gtk1+-1.2.10. Added missing symlink for compatibility.
+
+  R: x-libraries/libwnck-2.30.6.
+
+  U: x-libraries/startup-notification-0.12.
+
+  R: x-xfce/exo-0.6.1.
+
+  R: x-xfce/garcon-0.1.7.
+
+  R: x-xfce/gtk-xfce-engine-2.8.1.
+
+  R: x-xfce/libxfce4ui-4.8.0.
+
+  R: x-xfce/libxfce4util-4.8.1.
+
+  R: x-xfce/libxfcegui4-4.8.1.
+
+  R: x-xfce/mousepad-20110116.
+
+  R: x-xfce/terminal-0.4.7.
+
+  R: x-xfce/thunar-1.3.0.
+
+  R: x-xfce/thunar-vfs-1.2.0.
+
+  R: x-xfce/xfce-utils-4.8.1.
+
+  R: x-xfce/xfce4-appfinder-4.8.0.
+
+  R: x-xfce/xfce4-dev-tools-4.8.0.
+
+  R: x-xfce/xfce4-icon-theme-20090717.
+
+  R: x-xfce/xfce4-mixer-4.8.0.
+
+  R: x-xfce/xfce4-panel-4.8.3.
+
+  R: x-xfce/xfce4-session-4.8.1.
+
+  U: x-xfce/xfce4-settings-4.8.2.
+
+  R: x-xfce/xfconf-4.8.0.
+
+  R: x-xfce/xfdesktop-4.8.2.
+
+  R: x-xfce/xfwm4-4.8.1.
+
+  R: x-xfce/xfwm4-themes-20090907.
+
+  R: x-xfce-goodies/parole-0.2.0.6.
+
+  R: x-xfce-goodies/ristretto-0.0.93.
+
+  R: x-xfce-goodies/thunar-volman-0.6.0.
+
+  R: x-xfce-goodies/tumbler-0.1.21.
+
+  R: x-xfce-goodies/xfburn-0.4.3.
+
+  R: x-xfce-goodies/xfce4-netload-plugin-1.0.0.
+
+  R: x-xfce-goodies/xfce4-notifyd-0.2.1.
+
+  R: x-xfce-goodies/xfce4-taskmanager-1.0.0.
+
+  U: x-xorg/lib/libxcb-20110511.
+
+  U: x-xorg/proto/xcb-proto-20110510.
+
+  U: x-xorg/util/xcb-util-0.3.8.
+
+  I: x-xorg/util/xcb-util-image-0.3.8.
+
+  I: x-xorg/util/xcb-util-keysyms-0.3.8.
+
+  I: x-xorg/util/xcb-util-renderutil-0.3.8.
+
+  I: x-xorg/util/xcb-util-wm-0.3.8.
+
+[ Mon 23 May 2011 @ 17:33:31 UTC ] : 48
+
+  R: x-libraries/libdrm-2.4.25. Removed support of Nouveau.
+
+  R: x-libraries/mesa-7.10.2. Removed support of Nouveau.
+
+  RM: x-xorg/driver/xf86-video-nouveau-20110323.
+      The package has been removed because his freedom isn't clear, see:
+      http://lists.gnu.org/archive/html/gnu-linux-libre/2011-05/msg00001.html
+
+[ Mon 23 May 2011 @ 13:02:00 UTC ] : 47
+
+  U: k/kernel-2.6.38.7(-libre).
+
+  R: l/glibc-2.13_20110222.
+
+[ Sun 22 May 2011 @ 19:08:17 UTC ] : 46
+
+  U: l/glib2-2.28.7.
+
+  U: n/bluez-4.93.
+
+  U: n/bluez-hcidump-20110414(-git).
+
+  U: n/obex-data-server-0.4.6.
+
+  R: n/obexfs-0.12.
+
+  R: n/obexftp-0.23.
+
+  R: n/openobex-1.5.  
+
+  U: x-applications/xterm-270.
+
+  R: x-libraries/gnome-icon-theme-3.0.0. Added gnome-icon-theme-extras.
+
+  R: x-libraries/gtk2+-2.24.4. Applied patches from upstream.
+
+[ Fri 20 May 2011 @ 18:03:02 UTC ] : 45
+
+  I: media/agg-2.5. Now required by gnash-0.8.9.
+
+  U: modules/python/gobject-introspection-0.10.8.
+
+  U: modules/python/py2cairo-1.10.0.
+
+  U: modules/python/pygobject-2.28.4.
+
+  U: modules/python/pygtk-2.24.0.
+
+  U: scanner/sane-backends-1.0.22.
+
+  U: x-applications/gnash-0.8.9.
+
+[ Wed 18 May 2011 @ 17:00:44 UTC ] : 44
+
+  R: l/zlib-1.2.5. Applied a patch in "zlib.h" to not break
+     other possible builds.
+
+  I: modules/python/notify-python-0.1.1.
+
+  U: printing/gutenprint-5.2.7.
+
+  U: printing/hplip-3.11.5.
+
+  U: printing/poppler-0.16.5.
+
+  U: x-applications/epdfview-rev361.  
+
+[ Tue 17 May 2011 @ 21:18:47 UTC ] : 43
+
+  U: printing/cups-1.4.6.
+
+  U: printing/foomatic-db-20110517.
+
+  U: printing/foomatic-db-engine-20110517.
+
+  U: printing/foomatic-filters-20110517.
+
+  U: printing/ghostscript-9.02(-libre).
+
+  U: x-xfce/exo-0.6.1.
+
+  U: x-xfce/xfdesktop-4.8.2.
+
+[ Tue 17 May 2011 @ 16:15:01 UTC ] : 42
+
+  RB: b/pkgsystem-2.5.
+
+     - remove:
+
+       * Removed trailing slash when checking for an empty directory
+         from the database.
+
+[ Mon 16 May 2011 @ 18:45:51 UTC ] : 41
+
+  U: l/openmpi-1.5.3.
+
+  RB: n/dhcp-4.1. Don't clobber existing files.
+
+  I: x-libraries/gnome-icon-theme-symbolic-3.0.0. This package was
+     merged into the package "gnome-icon-theme-3.0.0", all-in-one.
+
+[ Mon 16 May 2011 @ 00:40:44 UTC ] : 40
+
+  R: b/bash-4.2. Recompiled with patch level 010.
+
+  RB: b/etc-2.6. Added a custom inputrc file from
+      the example of his author, Chet Ramey.
+
+  U: d/bison-2.5.
+
+  U: t/file-5.07.
+
+  U: t/grep-2.8.
+
+  U: x-applications/icecat-4.0.1.
+
+  U: x-applications/xulrunenr-2.0.1.
+
+[ Thu 12 May 2011 @ 19:33:35 UTC ] : 39
+
+  U: k/kernel-2.6.38.6(-libre).
+
+  R: l/glibc-2.13_20110222.
+
+[ Wed 11 May 2011 @ 19:26:29 UTC ] : 38
+
+  R: b/runit-2.1.1. Removed the location for the state files of runit
+     that was in /var/state. Now are located in /etc/runit. The main
+     reason to do this, is because /var can be a mounted partition,
+     and probably, it cannot be available.
+
+  U: b/runit-scheme-3.3.
+
+     - /etc/runit/1:
+
+       * Udev is now executed from here (Stage 1).
+       * Removed the line to start /etc/rc.d/rc.clock. See below.
+       * Added more directories to remove, section "Seek & destroy".
+       * The part to initialize the random number generator
+         has been improved.
+       * Code clean up.
+
+     - /etc/runit/2:
+
+       * Set terminal settings and keyboard map from here (Stage 2).
+       * Code clean up.
+
+     - /etc/runit/3:
+
+       * The part to save the random number generator has been improved.
+       * Code clean up.
+
+  RB: b/udev-167.
+
+      - The script /etc/rc.d/rc.udev has been removed (handled on Stage 1).
+      - Run /etc/rc.d/rc.clock (establishing the hardware clock) from
+        55-dragora.rules. The time would be set in early boot process.
+      - Added 65-permissions.rules.
+
+[ Tue 10 May 2011 @ 15:46:05 UTC ] : 37
+
+  U: l/tzdatabase-2011g.
+
+  R: x-libraries/mesa-7.10.2. Recompiled with the option
+     '--enable-gallium-nouveau'.
+
+[ Mon 09 May 2011 @ 21:21:59 UTC ] : 36
+
+  U: b/_hierarchyfs-1.9. This package has been split ed in two packages,
+     one for the 32 bit architecture, and the other for the 64 bit's.
+
+  U: k/kernel-2.6.38.5(-libre).
+
+     - Note: There's no more two kernels for the 32 bit architecture,
+             instead we provide a new generic kernel (with *new
+             configuration*) including SMP support.
+
+  R: l/glibc-2.13_20110222. Recompiled with NSS crypt support.
+
+[ Fri 06 May 2011 @ 00:08:34 UTC ] : 35
+
+  U: b/pkgsystem-2.5.
+
+     - add:
+
+       * Use options '--strip-components=1' and '--show-stored-names'
+         on `tar' to avoid the (unnecessary) usage of sed(1).
+
+     - remove:
+
+       * The function empty_dir() has been changed, adapting to
+         the changes of "add".
+
+     - makepkg:
+
+       * Check if the destiny is a valid directory.
+       * Added more verbosity to lzip(1) output.
+
+[ Thu 05 May 2011 @ 16:54:37 UTC ] : 34
+
+  U: t/consolekit-0.4.5.
+
+  U: t/file-5.06.
+
+  U: t/hdparm-9.37.
+
+  U: t/lm_sensors-3.3.0.
+
+  U: t/lzip-1.12.
+
+  U: t/mc-4.7.5.2.
+
+  R: t/polkit-0.101. Recompiled with a security patch from the upstream.
+
+  U: t/upower-0.9.10.
+
+[ Tue 03 May 2011 @ 17:10:43 UTC ] : 33
+
+  RB: b/gcc_libs-4.5.3.
+
+  U: d/gcc-4.5.3.
+
+  U: l/cloog-ppl-0.15.11.
+
+[ Mon 02 May 2011 @ 19:45:48 UTC ] : 32
+
+  U: b/util-linux-2.19.1.
+
+  R: l/gdbm-1.8.3. Applied a subset of patches to improve the security.
+
+  U: l/mpfr-3.0.1.
+
+  U: l/ncurses-5.9_20110430.
+
+[ Mon 02 May 2011 @ 17:01:59 UTC ] : 31
+
+  U: media/farsight2-0.0.26.
+
+  U: media/mpg123-1.13.3.
+
+[ Mon 02 May 2011 @ 16:05:18 UTC ] : 30
+
+  U: l/libsoup-2.34.1.
+
+  U: media/ffmpeg-0.6.3.
+
+  U: media/libburn-1.0.6.
+
+  U: media/libdvdnav-r1226.
+
+  U: media/libdvdread-r1226.
+
+  U: media/libisofs-1.0.6.
+
+  U: x-libraries/libnice-0.1.0.
+
+  R: x-libraries/sdl-1.2.14. Applied a subset of patches.
+
+  R: x-libraries/sdl_image-1.2.10.
+
+  R: x-libraries/sdl_mixer-1.2.11.
+
+  R: x-libraries/sdl_net-1.2.7.
+
+  U: x-libraries/sdl_ttf-2.0.10.
+
+  R: x-xfce-goodies/xfburn-0.4.3. Recompiled against the new
+     libburn, libisofs.
+
+[ Fri 29 Apr 2011 @ 20:00:02 UTC ] : 29
+
+  U: media/celt-0.9.1. Celt has been upgraded to version 0.9.1
+     for compatibility with gst-plugins-bad.
+
+  R: media/gst-ffmpeg-0.10.11.
+
+  R: media/gst-fluendo-mp3-0.10.15.
+
+  U: media/gst-plugins-bad-0.10.21.
+
+  U: media/gst-plugins-base-0.10.32.
+
+  U: media/gst-plugins-good-0.10.28.
+
+  U: media/gst-python-0.10.21.
+
+  U: media/gstreamer-0.10.32.
+
+  R: media/jack-1.9.7. Recompiled against celt-0.9.1.
+
+  U: media/openal-soft-1.13.
+
+[ Thu 28 Apr 2011 @ 21:34:39 UTC ] : 28
+
+  U: media/celt-0.11.1.
+
+  U: media/jack-1.9.7.
+
+  U: media/libao-1.1.0.
+
+  U: media/libogg-1.2.2.
+
+  U: media/libsndfile-1.0.24.
+
+  U: media/libvpx-0.9.6.
+
+  U: media/taglib-1.7.
+
+  U: media/x264-20110427.
+
+  U: media/xvidcore-1.3.1.
+
+[ Thu 28 Apr 2011 @ 16:38:25 UTC ] : 27
+
+  U: b/acl-2.2.51.
+
+  U: b/attr-2.4.46.
+
+  U: t/groff-1.21.
+
+[ Wed 27 Apr 2011 @ 18:17:59 UTC ] : 26
+
+  U: b/coreutils-8.12.
+
+  RB: d/cmake-2.8.4.
+
+      - Added a profile (/etc/profile.d/cmake) to export the modules,
+        templates and headers of cmake(1) through CMAKE_ROOT.
+
+  R: media/aalib-1.4rc5. Applied a minor patch.
+
+  R: media/cdparanoia-10.2. Recompiled with a patch to not break other
+     possible compilations.
+
+  R: media/cdrkit-1.1.11. Recompiled with a subset of patches.
+
+[ Tue 26 Apr 2011 @ 18:32:35 UTC ] : 25
+
+  I: d/yasm-1.1.0.
+
+  I: java/icedtea-web-1.0.2.
+
+  U: x-applications/icecat-4.0.
+
+  U: x-applications/xulrunner-2.0.
+
+[ Sat 23 Apr 2011 @ 15:07:20 UTC ] : 24
+
+  RB: b/gcc_libs-4.5.2.
+
+  U: d/binutils-2.21.51.0.8.
+
+  R: d/gcc-4.5.2. The Eclipse Java Compiler version 3.6.2 was added.
+
+  U: java/apache-ant-1.8.2.
+
+  U: java/icedtea6-1.10.1.
+
+  U: java/xerces-j-2.11.0.
+
+  U: l/nspr-4.8.7.
+
+  U: l/nss-3.12.9.
+
+[ Wed 20 Apr 2011 @ 15:26:58 UTC ] : 23
+
+  U: l/boost-1.46.1. Upgraded with MPI support.
+
+  I: l/openmpi-1.4.3.
+
+[ Tue 19 Apr 2011 @ 19:31:07 UTC ] : 22
+
+  I: l/libx86-1.1 (required by suspend-utils).
+
+  I: t/pm-utils-1.4.1.
+
+  I: t/suspend-utils-1.0.
+
+  U: x-libraries/gnome-icon-theme-3.0.0.
+
+  U: x-libraries/gnome-mount-20101226(-git).
+
+  U: x-libraries/libdrm-2.4.25.
+
+  U: x-xorg/util/desktop-file-utils-0.18.
+
+[ Mon 18 Apr 2011 @ 18:20:57 UTC ] : 21
+
+  RB: b/etc-2.6.
+
+      - The user and the group "haldaemon" has been added (again).
+
+  RB: b/runit-scheme-3.2.
+
+      - /etc/runit/2:
+
+        * Reverted the line to start the script /etc/rc.d/rc.hald.
+
+  I: t/hal-20110410(-git).
+
+     - Note: HAL is back. Sorry, but HAL is still needed
+             by other applications. A better version was
+             included from git.
+
+  U: x-libraries/gvfs-1.8.0.
+
+  U: x-libraries/vte-0.28.0.
+
+  U: x-xfce/exo-0.6.0.
+
+  U: x-xfce/garcon-0.1.7.
+
+  U: x-xfce/gtk-xfce-engine-2.8.1.
+
+  U: x-xfce/libxfce4ui-4.8.0.
+
+  U: x-xfce/libxfce4util-4.8.1.
+
+  U: x-xfce/libxfcegui4-4.8.1.
+
+  U: x-xfce/mousepad-20110116.
+
+  U: x-xfce/terminal-0.4.7.
+
+  U: x-xfce/thunar-1.3.0.
+
+  R: x-xfce/thunar-vfs-1.2.0.
+
+  U: x-xfce/xfce-utils-4.8.1.
+
+  U: x-xfce/xfce4-appfinder-4.8.0.
+
+  U: x-xfce/xfce4-dev-tools-4.8.0.
+
+  U: x-xfce/xfce4-icon-theme-20090717.
+
+  U: x-xfce/xfce4-mixer-4.8.0.
+
+  U: x-xfce/xfce4-panel-4.8.3.
+
+  U: x-xfce/xfce4-session-4.8.1.
+
+  U: x-xfce/xfce4-settings-4.8.1.
+
+  U: x-xfce/xfconf-4.8.0.
+
+  U: x-xfce/xfdesktop-4.8.1.
+
+  U: x-xfce/xfwm4-4.8.1.
+
+  R: x-xfce/xfwm4-themes-20090907.
+
+  U: x-xfce-goodies/parole-0.2.0.6.
+
+  U: x-xfce-goodies/ristretto-0.0.93.
+
+  U: x-xfce-goodies/thunar-volman-0.6.0.
+
+  U: x-xfce-goodies/tumbler-0.1.21.
+
+  R: x-xfce-goodies/xfburn-0.4.3.
+
+  R: x-xfce-goodies/xfce4-netload-plugin-1.0.0.
+
+  U: x-xfce-goodies/xfce4-notifyd-0.2.1.
+
+  R: x-xfce-goodies/xfce4-taskmanager-1.0.0.
+
+  U: x-xorg/util/xdg-utils-1.1.0_rc1.
+
+[ Fri 15 Apr 2011 @ 20:09:53 UTC ] : 20
+
+  U: x-libraries/gdk-pixbuf-2.23.3.
+
+  R: x-libraries/gtk1+-1.2.10.
+
+  U: x-libraries/gtk2+-2.24.4.
+
+     - Note: The name of the packages for gtk 1 and 2 have been changed
+             in order to facilitate the update between packages.
+
+[ Fri 15 Apr 2011 @ 16:37:26 UTC ] : 19
+
+  U: b/coreutils-8.11.
+
+  U: b/etc-2.6.
+
+     - The user and the group "haldaemon" has been removed.
+
+  U: b/runit-scheme-3.2.
+
+     - /etc/runit/1:
+
+       * Try to mount the Cgroups filesystem after of fsck (not before).
+
+     - /etc/runit/2:
+
+       * Removed the line to start the script /etc/rc.d/rc.hald.
+
+  U: t/less-443.
+
+  U: t/sqlite-3070601 (version 3.7.6.1).
+
+[ Thu 14 Apr 2011 @ 16:36:20 UTC ] : 18
+
+  U: x-libraries/cairo-1.10.2.
+
+  U: x-libraries/gconf-2.32.2.
+
+  U: x-libraries/glew-1.5.8.
+
+  U: x-libraries/librsvg-2.34.0.
+
+  U: x-libraries/libxklavier-5.1.
+
+  U: x-libraries/pango-1.28.4.
+
+  U: x-libraries/shared-mime-info-0.90.
+
+[ Wed 13 Apr 2011 @ 21:39:10 UTC ] : 17
+
+  U: l/libjpeg-turbo-1.1.0.
+
+  R: l/libmng-1.0.10 (just in case).
+
+  U: l/libpng-1.4.7.
+
+  U: l/tiff-3.9.5.
+
+  U: x-libraries/giflib-20091204(-git).
+
+[ Tue 12 Apr 2011 @ 22:19:06 UTC ] : 16
+
+  RM: t/hal-20100823. Removed in favor of DeviceKit.
+
+  U: x-libraries/mesa-7.10.2.
+
+  I: x-libraries/mesa-demos-8.0.1.
+
+  U: x-xorg/app/x11perf-1.5.3.
+
+  U: x-xorg/app/xbiff-1.0.3.
+
+  U: x-xorg/app/xkbcomp-1.2.1.
+
+  U: x-xorg/app/xkbprint-1.0.3.
+
+  U: x-xorg/app/xrdb-1.0.9.
+
+  U: x-xorg/data/xkeyboard-config-2.2.1.
+
+  U: x-xorg/doc/xorg-docs-1.6.
+
+  U: x-xorg/doc/xorg-sgml-doctools-1.7.
+
+  R: x-xorg/driver/xf86-input-acecad-1.4.0.
+
+  R: x-xorg/driver/xf86-input-aiptek-1.3.1.
+
+  U: x-xorg/driver/xf86-input-evdev-2.6.0.
+
+  R: x-xorg/driver/xf86-input-joystick-1.5.0.
+
+  U: x-xorg/driver/xf86-input-keyboard-1.6.0.
+
+  U: x-xorg/driver/xf86-input-mouse-1.7.0.
+
+  U: x-xorg/driver/xf86-input-synaptics-1.4.0.
+
+  U: x-xorg/driver/xf86-input-vmmouse-12.7.0.
+
+  R: x-xorg/driver/xf86-input-void-1.3.1.
+
+  R: x-xorg/driver/xf86-video-apm-1.2.3.
+
+  R: x-xorg/driver/xf86-video-ark-0.7.3.
+
+  R: x-xorg/driver/xf86-video-ast-0.91.10.
+
+  U: x-xorg/driver/xf86-video-ati-6.14.1.
+
+  U: x-xorg/driver/xf86-video-chips-1.2.4.
+
+  R: x-xorg/driver/xf86-video-cirrus-1.3.2.
+
+  R: x-xorg/driver/xf86-video-dummy-0.3.4.
+
+  R: x-xorg/driver/xf86-video-fbdev-0.4.2.
+
+  R: x-xorg/driver/xf86-video-glint-1.2.5.
+
+  R: x-xorg/driver/xf86-video-i128-1.3.4.
+
+  R: x-xorg/driver/xf86-video-i740-1.3.2.
+
+  U: x-xorg/driver/xf86-video-intel-2.14.0.
+
+  R: x-xorg/driver/xf86-video-mach64-6.8.2.
+
+  R: x-xorg/driver/xf86-video-mga-1.4.13.
+
+  R: x-xorg/driver/xf86-video-neomagic-1.2.5.
+
+  I: x-xorg/driver/xf86-video-nouveau-20110323(-git).
+
+  R: x-xorg/driver/xf86-video-nv-2.1.18.
+
+  R: x-xorg/driver/xf86-video-openchrome-0.2.904.
+
+  R: x-xorg/driver/xf86-video-r128-6.8.1.
+
+  RM: x-xorg/driver/xf86-video-radeonhd-1.3.0. This driver is deprecated.
+
+  R: x-xorg/driver/xf86-video-rendition-4.2.4.
+
+  R: x-xorg/driver/xf86-video-s3-0.6.3.
+
+  R: x-xorg/driver/xf86-video-s3virge-1.10.4.
+
+  R: x-xorg/driver/xf86-video-savage-2.3.2.
+
+  R: x-xorg/driver/xf86-video-siliconmotion-1.7.5.
+
+  R: x-xorg/driver/xf86-video-sis-0.10.3.
+
+  R: x-xorg/driver/xf86-video-sisusb-0.9.4.
+
+  R: x-xorg/driver/xf86-video-tdfx-1.4.3.
+
+  R: x-xorg/driver/xf86-video-tga-1.2.1.
+
+  R: x-xorg/driver/xf86-video-trident-1.3.4.
+
+  R: x-xorg/driver/xf86-video-tseng-1.2.4.
+
+  R: x-xorg/driver/xf86-video-v4l-0.2.0.
+
+  R: x-xorg/driver/xf86-video-vesa-2.3.0.
+
+  R: x-xorg/driver/xf86-video-voodoo-1.2.4.
+
+  U: x-xorg/lib/libX11-1.4.3.
+
+  U: x-xorg/lib/libXaw-1.0.9.
+
+  U: x-xorg/lib/libXfixes-5.0.
+
+  U: x-xorg/lib/libXi-1.4.2.
+
+  U: x-xorg/lib/libXp-1.0.1.
+
+  U: x-xorg/lib/libXt-1.1.1.
+
+  U: x-xorg/lib/libpciaccess-0.12.1.
+
+  U: x-xorg/lib/pixman-0.21.6.
+
+  U: x-xorg/proto/dmxproto-2.3.1.
+
+  U: x-xorg/proto/evieext-1.1.1.
+
+  U: x-xorg/proto/fixesproto-5.0.
+
+  U: x-xorg/proto/printproto-1.0.5.
+
+  U: x-xorg/proto/xextproto-7.2.0.
+
+  U: x-xorg/proto/xf86vidmodeproto-2.3.1.
+
+  U: x-xorg/proto/xineramaproto-1.2.1.
+
+  U: x-xorg/proto/xproto-7.0.21.
+
+  U: x-xorg/util/util-macros-1.13.0.
+
+  U: x-xorg/util/xorg-cf-files-1.0.4.
+
+  U: x-xorg/xserver/xorg-server-1.9.5.
+
+  U: x-xorg/xserver/xorg-server-xephyr-1.9.5.
+
+  U: x-xorg/xserver/xorg-server-xnest-1.9.5.
+
+  U: x-xorg/xserver/xorg-server-xvfb-1.9.5.
+
+[ Mon 11 Apr 2011 @ 16:06:06 UTC ] : 15
+
+  U: b/_hierarchyfs-1.8.
+
+     - Added the directory "/run", needed by udev-167.
+
+  RM: b/static-devices-1.7.
+
+  U: b/udev-167.
+
+[ Sat 09 Apr 2011 @ 16:18:55 UTC ] : 14
+
+  I: l/libatasmart-04052011(-git).
+
+  U: modules/python/dbus-python-0.83.2.
+
+  I: t/consolekit-0.4.4.
+
+  U: t/dbus-1.4.8.
+
+  I: t/polkit-0.101.
+
+  I: t/sg3_utils-1.31 (required by udisks).
+
+  I: t/udisks-1.0.2.
+
+  I: t/upower-0.9.9.
+
+  U: x-libraries/libdrm-2.4.24.
+
+[ Thu 07 Apr 2011 @ 18:26:27 UTC ] : 13
+
+  U: l/libcap-2.20.
+
+  U: l/libraw1394-2.0.7.
+
+  U: l/slang-2.2.3.
+
+  U: n/curl-7.21.4.
+
+  U: n/lftp-4.2.1.
+
+  U: n/tor-0.2.1.30.
+
+  U: t/mc-4.7.5.1.
+
+  I: t/pdlzip-1.2. This to read .tlz packages through `mc'.
+
+  U: t/sudo-1.7.5.
+
+[ Wed 06 Apr 2011 @ 16:52:20 UTC ] : 12
+
+  U: l/ncurses-5.9.
+
+  U: d/autogen-5.11.8.
+
+  U: d/cmake-2.8.4.
+
+  R: d/flex-2.5.35 to fix redundant redeclaration of 'isatty'.
+
+  U: d/guile-1.8.8.
+
+  R: d/lua-5.1.4 with an official patch.
+
+  U: d/nasm-2.09.08.
+
+[ Tue 05 Apr 2011 @ 20:47:29 UTC ] : 11
+
+  U: l/libnl-3.0.
+
+  R: l/libpcap-1.1.1 against libnl-3.0 (just in case).
+
+  U: n/dhcp-4.1 (this is the Extended Support Version Release 2).
+
+  U: n/ethtool-2.6.38.
+
+  U: n/iproute2-2.6.38.
+
+  R: n/iptables-1.4.10 against iproute2-2.6.38 (just in case).
+
+  R: n/wpa_supplicant-0.7.3 against libnl-3.0 (just in case).
+
+[ Mon 04 Apr 2011 @ 18:34:06 UTC ] : 10
+
+  R: d/bzr-2.1.3.
+
+  U: d/mercurial-1.8.2.
+
+  U: d/ruby-1.9.2-p180.
+
+  U: l/pcre-8.12.
+
+  U: n/gnupg2-2.0.17.
+
+  U: n/libksba-1.2.0.
+
+[ Mon 04 Apr 2011 @ 13:40:02 UTC ] : 9
+
+  U: d/git-1.7.4.3.
+
+  U: d/perl-5.12.3.
+
+  U: d/subversion-1.6.16.
+
+  U: l/glib2-2.28.5.
+
+  U: modules/perl/uri-1.58.
+
+  U: modules/perl/xml-parser-2.40.
+
+  R: modules/perl/xml-simple-2.18.
+
+  R: n/irssi-0.8.15.
+
+  U: n/openssh-5.8p1.
+
+  U: n/openssl-1.0.0d.
+
+  U: t/file-5.05.
+
+  U: t/xfsdump-3.0.5.
+
+  U: t/xfsprogs-3.1.5.
+
+[ Thu 31 Mar 2011 @ 23:20:00 UTC ] : 8
+
+  U: n/rsync-3.0.8.
+
+[ Thu 31 Mar 2011 @ 19:19:28 UTC ] : 7
+
+  U: l/alsa-lib-1.0.24.1.
+
+  R: l/alsa-oss-1.0.17.
+
+  U: l/alsa-plugins-1.0.24.
+
+  U: t/alsa-utils-1.0.24.2.
+
+[ Wed 30 Mar 2011 @ 21:31:33 UTC ] : 6
+
+  U: b/runit-scheme-3.1.
+
+     - Added support for the Control Groups filesystem.
+     - Solved the bug #0000001. Now, /etc/runit/1 does not delete
+       the file /var/run/utmp in a clean up. Letting us see
+       the logged users in the system.
+       (Reported in Mantis by clasclin).
+
+[ Tue 29 Mar 2011 @ 21:20:02 UTC ] : 5
+
+  U: b/udev-166.
+
+  U: k/kernel-2.6.38.2(-libre).
+
+     - Note: The name of the packages have been changed in order
+             to facilitate the update between packages.
+
+  R: l/glibc-2.13_20110222.
+
+  U: t/ddrescue-1.14.
+
+  U: t/man-db-2.5.9.
+
+  U: t/moe-1.4.
+
+  U: t/tar-1.26.
+
+  U: t/zutils-0.9.
+
+[ Fri 25 Mar 2011 @ 17:27:52 UTC ] : 4
+
+  U: b/_hierarchyfs-1.7.
+
+     - Added the directory "lost+found".
+     - Version number: incremented.
+
+  U: b/coreutils-8.10.
+
+  U: b/util-linux-2.19.
+
+     - Note: "util-linux-ng" was renamed to "util-linux".
+
+  R: b/e2fsprogs-1.41.14
+
+  R: t/pciutils-3.1.7.
+
+  U: t/usbutils-002.
+
+[ Thu 24 Mar 2011 @ 23:52:09 UTC ] : 3
+
+  U: b/bash-4.2 (with patch level 008).
+
+  U: b/dialog-1.1-20110302.
+
+  U: l/ncurses-5.8_20110319.
+
+  U: l/readline-6.2 (with patch level 001).
+
+[ Thu 24 Mar 2011 @ 19:05:17 UTC ] : 2
+
+  U: d/m4-1.4.16.
+
+  U: l/mpc-0.9.
+
+  U: l/ppl-0.11.2.
+
+  U: l/cloog-ppl-0.15.10.
+
+[ Tue 22 Mar 2011 @ 19:10:40 UTC ] : 1
+
+  U: d/binutils-2.21.51.0.7.
+
+  U: d/gcc-4.5.2.
+
+  U: k/kernel-2.6.38(-libre).
+
+  U: l/glibc-2.13_20110222.
+
+  U: l/tzdatabase-2011d.
+
+
+[..]
+
+"The world is full of Kings and Queens
+ Who blind your eyes and steal your dreams"
+

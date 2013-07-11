@@ -1,0 +1,8 @@
+
+                              [ Kernels ]
+
+
+- gen.k:  A generic kernel prepared for Intel 486 processors.
+
+Type the name of the kernel that you want to boot:
+

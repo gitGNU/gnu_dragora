@@ -1,0 +1,6 @@
+xorg-server-xnest - Un servidor X anidado.
+
+Xnest es un servidor X que direcciona su salida a una ventana.
+En otras palabras, Xnest abre una ventana que trabaja como
+otra pantalla en la cual el usuario puede abrir más ventanas.
+

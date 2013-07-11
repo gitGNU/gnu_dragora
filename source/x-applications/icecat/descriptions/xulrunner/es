@@ -1,0 +1,6 @@
+xulrunner - Paquete de tiempo de ejecución de Mozilla.
+
+XULRunner es un paquete de tiempo de ejecución de Mozilla que
+puede ser utilizada para arrancar aplicaciones XUL+XPCOM que
+son tan ricas como Firefox y Thunderbird.
+

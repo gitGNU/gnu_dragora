@@ -1,0 +1,146 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.21
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-groff
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/groff-${V}
+tar -xvf ${CWD}/groff-${V}.tar.lz -C $TMP
+
+cd ${TMP}/groff-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+autoconf
+
+# I would fix the path for the documentation:
+sed -i \
+ -e 's%mandir=@mandir@%mandir=${prefix}/man%' \
+ -e 's%infodir=@infodir@%infodir=${prefix}/info%' \
+ -e 's%docdir=$(datadir)/doc\(.*\)%docdir=@docdir@%' \
+  Makefile.in
+
+# Fix the path for the 64 bit architecture:
+sed -i \
+ -e 's%libdir=@libdir@%libdir=${prefix}/lib64%' \
+ Makefile.in
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/groff-${V} \
+ --with-appresdir=/etc/X11/app-defaults \
+ --with-x \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS || make;
+mkdir -p ${PKG}/usr
+make install prefix=${PKG}/usr
+
+# Install missing files:
+install -m 0644 src/devices/xditview/GXditview.ad \
+ -D ${PKG}/etc/X11/app-defaults/GXditview
+install -m 0644 src/devices/xditview/GXditview-color.ad \
+ -D ${PKG}/etc/X11/app-defaults/GXditview-color
+
+# Strip binaries & libraries (if any):
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Important:  Apply custom configuration from PROBLEMS file:  :-)
+for file in man.local mdoc.local ; do
+  zcat ${CWD}/nosgr.gz >> ${PKG}/usr/share/groff/site-tmac/${file}
+  zcat ${CWD}/utf8.gz >> ${PKG}/usr/share/groff/site-tmac/${file}
+done
+
+# Make symlink for "xman":
+( cd ${PKG}/usr/bin
+  ln -sf eqn geqn
+  ln -sf tbl gtbl
+  ln -sf soelim zsoelim
+)
+
+# Compress GNU info documents:
+( cd ${PKG}/usr/info ; rm -f dir ; gzip -9N * )
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/groff-${V}/xditview
+cp -a \
+ BUG-REPORT COPYING ChangeLog FDL MANIFEST MORE.STUFF \
+ NEWS PROBLEMS PROJECTS README REVISION TODO VERSION \
+ ${PKG}/usr/doc/groff-${V}
+( cd src/devices/xditview
+  cp -a README TODO ${PKG}/usr/doc/groff-${V}/xditview
+)
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/groff-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,131 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.6.17
+ARCH=${ARCH:-i486}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j5}
+
+PKG=${TMP}/package-subversion
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/subversion-${V}
+lzip -cd ${CWD}/subversion-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/subversion-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --disable-static \
+ --with-berkeley-db=db.h:/usr/include/db48:/lib/libdb-4.8:db-4.8 \
+ --with-editor=/usr/bin/moe \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Build and install Python bindings:
+make swig-py
+make install-swig-py DESTDIR=$PKG
+PYTHON_DIR=$(python -c 'import sys; print sys.path[2]')
+PYTHON_DIR=${PYTHON_DIR#/}
+mkdir -p ${PKG}/${PYTHON_DIR}/site-packages
+mv ${PKG}/usr/lib/svn-python/ ${PKG}/${PYTHON_DIR}/site-packages/
+
+# Build and install Ruby bindings:
+make swig-rb
+make install-swig-rb DESTDIR=$PKG
+
+# Build and install Perl bindings:
+make swig-pl
+make install-swig-pl DESTDIR=$PKG INSTALLDIRS=vendor
+( cd ${PKG}/usr
+  find . -type f -name '.packlist' -exec sed -i "s#$PKG##g" '{}' +
+  find . -type f -name 'perllocal.pod' -delete
+)
+
+# Add an extension for emacs:
+if [[ -r doc/svn-doc.el ]]; then
+  mkdir -p ${PKG}/usr/share/emacs/site-lisp
+  cp -a doc/svn-doc.el ${PKG}/usr/share/emacs/site-lisp
+fi
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/subversion-${V}
+cp -a \
+ BUGS CHANGES COMMITTERS COPYING HACKING README TRANSLATING \
+ ${PKG}/usr/doc/subversion-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/subversion-${V}-${ARCH}-${B}.tlz
+

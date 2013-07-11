@@ -1,0 +1,73 @@
+#!/bin/bash
+#  Copyright (C) 2008, 2010  Matias A. Fonzo, Santiago del Estero, AR
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localización % Idioma:
+TEXTDOMAINDIR=/usr/share/locale                             
+TEXTDOMAIN=erupt
+
+VERSION=1.5
+
+# Funciones #
+
+# Una función para mostrar mensajes normales:
+msg() { printf '%s\n' "$@"; }
+
+# Una función para mensajes de advertencia:
+warn() { printf '%b\n' "$@" >&2; }
+
+# Muestra la ayuda:
+if [[ $1 = -[h?] || $1 = --help || $# -eq 0 ]]; then
+  msg $"Examines a package with debugging purposes."                       \
+       ""                                                                  \
+      $"Usage: erupt package_name.tlz [directory]"                         \
+       ""                                                                  \
+      $"If you do not specify a directory name,"                           \
+      $"the current working directory will be used."                       \
+       ""
+  exit;
+fi
+# Muestra la versión del programa (si es requerido):
+if [[ $1 = -[vV] || $1 = --version ]]; then
+  msg "erupt $VERSION"                                                     \
+      "Copyright (C) 2008, 2010 Matias A. Fonzo <selk@dragora.org>."       \
+      "License GPLv3+: GNU GPL version 3 or later:"                        \
+      "<http://gnu.org/licenses/gpl.html>"                                 \
+      "This is free software: you are free to change and redistribute it." \
+      "There is NO WARRANTY, to the extent permitted by law."
+  exit;
+fi
+
+# Un segundo argumento espera ser especificado como directorio,
+# si no es así, se utilizará el directorio actual:
+if [[ -d $2 ]]
+then DIR="$2"
+elif [[ -z $2 ]]
+then DIR="$PWD"
+else warn $"${0##*/}: ${2}: Invalid directory"; exit 1;
+fi
+
+msg "" $"! Erupting package ${1##*/} on the directory $DIR ..." ""
+( umask 000
+  LC_ALL=C tar --use-compress-program=lzip -xvf "$1" -C "$DIR"
+) || exit $?;
+
+if [[ -f ${DIR}/install/pre-post ]]; then
+  msg $"pre-post execution for ${1}.  Dodging."
+fi
+if [[ -f ${DIR}/install/post-install ]]; then
+  msg $"post-install execution for ${1}.  Dodging."
+fi
+

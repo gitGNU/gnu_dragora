@@ -1,0 +1,7 @@
+nettle - Una librería criptográfica de bajo-nivel.
+
+Nettle es una librería criptográfica que está diseñada para caber
+fácilmente en más o menos cualquier contexto: En cajas de herramientas
+de cifrado para lenguajes orientados a objetos (C++, Python, Pike, ...),
+en aplicaciones como LSH o GnuPG, o incluso en el espacio del núcleo.
+

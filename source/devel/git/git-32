@@ -1,0 +1,159 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+replace_hard_links() {
+  local name ; name="$2"
+  ( cd "$1"
+    find . ! -type d -links +1 ! -name "$name" -printf '%P\n' | \
+     while read link ; do
+      if [[ $name -ef $link ]]; then
+        rm -f  $link
+        ln -sf $name $link
+      fi
+     done
+  )
+}
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.7.9.6
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-git
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Checking for git..."
+if type -P git ; then
+  echo "Git detected: please, remove the package before build git."
+  exit 1;
+fi
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/git-${V}
+lzip -cd ${CWD}/git-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/git-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+export CFLAGS="$DCFLAGS"
+
+make prefix=/usr mandir=/usr/man \
+ $JOBS \
+ USE_LIBPCRE=1 \
+ NO_CROSS_DIRECTORY_HARDLINKS=1
+
+make prefix=/usr mandir=/usr/man \
+ USE_LIBPCRE=1 \
+ NO_CROSS_DIRECTORY_HARDLINKS=1 \
+ DESTDIR=$PKG install
+
+# Fix permissions:
+find $PKG -type f -perm 444 | xargs chmod 644
+
+# No hard links:
+
+#replace_hard_links "${PKG}/usr/bin" "git"
+( cd ${PKG}/usr/bin
+  ln -sf git git-receive-pack
+  ln -sf git git-upload-archive
+)
+replace_hard_links "${PKG}/usr/libexec/git-core" "git"
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# No perllocal.pod:
+( cd ${PKG}/usr/lib
+  find . -type f -name 'perllocal.pod' -delete -printf '%h\n' | \
+   while read dir ; do
+    rmdir -p --ignore-fail-on-non-empty $dir
+   done
+)
+
+# Change the information in the .packlist file:
+( cd ${PKG}/usr/lib/perl?/site_perl/*/*-linux-gnu-thread-multi/auto/Git
+  sed -e "s#$PKG##g" -e 's#share/man#man#g' -e 's/.3$/.3.gz/g' \
+   .packlist > .packlist.new
+  mv .packlist.new .packlist
+)
+
+# Move man-page directory:
+if [[ -d ${PKG}/usr/share/man ]]; then
+  mv ${PKG}/usr/share/man ${PKG}/usr
+fi
+
+# Compress and link manpages:
+( cd $PKG/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Add the documentation:
+#
+# TODO: The documentation-build is pending:
+#
+# (make install-doc).
+#
+mkdir -p ${PKG}/usr/doc/git-${V}
+cp -a \
+ COPYING README \
+ ${PKG}/usr/doc/git-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/git-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,5 @@
+apr-util - Apache portable runtime utilities.
+
+This package contains the utilities for apr, like the
+support of XML, database interfaces, etc.
+

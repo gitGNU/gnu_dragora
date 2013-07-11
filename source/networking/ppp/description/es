@@ -1,0 +1,7 @@
+ppp - Protocolo Punto-a-Punto.
+
+El protocolo Punto-a-Punto proporciona una forma estándar para
+establecer una conexión de red en un enlace serial.  En la
+actualidad, este paquete soporta IP y los protocolos de capas
+por encima de IP, como TCP y UDP.
+

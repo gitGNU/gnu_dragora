@@ -1,0 +1,29 @@
+# Lista negra (blacklist).
+
+# Fuentes relacionadas con MacOS:
+libAppleWM
+libWindowsWM
+applewmproto
+windowswmproto
+
+# Tarjetas de video de Sun:
+xf86-video-sunbw2
+xf86-video-suncg14
+xf86-video-suncg3
+xf86-video-suncg6
+xf86-video-sunffb
+xf86-video-sunleo
+xf86-video-suntcx
+
+# Algunas fuentes sólo se construyen sobre ciertos OSes, como *BSD:
+xf86-video-impact
+xf86-video-vermilion
+xf86-video-wsfb
+
+# Otros:
+xf86-video-glide
+xf86-video-xgixp
+
+# Estas fuentes no poseen una clara declaración de licencia:
+font-bh-lucidatypewriter-100dpi
+font-bh-lucidatypewriter-75dpi

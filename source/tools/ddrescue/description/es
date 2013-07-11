@@ -1,0 +1,8 @@
+ddrescue - Herramienta de recuperación de datos.
+
+GNU ddrescue es una herramienta de recuperación de datos. Copia los datos de
+un fichero o un dispositivo de bloques (disco duro, cdrom, etc) a otro,
+intentando recuperar los datos en caso de producirse errores de lectura.
+
+Visite el sitio web de GNU ddrescue en http://www.gnu.org/software/ddrescue
+

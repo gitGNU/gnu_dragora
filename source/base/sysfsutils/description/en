@@ -1,0 +1,5 @@
+sysfsutils - System utilities based on sysfs.
+
+These are a set of utilites built upon sysfs, a new virtual filesystem in
+Linux kernel versions 2.5+ that exposes a system's device tree.
+

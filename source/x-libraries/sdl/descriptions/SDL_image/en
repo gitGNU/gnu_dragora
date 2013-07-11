@@ -1,0 +1,5 @@
+sdl_image - An image file loading library.
+
+It loads images as SDL surfaces, and supports the following formats:
+BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA, TIFF, XCF, XPM, XV.
+

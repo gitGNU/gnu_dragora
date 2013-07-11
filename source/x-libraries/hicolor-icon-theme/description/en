@@ -1,0 +1,5 @@
+hicolor-icon-theme - Icon theme specification.
+
+The hicolor-icon-theme package contains a default fallback theme for
+implementations of the icon theme specification.
+

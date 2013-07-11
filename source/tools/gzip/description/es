@@ -1,0 +1,10 @@
+gzip - Utilidad de compresión.
+
+Gzip (GNU zip) es una utilidad de compresión diseñada para ser
+un reemplazo para compress.  Sus principales ventajas sobre
+compress son mucho mejor compresión y la libertad de
+algoritmos patentados.  Ha sido adoptado por el proyecto GNU y
+ahora es relativamente popular en Internet.
+
+Gzip fue escrito por Jean-loup Gailly y Mark Adler.
+

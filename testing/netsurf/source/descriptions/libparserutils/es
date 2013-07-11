@@ -1,0 +1,5 @@
+libparserutils - Una librería de utilidad para construir analizadores.
+
+LibParserUtils provee varias piezas de funcionalidad que
+son útils cuando se escriben analizadores.
+

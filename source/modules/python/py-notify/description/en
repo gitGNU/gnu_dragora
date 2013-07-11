@@ -1,0 +1,6 @@
+py-notify - Observer programming pattern.
+
+Py-notify is a Python package providing tools for implementing
+Observer programming pattern. These tools include signals,
+conditions and variables.
+

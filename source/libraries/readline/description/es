@@ -1,0 +1,10 @@
+readline - Una librería con capacidades de edición-de-línea.
+
+Readline de GNU es un software de biblioteca (librería) creado y
+mantenido por el proyecto GNU.  Es licenciado bajo la GPL, y se
+utiliza en proyectos como bash. Ofrece capacidades de
+edición-de-línea.
+
+Puede consultar la documentación de readline en el
+directorio /usr/doc.
+

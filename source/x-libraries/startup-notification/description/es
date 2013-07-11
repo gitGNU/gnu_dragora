@@ -1,0 +1,7 @@
+startup-notification - Muestra cuando una aplicación se está cargando.
+
+El paquete startup-notification contiene las librerías
+startup-notification.  Son útiles para crear una forma
+consistente de notificar al usuario, a través del
+puntero del ratón, que la aplicación se está cargando.
+

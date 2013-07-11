@@ -1,0 +1,8 @@
+libjpeg-turbo - Librería para imágenes JPEG.
+
+libjpeg-turbo es una versión de alta velocidad de libjpeg para procesadores
+x86 y x86-64 que utilizan instrucciones SIMD (MMX, SSE2, etc) para acelerar
+la línea de base de compresión y descompresión JPEG. libjpeg-turbo es
+generalmente 2-4x más rápido como la versión modificada del libjpeg,
+en igualdad de condiciones.
+

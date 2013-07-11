@@ -1,0 +1,105 @@
+#!/bin/bash
+#  Copyright (C) 2009-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.26
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-tar
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/tar-${V}
+tar -xvf ${CWD}/tar-${V}.tar.lz -C $TMP
+
+cd ${TMP}/tar-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+FORCE_UNSAFE_CONFIGURE=1 \
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --bindir=/bin \
+ --sbindir=/sbin \
+ --libexecdir=/sbin \
+ --infodir=/usr/info \
+ --enable-backup-scripts \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS V=1
+if [[ -n $CHECK ]]; then
+  make check;
+fi
+make install DESTDIR=$PKG
+
+# Increments a little the security:
+find ${PKG}/sbin -type f | xargs chmod -v 0750
+
+# Strip binaries & libraries (if any):
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress GNU info documents:
+( cd ${PKG}/usr/info ; rm -f dir ; gzip -9N * )
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/tar-${V}
+cp -a \
+ ABOUT-NLS AUTHORS COPYING ChangeLog NEWS README TODO THANKS \
+ ${PKG}/usr/doc/tar-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/tar-${V}-${ARCH}-${B}.tlz
+

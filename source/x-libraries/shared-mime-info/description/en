@@ -1,0 +1,6 @@
+shared-mime-info - MIME database.
+
+The shared-mime-info package contains a MIME database.
+This allows central updates of MIME information for
+all supporting applications.
+

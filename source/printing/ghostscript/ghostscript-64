@@ -1,0 +1,138 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=9.05
+ARCH=${ARCH:-x86_64}
+B=1
+
+PKG=${TMP}/package-ghostscript
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/ghostscript-${V}
+lzip -cd ${CWD}/ghostscript-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/ghostscript-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . ! -type l \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Build IJS:
+pushd ijs
+  chmod 755 autogen.sh
+  ./autogen.sh \
+   --prefix=/usr \
+   --libdir=/usr/lib64 \
+   --mandir=/usr/man \
+   --localstatedir=/var \
+   --disable-static \
+   --enable-shared \
+   --build=${ARCH}-dragora-linux-gnu
+  make
+  make install
+  make install DESTDIR=$PKG
+popd
+
+# Use system libraries rather than local copies:
+rm -rf jasper jpeg libpng tiff expat freetype zlib lcms lcms2
+
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --sysconfdir=/etc \
+ --localstatedir=/var \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/ghostscript-${V} \
+ --htmldir=/usr/doc/ghostscript-${V}/html \
+ --disable-compile-inits \
+ --enable-dynamic \
+ --enable-freetype \
+ --enable-fontconfig \
+ --with-fontpath=/usr/share/fonts/X11/TTF:/usr/share/fonts/X11/Type1:/usr/share/fonts \
+ --with-ijs \
+ --with-omni \
+ --with-drivers=ALL \
+ --with-system-libtiff \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install soinstall DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Unpack extra fonts:
+( cd ${PKG}/usr/share/ghostscript
+  tar -xf ${CWD}/fonts/ghostscript-fonts-std-8.11.tar.lz
+  tar -xf ${CWD}/fonts/ghostscript-fonts-other-6.0.tar.lz
+  chown -R 0:0 .
+)
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/ghostscript-${V}
+cp -a LICENSE ${PKG}/usr/doc/ghostscript-${V}
+
+# Move HTML documentation to the right location:
+( cd ${PKG}/usr/share/ghostscript/${V/_libre/}
+  mv doc ${PKG}/usr/doc/ghostscript-${V}/html
+  # Make symlink compatibility:
+  ln -s /usr/doc/ghostscript-${V}/html doc
+)
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/ghostscript-${V}-${ARCH}-${B}.tlz
+

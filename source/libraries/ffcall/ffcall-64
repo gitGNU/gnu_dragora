@@ -1,0 +1,107 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=20100903cvs
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -fPIC}
+
+PKG=${TMP}/package-ffcall
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/ffcall-${V}
+lzip -cd ${CWD}/ffcall-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/ffcall-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/ffcall-${V} \
+ --htmldir=/usr/doc/ffcall-${V}/html \
+ --enable-shared \
+ --enable-static \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+mkdir -p ${PKG}/usr
+make prefix=${PKG}/usr libdir=${PKG}/usr/lib64 install
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+strip --strip-debug ${PKG}/usr/lib64/*.a
+
+# Add man pages on the right location:
+rm -rf ${PKG}/usr/share/man
+mkdir -p ${PKG}/usr/man/man3
+find . -type f -name '*.3' | while read file ; do
+  gzip -9Nc < $file > ${PKG}/usr/man/man3/${file##*/}.gz
+done
+
+# Move the html directory to the right location:
+mkdir -p ${PKG}/usr/doc/ffcall-${V}
+mv ${PKG}/usr/share/html ${PKG}/usr/doc/ffcall-${V}
+
+rmdir ${PKG}/usr/share || true;
+
+# Copy the documentation:
+cp -a \
+ COPYING ChangeLog NEWS PLATFORMS README VERSION \
+ ${PKG}/usr/doc/ffcall-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/ffcall-${V}-${ARCH}-${B}.tlz
+

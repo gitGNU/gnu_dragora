@@ -1,0 +1,7 @@
+dialog - Muestra cuadros de diálogo en scripts.
+
+Dialog es un programa que le permitirá presentar una variedad de
+preguntas o mostrar los mensajes con buen aspecto en color
+no-gráfico de los cuadros de dialog de un shell o un script
+de perl.
+

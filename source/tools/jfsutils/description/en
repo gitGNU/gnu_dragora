@@ -1,0 +1,6 @@
+jfsutils - The filesystem developed by IBM.
+
+JFS (Journaling File System) is a filesystem with journaling developed by
+IBM and used on it's servers.  It was designed with the porpouse to get
+hig-performance servers and file servers, asociated to e-bussines.
+

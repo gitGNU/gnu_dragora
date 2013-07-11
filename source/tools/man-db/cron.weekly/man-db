@@ -1,0 +1,13 @@
+#!/bin/sh
+# Update the database of 'whatis' program using mandb(8).
+
+# Sanity check:
+if [ ! -d /var/cache/man ]; then
+  mkdir -p -m 0755 /var/cache/man
+fi
+
+# Update the database:
+if [ -x /usr/bin/mandb ]; then
+  /usr/bin/mandb -q
+fi
+

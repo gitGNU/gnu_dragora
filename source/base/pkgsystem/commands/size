@@ -1,0 +1,139 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matias A. Fonzo, Santiago del Estero, Argentina
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localización % Idioma:
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=size
+
+VERSION=0.1
+
+# Funciones #
+
+# Una función para mostrar mensajes normales:
+msg() { printf '%s\n' "$@"; }
+
+# Una función para mensajes de advertencia:
+warn() { printf '%b\n' "$@" >&2; }
+
+usage() {
+  msg $"Displays the size of one or more packages."                        \
+       ""                                                                  \
+      $"Usage: size [options] package.tlz ..."                             \
+       ""                                                                  \
+      "Options:"                                                           \
+      $"  -h, --help                Show this help and exit."              \
+      $"  -v, --version             Show the version of the program."      \
+       ""
+}
+
+version() {
+  msg "size $VERSION"                                                      \
+      "Copyright (C) 2010 Matias A. Fonzo <selk@dragora.org>."             \
+      "License GPLv3+: GNU GPL version 3 or later:"                        \
+      "<http://gnu.org/licenses/gpl.html>"                                 \
+      "This is free software: you are free to change and redistribute it." \
+      "There is NO WARRANTY, to the extent permitted by law."
+}
+
+# Opciones % Argumentos:
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -[h?]|--help)
+      usage
+      exit 0
+      ;;
+    -[vV]|--version)
+      version
+      exit 0
+      ;;
+    -*)
+      warn $"${0##*/}: Invalid option: $1"
+      exit 1
+      ;;
+    *)
+      break;
+  esac
+done
+
+# Si no hay argumentos, llama a la función de ayuda:
+(( $# == 0 )) && { usage ; exit 0; }
+
+# Sale ante cualquier error:
+set -e
+
+# Más funciones #
+
+# Una función para reflejar el nombre base:
+_basename() { local name ; name=${1##*/} ; printf "${name%$2}"; }
+
+pick_up() {
+  while read line ; do
+    printf $line
+  done
+}
+
+# Variables #
+
+# Directorio y archivo temporal:
+TMP=${TMP:-/tmp}
+TEMPFILE=${TMP}/pkg-size$$
+
+# Chequeo de sanidad:
+if [[ ! -d $TMP ]]; then
+  mkdir -p $TMP
+fi
+
+# Cuerpo #
+
+# Loop:
+for file in "$@" ; do
+  if [[ -f $file ]]; then
+    NAME=$(_basename $file .tlz)
+
+    # Comprueba la extensión del archivo:
+    if [[ ${file##*/} != ${NAME}.tlz ]]; then
+      warn "${file}: Does not end in .tlz"
+      CODE=1
+      continue;
+    fi
+
+    # Determina el tamaño del archivo comprimido:
+    COMPRESSED="$(du -h $file | pick_up)"
+
+    # Determina el tamaño del archivo descomprimido:
+    LC_ALL=C tar --use-compress-program=lzip --totals \
+     -tf $file > /dev/null 2> $TEMPFILE
+
+    UNCOMPRESSED="$(awk '$3 == "read:" \
+     { l=length($5) ; print(substr($5,1,l-3)) }' $TEMPFILE)"
+
+    UNCOMPRESSED=${UNCOMPRESSED#*(}  # Remueve un paréntesis.
+
+    # Muestra el sumario:
+    msg $"Package           =  ${NAME}.tlz"   \
+        $"Compressed size   =  $COMPRESSED"   \
+        $"Uncompressed size =  $UNCOMPRESSED" \
+         ""
+  else
+    warn $"${0##*/}: ${file}: File not found or non-regular"
+    EXIT_CODE=1
+    continue;
+  fi
+done
+
+rm -f $TEMPFILE
+exit $EXIT_CODE
+

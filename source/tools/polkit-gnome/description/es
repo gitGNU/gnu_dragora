@@ -1,0 +1,5 @@
+polkit-gnome - Agente de autenticación.
+
+polkit-gnome proporciona un agente de autenticación para polkit
+que se integra bien con equipos de sobremesa basados en GTK.
+

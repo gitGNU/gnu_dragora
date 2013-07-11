@@ -1,0 +1,9 @@
+curl - Tool for transferring files with URL syntax.
+
+Curl is a tool for transferring files with URL syntax, supporting FTP,
+FTPS, HTTP, HTTPS, SCP, SFTP, TFTP, TELNET, DICT, LDAP, LDAPS,
+FILE and more.
+
+Visit the web site of Curl at:
+http://curl.haxx.se
+

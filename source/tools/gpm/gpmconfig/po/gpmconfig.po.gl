@@ -1,0 +1,131 @@
+#: gpmconfig:30
+msgid "Mouse configuration tool"
+msgstr "Ferramenta de configuración do Rato"
+
+#: gpmconfig:31
+msgid "MOUSE"
+msgstr "RATO"
+
+#: gpmconfig:33
+msgid "Welcome to gpmconfig.  A configuration tool for the mouse selection.\\n\\nThe PS/2 model is the most common model for laptops.  Otherwise, you can select the USB model or see the rest of the models.\\n\\nSelect your mouse type:"
+msgstr "Benvido a gpmconfig.  Unha ferramenta para a selección do rato.\\n\\nO modelo PS/2 é o modelo máis común para máquinas laptop.  Pola contra, pode seleccionar o modelo USB ou ver o resto dos modelos.\\n\\nSeleccione o seu tipo de rato:"
+
+#: gpmconfig:37
+msgid "--> Mouse type (PS/2)"
+msgstr "--> Tipo de rato (PS/2)"
+
+#: gpmconfig:38
+msgid "Common mouse for PS2 series"
+msgstr "Rato PS2 común"
+
+#: gpmconfig:39
+msgid "Microsoft Intellimouse autodetect 2/3 buttons"
+msgstr "Microsoft Intellimouse autodetecta 2/3 botóns"
+
+#: gpmconfig:40
+msgid "IntelliMouse Explorer - 3 buttons"
+msgstr "IntelliMouse Explorer - 3 botóns"
+
+#: gpmconfig:41
+msgid "Genius NetMouse - 4 buttons"
+msgstr "Genius NetMouse - 4 botóns"
+
+#: gpmconfig:42
+msgid "Ncr3125pen found on some laptops"
+msgstr "Ncr3125pen, atopado nalgúns ordenadores portátiles"
+
+#: gpmconfig:43
+msgid "--> Mouse type (USB)"
+msgstr "--> Tipo de rato (USB)"
+
+#: gpmconfig:44
+msgid "Also a common protocol for USB devices"
+msgstr "Tamén un protocolo común para USB"
+
+#: gpmconfig:45
+msgid "--> Mouse type (Serial)"
+msgstr "--> Tipo de rato (De Serie)"
+
+#: gpmconfig:46
+msgid "Acecad tablet absolute mode"
+msgstr "Tableta Acecad modo absoluto"
+
+#: gpmconfig:47
+msgid "Microsoft compatible - 2 buttons"
+msgstr "Microsoft compatbile - 2 botóns"
+
+#: gpmconfig:48
+msgid "Genitizer tablet, in relative mode"
+msgstr "Tableta Genitizer, en modo relativo"
+
+#: gpmconfig:49
+msgid "Logitech devices"
+msgstr "Dispositivos Logitech"
+
+#: gpmconfig:50
+msgid "Logitech into Mouse-Systems compatible"
+msgstr "Logitech en Mouse-Systems compatible"
+
+#: gpmconfig:51
+msgid "Twidddler keyboard"
+msgstr "Teclado Twidddler"
+
+#: gpmconfig:52
+msgid "Wacom Protocol IV tablets"
+msgstr "Tabletas Wacom do Protocolo IV"
+
+#: gpmconfig:53
+msgid "The MouseMan and similar devices"
+msgstr "O MouseMan e dispositivos similares"
+
+#: gpmconfig:54
+msgid "Microsoft-compatible - 3 buttons"
+msgstr "Microsoft compatible - 3 botóns"
+
+#: gpmconfig:55
+msgid "Microsoft Intellimouse - 3 buttons"
+msgstr "Microsoft Intellimouse - 3 botóns"
+
+#: gpmconfig:56
+msgid "Mouse-Systems compatible.  Most 3-button mice"
+msgstr "Mouse-Systems compatible.  Ratos de 3 botóns"
+
+#: gpmconfig:57
+msgid "Plug and Play mice.  Doesn't work with 'ms'"
+msgstr "Ratos Plug and Play.  Non funciona con 'ms'"
+
+#: gpmconfig:58
+msgid "Genius WizardPad tablet"
+msgstr "Tableta Genius WizardPad"
+
+#: gpmconfig:59
+msgid "--> Miscellaneous devices"
+msgstr "--> Dispositivos misceláneos:"
+
+#: gpmconfig:60
+msgid "Mouse emulation with a Joystick"
+msgstr "Emulación de rato cun Joystick"
+
+#: gpmconfig:83
+msgid "SERIAL PORT"
+msgstr "PORTO DE SERIE"
+
+#: gpmconfig:85
+msgid "Your mouse requires a port communication:"
+msgstr "O seu rato requiere un porto de comunicación:"
+
+#: gpmconfig:86
+msgid "Serial port 0, COM1 under DOS"
+msgstr "Porto de serie 0, COM1 baixo DOS"
+
+#: gpmconfig:87
+msgid "Serial port 1, COM2 under DOS"
+msgstr "Porto de serie 1, COM2 baixo DOS"
+
+#: gpmconfig:88
+msgid "Serial port 2, COM3 under DOS"
+msgstr "Porto de serie 2, COM3 baixo DOS"
+
+#: gpmconfig:89
+msgid "Serial port 3, COM4 under DOS"
+msgstr "Porto de serie 3, COM4 baixo DOS"

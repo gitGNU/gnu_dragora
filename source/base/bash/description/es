@@ -1,0 +1,10 @@
+bash - Shell sh-compatible.
+
+Bash es un shell sh-compatible que incorpora características útiles de
+la Korn shell (ksh) y C shell (csh).  Con la intención de ajustarse a
+los estándares IEEE POSIX P1003.2/ISO 9945.2 shell y las herramientas
+estándar.
+
+Ofrece mejoras funcionales sobre sh tanto para el programa como para
+el uso interactivo.
+

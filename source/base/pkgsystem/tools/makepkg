@@ -1,0 +1,192 @@
+#!/bin/bash
+#  Copyright (C) 2007-2011  Matias A. Fonzo, Santiago del Estero, AR
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localización:
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=makepkg
+
+VERSION=3.3
+
+# Funciones #
+
+msg() { printf '%s\n' "$@"; }
+
+usage() {
+  msg $"Makes a Dragora compatible package."                                \
+      ""                                                                    \
+      $"Usage: makepkg [options] package.tlz"                               \
+      ""                                                                    \
+      "Options:"                                                            \
+      $"  -h, --help                Show this help and exit."               \
+      $"  -v, --version             Show the version of the program."       \
+      $"  -l, --links               Make or add (if it already exists)"     \
+      $"                            found symlinks to post-install script." \
+      ""                                                                    \
+      $"Keywords:"                                                          \
+      $"  prepend                   Keyword to use in conjunction with the" \
+      $"                            --links option. This is to prepend the" \
+      $"                            symlinks, rather than the commands."    \
+      ""                                                                    \
+      $"Format of the package:"                                             \
+      ""                                                                    \
+      "  bash-01.02.3-i486-1.tlz"                                           \
+      $"  name-version-architecture-buildnumber.extension"                  \
+      ""
+}
+
+version() {
+  msg "makepkg $VERSION"                                                   \
+      "Copyright (C) 2007-2011 Matias A. Fonzo <selk@dragora.org>."        \
+      "License GPLv3+: GNU GPL version 3 or later:"                        \
+      "<http://gnu.org/licenses/gpl.html>"                                 \
+      "This is free software: you are free to change and redistribute it." \
+      "There is NO WARRANTY, to the extent permitted by law."
+}
+
+# Opciones:
+while (( $# )); do
+  case "$1" in
+    -l|--links)
+      OPT=LINKS
+      FILE=post-install  
+      if [[ $2 = prepend ]]; then
+        FILE=pre-post
+        shift
+      fi
+      shift
+      ;;
+    -[h?]|--help)
+      usage
+      exit
+      ;;
+    -[vV]|--version)
+      version
+      exit
+      ;;
+    -*)
+      msg $"Invalid option: $1" \
+          $"For more information, type: $0 --help"
+      exit 1
+      ;;
+    *)
+      break;
+  esac
+done
+
+# Si no hay argumentos, llama a la función de ayuda:
+(( $# == 0 )) && { usage ; exit; }
+
+# Sale ante cualquier error:
+set -e
+
+# Más funciones #
+
+# Una función para mensajes de advertencia:
+warn() { printf '%b\n' "$@" >&2; }
+
+# Una función que muere con `set -e':
+die() {
+  local status
+  status="$?"
+  case "$2" in
+    *) status="$2";;
+  esac
+  warn "$1"
+  return $status
+}
+
+# Cuerpo #
+
+PKG="$1"
+DIR=$(dirname "$PKG")
+PKG=${PKG##*/}
+TAR=${PKG%.tlz}
+
+# Chequeo de sanidad:
+if [[ ! -d $DIR ]]; then
+  die $"makepkg: Directory nonexistent (${DIR})." 1
+fi
+if [[ $DIR = . ]]; then
+  die $"makepkg: Cannot create the package on the current working directory." 1
+fi
+if [[ $TAR = $PKG ]]; then
+  die $"makepkg: Package format (${PKG}) not supported." 1
+fi
+
+# Imprime el banner:
+msg "" $"The package maker of Dragora GNU/Linux in his version ${VERSION}." ""
+
+# Imprime un mensaje ante la presencia de los scripts de instalación:
+if [[ -e install/pre-post ]]; then
+  msg $"[-] install/pre-post: Detected."
+fi
+if [[ -e install/post-install ]]; then
+  msg $"[-] install/post-install: Detected."
+fi
+
+umask 022
+
+# Comprobamos si la opción de agregar enlaces está activada:
+if [[ $OPT = LINKS ]]; then
+  msg "" $"Searching symbolic links to add to the post-install script ..." ""
+  if [[ -e install/post-install ]]; then
+    msg $"An existing installation script (install/post-install) has" \
+        $"been detected. If found any symlink, this will be added to" \
+        $"the current installation script." ""
+  fi
+
+  # Crea o agrega al script de post-instalación los enlaces encontrados:
+  mkdir -p install
+  find . -type l -printf '%P\n' | while read file ; do
+    name=${file##*/}
+    target=$(readlink $file)
+    msg "# Link: $file -> $target" \
+        "( cd $(dirname $file)" \
+        "  rm -rf $name" \
+        "  ln -sf $target $name" \
+        ")" "" \
+        >> install/${FILE}
+    msg "@ $file -> $target"
+  done
+
+  # Remueve los enlaces encontrados (que más tarde serán recreados):
+  msg "" $"Removing symbolic links:"
+  find . -type l -delete -printf $"removed: %P\n"
+  rmdir install/ > /dev/null 2>&1 || true;
+fi
+
+msg "" $"Creating package $PKG ..."
+( LC_ALL=C tar cvf - . | lzip -9c -vvvv ) > "${DIR}/$PKG"
+
+# Advierte sobre posibles archivos vacios:
+find . -type f -empty | while read file ; do
+  msg $"WARNING: Empty file: ${file#./}"
+done
+
+# Advierte sobre posibles archivos comprimidos vacíos:
+find . -type f -name '*.gz' | while read file ; do
+  if [[ $(gzip -l $file | awk 'END { print $2 }') -eq 0 ]]; then
+    msg $"WARNING: Empty gzipped file: ${file#./}"
+  fi
+done
+
+# Advierte sobre posibles enlaces rotos:
+find . -xtype l | while read file ; do
+  msg $"WARNING: Broken symlink: ${file#./}"
+done
+
+msg "" $"Package created: ${DIR}/$PKG" ""
+

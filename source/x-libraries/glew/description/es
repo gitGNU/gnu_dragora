@@ -1,0 +1,8 @@
+glew - Una librerí OpenGL.
+
+GLEW es una extensión de carga de librería de código abierto en C/C++.
+
+GLEW proporciona mecanismos eficientes en tiempo de ejecución para
+determinar las extensiones OpenGL que se apoyan en la plataforma de
+destino.
+

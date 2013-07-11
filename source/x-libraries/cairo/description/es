@@ -1,0 +1,8 @@
+cairo - La librería de gráficos 2D.
+
+Cairo es una librería de gráficos 2D con soporte para
+múltiples dispositivos de salida. Actualmente soporta
+los objetivos de salida que incluye el sistema de
+ventana X, Quartz, buffers de imagen, PostScript,
+PDF, y la salida de archivo SVG.
+

@@ -1,0 +1,8 @@
+binutils - The GNU binary utilities.
+
+Binutils is a collection of programming tools for the manipulation of
+object code in various object file formats.  These tools consist of
+the GNU linker (ld), the GNU assembler (as) and the profiler (gprof).
+There is also a collection of other binary tools like the
+disassembler (objdump).
+

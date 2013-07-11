@@ -1,0 +1,7 @@
+guile - An interpreter for Scheme.
+
+Guile is an interpreter for Scheme, packaged as a library that you can link
+into your applications to give them their own scripting language.
+
+For more details, visit:  http://www.gnu.org/software/guile
+

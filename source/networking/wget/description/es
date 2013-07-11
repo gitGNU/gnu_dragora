@@ -1,0 +1,10 @@
+wget - Una utilidad de red para la descarga de archivos.
+
+GNU Wget es una utilidad libre para los archivos de
+descarga no-interactivo de Internet.  Soporta los
+protocolos HTTP, HTTPS y FTP, así como la
+recuperación a través de servidores proxy HTTP.
+
+Para más información, visite:
+http://www.gnu.org/software/wget
+

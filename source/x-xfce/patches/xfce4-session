@@ -1,0 +1,8 @@
+zcat \
+ ${currentWorkDir}/patches/files/xfce4-session/xfce4-session-4.5.92-hide-tips.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfce4-session/04_fix-missing-lm.patch.gz | \
+  patch -p1 --verbose
+

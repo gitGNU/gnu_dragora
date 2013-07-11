@@ -1,0 +1,172 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.4.5
+ARCH=${ARCH:-x86_64}
+B=2
+
+PKG=${TMP}/package-ppp
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/ppp-${V}
+tar xvf ${CWD}/ppp-${V}.tar.lz -C $TMP
+
+cd ${TMP}/ppp-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Enable PPP packet filtering (requires libpcap):
+sed -i 's%#FILTER=y%FILER=y%' \
+ pppd/Makefile.linux
+
+# Enable IPv6 support in pppd:
+sed -i 's%#HAVE_INET6=y%HAVE_INET6=y%' \
+ pppd/Makefile.linux
+
+# Compile without debug information:
+sed -i 's%COPTS = -O2 -pipe -Wall -g%COPTS = -O2 -fPIC -Wall%' \
+ pppd/Makefile.linux
+
+sed -i 's%-O2 -g -pipe%-O2%' chat/Makefile.linux
+
+# To recent kernels:
+rm -f include/linux/if_pppol2tp.h
+
+# Fix the location of the plugins (under lib64):
+( cd pppd/plugins
+  for dir in pppoatm pppol2tp radius rp-pppoe ; do
+    sed -i \
+     's%LIBDIR = $(DESTDIR)/lib/pppd%LIBDIR = $(DESTDIR)/lib64/pppd%' \
+      ${dir}/Makefile.linux
+  done
+)
+sed -i 's%LIBDIR = $(DESTDIR)/lib/pppd%LIBDIR = $(DESTDIR)/lib64/pppd%' \
+ pppd/plugins/Makefile.linux
+
+./configure \
+ --prefix=/usr \
+ --mandir=/usr/man \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install INSTROOT=$PKG
+
+# Increments a little the security:
+chmod 750 ${PKG}/usr/sbin/*
+
+# Fix permissions:
+( cd $PKG
+  find . -perm 555 -exec chmod 755 '{}' +
+  find . -perm 444 -exec chmod 644 '{}' +
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Include scripts:
+mkdir -p ${PKG}/etc/ppp/peers
+
+mkdir -p ${PKG}/usr/sbin
+install -m 750 scripts/pon ${PKG}/usr/sbin
+install -m 750 scripts/poff ${PKG}/usr/sbin
+install -m 750 scripts/plog ${PKG}/usr/sbin
+
+# Add configuration files:
+mkdir -p ${PKG}/etc/ppp
+for file in etc.ppp/* ; do
+  cat $file > ${PKG}/etc/ppp/${file##*/}.new
+done
+chmod 600 ${PKG}/etc/ppp/*-secrets*
+
+# Move and compress man-pages:
+if [[ -d ${PKG}/usr/share/man ]]; then
+  ( cd ${PKG}/usr
+    mv share/man/ .
+    rmdir --ignore-fail-on-non-empty share/
+  )
+fi
+gzip -9N ${PKG}/usr/man/man?/*
+
+# Includes the man-page for pon:
+mkdir -p ${PKG}/usr/man/man1
+gzip -9Nc < scripts/pon.1 > ${PKG}/usr/man/man1/pon.1.gz
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/ppp-${V}
+cp -a \
+ FAQ PLUGINS README README.linux SETUP \
+ ${PKG}/usr/doc/ppp-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Make the post-install script:
+mkdir -p ${PKG}/install
+cat << "EOF" > ${PKG}/install/post-install
+# Handle config files:
+config() {
+  local new old
+  new="$1"
+  old=${1%.new}
+  if [ ! -r $old ]; then
+    mv $new $old
+  elif [ "$(md5sum $old | cut -f 1 -d ' ')" = "$(md5sum $new | cut -f 1 -d ' ')" ]; then
+    rm $new
+  else
+    echo "You have a new config file \"${new}\" at your consideration."
+  fi
+}
+
+for file in etc/ppp/*.new ; do
+  config $file
+done
+
+EOF
+
+cd $PKG
+makepkg -l ${OUT}/ppp-${V}-${ARCH}-${B}.tlz
+

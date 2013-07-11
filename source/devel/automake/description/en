@@ -1,0 +1,7 @@
+automake - A tool to generate Makefiles automatically.
+
+Automake is a tool for automatically generating `Makefile.in'
+files compliant with the GNU Coding Standards.
+
+Automake requires the use of Autoconf.
+

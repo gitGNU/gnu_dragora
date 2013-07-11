@@ -1,0 +1,5 @@
+gobject-introspection - Collects information.
+
+The goal of gobject-introspection is to describe APIs and collect them in
+a uniform, machine readable format.
+

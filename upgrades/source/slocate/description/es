@@ -1,0 +1,10 @@
+slocate - Versión segura de GNU locate.
+
+Secure locate proporciona una manera segura de indexar y
+buscar rápidamente archivos en su sistema.  Utiliza la
+codificaciÃ³n incremental al igual que GNU locate para
+comprimir su base de datos para hacer la búsqueda más
+rápida, también comprueba los permisos de archivos y la
+propiedad de modo que los usuarios no van a ver los
+archivos que no tienen acceso.
+

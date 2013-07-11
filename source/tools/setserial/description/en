@@ -1,0 +1,6 @@
+setserial - Utility to configure a serial device.
+
+Setserial is a program which allows you to look at and change various
+attributes of a serial device, including its port, its IRQ, and other
+serial port options.
+

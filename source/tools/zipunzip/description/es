@@ -1,0 +1,8 @@
+zipunzip - Utilidades de extracción/compresión ZIP.
+
+El paquete zipunzip contiene utilidades de extracción/compresión ZIP.
+Son útiles para extraer o comprimir ficheros de archivos ZIP. 
+
+Los archivos ZIP se generan con las utilidades de PKZIP o Info-ZIP,
+sobre todo en entornos DOS.
+

@@ -1,0 +1,5 @@
+gst-ffmpeg - Plugins para FFmpeg.
+
+Este módulo contiene un plugin para GStreamer FFmpeg, así como
+una copia interna del código fuente de FFmpeg.
+

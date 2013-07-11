@@ -1,0 +1,23 @@
+exo:Extension library to Xfce:ON:exo-0.7.0 - Size 1.1M [C], 4.2M [U].
+garcon:Menu implementation based on Glib/GIO:ON:garcon-0.1.10 - Size 120K [C], 960K [U].
+gtk-xfce-engine:The engine of Xfce:ON:gtk-xfce-engine-2.99.1 - Size 44K [C], 300K [U].
+libxfce4ui:Replacement of the old libxfcegui4:ON:libxfce4ui-4.8.1 - Size 104K [C], 720K [U].
+libxfce4util:General-purpose utility library:ON:libxfce4util-4.8.2 - Size 128K [C], 970K [U].
+libxfcegui4:Various Gtk widgets for Xfce:ON:libxfcegui4-4.8.1 - Size 292K [C], 1.6M [U].
+mousepad:Text editor for Xfce based on Leafpad:ON:mousepad-20110116 - Size 80K [C], 430K [U].
+terminal:Terminal emulator for Xfce:ON:terminal-0.4.8 - Size 984K [C], 4.0M [U].
+thunar-1:Fast file manager:ON:thunar-1.3.0 - Size 2.9M [C], 9.9M [U].
+thunar-vfs:Complement of Thunar:ON:thunar-vfs-1.2.0 - Size 204K [C], 1.5M [U].
+xfce-utils:Utilities for Xfce:ON:xfce-utils-4.8.3 - Size 396K [C], 2.3M [U].
+xfce4-appfinder:Appfinder for Xfce:ON:xfce4-appfinder-4.8.0 - Size 72K [C], 410K [U].
+xfce4-dev-tools:Development tools of Xfce:ON:xfce4-dev-tools-4.8.0 - Size 24K [C], 120K [U].
+xfce4-icon-theme:Icon themes for Xfce:ON:xfce4-icon-theme-20090717 - Size 1.3M [C], 9.6M [U].
+xfce4-mixer:Volume control application for Xfce:ON:xfce4-mixer-4.8.0 - Size 176K [C], 960K [U].
+xfce4-panel:Panel of Xfce:ON:xfce4-panel-4.8.6 - Size 840K [C], 3.7M [U].
+xfce4-power-manager:Power manager of Xfce:ON:xfce4-power-manager-1.0.11 - Size 532K [C], 2.5M [U].
+xfce4-session:Session manager of Xfce:ON:xfce4-session-4.8.3 - Size 944K [C], 3.0M [U].
+xfce4-settings:Settings manager for Xfce:ON:xfce4-settings-4.8.3 - Size 304K [C], 1.7M [U].
+xfconf:Configuration utility:ON:xfconf-4.8.1 - Size 156K [C], 970K [U].
+xfdesktop:Desktop manager of Xfce:ON:xfdesktop-4.8.3 - Size 2.5M [C], 4.8M [U].
+xfwm4-4:Window manager of Xfce:ON:xfwm4-4.8.3 - Size 1.3M [C], 5.3M [U].
+xfwm4-themes:Additionnal themes for xfwm4:ON:xfwm4-themes-20090907 - Size 288K [C], 6.5M [U].

@@ -1,0 +1,5 @@
+gobject-introspection - Reúne información.
+
+El objetivo de gobject-introspection es describir las API y su recopilación en
+un uniforme, formato legible por máquina.
+

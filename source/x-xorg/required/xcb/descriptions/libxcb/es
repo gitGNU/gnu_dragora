@@ -1,0 +1,9 @@
+libxcb - Interfaz para el protocolo del sistema de ventana X.
+
+El paquete libxcb proporciona una interfaz para el protocolo del
+sistema de ventana X, que sustituye a la interfaz actual Xlib.
+
+Xlib también puede utilizar XCB como una capa de transporte,
+software que permite hacer solicitudes y recibir respuestas con
+ambos.
+

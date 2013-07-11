@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# xdm:  X Display Manager.
+#
+
+if [ -x /usr/bin/xdm ]; then
+  sv start /service/getty-* || exit 1;
+  exec /usr/bin/xdm -nodaemon
+fi
+

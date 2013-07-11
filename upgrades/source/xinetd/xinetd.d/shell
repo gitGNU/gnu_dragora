@@ -1,0 +1,15 @@
+# Begin /etc/xinetd.d/shell
+
+service shell
+{
+   disable        = yes
+   socket_type    = stream
+   wait           = no
+   user           = 0
+   instances      = UNLIMITED
+   flags          = IDONLY
+   log_on_success += USERID
+   server         = /usr/sbin/in.rshd
+}
+
+# End /etc/xinetd.d/shell

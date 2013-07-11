@@ -1,0 +1,14 @@
+# Begin /etc/xinetd.d/telnet
+
+service telnet
+{
+   disable        = yes
+   socket_type    = stream
+   wait           = no
+   user           = 0
+   server         = /usr/sbin/in.telnetd
+   bind           = 127.0.0.1
+   log_on_failure += USERID
+}
+
+# End /etc/xinetd.d/telnet

@@ -1,0 +1,8 @@
+giflib - Una librería para procesar GIFs.
+
+El paquete giflib contiene librerías para leer y escribir GIFs
+así como programas para convertir y trabajar con ficheros GIF.
+Las librerías son útiles para cualquier programa gráfico que
+desee manejar ficheros GIF, mientras que los programas son
+útiles para la conversión y limpieza de imágenes.
+

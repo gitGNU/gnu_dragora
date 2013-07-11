@@ -1,0 +1,5 @@
+diffutils - Utilidades para diferenciar archivos.
+
+El conjunto de utilidades diff de GNU contiene programas que
+muestran las diferencias entre archivos y directorios.
+

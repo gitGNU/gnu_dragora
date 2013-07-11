@@ -1,0 +1,5 @@
+libEtPan - Librería para todo tipo de acceso al buzón.
+
+libEtPan! es principalmente una colección que va a controlar todo tipo de
+acceso al buzón. Por ejemplo: IMAPrev4, POP3, NNTP, mbox, MH.
+

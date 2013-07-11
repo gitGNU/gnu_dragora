@@ -1,0 +1,11 @@
+sqlite - Motor de base de datos SQL embebido.
+	
+SQLite es un motor de base de datos SQL embebido. A diferencia de la
+mayoría de las demás bases de datos SQL, SQLite no tiene un proceso
+separado de servidor.  SQLite lee y escribe directamente para el
+común de archivos de disco.  Una completa base de datos SQL con
+múltiples tablas, índices, disparadores, y puntos de vista, está
+contenida en un único archivo de disco.
+
+Esta es la versión de fusión (amalgamation) de SQLite.
+

@@ -1,0 +1,8 @@
+# Reorganize this Rumanian page:
+if [ -f ${packageDir}/usr/man/man1/gpg.ru.1 ]; then
+  mkdir -p ${packageDir}/usr/man/ru/man1
+  ( cd ${packageDir}/usr/man
+    mv man1/gpg.ru.1 ru/man1
+  )
+fi
+

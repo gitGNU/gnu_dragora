@@ -1,0 +1,5 @@
+libxslt - XSLT support for libxml2.
+
+The libxslt package contains XSLT libraries.  These are useful for
+extending libxml2 libraries to support XSLT files.
+

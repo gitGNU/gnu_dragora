@@ -1,0 +1,7 @@
+mutagen - Biblioteca de edición de metadatos de sonido.
+
+Mutagen es un módulo de Python para manejar metadatos de audio.
+Soporta ASF, FLAC, M4A, Monkey's Audio, MP3, Musepack,
+Ogg FLAC, Ogg Speex, Ogg Theora, Ogg Vorbis, True Audio,
+WavPack y archivos de audio OptimFROG.
+

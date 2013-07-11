@@ -1,0 +1,5 @@
+# /etc/hosts:  The static table lookup for host names.
+#
+# For more information, type "man 5 hosts".
+
+127.0.0.1       localhost

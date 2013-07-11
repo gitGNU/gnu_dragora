@@ -1,0 +1,6 @@
+usbutils - A utility to list USB devices.
+
+The usbutils package contains a utility used to display
+information about USB buses in the system and the
+devices connected to them.
+

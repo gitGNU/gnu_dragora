@@ -1,0 +1,122 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=0.99.6
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j6}
+
+PKG=${TMP}/package-xine-ui
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/xine-ui-${V}
+tar -xvf ${CWD}/xine-ui-${V}.tar.lz -C $TMP
+
+cd ${TMP}/xine-ui-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+LIRC_CFLAGS="-I/usr/include/lirc" \
+LIRC_LIBS="-llirc_client" \
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/xine-ui-${V} \
+ --enable-xft \
+ --enable-vdr-keys \
+ --enable-lirc \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Make symlink compatibility for the desktop entry:
+mkdir -p ${PKG}/usr/share/applications
+( cd ${PKG}/usr/share/applications
+  ln -sf ../xine/desktop/xine.desktop .
+)
+
+# Compress man page(s):
+( cd ${PKG}/usr/man
+  find . -type f -name '*.?' | xargs gzip -9N
+)
+
+# Move the documentation directory under usr/doc:
+mkdir -p ${PKG}/usr/doc/xine-ui-${V}
+mv ${PKG}/usr/share/doc/* ${PKG}/usr/doc/xine-ui-${V}/
+rmdir ${PKG}/usr/share/doc
+# Symlink compatibility for the `help option':
+( cd ${PKG}/usr/doc
+  ln -s xine-ui-${V}/xine-ui .
+  ln -s xine-ui-${V}/xitk .
+)
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+# Make the post install script:
+mkdir -p ${PKG}/install
+cat << "EOF" > ${PKG}/install/post-install
+# Update the desktop entry:
+if [ -x usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database -q /usr/share/applications
+fi
+
+EOF
+
+cd $PKG
+makepkg -l ${OUT}/xine-ui-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,8 @@
+gmp - La librería múltiple de precisión aritmética de GNU.
+
+GMP es una librería libre para la precisión aritmética arbitraría,
+funcionando en enteros con signo, números racionales, y números de
+coma flotante.  No hay límite práctico para la precisión, excepto
+los implicados por la memoria disponible en la máquina donde corre
+GMP.
+

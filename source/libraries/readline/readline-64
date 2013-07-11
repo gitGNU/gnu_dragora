@@ -1,0 +1,119 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=6.2
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-readline
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/readline-${V}
+tar xvf ${CWD}/readline-${V}.tar.lz -C $TMP
+
+cd ${TMP}/readline-${V}
+
+# Apply official patches:
+for patch in ${CWD}/patches/*-??? ; do
+  if [[ -f $patch ]]; then
+    patch -p0 < $patch --verbose
+  fi
+done
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/lib64 \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --enable-multibyte \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS SHLIB_LIBS=-lncurses
+make install DESTDIR=$PKG
+
+mkdir -p ${PKG}/usr/lib64
+mv ${PKG}/lib64/lib{readline,history}.a ${PKG}/usr/lib64
+
+rm -f ${PKG}/lib64/lib{readline,history}.so
+( cd ${PKG}/usr/lib64
+  ln -sf ../../lib64/libreadline.so.6 libreadline.so
+  ln -sf ../../lib64/libhistory.so.6 libhistory.so
+)
+find ${PKG}/lib64 -perm 555 | xargs chmod 755
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+)
+
+# Compress GNU info documents:
+( cd ${PKG}/usr/info ; rm -f dir ; gzip -9N * )
+
+# Compress man-pages:
+gzip -9N ${PKG}/usr/man/man?/*
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/readline-${V}
+cp -a \
+ CHANGELOG CHANGES COPYING MANIFEST NEWS README USAGE \
+ ${PKG}/usr/doc/readline-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/readline-${V}-${ARCH}-${B}.tlz
+

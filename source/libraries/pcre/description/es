@@ -1,0 +1,6 @@
+pcre - Expresiones regulares Perl-compatibles.
+
+La librería PCRE es un conjunto de funciones que implementa expresión
+regular usando la misma sintaxis y semántica que Perl, sólo con unas
+pocas diferencias.
+

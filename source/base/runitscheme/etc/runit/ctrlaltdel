@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Reboot at the "three finger salute".
+#
+
+exec /sbin/init 6
+

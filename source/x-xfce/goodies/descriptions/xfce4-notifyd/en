@@ -1,0 +1,6 @@
+xfce4-notifyd - Xfce notification daemon.
+
+The Xfce notification daemon is a smallish program that implements
+the "server-side" portion of the Freedesktop desktop notifications
+specification.
+

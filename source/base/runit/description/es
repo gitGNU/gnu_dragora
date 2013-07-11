@@ -1,0 +1,11 @@
+runit - Un esquema de inicio UNIX con servicio de supervisión.
+
+Runit es un sistema multi-plataforma Unix de inicio con la supervisión de
+servicios, un reemplazo para sysvinit, y otros sistemas de init.  Se
+ejecuta en GNU/Linux, *BSD, MacOSX, Solaris, y puede ser fácilmente
+adaptado a otros Sistemas operativos Unix.
+
+Runit fue escrito por Gerrit Pape.
+
+Para más información, visite:  http://smarden.org/runit
+

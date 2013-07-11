@@ -1,0 +1,164 @@
+#!/bin/bash
+#  Copyright (C) 2009-2012  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.42.2
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-e2fsprogs
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/e2fsprogs-${V}
+lzip -cd ${CWD}/e2fsprogs-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/e2fsprogs-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/lib \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --with-root-prefix="" \
+ --enable-elf-shlibs \
+ --disable-uuidd \
+ --disable-libuuid \
+ --disable-libblkid \
+ --disable-fsck \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+if [[ -n $CHECK ]]; then
+  make check;
+fi
+make install DESTDIR=$PKG
+make install-libs DESTDIR=$PKG
+
+# Move the shared libraries and pkgconfig under usr/lib:
+mkdir -p ${PKG}/usr/lib
+mv \
+ ${PKG}/lib/pkgconfig ${PKG}/lib/*.so \
+ ${PKG}/usr/lib
+# Make the symlink compatibility:
+( cd ${PKG}/usr/lib
+  for shared in *.so ; do
+    ln -sf /lib/$(readlink $shared) $shared
+  done
+)
+
+# Increments a little the security:
+find ${PKG}/sbin -type f | xargs chmod -v 750
+find ${PKG}/usr/sbin -type f | xargs chmod -v 750
+
+# Handle config file:
+mv ${PKG}/etc/mke2fs.conf{,.new}
+
+# Just in case:
+cat << "EOF" > ${PKG}/etc/e2fsck.conf
+[options]
+        buggy_init_scripts = 1
+EOF
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+)
+
+# Creates links in ${PKG}/sbin:
+( cd ${PKG}/sbin
+  ln -sf e2fsck fsck.ext2
+  ln -sf e2fsck fsck.ext3
+  ln -sf e2fsck fsck.ext4
+  ln -sf e2fsck fsck.ext4dev
+  ln -sf mke2fs mkfs.ext2
+  ln -sf mke2fs mkfs.ext3
+  ln -sf mke2fs mkfs.ext4
+  ln -sf mke2fs mkfs.ext4dev
+  ln -sf tune2fs e2label
+  ln -sf tune2fs findfs
+)
+
+# Compress and link man-pages:
+gzip -9Nf ${PKG}/usr/man/man?/*.?
+( cd ${PKG}/usr/man/man8
+  ln -sf e2fsck.8.gz fsck.ext2.8.gz
+  ln -sf e2fsck.8.gz fsck.ext3.8.gz
+  ln -sf e2fsck.8.gz fsck.ext4.8.gz
+  ln -sf e2fsck.8.gz fsck.ext4dev.8.gz
+  ln -sf mke2fs.8.gz mkfs.ext2.8.gz
+  ln -sf mke2fs.8.gz mkfs.ext3.8.gz
+  ln -sf mke2fs.8.gz mkfs.ext4.8.gz
+  ln -sf mke2fs.8.gz mkfs.ext4dev.8.gz
+)
+
+# Compress GNU info documents:
+( cd ${PKG}/usr/info ; rm -f dir ; gzip -9N * )
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/e2fsprogs-${V}
+cp -a \
+ ABOUT-NLS COPYING README RELEASE-NOTES SHLIBS e2fsprogs.lsm \
+ ${PKG}/usr/doc/e2fsprogs-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/{description,install}
+cp ${CWD}/description/* ${PKG}/description
+
+# Add post-install script:
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/e2fsprogs-${V}-${ARCH}-${B}.tlz
+

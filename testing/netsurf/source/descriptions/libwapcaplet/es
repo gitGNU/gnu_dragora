@@ -1,0 +1,8 @@
+libwapcaplet - Una librería de internamiento de cadena.
+
+LibWapcaplet es una librería de internamiento de cadena, escrita en C.
+Proporciona un contador de referencias y rápida funcionalidad de
+comparasión de cadenas. Fue desarrollado como parte del proyecto
+NetSurf y está disponible para su uso por otros programas bajo la
+licencia MIT.
+

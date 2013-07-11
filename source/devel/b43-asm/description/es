@@ -1,0 +1,5 @@
+b43-asm - Ensamblador para firmware Broadcom BCM43xx.
+
+Este paquete incluye el ensamblador para construir algunos
+firmwares como openfwwf.
+

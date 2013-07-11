@@ -1,0 +1,9 @@
+gstreamer - Entorno de trabajo para flujos multimedia.
+
+El paquete gstreamer contiene un entorno de trabajo para flujos
+multimedia que permite a las aplicaciones compartir un conjunto
+común de módulos para cosas como decodificar y codificar video
+y audio, filtros de video y audio, visualización de audio,
+flujos Web y cualquir otra cosa similar que pueda fluir en
+tiempo real.
+

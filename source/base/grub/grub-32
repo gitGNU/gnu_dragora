@@ -1,0 +1,107 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=rev3964
+ARCH=${ARCH:-i486}
+B=1
+
+PKG=${TMP}/package-grub
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/grub-${V}
+tar -xvf ${CWD}/grub-${V}.tar.lz -C $TMP
+
+cd ${TMP}/grub-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+unset CFLAGS CXXFLAGS
+
+./autogen.sh
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --sbindir=/sbin \
+ --libdir=/lib \
+ --disable-werror \
+ --disable-efiemu \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+find ${PKG}/sbin -type f | xargs chmod -v 750;
+chmod 755 ${PKG}/etc/bash_completion.d/grub || true;
+
+# Create symlink compatibility in usr/lib:
+mkdir -p ${PKG}/usr/lib/grub
+( cd ${PKG}/usr/lib/grub ; ln -sf ../../../lib/grub/i386-pc . )
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress manuals:
+if [[ -d ${PKG}/usr/info ]]; then
+  rm -f ${PKG}/usr/info/dir
+  gzip -9N ${PKG}/usr/info/*
+fi
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/grub-${V}
+cp -a \
+ AUTHORS COPYING ChangeLog NEWS README TODO THANKS \
+ ${PKG}/usr/doc/grub-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/grub2-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,6 @@
+onig - Regular expression library.
+
+Oniguruma is a regular expression library. The characteristics of this library
+is that different character encoding for every regular expression object can
+be specified. (supported APIs: GNU regex, POSIX and Oniguruma native).
+

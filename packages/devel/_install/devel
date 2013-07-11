@@ -1,0 +1,30 @@
+autoconf:An extensible package of M4 macros:ON:autoconf-2.68 - Size 856K [C], 3.1M [U].
+autogen:An automated text file generator:ON:autogen-5.11.8 - Size 552K [C], 1.3M [U].
+automake:A tool to generate Makefiles automatically:ON:automake-1.11.3 - Size 608K [C], 1.8M [U].
+b43-asm:Assembler Broadcom BCM43xx firmware:ON:b43-asm-20100419git - Size 32K [C], 100K [U].
+binutils:The GNU binary utilities:ON:binutils-2.22 - Size 3.3M [C], 15M [U].
+bison:GNU parser generator:ON:bison-2.5 - Size 644K [C], 2.5M [U].
+bzr:Bazaar distributed version control:ON:bzr-2.1.3 - Size 3.7M [C], 25M [U].
+clisp:Common Lisp:ON:clisp-2.49 - Size 2.1M [C], 14M [U].
+cmake:Open-source Make system:ON:cmake-2.8.4 - Size 3.3M [C], 22M [U].
+cvs:Concurrent versions system:ON:cvs-1.11.23 - Size 688K [C], 1.8M [U].
+dev86:80386 processors:ON:dev86-0.16.17 - Size 288K [C], 1.1M [U].
+flex:The fast lexical analyser generator:ON:flex-2.5.35 - Size 292K [C], 980K [U].
+gcc:The GNU C Compiler Collection:ON:gcc-4.5.3 - Size 68M [C], 369M [U].
+gdb:The GNU debugger:ON:gdb-7.4 - Size 2.4M [C], 11M [U].
+git:The fast version control system:ON:git-1.7.9.6 - Size 1.6M [C], 12M [U].
+guile:An interpreter for Scheme:ON:guile-1.8.8 - Size 1.3M [C], 4.1M [U].
+libtool:The GNU portable library tool:ON:libtool-2.4 - Size 432K [C], 2.3M [U].
+lua:The programming language lua:ON:lua-5.2.0 - Size 192K [C], 900K [U].
+m4:Traditional Unix macro processor:ON:m4-1.4.16 - Size 228K [C], 500K [U].
+make:The weighted "make":ON:make-3.82 - Size 424K [C], 1.4M [U].
+mercurial:Scalable revision control system:ON:mercurial-2.1 - Size 1.9M [C], 9.4M [U].
+nasm:The Netwide Assembler:ON:nasm-2.09.10 - Size 212K [C], 970K [U].
+perl:Practical Extraction and Report Language:ON:perl-5.14.2 - Size 12M [C], 42M [U].
+pkg-config:Tool to compile/link:ON:pkg-config-0.26 - Size 60K [C], 170K [U].
+python:Python programming language:ON:python-2.6.7 - Size 9.0M [C], 62M [U].
+ruby:Dynamic language for easy programming:ON:ruby-1.9.3_p194 - Size 4.1M [C], 35M [U].
+subversion:Open source version control system:ON:subversion-1.6.17 - Size 2.4M [C], 15M [U].
+tcl:Tool command language:ON:tcl-8.5.11 - Size 1.8M [C], 5.6M [U].
+tk:Tcl GUI toolkit:ON:tk-8.5.11 - Size 1.7M [C], 4.5M [U].
+yasm:Yasm assembler:ON:yasm-1.1.0 - Size 440K [C], 2.9M [U].

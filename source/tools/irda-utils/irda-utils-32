@@ -1,0 +1,126 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=0.9.18
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-irda-utils
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/irda-utils-${V}
+lzip -cd ${CWD}/irda-utils-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/irda-utils-${V}
+
+# Apply patches from SF.net and Dragora:
+for file in ${CWD}/patches/*.gz ; do
+  zcat $file | patch -p1 --verbose
+done
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+make CFLAGS="$DCFLAGS -W -Wall" V=1
+
+# We need to create these directories before install:
+( cd $PKG
+  mkdir -p usr/bin usr/sbin
+)
+
+make install ROOT=$PKG
+
+# Do not include this directory:
+rm -rf ${PKG}/etc/sysconfig
+
+# Increments a little the security:
+for file in ${PKG}/usr/sbin/* ; do
+  if [[ -f $file && -x $file ]]; then
+    chmod -v 750 $file
+  fi
+done
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip -s 2> /dev/null
+)
+
+# Include config files:
+mkdir -p ${PKG}/etc/irda
+zcat ${CWD}/irda.conf.gz > ${PKG}/etc/irda/irda.conf.new
+
+mkdir -p ${PKG}/etc/rc.d
+zcat ${CWD}/rc.irda.gz > ${PKG}/etc/rc.d/rc.irda.new
+chmod 755 $PKG/etc/rc.d/rc.irda.new
+
+mkdir -p ${PKG}/etc/modprobe.d
+zcat ${CWD}/irda-utils.conf.gz > ${PKG}/etc/modprobe.d/irda-utils.conf.new
+
+# Add manpages:
+mkdir -p ${PKG}/usr/man/man{4,7,8}
+( cd man
+  cp -a *.4.gz ${PKG}/usr/man/man4
+  cp -a *.7.gz ${PKG}/usr/man/man7
+  cp -a *.8.gz ${PKG}/usr/man/man8
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/irda-utils-${V}
+cp -a \
+ README man/COPYING \
+ ${PKG}/usr/doc/irda-utils-${V}
+
+# Add post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/irda-utils-${V}-${ARCH}-${B}.tlz
+

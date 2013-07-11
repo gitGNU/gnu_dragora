@@ -1,0 +1,16 @@
+# Begin /etc/xinetd.d/rstatd
+
+service rstatd
+{
+   disable     = yes
+   type        = RPC
+   flags       = INTERCEPT
+   rpc_version = 2-4
+   socket_type = dgram
+   protocol    = udp
+   server      = /usr/sbin/rpc.rstatd
+   wait        = yes
+   user        = 0
+}
+
+# End /etc/xinetd.d/rstatd

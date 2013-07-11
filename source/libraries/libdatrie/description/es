@@ -1,0 +1,8 @@
+libdatrie - Una implementación de doble matriz.
+
+datrie es una implementación de doble-matriz que representa trie,
+según lo propuesto por Junichi Aoe.
+
+Para más información, visite:
+http://linux.thai.net/projects/datrie
+

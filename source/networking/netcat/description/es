@@ -1,0 +1,5 @@
+netcat - El GNU Netcat.
+
+Netcat es una utilidad simple para Unix que lee y escribe datos a través de
+conexiones de red, utilizando los protocolos TCP o UDP.
+

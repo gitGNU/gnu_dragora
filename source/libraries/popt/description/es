@@ -1,0 +1,5 @@
+popt - Librería para analizar opciones de la línea de comandos.
+
+El paquete popt contiene las librerías popt que son usadas por algunos
+programas para analizar opciones de la línea de comandos.
+

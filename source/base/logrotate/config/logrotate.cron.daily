@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Rotate logs:
+if [ -x /usr/sbin/logrotate ]; then
+  if [ -r /etc/logrotate.conf ]; then
+    /usr/sbin/logrotate /etc/logrotate.conf
+    retval=$?
+    if [ $retval -ne 0 ]; then
+      if [ -x /usr/bin/logger ]; then
+        /usr/bin/logger -t logrotate "ALERT: exited abnormally with [$retval]"
+      fi
+    fi
+  fi
+fi
+

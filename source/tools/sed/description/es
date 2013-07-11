@@ -1,0 +1,9 @@
+sed - Editor de flujos de GNU.
+
+Sed no es realmente un verdadero editor de texto o procesador de texto.
+En lugar de ello, se utiliza para filtrar texto, es decir, toma el
+texto de entrada y realiza algunas operaciones en él y modifica la
+salida del texto.
+
+Para más información, visite:  http://www.gnu.org/software/sed
+

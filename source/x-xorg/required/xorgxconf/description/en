@@ -1,0 +1,7 @@
+xorgxconf - Configuration files of Dragora for Xorg.
+
+It contains the configuration files for X, like the
+profile and the VESA file configuration.
+
+This package also include the "wmconfig" tool.
+

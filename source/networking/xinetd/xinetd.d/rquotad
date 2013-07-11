@@ -1,0 +1,15 @@
+# Begin /etc/xinetd.d/rquotad
+
+service rquotad
+{
+   disable     = yes
+   type        = RPC
+   rpc_version = 1
+   socket_type = dgram
+   protocol    = udp
+   wait        = yes
+   user        = 0
+   server      = /usr/sbin/rpc.rstatd
+}
+
+# End /etc/xinetd.d/rquotad

@@ -1,0 +1,5 @@
+libpthread-stubs - Provides weak aliases for pthread functions.
+
+The libpthread-stubs package provides weak aliases for
+pthread functions not provided in libc.
+

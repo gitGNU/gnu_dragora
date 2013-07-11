@@ -1,0 +1,154 @@
+#!/bin/sh
+#
+# /etc/runit/3:  Systems tasks to shutdown or reboot (Stage 3).
+#
+# Version:       (#) 1.00  2009-12-07 (MAF)
+#                (#) 1.01  2010-03-12 (MAF)
+#                (#) 1.02  2010-06-17 (MAF)
+#                (#) 1.03  2010-06-30 (MAF)
+#                (#) 2.00  2010-07-09 (MAF)
+#                (#) 2.01  2010-07-21 (MAF)
+#                (#) 2.02  2010-07-29 (MAF)
+#                (#) 2.03  2010-07-30 (MAF)
+#                (#) 2.04  2010-08-21 (MAF)
+#                (#) 2.05  2011-05-11 (MAF)
+#                (#) 2.06  2012-02-02 (MAF)
+#                (#) 2.07  2012-04-20 (MAF)
+#
+# Author:        Matias A. Fonzo, <selk@dragora.org>.
+#
+# Under the terms of the GNU General Public License.
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export PATH
+
+# Functions.
+
+# A function for display a message:
+msg() { printf '%s\n' "$@"; }
+
+# A function to send the TERM signal:
+send_signal() {
+  ps -e | pgrep -x -v '(ps|pgrep|xargs|kill|3|1)' | xargs kill -"$1"
+}
+
+# A function to remount the filesystem in read-only mode:
+remount_ro() {
+  msg "Remounting the root filesystem in read-only mode:"
+  mount -vn -o remount,ro /
+}
+
+# Save the system time to the hardware clock:
+if [ -x /etc/rc.d/rc.clock ]; then
+  /etc/rc.d/rc.clock stop
+fi
+
+# Stop the services:
+msg "Waiting for services to stop..."
+sv -w 7 force-stop /service/*
+sv -w 5 exit /service/* &>/dev/null
+
+# Run the local_shutdown script (if exists):
+if [ -x /etc/rc.d/rc.local_shutdown ]; then
+  /etc/rc.d/rc.local_shutdown
+fi
+
+# Stop quotas (if needed):
+if egrep -q -m 1 '(usr|grp)quota' /etc/fstab ; then
+  if [ -x /usr/sbin/quotaoff ]; then
+    msg "Deactivating quotas:  /usr/sbin/quotaoff -av"
+    /usr/sbin/quotaoff -av
+  fi
+fi
+
+# Stop fuse connections:
+if [ -x /etc/rc.d/rc.fuse ]; then
+  /etc/rc.d/rc.fuse stop
+fi
+
+# Stop the local interface:
+if [ -x /etc/rc.d/rc.iface_lo ]; then
+  /etc/rc.d/rc.iface_lo stop
+fi
+
+# Stop PCMCIA subsystem:
+if [ -x /etc/rc.d/rc.pcmcia ]; then
+  /etc/rc.d/rc.pcmcia stop
+fi
+
+# Stop IrDA daemon:
+if [ -x /etc/rc.d/rc.irda ]; then
+  /etc/rc.d/rc.irda stop
+fi
+
+# Stop Bluetooth daemon:
+if [ -x /etc/rc.d/rc.bluez ]; then
+  /etc/rc.d/rc.bluez stop
+fi
+
+# Save random number generator #
+msg "Saving random seed (from /dev/urandom) to /etc/random-seed."
+if [ -r /etc/random-seed ]; then
+  cat /etc/random-seed 1>/dev/urandom
+else
+  touch /etc/random-seed
+fi
+chmod 0600 /etc/random-seed
+
+# Set the pool size:
+printf -v bytes "$(sysctl -n -e kernel.random.poolsize)"
+
+# Test variable to assign a new value if needed:
+if [ "$bytes" = "" ]; then
+  bytes=1024
+fi
+
+# Save the random seed between reboots:
+dd if=/dev/urandom of=/etc/random-seed count=1 bs="$bytes" 2>/dev/null
+# End of Save random number generator #
+
+# Stop LVM2 (Logical Volume Manager version 2):
+#
+# See the backup directory:
+if [ -r /etc/lvm/lvm.conf ]; then
+  BACKUP_DIR="$(awk '/backup_dir/ && !/^#/' /etc/lvm/lvm.conf | awk -F '["]' '{ print $2 }')"
+else  # This is the default directory:
+  BACKUP_DIR=/etc/lvm/backup
+fi
+# Check the backup directory:
+if [ -d "$BACKUP_DIR" ]; then
+  msg "Stopping LVM volume groups..."
+  vgchange -an --ignorelockingfailure 1>/dev/null 2>&1
+fi
+
+msg "Sending the TERM signal to all process..."
+send_signal TERM
+sleep 7
+msg "Sending the KILL signal to all process..."
+send_signal KILL
+sleep 3
+
+# Flush file system buffers:
+sync
+
+# Disable swap partition(s):
+if [ -f /etc/rc.d/rc.swap ]; then
+  sh /etc/rc.d/rc.swap stop
+fi
+
+msg "Unmounting local and network filesystems:"
+umount -v -a -t nodevtmpfs,noproc,nosysfs
+
+if [ -L /dev/root ] && [ -e /dev/root ]; then
+  msg "Setting the root filesystem in read-only mode:"
+  blockdev -v --setro /dev/root
+  if [ ! $? -eq 0 ]; then
+    remount_ro
+  fi
+else
+  remount_ro
+fi
+
+# Waits for process to change the state, specially on SMP machines:
+wait
+

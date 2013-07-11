@@ -1,0 +1,9 @@
+gawk - Lenguaje de análisis y procesamiento de patrones.
+
+La utilidad awk interpreta un lenguaje de propósito-especial que hace
+posible manejar trabajos simples de reformulación de datos con pocas
+líneas de código.  Es una versión libre de 'awk'.
+
+GNU awk implementa la utilidad AWK que forma parte de
+IEEE Std 1003,1 Shell y Utilidades (XCU).
+

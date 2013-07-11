@@ -1,0 +1,6 @@
+sysfsutils - Utilidades de sistema basado en sysfs.
+
+Se trata de un conjunto de aplicaciones basado en sysfs, un nuevo
+sistema de archivos virtual en el kernel de Linux (2.5+) que
+expone un sistema de árbol de dispositivos.
+

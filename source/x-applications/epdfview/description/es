@@ -1,0 +1,7 @@
+epdfview - Visor liviano de documentos PDF.
+
+ePDFView es un visor libre y liviano de documentos PDF utilizando Poppler
+y librerías GTK+. El objetivo de ePDFView es hacer un visor simple de
+documentos PDF, en la líneas de Evince pero sin usar las bibliotecas
+de GNOME.
+

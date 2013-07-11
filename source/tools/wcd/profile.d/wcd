@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -x /usr/bin/wcd.bin ]; then
+  wcd()
+  {
+      /usr/bin/wcd.bin -g -K "$@"
+      . ${HOME}/bin/wcd.go
+  }
+  export wcd
+fi
+

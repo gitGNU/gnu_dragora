@@ -1,0 +1,7 @@
+libao - Librería de audio multiplataforma.
+
+El paquete libao contiene una librería de audio multiplataforma.  Es útil
+para obtener sonido en una amplia variedad de plataformas.  Actualmente
+soporta ficheros WAV, OSS, ESD, ALSA, NAS, aRTS y PulseAudio (siguiente
+generación de arquitectura de sonido de GNOME).
+

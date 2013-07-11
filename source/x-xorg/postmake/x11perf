@@ -1,0 +1,8 @@
+if [ -d ${packageDir}/usr/lib${libSuffix}/X11/x11perfcomp ]; then
+  (
+    mkdir -p ${packageDir}/etc/X11
+    cd ${packageDir}/usr/lib${libSuffix}/X11
+    mv x11perfcomp ${packageDir}/etc/X11
+    ln -sf ../../../etc/X11/x11perfcomp .
+  )
+fi

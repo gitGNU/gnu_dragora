@@ -1,0 +1,6 @@
+libgsf - Librería para formatos de archivos estructurados.
+
+El paquete libgsf contiene las librerías libgsf.  Estas son
+útiles proporcionando una capa de abstracción extensible de
+entrada/salida para formatos de archivos estructurados.
+

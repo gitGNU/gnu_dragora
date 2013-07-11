@@ -1,0 +1,144 @@
+#!/bin/bash
+#  Copyright (C) 2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+P=pm-utils
+V=${V:-1.4.1}
+V2=${V2:-20100619}  # Quirks version.
+V3=${V3:-1.31}      # Powermgmt-base version.
+ARCH=${ARCH:-i486}
+B=${B:-1}
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-${P}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+rm -rf ${TMP}/${P}-${V}
+echo "Uncompressing the tarball..."
+tar -xvf ${CWD}/${P}-${V}.tar.lz -C $TMP
+
+cd ${TMP}/${P}-${V}
+
+# Unpack the powermgmt-base:
+tar xf ${CWD}/powermgmt-base_${V3}.tar.lz
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \
+ \) -exec chmod 755 {} + \
+ -o \
+ \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \
+ \) -exec chmod 644 {} +
+
+# Apply patches.
+
+zcat ${CWD}/patches/intel-audio-powersave.patch | patch -p1 --verbose
+zcat ${CWD}/patches/0001-49bluetooth-Wait-for-btusb-module-to-get-unused.patch.gz | \
+ patch -p1 --verbose
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/${P}-${V} \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Install the quirks:
+tar xf ${CWD}/pm-quirks-${V2}.tar.lz
+mkdir -p ${PKG}/usr/lib/pm-utils/video-quirks
+install -m 644 video-quirks/*.quirkdb ${PKG}/usr/lib/pm-utils/video-quirks
+
+# Build the powermgmt-base:
+pushd powermgmt-base
+  make
+  mkdir -p ${PKG}/sbin
+  make install DESTDIR=$PKG
+popd
+
+# Adjust permissions for sbin/ and usr/sbin:
+for file in ${PKG}/sbin/* ${PKG}/usr/sbin/* ; do
+  if [[ ( -x $file && ! -L $file ) ]]; then
+    chmod -v 0750 $file
+  fi
+done
+
+# Avoid hardware failure:
+( cd ${PKG}/usr/lib/pm-utils/power.d
+  rm -f disable_wol harddrive
+)
+# Currently, we are not supporting some applications
+# like NetworkManager and NTP, so..:
+( cd ${PKG}/usr/lib/pm-utils/sleep.d
+  rm -f 55NetworkManager 90clock
+)
+
+# Compress .info page(s)?:
+if [[ -d ${PKG}/usr/info ]]; then
+  ( cd ${PKG}/usr/info
+    rm -f dir  # Redundancy.
+    gzip -9N *.info*
+  )
+fi
+
+# Include manually the man pages:
+mkdir -p ${PKG}/usr/man/man{1,8}
+for file in powermgmt-base/man/*.1 man/*.1 ; do
+  gzip -f -9Nc < $file > ${PKG}/usr/man/man1/${file##*/}.gz
+done
+for file in man/*.8 ; do
+  gzip -9Nc < $file > ${PKG}/usr/man/man8/${file##*/}.gz
+done
+
+# Copy the rest of the documentation:
+mkdir -p ${PKG}/usr/doc/${P}-${V}/powermgmt-base
+cp -a \
+ AUTHORS COPYING ChangeLog NEWS README* TODO \
+ ${PKG}/usr/doc/${P}-${V}
+( cd powermgmt-base
+  cp -a \
+   debian/copyright \
+   ${PKG}/usr/doc/${P}-${V}/powermgmt-base
+)
+
+cd $PKG
+
+# Strip binaries & libraries:
+find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+ cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || :
+
+# Copy the description files:
+mkdir -p description
+cp ${CWD}/description/?? description/
+
+# Build the package:
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
+

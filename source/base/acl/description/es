@@ -1,0 +1,6 @@
+acl - Listas de Control de Acceso.
+
+Las Listas de Control de Acceso POSIX, son usadas para definir de
+manera más discrecional los derechos de acceso para archivos y
+directorios.
+

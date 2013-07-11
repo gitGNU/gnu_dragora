@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# wicd:  Wireless network connection manager.
+#
+
+if [ -x /usr/sbin/wicd ]; then
+  exec /usr/sbin/wicd -f | logger -t wicd -p daemon.info
+fi
+

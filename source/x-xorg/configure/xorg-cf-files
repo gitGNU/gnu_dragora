@@ -1,0 +1,9 @@
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --with-config-dir=/etc/X11/config \
+ --with-fontrootdir=/usr/share/fonts/X11 \
+ $BUILD_SYSTEM

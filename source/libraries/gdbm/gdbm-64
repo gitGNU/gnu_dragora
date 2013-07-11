@@ -1,0 +1,106 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.10
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+PKG=${TMP}/package-gdbm
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/gdbm-${V}
+tar xvf ${CWD}/gdbm-${V}.tar.lz -C $TMP
+
+cd ${TMP}/gdbm-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --build=${ARCH}-dragora-linux-gnu
+
+make V=1
+make install DESTDIR=$PKG
+
+strip --strip-unneeded ${PKG}/usr/lib64/*.so*
+strip --strip-debug ${PKG}/usr/lib64/*.a
+
+# This breaks with the support of DBM in Python,
+# mod_ssl and others; don't use it:
+#make install-compat INSTALL_ROOT=$PKG
+
+# Fix ownerships (bin:bin):
+chown -R 0:0 $PKG
+
+# Make symlink compatibility:
+( cd ${PKG}/usr/lib64
+  ln -sf libgdbm.so.4.0.0 libgdbm.so.3
+)
+
+# Compress info/man pages:
+rm -f ${PKG}/usr/info/dir
+gzip -9N \
+ ${PKG}/usr/info/gdbm.info \
+ ${PKG}/usr/man/man3/gdbm.3
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/gdbm-${V}
+cp -a \
+ COPYING ChangeLog NEWS README \
+ ${PKG}/usr/doc/gdbm-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/gdbm-${V}-${ARCH}-${B}.tlz
+

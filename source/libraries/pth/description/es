@@ -1,0 +1,9 @@
+pth - Los hilos portables de GNU.
+
+El paquete pth contiene una librería POSIX/ANSI-C muy portable basado en
+plataformas Unix que no proporciona prioridad preventiva basada en la
+programación para mútiples hilos de ejecución (multithreading) en
+caso impulsada por las aplicaciones.
+
+Para más información, visite:  http://www.gnu.org/software/pth
+

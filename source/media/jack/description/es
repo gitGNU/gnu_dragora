@@ -1,0 +1,9 @@
+jack - Kit de conección de audio.
+
+JACK es un sistema para la manipulación en tiempo real, audio de
+baja latencia (y MIDI). Se puede conectar un número de diferentes
+aplicaciones a un dispositivo de audio, así como para que puedan
+compartir audio entre sí.
+
+Visite la página web de JACK en http://jackaudio.org
+

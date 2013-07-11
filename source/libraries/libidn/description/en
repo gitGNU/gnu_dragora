@@ -1,0 +1,8 @@
+libidn - Library to encode and decode domain names.
+
+GNU libidn is a library to encode and decode
+internationalized domain names.
+
+For more information about libidn, visit:
+http://www.gnu.org/software/libidn
+

@@ -1,0 +1,8 @@
+sharutils - Shell archiver.
+
+The sharutils package contains the GNU shar utilities, a set of tools for
+encoding and decoding packages of files (in binary or text format) in a
+special plain text format called shell archives (shar). This format can
+be sent through email (which can be problematic for regular binary
+files).
+

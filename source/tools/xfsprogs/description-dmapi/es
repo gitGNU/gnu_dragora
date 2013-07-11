@@ -1,0 +1,5 @@
+dmapi - Librería DMAPI.
+
+DMAPI es una interfaz disponible para el sistema de archivos XFS por
+medio de la librería libdm.
+

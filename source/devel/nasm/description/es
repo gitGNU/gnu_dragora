@@ -1,0 +1,13 @@
+nasm - El ensamblador de la red.
+
+El Netwide Assembler (NASM) es un ensamblador y desensamblador para la
+arquitectura Intel x86.  Puede ser usado para escribir en 16-bit,
+32-bit (IA-32) y programas de 64-bit (x86-64).
+
+NASM se considera uno de los más populares ensambladores para
+GNU/Linux.
+
+NASM fue escrito originalmente por Simon Tatham con la asistencia de
+Julian Hall, y en la actualidad está mantenido por un pequeño equipo
+dirigido por H. Peter Anvin.
+

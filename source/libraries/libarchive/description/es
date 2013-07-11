@@ -1,0 +1,5 @@
+libarchive - Librería para el streaming de archivos.
+
+libarchive proporciona una interfaz flexible para leer y escribir
+archivos comprimidos de streaming (transmisión), como tar y cpio.
+

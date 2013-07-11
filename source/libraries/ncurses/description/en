@@ -1,0 +1,12 @@
+ncurses - Emulation library of curses.
+
+The Ncurses (new curses) library is a free software emulation of
+curses in System V Release 4.0.  The ncurses code was developed
+under GNU/Linux. It has been in use for some time with OpenBSD
+as the system curses library, and on FreeBSD and NetBSD as an
+external package.
+
+The distribution includes the library and support utilities,
+including a terminfo compiler tic, a decompiler infocmp, clear,
+tput, tset, and a termcap conversion tool captoinfo.
+

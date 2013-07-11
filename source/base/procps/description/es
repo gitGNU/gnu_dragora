@@ -1,0 +1,9 @@
+procps - Las utilidades del sistema de archivos /proc.
+
+Procps es el paquete que tiene un manojo de las pequeñas utilidades que
+dan la información acerca de los procesos utilizando el sistema de
+archivos /proc.
+
+El paquete incluye los programas:  ps, top, vmstat, w, kill, free,
+slabtop y skill.
+

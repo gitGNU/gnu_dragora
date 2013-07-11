@@ -1,0 +1,6 @@
+db - Librería de base de datos berkeley.
+
+Berkeley DB es un conjunto de herramientas programáticas que
+proporciona soporte de bases de datos embebidas para
+aplicaciones cliente/servidor.
+

@@ -1,0 +1,206 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+replace_hard_links() {
+  local name
+  name="$2"
+  ( cd "$1"
+    find . ! -type d -links +1 -printf '%P\n' | \
+     while read link ; do
+      if [[ $link = ${name##*/} ]]; then
+        continue;
+      fi
+      if [[ $name -ef $link ]]; then
+        rm -f  $link
+        ln -sf $name $link
+      fi
+     done
+  )
+}
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources/glibc}-$(mcookie)
+OUT=${OUT:-/tmp/packages}
+
+V=2.13_20110720
+ARCH=${ARCH:-x86_64}
+B=10
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j1}
+
+PKG=${TMP}/package-glibc
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $TMP
+rm -rf glibc-${V}
+
+echo "Uncompressing the tarball..."
+lzip -cd ${CWD}/glibc-${V}.tar.lz | tar -xvf -
+
+cd glibc-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# This is provided by the "tzdatabase" package, so:
+zcat ${CWD}/patches/dont.build.timezone.diff.gz | patch -p0 --verbose
+
+# Apply a patch to not make the locale-archive:
+zcat ${CWD}/patches/no-archive.diff.gz | patch -p0 --verbose
+
+# The ldd shell script contains Bash-specific syntax, so:
+sed -i 's|@BASH@|/bin/bash|' elf/ldd.bash.in
+
+# Glibc needs a separate build directory:
+rm -rf ../glibc-build
+mkdir ../glibc-build
+cd ../glibc-build
+
+export CFLAGS="$DCFLAGS"
+
+../glibc-${V}/configure \
+ --prefix=/usr \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --libexecdir=/usr/lib64/glibc \
+ --enable-kernel=2.6.18 \
+ --enable-add-ons=libidn,nptl \
+ --enable-bind-now \
+ --disable-profile \
+ --with-headers=/usr/include \
+ --with-elf \
+ --with-tls \
+ --with-__thread \
+ --without-gd \
+ --without-cvs \
+ --without-selinux \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+
+# Don't print the harmless message:
+mkdir -p ${PKG}/etc
+touch ${PKG}/etc/ld.so.conf
+
+make install install_root=$PKG
+make $JOBS localedata/install-locales install_root=$PKG
+
+# Increments a little the security:
+find ${PKG}/sbin -type f -exec chmod -v 750 '{}' +
+find ${PKG}/usr/sbin -type f -exec chmod -v 750 '{}' +
+
+# Deletes unneeded files, provided by the etc package:
+rm -f ${PKG}/etc/ld.so.{conf,cache}
+# This is provided by the glibc_zoneinfo package:
+rm -rf ${PKG}/usr/share/zoneinfo
+rm -f ${PKG}/etc/localtime
+
+# Back to the "greek" source:
+cd -
+
+# Add Name Service Cache Daemon:
+mkdir -p ${PKG}/etc/sv/nscd
+zcat ${CWD}/nscd.gz > ${PKG}/etc/sv/nscd/run.new
+chmod 755 ${PKG}/etc/sv/nscd/run.new
+mkdir -p ${PKG}/etc/runit/runsvdir/default
+( cd ${PKG}/etc/runit/runsvdir/default ; ln -sf /etc/sv/nscd . )
+
+# Add Name Service Cache Daemon (nscd) configuration file:
+cat nscd/nscd.conf > ${PKG}/etc/nscd.conf.new
+
+# Creates the directories for nscd:
+mkdir -p ${PKG}/var/{db,run}/nscd
+
+# Avoid "Invalid cross-device link":
+( cd ${PKG}/usr/lib64/glibc/getconf || exit 1;
+  replace_hard_links "${PKG}/usr/lib64/glibc/getconf" "../../../bin/getconf"
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --remove-section=.comment --remove-section=.note 2> /dev/null
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+)
+
+# Add the "tzconfig" script:
+mkdir -p ${PKG}/usr/sbin
+cat ${CWD}/tzconfig/tzconfig > ${PKG}/usr/sbin/tzconfig
+chmod 750 ${PKG}/usr/sbin/tzconfig
+
+( cd ${CWD}/tzconfig/po
+  for file in * ; do
+    ext=${file#*.*.}
+
+    mkdir -p ${PKG}/usr/share/locale/${ext}/LC_MESSAGES
+    msgfmt -o ${PKG}/usr/share/locale/${ext}/LC_MESSAGES/tzconfig.mo $file
+
+    # Convert our translation files to UTF-8:
+    mkdir -p ${PKG}/usr/share/locale/${ext}.utf8/LC_MESSAGES
+    iconv --from-code=ISO8859-1 --to-code=UTF8 $file | msgfmt - -o \
+     ${PKG}/usr/share/locale/${ext}.utf8/LC_MESSAGES/tzconfig.mo
+  done
+)
+
+# Compress GNU info documents:
+rm -f ${PKG}/usr/info/dir # Redundancy
+gzip -9N ${PKG}/usr/info/*
+
+# Add documentation:
+mkdir -p ${PKG}/usr/doc/glibc-${V}
+cp -a \
+ BUGS COPYING* CONFORMANCE ChangeLog FAQ LICENSES \
+ NAMESPACE NEWS NOTES PROJECTS README README.libm \
+ ${PKG}/usr/doc/glibc-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/pre-post.gz > ${PKG}/install/pre-post
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg ${OUT}/glibc-${V}-${ARCH}-${B}.tlz
+

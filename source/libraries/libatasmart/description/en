@@ -1,0 +1,4 @@
+libatasmart - ATA SMART monitoring library.
+
+libatasmart is a library for monitoring the health of ATA SMART disks.
+

@@ -1,0 +1,40 @@
+BUILD=${BUILD:-1}
+
+PKG=${TMP}/linux/image
+
+rm -rf $PKG
+mkdir -pv $PKG $OUT
+
+echo "*** Building image ..."
+cd /usr/src/linux-${KVERSION}
+mkdir -p ${PKG}/boot
+cp -a System.map ${PKG}/boot/System.map${SUFFIX}-${KVERSION}
+cp -a .config ${PKG}/boot/config${SUFFIX}-${KVERSION}
+
+IMAGE_DIR=$(uname -m)
+case "$IMAGE_DIR" in
+  i???)
+    IMAGE_DIR=x86
+  ;;
+  x86_64)
+    IMAGE_DIR=x86_64
+  ;;
+esac
+
+cat arch/${IMAGE_DIR}/boot/bzImage > ${PKG}/boot/vmlinuz${SUFFIX}-${KVERSION}
+( cd ${PKG}/boot
+  ln -sf System.map${SUFFIX}-${KVERSION} System.map
+  ln -sf config${SUFFIX}-${KVERSION} config
+  ln -sf vmlinuz${SUFFIX}-${KVERSION} vmlinuz
+)
+
+# Build the package:
+cd $PKG
+DIR_SUFFIX=$(echo "$SUFFIX" | tr -d -)
+if [ -d ${CWD}/descriptions/image/${DIR_SUFFIX} ]; then
+  mkdir -pv description
+  cp -v ${CWD}/descriptions/image/${DIR_SUFFIX}/* description/
+fi
+
+makepkg -l ${OUT}/kernel${SUFFIX}-${KVERSION}-${PKGARCH}-${BUILD}.tlz
+

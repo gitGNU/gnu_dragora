@@ -1,0 +1,8 @@
+gdb - El depurador de GNU.
+
+GDB, el proyecto de depuración de GNU, te permite ver qué es lo que
+pasa `adentro' de otro programa mientras este se ejecuta -- o qué
+está haciendo otro programa en el momento en que se crashea. 
+
+La página web de GDB es http://www.gnu.org/software/gdb
+

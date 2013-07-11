@@ -1,0 +1,8 @@
+taglib - Librería de audio de meta datos.
+
+TagLib es una librería para la lectura y edición de metadatos de varios
+populares formatos de audio. Actualmente soporta tanto ID3v1 e ID3v2
+para archivos MP3, comentarios Ogg Vorbis y etiquetas ID3 y comentarios
+Vorbis en archivos FLAC, MPC, Speex, WavPack TrueAudio, WAV, AIFF, MP4
+y ASF.
+

@@ -1,0 +1,6 @@
+imlib2 - Librería de imagen.
+
+Imlib2 es una librería que carga o guarda un archivo de
+imagen, así como el renderizado, manipulación, soporte
+arbitrario de polígonos, etc.
+

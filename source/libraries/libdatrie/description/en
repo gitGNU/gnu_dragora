@@ -1,0 +1,8 @@
+libdatrie - An implementation of double array.
+
+datrie is an implementation of double-array structure for
+representing trie, as proposed by Junichi Aoe.
+
+For more information, visit:
+http://linux.thai.net/projects/datrie
+

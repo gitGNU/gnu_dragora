@@ -1,0 +1,5 @@
+ethtool - Utilidad para la interfaz de red ethernet.
+
+ethtool es una pequeña utilidad para el examen y ajuste de su red basada
+en la interfaz ethernet.
+

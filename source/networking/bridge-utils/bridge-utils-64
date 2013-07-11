@@ -1,0 +1,92 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=20100101
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+PKG=${TMP}/package-bridge-utils
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/bridge-utils-${V}
+tar -xvf ${CWD}/bridge-utils-${V}.tar.lz -C $TMP
+
+cd ${TMP}/bridge-utils-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+autoconf
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --mandir=/usr/man \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+chmod -v 750 ${PKG}/usr/sbin/brctl
+strip --strip-unneeded ${PKG}/usr/sbin/brctl
+install -m 644 libbridge/libbridge.h -D ${PKG}/usr/include/libbridge.h
+install -m 644 libbridge/libbridge.a -D ${PKG}/usr/lib64/libbridge.a
+strip --strip-debug ${PKG}/usr/lib64/libbridge.a
+gzip -9N ${PKG}/usr/man/man8/brctl.8
+
+mkdir -p ${PKG}/usr/doc/bridge-utils-${V}
+cp -a \
+ AUTHORS COPYING ChangeLog README THANKS TODO \
+ doc/{FAQ,FIREWALL,HOWTO,SMPNOTES,WISHLIST} \
+ ${PKG}/usr/doc/bridge-utils-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/bridge-utils-${V}-${ARCH}-${B}.tlz
+

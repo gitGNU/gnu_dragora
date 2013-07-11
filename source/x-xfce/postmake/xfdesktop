@@ -1,0 +1,12 @@
+# Include our wallpaper ;-)
+mkdir -p ${packageDir}/usr/share/xfce4/backdrops
+cat ${currentWorkDir}/postmake/files/dragora-bosque-1280x1024.jpg \
+ > ${packageDir}/usr/share/xfce4/backdrops/dragora-bosque-1280x1024.jpg
+
+mkdir -p ${packageDir}/install
+cat << "EOF" > ${packageDir}/install/post-install
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  /usr/bin/gtk-update-icon-cache -qfi /usr/share/icons/hicolor
+fi
+
+EOF

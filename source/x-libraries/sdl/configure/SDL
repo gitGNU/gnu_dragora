@@ -1,0 +1,18 @@
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/${sourceName}-${sourceVersion} \
+ --htmldir=/usr/doc/${sourceName}-${sourceVersion}/html \
+ --enable-static=yes \
+ --enable-shared=yes \
+ --enable-sdl-dlopen=yes \
+ --enable-alsa=yes \
+ --enable-pulseaudio-shared=yes \
+ --disable-video-ps3 \
+ --disable-video-svga \
+ --disable-video-ggi \
+ $BUILD_SYSTEM

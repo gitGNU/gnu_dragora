@@ -1,0 +1,33 @@
+--- openjdk/jdk/src/solaris/classes/sun/awt/fontconfigs/linux.fontconfig.Ubuntu.properties.orig	2010-06-21 18:15:43.000000000 -0300
++++ openjdk/jdk/src/solaris/classes/sun/awt/fontconfigs/linux.fontconfig.Ubuntu.properties	2010-09-25 17:42:22.000000000 -0300
+@@ -320,18 +320,18 @@
+ filename.Lohit_Telugu=/usr/share/fonts/truetype/ttf-telugu-fonts/lohit_te.ttf
+ filename.LKLUG=/usr/share/fonts/truetype/ttf-sinhala-lklug/lklug.ttf
+ 
+-filename.LuxiSans-Regular=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxisr.ttf
+-filename.LuxiSans-Bold=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxisb.ttf
+-filename.LuxiSans-Oblique=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxisri.ttf
+-filename.LuxiSans-BoldOblique=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxisbi.ttf
+-filename.LuxiMono-Regular=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luximr.ttf
+-filename.LuxiMono-Bold=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luximb.ttf
+-filename.LuxiMono-Oblique=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luximri.ttf
+-filename.LuxiMono-BoldOblique=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luximbi.ttf
+-filename.LuxiSerif-Regular=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxirr.ttf
+-filename.LuxiSerif-Bold=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxirb.ttf
+-filename.LuxiSerif-Oblique=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxirri.ttf
+-filename.LuxiSerif-BoldOblique=/usr/share/fonts/truetype/ttf-xfree86-nonfree/luxirbi.ttf
++filename.LuxiSans-Regular=/usr/share/fonts/X11/TTF/luxisr.ttf
++filename.LuxiSans-Bold=/usr/share/fonts/X11/TTF/luxisb.ttf
++filename.LuxiSans-Oblique=/usr/share/fonts/X11/TTF/luxisri.ttf
++filename.LuxiSans-BoldOblique=/usr/share/fonts/X11/TTF/luxisbi.ttf
++filename.LuxiMono-Regular=/usr/share/fonts/X11/TTF/luximr.ttf
++filename.LuxiMono-Bold=/usr/share/fonts/X11/TTF/luximb.ttf
++filename.LuxiMono-Oblique=/usr/share/fonts/X11/TTF/luximri.ttf
++filename.LuxiMono-BoldOblique=/usr/share/fonts/X11/TTF/luximbi.ttf
++filename.LuxiSerif-Regular=/usr/share/fonts/X11/TTF/luxirr.ttf
++filename.LuxiSerif-Bold=/usr/share/fonts/X11/TTF/luxirb.ttf
++filename.LuxiSerif-Oblique=/usr/share/fonts/X11/TTF/luxirri.ttf
++filename.LuxiSerif-BoldOblique=/usr/share/fonts/X11/TTF/luxirbi.ttf
+ 
+ # AWT X11 font paths
+ awtfontpath.latin-1=/usr/share/fonts/X11/Type1

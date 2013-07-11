@@ -1,0 +1,7 @@
+paramiko - Librería SSH para Python.
+
+Paramiko es un módulo para Python que implementa el protocolo SSH2 seguro
+(cifrado y autenticado) para conexiones a equipos remotos.
+
+Este paquete requiere pyCrypto.
+

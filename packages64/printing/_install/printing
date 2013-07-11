@@ -1,0 +1,13 @@
+a2ps:Postscript filter:ON:a2ps-4.14 - Size 628K [C], 3.8M [U].
+cups:Common UNIX Printing System:ON:cups-1.4.8 - Size 2.1M [C], 13M [U].
+enscript:Enscript converter:ON:enscript-1.6.5.2 - Size 356K [C], 2.1M [U].
+foomatic-db-20120123:Foomatic database:ON:foomatic-db-20120123 - Size 18M [C], 42M [U].
+foomatic-db-engine:PPD database engine:ON:foomatic-db-engine-20120123 - Size 228K [C], 1.1M [U].
+foomatic-filters:Filters of Foomatic:ON:foomatic-filters-20120123 - Size 76K [C], 220K [U].
+ghostscript:An interpreter for PostScript and PDF:ON:ghostscript-9.05 - Size 14M [C], 51M [U].
+gutenprint:High quality printer drivers:ON:gutenprint-5.2.7 - Size 8.5M [C], 150M [U].
+hplip:HP drivers for GNU/Linux:ON:hplip-3.11.12 - Size 14M [C], 24M [U].
+libpaper:Library for paper characteristics:ON:libpaper-1.1.24 - Size 24K [C], 90K [U].
+poppler-0:Free software library for viewing PDF documents:ON:poppler-0.18.3 - Size 1.1M [C], 5.0M [U].
+poppler-data:Data files for poppler:ON:poppler-data-0.4.5 - Size 1.5M [C], 12M [U].
+psutils:Utilities for manipulating Postscript documents:ON:psutils-1.17_libre - Size 44K [C], 190K [U].

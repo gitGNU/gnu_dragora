@@ -1,0 +1,17 @@
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/${sourceName}-${sourceVersion} \
+ --htmldir=/usr/doc/${sourceName}-${sourceVersion}/html \
+ --with-html-dir=/usr/doc/${sourceName}-${sourceVersion}/html \
+ --enable-static=no \
+ --enable-shared=yes \
+ --enable-debug=no \
+ --enable-dbus=yes \
+ --with-xsession-prefix=/usr \
+ --disable-xfconf-migration \
+ $BUILD_SYSTEM

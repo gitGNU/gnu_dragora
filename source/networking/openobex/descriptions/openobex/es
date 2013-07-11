@@ -1,0 +1,8 @@
+openobex - Implementación del protocolo OBEX.
+
+Openobex es una implementación open-source del
+protocolo Object Exchange (OBEX).
+
+OBEX es un protocolo de sesión y que puede ser
+mejor descripto como un protocolo HTTP binario.
+

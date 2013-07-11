@@ -1,0 +1,6 @@
+hdparm - Establece parámetros de la unidad ATA/SATA.
+
+El paquete hdparm contiene una aplicación útil para controlar tanto las
+controladoras ATA/SATA como los discos duros, para incrementar sus
+prestaciones y, en ocasiones, mejorar la estabilidad.
+

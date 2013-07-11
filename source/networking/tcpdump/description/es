@@ -1,0 +1,6 @@
+tcpdump - Vuelca el tráfico en una red.
+
+tcpdump es una utilidad para volcar el tráfico en una red.
+
+Para más información, tipee `man tcpdump'.
+

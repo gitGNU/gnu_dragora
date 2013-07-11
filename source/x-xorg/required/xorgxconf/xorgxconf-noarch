@@ -1,0 +1,98 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.5
+ARCH=noarch
+B=3
+
+PKG=${TMP}/package-xorgxconf
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $PKG
+
+# Add the VESA configuration file for Xorg:
+install -D -m 644 ${CWD}/xorg.conf-vesa ${PKG}/etc/X11/xorg.conf-vesa
+
+# Add the profile for xdg-utils:
+install -D -m 755 ${CWD}/profile.d/xdg ${PKG}/etc/profile.d/xdg.new
+
+# Add the "wmconfig" script:
+install -D -m 755 ${CWD}/wmconfig/wmconfig ${PKG}/usr/bin/wmconfig
+
+# Translation files:
+( cd ${CWD}/wmconfig/po
+  for file in * ; do
+    ext=${file#*.*.}
+
+    mkdir -p ${PKG}/usr/share/locale/${ext}/LC_MESSAGES
+    msgfmt -o ${PKG}/usr/share/locale/${ext}/LC_MESSAGES/wmconfig.mo $file
+
+    # Convert our translation files to UTF-8:
+    mkdir -p ${PKG}/usr/share/locale/${ext}.utf8/LC_MESSAGES
+    iconv --from-code=ISO8859-1 --to-code=UTF8 $file | msgfmt - -o \
+     ${PKG}/usr/share/locale/${ext}.utf8/LC_MESSAGES/wmconfig.mo
+  done
+)
+
+# Include our script to create/re-create the X fonts:
+install -m 755 ${CWD}/update-xfontdir -D ${PKG}/usr/bin/update-xfontdir
+
+# Make the pre-post script:
+mkdir -p ${PKG}/install
+cat << "EOF" > ${PKG}/install/pre-post
+# Make/Update the X font index cache:
+if [ -x /usr/bin/update-xfontdir ]; then
+  /usr/bin/update-xfontdir
+fi
+
+EOF
+
+# Make the post-install script:
+cat << "EOF" > ${PKG}/install/post-install
+# Handle config files:
+config() {
+  local new old
+  new="$1"
+  old=${1%.new}
+  if [ ! -r $old ]; then
+    mv $new $old
+  elif [ "$(md5sum $old | cut -f 1 -d ' ')" = "$(md5sum $new | cut -f 1 -d ' ')" ]; then
+    rm $new
+  else
+    echo "You have a new config file \"${ROOT}/${new}\" at your consideration."
+  fi
+}
+
+config etc/profile.d/xdg.new
+
+EOF
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg ${OUT}/xorgxconf-${V}-${ARCH}-${B}.tlz
+

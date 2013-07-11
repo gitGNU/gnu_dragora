@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# syslogd:  System log daemon.
+#
+
+if [ -x /usr/sbin/syslogd ]; then
+  exec /usr/sbin/syslogd -n
+fi
+

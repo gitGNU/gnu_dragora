@@ -1,0 +1,8 @@
+libatomic_ops - Implementations for atomic memory.
+
+This package provides semi-portable access to hardware provided atomic
+memory operations.
+
+For more information, visit:
+http://www.hpl.hp.com/research/linux/atomic_ops
+

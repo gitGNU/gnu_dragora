@@ -1,0 +1,122 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.8.9
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-nspr
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/nspr-${V}
+lzip -cd ${CWD}/nspr-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/nspr-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+cd mozilla/nsprpub/
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --localstatedir=/var \
+ --disable-debug \
+ --enable-static \
+ --enable-shared \
+ --enable-ipv6 \
+ --with-pthreads \
+ ${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Junk:
+( cd ${PKG}/usr/bin
+  rm -f compile-et.pl prerr.properties
+)
+
+# Fix permissions:
+find ${PKG}/usr/lib -type f -name '*.a' | xargs chmod -v 644
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+strip --strip-debug ${PKG}/usr/lib/*.a
+
+# Make nspr.pc for pkg-config:
+mkdir -p ${PKG}/usr/lib/pkgconfig
+
+cat << EOF > ${PKG}/usr/lib/pkgconfig/nspr.pc
+prefix=$(./config/nspr-config --prefix)
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include/nspr
+
+Name: NSPR
+Description: The Netscape Portable Runtime
+Version: $(./config/nspr-config --version)
+Libs: $(./config/nspr-config --libs)
+Cflags: $(./config/nspr-config --cflags)
+
+EOF
+
+sed -i \
+ -e 's@-L/usr/lib@-L${libdir}@g' \
+ -e 's@-I/usr/include/nspr@-I${includedir}@g' \
+ ${PKG}/usr/lib/pkgconfig/nspr.pc
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/nspr-${V}-${ARCH}-${B}.tlz
+

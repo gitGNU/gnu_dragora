@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# polipo:  A caching web proxy.
+#
+
+if [ -x /usr/bin/polipo ]; then
+  exec /usr/bin/polipo
+fi
+

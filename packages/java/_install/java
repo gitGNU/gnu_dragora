@@ -1,0 +1,8 @@
+apache-ant:Java based build tool:ON:apache-ant-1.8.2 - Size 5.2M [C], 41M [U].
+icedtea-web:Web browser plugin:ON:icedtea-web-1.1.5 - Size 660K [C], 1010K [U].
+icedtea6:Java support based on OpenJDK 6:ON:icedtea6-1.10.6 - Size 68M [C], 162M [U].
+rhino:Open-source implementation of JavaScript:ON:rhino-1_7R3 - Size 1.3M [C], 9.3M [U].
+xalan-c:XSLT support:ON:xalan-c-r797991 - Size 956K [C], 6.9M [U].
+xalan-j:XSLT support:ON:xalan-j-2.7.1 - Size 3.1M [C], 5.3M [U].
+xerces-c:C++ XML parser:ON:xerces-c-3.1.1 - Size 1.3M [C], 8.7M [U].
+xerces-j:Java XML parser:ON:xerces-j-2.11.0 - Size 1.9M [C], 2.2M [U].

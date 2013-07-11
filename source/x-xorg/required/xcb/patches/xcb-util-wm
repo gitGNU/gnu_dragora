@@ -1,0 +1,9 @@
+zcat \
+ ${currentWorkDir}/patches/files/xcb-util-wm/class.patch.gz | patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xcb-util-wm/doxygen.patch.gz | patch -R -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xcb-util-wm/specification.patch.gz | patch -p1 --verbose
+

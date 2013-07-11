@@ -1,0 +1,9 @@
+dhcp - Suite of DHCP tools.
+
+This package provides a freely redistributable reference implementation
+of all aspects of DHCP, through a suite of DHCP tools:
+
+ * A DHCP server
+ * A DHCP client
+ * A DHCP relay agent
+

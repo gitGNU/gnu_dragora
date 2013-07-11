@@ -1,0 +1,6 @@
+pkg-config - Herramienta para compilar/enlazar.
+
+El programa pkg-config se utiliza para obtener información sobre las
+bibliotecas instaladas en el sistema.  Es típicamente utilizado para
+compilar y vincular contra una o más bibliotecas.
+

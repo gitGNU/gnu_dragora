@@ -1,0 +1,32 @@
+mv ${packageDir}/etc/X11/fs/config{,.new}
+
+mkdir -p ${packageDir}/etc/sv/xfs
+cat ${currentWorkDir}/postmake/files/xfs > ${packageDir}/etc/sv/xfs/run.new
+chmod 755 ${packageDir}/etc/sv/xfs/run.new
+
+(
+  mkdir -p ${packageDir}/etc/runit/runsvdir/default
+  cd ${packageDir}/etc/runit/runsvdir/default
+  ln -sf /etc/sv/xfs .
+)
+
+mkdir -p ${packageDir}/install
+cat << "EOF" >> ${packageDir}/install/post-install
+# Handle config files:
+config() {
+  local new old
+  new="$1"
+  old=${1%.new}
+  if [ ! -r $old ]; then
+    mv $new $old
+  elif [ "$(md5sum $old | cut -f 1 -d ' ')" = "$(md5sum $new | cut -f 1 -d ' ')" ]; then
+    rm $new
+  else
+    echo "You have a new config file \"${ROOT}/${new}\" at your consideration."
+  fi
+}
+
+config etc/sv/xfs/run.new
+config etc/X11/fs/config.new
+
+EOF

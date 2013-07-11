@@ -1,0 +1,102 @@
+#!/bin/bash
+#  Copyright (C) 2009  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=3.1
+ARCH=${ARCH:-i486}
+B=1
+
+PKG=${TMP}/package-slocate
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/slocate-${V}
+tar xvf ${CWD}/slocate-${V}.tar.lz -C $TMP
+
+cd ${TMP}/slocate-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Build the source:
+cd src ; make ; cd - 1> /dev/null
+
+mkdir -p ${PKG}/usr/bin
+cp -a src/slocate ${PKG}/usr/bin
+strip -s ${PKG}/usr/bin/slocate
+chown 0:slocate ${PKG}/usr/bin/slocate
+chmod 2755 ${PKG}/usr/bin/slocate
+# Backward compatibility:
+( cd ${PKG}/usr/bin
+  ln -sf slocate locate
+  ln -sf slocate updatedb
+)
+# Configuration files:
+mkdir -p ${PKG}/etc
+cat ${CWD}/config/updatedb.conf > ${PKG}/etc/updatedb.conf.new
+# Directory for the database:
+mkdir -p ${PKG}/var/lib/slocate
+chown 0:slocate ${PKG}/var/lib/slocate
+chmod 750 ${PKG}/var/lib/slocate
+# Job for cron:
+mkdir ${PKG}/etc/cron.daily
+cat ${CWD}/config/updatedb.cron.daily > ${PKG}/etc/cron.daily/updatedb.new
+chmod 755 ${PKG}/etc/cron.daily/updatedb.new
+# Add documentation:
+mkdir -p ${PKG}/usr/man/man1
+gzip -9Nc doc/slocate.1 > ${PKG}/usr/man/man1/slocate.1.gz
+gzip -9Nc doc/updatedb.1 > ${PKG}/usr/man/man1/updatedb.1.gz
+( cd ${PKG}/usr/man/man1 ; ln -sf slocate.1.gz locate.1.gz )
+mkdir -p ${PKG}/usr/doc/slocate-${V}
+cp -a \
+ Changelog LICENSE README WISHLIST \
+ ${PKG}/usr/doc/slocate-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/slocate-${V}-${ARCH}-${B}.tlz
+

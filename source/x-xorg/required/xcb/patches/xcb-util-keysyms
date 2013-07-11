@@ -1,0 +1,3 @@
+zcat \
+ ${currentWorkDir}/patches/files/xcb-util-keysyms/2b3188d700bac5b8d32fffd8d1090ef4bb8707c3.patch.gz | \
+  patch -p1 --verbose

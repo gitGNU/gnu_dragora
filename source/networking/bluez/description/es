@@ -1,0 +1,13 @@
+bluez - Soporte para el protocolo Bluetooth.
+
+La tecnología inalámbrica Bluetooth es una especificación para un
+factor de forma pequeña, una solución de bajo coste de radio que
+proporciona enlaces entre computadoras portátiles, teléfonos
+móviles, otros dispositivos portátiles de mano, y la conectividad
+a Internet.
+
+La especificación es desarrollada, publicada y promocionada por la
+Bluetooth Special Interest Group (SIG).
+
+Este paquete contiene las librerías y herramientas esenciales.
+

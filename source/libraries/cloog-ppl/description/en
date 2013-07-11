@@ -1,0 +1,7 @@
+cloog-ppl - Code generator in the polyhedral model's.
+
+ClooG is a software which generates loops for scanning Z-polyhedra.
+
+For more information about ClooG, visit:
+http://www.cloog.org
+

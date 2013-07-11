@@ -1,0 +1,94 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.20
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -fPIC}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j2}
+
+PKG=${TMP}/package-which
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/which-${V}
+lzip -cd ${CWD}/which-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/which-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+strip -s ${PKG}/usr/bin/which
+
+# Compress the manual pages:
+( cd ${PKG}/usr
+  rm -f info/dir  # Redundancy.
+  gzip -9N info/* man/man?/*
+)
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/which-${V}
+cp -a \
+ AUTHORS COPYING EXAMPLES NEWS README README.alias \
+ ${PKG}/usr/doc/which-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg ${OUT}/which-${V}-${ARCH}-${B}.tlz
+

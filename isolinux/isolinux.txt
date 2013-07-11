@@ -1,0 +1,17 @@
+
+08Welcome to 02Dragora 0cGNU08+09Linux-Libre 0f3.2.15
+
+08Version: 072.2.0 (32 bit)
+08Website: 07http://www.dragora.org
+
+You need to select an image of a kernel to boot:
+
+Press [F2] to view a complete list of available kernels.
+Or press ENTER to boot with the default kernel (gen.k).
+
+If you are having troubles with your system, type:
+
+  gen.k root=/dev/sda1 rdinit= ro
+
+In this example: /dev/sda1 is the Root Linux partition.
+

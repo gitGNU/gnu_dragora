@@ -1,0 +1,141 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=${V:-7.3}
+SHORT_V=$(printf "$V" | tr -d .)
+ARCH=${ARCH:-i486}
+B=${B:-4}
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-vim-gvim
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/vim-${V}
+tar -xvf ${CWD}/vim-${V}.tar.lz -C $TMP
+
+cd ${TMP}/vim${SHORT_V}
+
+# Apply upstream fixes:
+for file in ${CWD}/patches/?.?.??? ; do
+  if [[ -f $file ]]; then
+    cat $file | { patch -p0 --verbose || patch -p1 --verbose; }
+  fi
+done
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --enable-multibyte \
+ --enable-perlinterp \
+ --enable-pythoninterp \
+ --enable-rubyinterp \
+ --enable-tclinterp \
+ --enable-cscope \
+ --enable-gui=gtk2 \
+ --with-features=huge \
+ --with-x \
+ --with-compiledby="Matias A. Fonzo <selk@dragora.org>" \
+ --build=${ARCH}-dragora-linux-gnu
+
+make && make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true;
+)
+
+# Add our custom "vimrc" (thanks to LFS):
+mkdir -p ${PKG}/etc
+zcat ${CWD}/vimrc > ${PKG}/etc/vimrc.new
+
+# Include entry for the desktop:
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+zcat ${CWD}/vim-gvim.desktop.gz \
+ > ${PKG}/usr/share/applications/vim-gvim.desktop
+cat ${CWD}/vim-gvim.png > ${PKG}/usr/share/pixmaps/vim-gvim.png
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Make compatibility with "vi":
+( cd ${PKG}/usr/bin
+  ln -sf vim vi
+)
+( cd ${PKG}/usr/man
+  find . -type f -name 'vim.1.gz' | while read file ; do
+    ( cd $(dirname $file) ; ln -sf ${file##*/} vi.1.gz )
+  done
+)
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/vim-gvim-${V}
+cp -a \
+ README.txt Contents \
+ ${PKG}/usr/doc/vim-gvim-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+# Add the post install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/vim-gvim-${V}-${ARCH}-${B}.tlz
+

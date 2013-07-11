@@ -1,0 +1,6 @@
+tzdatabase - Sources for the data time.
+
+It contains the sources for the time zone.
+
+Use the tzconfig tool for configure the time zone `tzconfig'.
+

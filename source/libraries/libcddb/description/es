@@ -1,0 +1,5 @@
+libcddb - Librería para acceder datos en un servidor.
+
+libcddb es una librería de C para acceder datos
+en un servidor CDDB (freedb.org).
+

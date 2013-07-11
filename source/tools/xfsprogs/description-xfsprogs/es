@@ -1,0 +1,8 @@
+xfsprogs - Un sistema de archivos de bitácora con alto desempeño.
+
+XFS combina una tecnología avanzada de bitácora con
+direccionamiento completo de 64 bits y algoritmos y
+estructuras escalables.  Esta combinación resulta
+el sistema de archivos escalable con alto desempeño
+jamás concebido.
+

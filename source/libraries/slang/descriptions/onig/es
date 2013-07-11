@@ -1,0 +1,7 @@
+onig - Librería de expresión regular.
+
+Oniguruma es una librería de expresiones regulares. Las características de
+esta biblioteca es que los diferentes caracteres de codificación puede ser
+especificado para cada objeto. (Con el apoyo API: expresiones regulares de
+GNU, POSIX y nativos Oniguruma).
+

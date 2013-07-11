@@ -1,0 +1,7 @@
+attr - Atributos extendidos.
+
+Los atributos extendidos son el del nombre:valor permanente de
+pares asociados con los archivos y directorios.
+
+Para más información, tipee: "man 5 attr".
+

@@ -1,0 +1,9 @@
+parted - Partition manipulation tool.
+
+GNU Parted is a package for creating, destroying, resizing, checking
+and copying partitions, and the file systems on them.
+
+This is useful for creating space for new operating systems,
+reorganising disk usage, copying data on hard disks and disk
+imaging.
+

@@ -1,0 +1,8 @@
+wv - Librería para convertir archivos de MS Word.
+
+wv es una librería que permite el acceso a archivos de Microsoft Word.
+Se pueden cargar y analizar los formatos de Word 2000, 97, 95 y 6.
+(Estos son los formatos de archivo conocido internamente como Word 9,
+8, 7 y 6). Hay algo de soporte para leer los formatos anteriores, así:
+los documentos de Word 2 se convierten en texto plano.
+

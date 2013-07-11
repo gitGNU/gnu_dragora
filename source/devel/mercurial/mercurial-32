@@ -1,0 +1,118 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.1
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-mercurial
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/mercurial-${V}
+lzip -cd ${CWD}/mercurial-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/mercurial-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+export CFLAGS="$DCFLAGS"
+
+python setup.py build
+python setup.py install --root=$PKG
+
+# Add scripts from contrib directory:
+install -m 755 -D contrib/hg-ssh ${PKG}/usr/bin/hg-ssh
+
+install -m 755 -D contrib/bash_completion \
+ ${PKG}/etc/bash_completion.d/hg
+
+# Add extensions for vim and emacs:
+install -m 644 -D contrib/vim/HGAnnotate.vim \
+ ${PKG}/usr/share/vim/syntax/vim/HGAnnotate.vim
+
+install -d ${PKG}/usr/share/emacs/site-lisp
+cp -a contrib/*.el ${PKG}/usr/share/emacs/site-lisp
+
+# Include the Forest Extension for Mercurial.
+#
+# INSTRUCTIONS to get the latest release of Forest:
+#
+# hg clone http://bitbucket.org/pmezard/hgforest-crew
+#
+( cd ${PKG}/usr/lib/python?.?/site-packages/hgext
+ lzip -cd ${CWD}/hgforest-crew.tar.lz | tar -xvf -
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Add man pages:
+mkdir -p ${PKG}/usr/man/man{1,5}
+( cd doc
+  gzip -9c < hg.1 > ${PKG}/usr/man/man1/hg.1.gz
+  gzip -9c < hgignore.5 > ${PKG}/usr/man/man5/hgignore.5.gz
+  gzip -9c < hgrc.5 > ${PKG}/usr/man/man5/hgrc.5.gz
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/mercurial-${V}
+cp -a \
+ CONTRIBUTORS COPYING README PKG-INFO \
+ ${PKG}/usr/doc/mercurial-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/mercurial-${V}-${ARCH}-${B}.tlz
+

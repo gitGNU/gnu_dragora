@@ -1,0 +1,10 @@
+exaile - Reproductor GTK+ multimedia similar a Amarok.
+
+Exaile es un reproductor de audio similar a Amarok de KDE, pero para
+GTK+. Incorpora muchas de las características buenas de Amarok (y de
+otros reproductores) como obtener las carátulas de los discos,
+administrar bibliotecas grandes, obtener las letras de las
+canciones, la información de los artistas/discos desde la Wikipedia,
+permite usar last.fm y permite usar opcionalmente el iPod (siempre
+que se tenga python-gpod instalado).
+

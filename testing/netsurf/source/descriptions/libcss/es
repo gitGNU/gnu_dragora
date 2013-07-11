@@ -1,0 +1,5 @@
+libcss - Un analizador CSS y motor de selección.
+
+LibCSS es un analizador CSS y motor de selección. Su objetivo es
+analizar la gramática CSS compatible con versiones posteriores.
+

@@ -1,0 +1,9 @@
+udev - Gestor de dispositivos dinÃ¡mico.
+
+Udev es el gestor de dispositivos para la serie del núcleo Linux 2.6.
+Su función principal es la gestión de nodos de dispositivo en /dev.
+
+Es el sucesor de devfs y hotplug, lo que significa que maneja el
+directorio /dev y todas las acciones espacio-de-usuario al añadir,
+eliminar dispositivos, incluyendo la carga del firmware.
+

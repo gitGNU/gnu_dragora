@@ -1,0 +1,7 @@
+foomatic-db-engine - Motor de base de datos PPD.
+
+Foomatic es un motor de base de datos que genera archivos PPD de los
+datos en la base de datos de Foomatic XML. También contiene secuencias
+de comandos para generar directamente las colas de impresión y realizar
+trabajos.
+

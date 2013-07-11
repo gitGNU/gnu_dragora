@@ -1,0 +1,9 @@
+adcd - Un reproductor de CDs en modo texto (ncurses).
+
+Adcd puede reproducir todas las pistas de un disco en orden (modo lineal),
+o en el orden especificado por el usuario (modo playlist), y tiene todas
+las funciones de un reproductor de CDs autónomo, incluyendo reproducción
+aleatoria y repetición.
+
+Adcd fue escrito por Antonio Diaz Diaz.
+

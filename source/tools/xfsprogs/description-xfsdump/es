@@ -1,0 +1,7 @@
+xfsdump - Utilidad incremental de volcado de XFS.
+
+xfsdump respalda los archivos y sus atributos en un
+sistema de archivos.  Los archivos son volcados a
+medios de almacenamiento, un archivo normal, o la
+salida estándar.
+

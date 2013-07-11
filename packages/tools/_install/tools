@@ -1,0 +1,74 @@
+acpid:Daemon for power interface:ON:acpid-2.0.14 - Size 40K [C], 140K [U].
+alsa-utils:ALSA utilities:ON:alsa-utils-1.0.25 - Size 916K [C], 2.0M [U].
+at:Runs jobs for later execution:ON:at-3.1.12 - Size 36K [C], 130K [U].
+bash-completion:Programmable completion for Bash:ON:bash-completion-1.2 - Size 108K [C], 640K [U].
+bzip2:High-quality data compressor:ON:bzip2-1.0.6 - Size 108K [C], 380K [U].
+consolekit:Framework for defining users:ON:consolekit-0.4.5 - Size 116K [C], 530K [U].
+cpio:A tool for creating and extracting archives:ON:cpio-2.11 - Size 172K [C], 700K [U].
+dbus-1:Message bus system:ON:dbus-1.4.18 - Size 304K [C], 1.4M [U].
+ddrescue:Data recovery tool:ON:ddrescue-1.15 - Size 84K [C], 220K [U].
+diffutils:Utilities to differentiate files:ON:diffutils-3.2 - Size 252K [C], 1010K [U].
+dmapi:DMAPI library:ON:dmapi-2.2.10 - Size 32K [C], 130K [U].
+dosfstools:DOS filesystem tools:ON:dosfstools-3.0.12 - Size 72K [C], 220K [U].
+ed:Unix standard text editor:ON:ed-1.6 - Size 60K [C], 130K [U].
+eject:Program for ejecting removable media:ON:eject-2.1.5 - Size 36K [C], 170K [U].
+feh:imlib2 based image viewer:ON:feh-1.14.2 - Size 152K [C], 380K [U].
+file:A file type guesser:ON:file-5.11 - Size 180K [C], 2.4M [U].
+findutils:Utilities to find files:ON:findutils-4.4.2 - Size 436K [C], 1.7M [U].
+gawk:Pattern scanning and processing language:ON:gawk-4.0.1 - Size 788K [C], 2.3M [U].
+gettext:Utilities for internationalization and localization:ON:gettext-0.18.1.1 - Size 2.5M [C], 12M [U].
+gperf:Perfect hash function generator:ON:gperf-3.0.4 - Size 132K [C], 420K [U].
+gphoto2:Command-line frontend of libgphoto2:ON:gphoto2-2.4.11 - Size 168K [C], 890K [U].
+gpm:Utility and mouse server for virtual consoles:ON:gpm-20090311 - Size 160K [C], 480K [U].
+grep:A string search tool:ON:grep-2.11 - Size 244K [C], 1.2M [U].
+groff:System for typesetting documents:ON:groff-1.21 - Size 1.8M [C], 8.0M [U].
+gzip:Compression utility:ON:gzip-1.4 - Size 104K [C], 260K [U].
+hal:Hardware abstraction layer:ON:hal-20111030 - Size 388K [C], 1.9M [U].
+hdparm:Set ATA/SATA drive parameter:ON:hdparm-9.39 - Size 72K [C], 150K [U].
+intltool:Tools of internationalization:ON:intltool-0.50.0 - Size 44K [C], 190K [U].
+irda-utils:Utilities for the infrared protocol:ON:irda-utils-0.9.18 - Size 84K [C], 250K [U].
+isapnptools:ISA PnP utilities:ON:isapnptools-1.27 - Size 108K [C], 380K [U].
+jfsutils:The filesystem developed by IBM:ON:jfsutils-1.1.15 - Size 188K [C], 1.1M [U].
+less:A text file viewer:ON:less-444 - Size 108K [C], 250K [U].
+lirc:Support of infrared remote controls:ON:lirc-0.9.0 - Size 264K [C], 1.5M [U].
+lm_sensors:Hardware monitoring tool:ON:lm_sensors-3.3.2 - Size 148K [C], 570K [U].
+lsof:List open files tool:ON:lsof-4.84 - Size 276K [C], 890K [U].
+lzip:A data compressor based on the LZMA algorithm:ON:lzip-1.12 - Size 76K [C], 210K [U].
+man-db:Programs for finding and viewing man pages:ON:man-db-2.6.1 - Size 476K [C], 1.9M [U].
+mc:File manager and user shell:ON:mc-4.8.0 - Size 1.4M [C], 5.4M [U].
+moe:My Own Editor:ON:moe-1.5pre1 - Size 120K [C], 290K [U].
+parallel:Executes shell command lines in parallel:ON:parallel-20110522 - Size 132K [C], 570K [U].
+parted:Partition manipulation tool:ON:parted-3.0 - Size 408K [C], 1.9M [U].
+patch:A tool to patch files:ON:patch-2.6.1 - Size 104K [C], 290K [U].
+pciutils:The PCI utilities:ON:pciutils-3.1.9 - Size 248K [C], 1.1M [U].
+pcmciautils:Utilities for PCMCIA subsystem:ON:pcmciautils-017 - Size 24K [C], 80K [U].
+pdlzip:Public domain version of lzip data compressor:ON:pdlzip-1.3 - Size 32K [C], 70K [U].
+pm-utils:Power management utilities:ON:pm-utils-1.4.1 - Size 112K [C], 450K [U].
+polkit-0:Toolkit for handling authorizations:ON:polkit-0.102 - Size 104K [C], 520K [U].
+polkit-gnome:Authentication agent:ON:polkit-gnome-0.102 - Size 80K [C], 550K [U].
+quota-tools:Tools for the disk quota system:ON:quota-tools-3.17 - Size 164K [C], 900K [U].
+rtkit:RealtimeKit service:ON:rtkit-20110714 - Size 36K [C], 130K [U].
+scrot:Screen capture utility:ON:scrot-0.8 - Size 16K [C], 50K [U].
+sed:GNU stream editor:ON:sed-4.2.1 - Size 196K [C], 880K [U].
+setserial:Utility to configure a serial device:ON:setserial-2.17 - Size 16K [C], 40K [U].
+sg3_utils:SCSI utilities:ON:sg3_utils-1.33 - Size 508K [C], 1.5M [U].
+sharutils:Shell archiver:ON:sharutils-4.11.1 - Size 164K [C], 770K [U].
+sqlite:Embedded SQL database engine:ON:sqlite-3071000 - Size 396K [C], 1.1M [U].
+strace:System call tracer tool:ON:strace-4.6 - Size 160K [C], 540K [U].
+sudo:Tool to give privileges of root to certain users:ON:sudo-1.8.4p2 - Size 492K [C], 1.9M [U].
+suspend-utils:Userland support for suspend:ON:suspend-utils-1.0 - Size 292K [C], 850K [U].
+tar:Tool to package and manipulate files:ON:tar-1.26 - Size 700K [C], 2.7M [U].
+texinfo:The GNU documentation system:ON:texinfo-4.13a - Size 860K [C], 2.8M [U].
+tmux:Terminal multiplexer:ON:tmux-1.5 - Size 164K [C], 400K [U].
+tree:List contents of directories in a tree-like format:ON:tree-1.6.0 - Size 40K [C], 110K [U].
+tudu:A ToDo list manager:ON:tudu-0.8.1 - Size 100K [C], 290K [U].
+udisks:Disk management service:ON:udisks-1.0.4 - Size 156K [C], 800K [U].
+upower:Service for dealing with power management:ON:upower-0.9.15 - Size 104K [C], 520K [U].
+usbutils:A utility to list USB devices:ON:usbutils-005 - Size 188K [C], 640K [U].
+v4l-utils:Collection of video4linux support utilities:ON:v4l-utils-0.8.5 - Size 216K [C], 820K [U].
+wcd:Wherever change directory:ON:wcd-5.1.5 - Size 100K [C], 350K [U].
+which:Utility to show the full path of commands:ON:which-2.20 - Size 28K [C], 90K [U].
+xfsdump:XFS incremental dump utility:ON:xfsdump-3.0.6 - Size 144K [C], 340K [U].
+xfsprogs:A high-performance journaling filesystem:ON:xfsprogs-3.1.8 - Size 632K [C], 3.2M [U].
+zipunzip:ZIP extraction/compression utilities:ON:zipunzip-6.0 - Size 352K [C], 1.1M [U].
+zutils:Utilities for dealing with any compressed files:ON:zutils-0.9 - Size 60K [C], 180K [U].

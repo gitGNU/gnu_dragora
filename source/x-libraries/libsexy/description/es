@@ -1,0 +1,7 @@
+libsexy - Extiende la funcionalidad de widgets estándar.
+
+Libsexy es una colección de widgets GTK+ que extienden la
+funcionalidad de tales widgets como GtkEntry y GtkLabel
+subclasificándolos y trabajando alrededor de las
+limitaciones de los widgets.
+

@@ -1,0 +1,6 @@
+xcb-proto - Provee las descripciones de protocolo XML-XCB.
+
+El paquete xcb-proto proporciona las descripciones de
+protocolo XML-XCB que libxcb utiliza para generar la
+mayoría de su código y API.
+

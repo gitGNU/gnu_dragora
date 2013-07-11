@@ -1,0 +1,28 @@
+cd $TMP
+
+rm -rf unzip${UNZIP_VER}
+lzip -cd ${CWD}/unzip${UNZIP_VER}.tar.lz | tar -xvf -
+
+cd unzip${UNZIP_VER}
+
+# Apply patches (thanks to Fedora):
+zcat ${CWD}/patches/unzip-6.0-bzip2-configure.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/unzip-6.0-exec-shield.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/unzip-6.0-close.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/unzip-6.0-attribs-overflow.patch.gz | patch -p1 --verbose
+zcat ${CWD}/unzip-6.0-nostrip.patch.gz | patch -p1 --verbose
+
+if [[ $ARCH != x86_64 ]]; then
+  TARGET=linux
+else
+  TARGET=linux_noasm
+fi
+make -f unix/Makefile CF_NOOPT="-I. -DUNIX $DCFLAGS" $TARGET
+make -f unix/Makefile prefix=${PKG}/usr install
+
+# Copy documentation:
+mkdir -p ${PKG}/usr/doc/unzip-${V}
+cp -a \
+ BUGS COPYING.OLD LICENSE README ToDo WHERE \
+ ${PKG}/usr/doc/unzip-${V}
+

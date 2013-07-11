@@ -1,0 +1,27 @@
+#: tzconfig:46
+msgid "Time zone configuration"
+msgstr "Configurazione del fuso orario"
+
+#: tzconfig:47
+msgid "SELECT YOUR TIME ZONE"
+msgstr "SELEZIONE DEL FUSO ORARIO"
+
+#: tzconfig:49
+msgid "The local time is the one shown in a clock hanging on the wall.  While UTC is the time in Greenwich.\\n\\nIn what format do you want to save the time?:"
+msgstr "Il tempo locale è quello mostrato in un orologio appeso al muro.  UTC è il tempo a Greenwich.\\n\\nIn che formato vuoi salvare il tempo?:"
+
+#: tzconfig:52
+msgid "Local time"
+msgstr "Tempo locale"
+
+#: tzconfig:53
+msgid "Coordinated Universal Time"
+msgstr "Tempo Coordinato Universale"
+
+#: tzconfig:89
+msgid "'Time zone configuration'"
+msgstr "'Configurazione del fuso orario'"
+
+#: tzconfig:90
+msgid "'SELECT YOUR TIME ZONE'"
+msgstr "'SELEZIONE DEL FUSO ORARIO'"

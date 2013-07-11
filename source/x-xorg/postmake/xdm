@@ -1,0 +1,39 @@
+if [ -d ${packageDir}/usr/lib${libSuffix}/X11/xdm ]; then
+  (
+    mkdir -p ${packageDir}/etc/X11
+    cd ${packageDir}/usr/lib${libSuffix}/X11
+    mv xdm ${packageDir}/etc/X11
+    ln -sf ../../../etc/X11/xdm .
+  )
+fi
+
+mkdir -p ${packageDir}/etc/sv/xdm
+cat ${currentWorkDir}/postmake/files/xdm > ${packageDir}/etc/sv/xdm/run.new
+chmod 644 ${packageDir}/etc/sv/xdm/run.new
+
+(
+  mkdir -p ${packageDir}/etc/runit/runsvdir/default
+  cd ${packageDir}/etc/runit/runsvdir/default
+  ln -sf /etc/sv/xdm .
+)
+
+mkdir -p ${packageDir}/install
+cat << "EOF" >> ${packageDir}/install/post-install
+# Handle config files:
+config() {
+  local new old
+  new="$1"
+  old=${1%.new}
+  if [ ! -r $old ]; then
+    mv $new $old
+  elif [ "$(md5sum $old | cut -f 1 -d ' ')" = "$(md5sum $new | cut -f 1 -d ' ')" ]; then
+    rm $new
+  else
+    echo "You have a new config file \"${ROOT}/${new}\" at your consideration."
+  fi
+}
+
+config etc/sv/xdm/run.new
+
+EOF
+

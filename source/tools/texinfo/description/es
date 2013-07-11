@@ -1,0 +1,8 @@
+texinfo - El sistema de documentación de GNU.
+
+Texinfo es un sistema de documentación que utiliza un solo archivo fuente para
+producir la información en-línea y la salida impresa.  Es principalmente
+diseñado para escribir los manuales de software.
+
+Para más información, visite:  http://www.gnu.org/software/texinfo
+

@@ -1,0 +1,5 @@
+consolekit - Framework for defining users.
+
+ConsoleKit is a framework for defining and tracking users,
+login sessions, and seats.
+

@@ -1,0 +1,83 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.84
+ARCH=${ARCH:-x86_64}
+B=1
+
+PKG=${TMP}/package-lsof
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/lsof_${V}
+lzip -cd ${CWD}/lsof_${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/lsof_${V}
+
+# Uncompress the original source:
+tar xf lsof_${V}_src.tar
+cd lsof_${V}_src
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+./Configure -n linux
+
+make
+
+install -m 755 lsof -D ${PKG}/usr/bin/lsof
+install -m 644 lsof.8 -D ${PKG}/usr/man/man8/lsof.8
+
+strip --strip-unneeded ${PKG}/usr/bin/lsof  # For a good measure.
+gzip -9N ${PKG}/usr/man/man8/lsof.8  # Compress manpage.
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/lsof-${V}
+cp -a 00* ${PKG}/usr/doc/lsof-${V}
+find ${PKG}/usr/doc -type f | xargs chmod 644  # Fix permissions.
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/lsof-${V}-${ARCH}-${B}.tlz
+

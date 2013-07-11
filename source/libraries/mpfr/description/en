@@ -1,0 +1,7 @@
+mpfr - Library for multiple-precision floating point.
+
+The MPFR library is a C library for multiple-precision
+floating-point computations with correct rounding.
+
+For more information, visit:  http://www.mpfr.org
+

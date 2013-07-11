@@ -1,0 +1,13 @@
+grub2 - El GRand Unified Bootloader.
+
+GRUB de GNU es un cargador de arranque muy poderoso, que puede cargar una
+gran variedad de sistemas operativos libres, así como sistemas operativos
+propietarios.  GRUB está diseñado para abordar la complejidad de arrancar
+una computadora personal.
+
+GRUB entiende de sistema de archivos y formatos ejecutables del núcleo,
+por lo que puede cargar un sistema operativo arbitrario de la manera en
+que le guste, sin registrar la posición física de su núcleo en el disco.
+De este modo se puede cargar el núcleo simplemente especificando su
+nombre de archivo y la unidad y la partición donde reside el núcleo.
+

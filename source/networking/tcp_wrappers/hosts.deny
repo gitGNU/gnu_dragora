@@ -1,0 +1,9 @@
+# /etc/hosts.deny
+#
+# This file describes the names of the hosts which are
+# *not* allowed to use the local INET services, as decided
+# by the '/usr/sbin/tcpd' server.
+#
+
+ALL: ALL
+

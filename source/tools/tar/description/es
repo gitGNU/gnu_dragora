@@ -1,0 +1,10 @@
+tar - Herramienta para manipular y empaquetar archivos.
+
+El programa tar provee la habilidad de crear archivos, así como
+otras formas de manipulación.  Por ejemplo, puedes usar tar en
+archivos creados con anterioridad para extraer archivos,
+almacenar archivos adicionales, o actualizar o listar archivos
+que ya están previamente almacenados.
+
+El nombre tar proviene de "Tape ARchiver".
+

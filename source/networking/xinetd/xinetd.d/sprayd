@@ -1,0 +1,15 @@
+# Begin /etc/xinetd.d/sprayd
+
+service sprayd
+{
+   disable      = yes
+   type         = RPC
+   rpc_version  = 1
+   socket_type  = dgram
+   protocol     = udp
+   wait         = yes
+   user         = 0
+   server       = /usr/sbin/rpc.sprayd
+}
+
+# End /etc/xinetd.d/sprayd

@@ -1,0 +1,6 @@
+tiff - TIFF library and utilities.
+
+The tiff package contains the TIFF libraries and associated utilities.
+The libraries are used by many programs for reading and writing TIFF
+files and the utilities are useful for general work with TIFF files.
+

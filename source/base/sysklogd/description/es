@@ -1,0 +1,6 @@
+sysklogd - Utilidades del sistema de registro de GNU/Linux.
+
+El paquete sysklogd contiene programas para registrar los mensajes del
+sistema, como aquellos generados por el Núcleo cuando sucede algo
+inusual.
+

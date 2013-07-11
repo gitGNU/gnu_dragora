@@ -1,0 +1,5 @@
+v4l-utils - Collection of video4linux support utilities.
+
+v4l-utils is a collection of utilities which adds a thin
+abstraction layer on top of video4linux devices.
+

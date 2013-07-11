@@ -1,0 +1,7 @@
+librsvg - Una librería de renderizado SVG de alta prestación.
+
+El paquete librsvg contiene las librerías librsvg y
+herramientas usadas para manipular, convertir y ver
+imágenes en formato gráficos Vectoriales Escalables
+(Scalable Vector Graphic, SVG).
+

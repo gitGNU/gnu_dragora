@@ -1,0 +1,9 @@
+lvm2 - Gestión de volúmenes lógicos versión 2.
+
+LVM2 se refiere a un conjunto de nuevas herramientas de
+espacio de usuario que ofrecen servicios de gestión de
+volúmenes lógicos en GNU/Linux.
+
+Este paquete incluye la librería de aplicación y
+la librería device-mapper.
+

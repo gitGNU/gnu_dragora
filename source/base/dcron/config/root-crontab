@@ -1,0 +1,15 @@
+# USE "crontab -e" TO EDIT THIS FILE!.
+#
+# <MIN> <HOUR> <DAY> <MONTH> <DAYOFWEEK>   COMMAND
+
+# Run hourly jobs after 01 minutes of the exact hour:
+01 * * * *  /usr/bin/run-parts /etc/cron.hourly 1> /dev/null
+#
+# Run daily jobs at 4:02 every day:
+02 4 * * *  /usr/bin/run-parts /etc/cron.daily 1> /dev/null
+#
+# Run weekly jobs at 4:22 the first day of the week:
+22 4 * * 0  /usr/bin/run-parts /etc/cron.weekly 1> /dev/null
+#
+# Run monthly jobs at 4:42 the first day of the month:
+42 4 1 * *  /usr/bin/run-parts /etc/cron.monthly 1> /dev/null

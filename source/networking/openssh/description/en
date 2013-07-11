@@ -1,0 +1,8 @@
+openssh - The OpenSSH suite.
+
+The openssh package contains ssh clients and the sshd daemon.  This is
+useful for encrypting authentication and subsequent traffic over a
+network.
+
+For more information, visit:  http://www.openssh.org
+

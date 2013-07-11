@@ -1,0 +1,5 @@
+kernel-headers - Cabeceras del Kernel de Linux.
+
+Las cabeceras de Linux exponen la API del núcleo para
+ser usada por Glibc.
+

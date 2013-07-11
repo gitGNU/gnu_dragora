@@ -1,0 +1,8 @@
+gstreamer - Streaming media framework.
+
+The gstreamer package contains a streaming media framework that enables
+applications to share a common set of plugins for things like video
+decoding and encoding, audio encoding and decoding, audio and video
+filters, audio visualisation, Web streaming and anything else that
+streams in real-time or otherwise.
+

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=IceCat
+Comment=GNU IceCat web browser
+Comment[es]=Navegador web GNU IceCat
+GenericName=IceCat
+Exec=/usr/bin/icecat
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=/usr/share/pixmaps/icecat.png
+Categories=Application;Network;
+StartupNotify=false

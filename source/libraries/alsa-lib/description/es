@@ -1,0 +1,6 @@
+alsa-lib - Librería ALSA.
+
+El paquete alsa-lib contiene la librería ALSA que es usada por
+programas (incluido ALSA Utilities) que desean utilizar la
+interfaz de sonido de ALSA.
+

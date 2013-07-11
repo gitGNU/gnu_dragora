@@ -1,0 +1,13 @@
+bison - Un generador de análisis de GNU.
+
+Bison es un generador de análisis de propósito general que convierte un
+contexto libre de gramática en un analizador LALR(1) o GLR para esa
+gramática. Una vez que se domina Bison, lo puedes usar para desarrollar
+una amplia gama de analizadores de lenguajes, desde esos usados en
+simples calculadoras de escritorio hasta complejos lenguajes de
+programación.
+
+Para más información, visite:
+
+http://www.gnu.org/software/bison/bison.html
+

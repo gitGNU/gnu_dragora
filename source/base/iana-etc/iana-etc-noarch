@@ -1,0 +1,65 @@
+#!/bin/bash
+#  Copyright (C) 2009  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.30
+ARCH=noarch
+B=1
+
+PKG=${TMP}/package-iana-etc
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/iana-etc-${V}
+tar xvf ${CWD}/iana-etc-${V}.tar.lz -C $TMP
+
+cd ${TMP}/iana-etc-${V}
+
+chown -R 0:0 .
+
+make
+make install DESTDIR=$PKG
+
+# Handle config files:
+( cd ${PKG}/etc
+  mv protocols{,.new}
+  mv services{,.new}
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/iana-etc-${V}
+cp -Pp \
+ COPYING CREDITS NEWS README VERSION \
+ ${PKG}/usr/doc/iana-etc-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/{description,install}
+cp ${CWD}/description/* ${PKG}/description
+
+# Add post-install script:
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg ${OUT}/iana-etc-${V}-${ARCH}-${B}.tlz
+

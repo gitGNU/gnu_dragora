@@ -1,0 +1,23 @@
+cd $TMP
+
+rm -rf zip${ZIP_VER}
+lzip -cd ${CWD}/zip${ZIP_VER}.tar.lz | tar -xvf -
+
+cd zip${ZIP_VER}
+
+# Apply patches for zip (thanks to Fedora):
+zcat ${CWD}/patches/zip-3.0-exec-shield.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/zip-3.0-currdir.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/zip-3.0-time.patch.gz | patch -p1 --verbose
+
+make -f unix/Makefile "CFLAGS_NOOPT=-I. -DUNIX $DCFLAGS" generic_gcc
+make -f unix/Makefile prefix=${PKG}/usr install
+
+ZIP_VER="$(printf ${ZIP_VER:0:1}.${ZIP_VER:1:1})"
+
+# Copy documentation:
+mkdir -p ${PKG}/usr/doc/zip-${ZIP_VER}
+cp -a \
+ BUGS Betas_Readme.txt CHANGES LICENSE README* TODO WHATSNEW WHERE \
+ ${PKG}/usr/doc/zip-${ZIP_VER}
+

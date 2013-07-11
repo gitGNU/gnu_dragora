@@ -1,0 +1,9 @@
+pulseaudio - Servidor de sonido.
+
+PulseAudio es un sistema de sonido para sistemas operativos POSIX, lo que
+significa que es un proxy para sus aplicaciones de sonido.  Te permite
+realizar operaciones avanzadas en tus datos de sonido al pasar entre la
+aplicación y el hardware.  Cosas como la transferencia de audio a un
+equipo diferente, cambiando el formato de la muestra o número de canales
+y mezclando varios sonidos en uno.
+

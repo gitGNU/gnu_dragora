@@ -1,0 +1,16 @@
+Package system.
+
+Usage: pkg <command> [arguments]
+
+List of commands:
+
+  add                      Install packages.
+  remove                   Remove  packages.
+  upgrade                  Upgrade packages.
+  size                     Show packages size.
+  erupt                    Examine a package.
+
+For see this help, type `pkg'. For see the help
+of a specific command, type `pkg' following the
+`command name'.
+

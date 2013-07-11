@@ -1,0 +1,6 @@
+file - Un adivinador de tipo de archivo.
+
+El comando file es un "adivinador de tipo de archivo", que es,
+una herramienta en línea de comandos que te dice en palabras
+que tipo de dato contiene un archivo.
+

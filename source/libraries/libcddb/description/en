@@ -1,0 +1,4 @@
+libcddb - Library to access data on a server.
+
+libcddb is a C library to access data on a CDDB server (freedb.org).
+

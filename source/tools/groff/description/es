@@ -1,0 +1,6 @@
+groff - Sistema para composición tipográfica de documentos.
+
+El groff (GNU roff) es un paquete de software que lee
+texto plano mezclado con formato de comandos y
+produce la salida compaginada.
+

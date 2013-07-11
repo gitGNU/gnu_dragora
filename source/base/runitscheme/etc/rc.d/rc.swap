@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# rc.swap:  Enable/disable swap devices.
+#
+# Version:  (#) 1.00  2009-12-07 (MAF)
+#           (#) 1.01  2010-03-12 (MAF)
+#           (#) 1.02  2010-07-09 (MAF)
+#
+# Author:   Matías A. Fonzo, <selk@dragora.org>
+#
+# Under the terms of the GNU General Public License.
+
+# Sanity check:
+if [ ! -x /sbin/swapon ] && [ ! -L /sbin/swapoff ]; then
+  exit 126;
+fi
+
+# Arguments:
+case "$1" in
+  start)
+    echo "Activating swap device(s)..."
+    /sbin/swapon -v -a -e
+    ;;
+  stop)
+    echo "Deactivating swap device(s)..."
+    /sbin/swapoff -v -a
+    ;;
+  *)
+    echo "Usage: $0 start,stop"
+    exit 1;
+esac
+

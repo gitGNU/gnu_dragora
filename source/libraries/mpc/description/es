@@ -1,0 +1,6 @@
+mpc - Librería para la aritmética de números complejos.
+
+El paquete MPC contiene una librería para la aritmética de
+números complejos con una precisión arbitrariamente alta y
+redondeo del resultado correcto.
+

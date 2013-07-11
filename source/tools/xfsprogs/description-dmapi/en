@@ -1,0 +1,5 @@
+dmapi - DMAPI library.
+
+DMAPI is an interface available for the XFS filesystem by
+means of the libdm library.
+

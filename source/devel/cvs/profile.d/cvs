@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -x /usr/bin/cvs ]; then
+  # If not specified, cvs uses ssh rather than rsh:
+  CVS_RSH=${CVS_RSH:-ssh}
+  export CVS_RSH
+fi
+

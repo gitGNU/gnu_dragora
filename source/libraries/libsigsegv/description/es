@@ -1,0 +1,6 @@
+libsigsegv - Librería para fallos de página.
+
+Esta es una librería para manejar fallos de página en modo de usuario.
+Un fallo de página ocurre cuando un programa intenta tener acceso a
+una región de memoria que no está actualmente disponible.
+

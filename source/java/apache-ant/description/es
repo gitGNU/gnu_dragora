@@ -1,0 +1,6 @@
+apache-ant - Herramienta de construcción basada en Java.
+
+Ant es una herramienta de construcción basada en Java.  En teoría es,
+algo así como "make" sin hacer arrugas y con la plena portabilidad
+de puro código java.
+

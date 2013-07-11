@@ -1,0 +1,57 @@
+#!/bin/sh
+# rc.clock:  Set or save the current system time.
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+
+# Sanity check:
+if [ ! -x /sbin/hwclock ]; then
+  exit 126;
+fi
+
+# Fix RTC clock on an ISA machine:
+fix_rtc_clock() {
+  if ! grep -qw rtc /proc/ioports ; then
+    OPTION=--directisa
+  fi
+}
+
+start() {
+  fix_rtc_clock
+
+  # Set the hardware clock to UTC or localtime:
+  if grep -q ^UTC /etc/sysconfig/hardwareclock 2> /dev/null ; then
+    echo "Setting time from the hardware clock (UTC)."
+    hwclock --hctosys --utc $OPTION
+  else
+    echo "Setting time from the hardware clock (localtime)."
+    hwclock --hctosys --localtime $OPTION
+  fi
+}
+
+stop() {
+  fix_rtc_clock
+
+  # Set the hardware clock to UTC or localtime:
+  if grep -q ^UTC /etc/sysconfig/hardwareclock 2> /dev/null ; then
+    echo "Saving time from the system to the hardware clock (UTC)."
+    hwclock --systohc --utc $OPTION
+  else
+    echo "Saving time from the system to the hardware clock (localtime)."
+    hwclock --systohc --localtime $OPTION
+  fi
+}
+
+# Options:
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  *)
+    echo "Usage: $0 start,stop"
+    exit 1
+    ;;
+esac
+

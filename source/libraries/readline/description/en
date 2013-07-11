@@ -1,0 +1,9 @@
+readline - A library with line-editing capabilities.
+
+GNU readline is a software library created and maintained by the
+GNU Project.  It is licensed under the GPL, and used in projects
+such as bash. It provides line-editing capabilities.
+
+You can consult the documentation of readline in the
+/usr/doc directory.
+

@@ -1,0 +1,6 @@
+glade3 - User interface designer for GTK+-2.
+
+Glade is a user interface designer for GTK+-2.
+
+This package requires of libglade.
+

@@ -1,0 +1,12 @@
+mkdir -p ${packageDir}/etc/xdg/autostart
+cat ${currentWorkDir}/postmake/files/xfwm4.desktop \
+ > ${packageDir}/etc/xdg/autostart/xfwm4.desktop
+
+mkdir -p ${packageDir}/install
+cat << "EOF" > ${packageDir}/install/post-install
+if [ -x /usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database -q /usr/share/applications
+fi
+
+EOF
+

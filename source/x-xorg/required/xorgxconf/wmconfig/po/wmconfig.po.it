@@ -1,0 +1,12 @@
+#: wmconfig:51
+msgid "The directory $DIR is empty."
+msgstr "La cartella $DIR è vuota."
+#: wmconfig:100
+msgid "Window manager configuration tool"
+msgstr "Applicazione di configurazione del window manager"
+#: wmconfig:102
+msgid "Select the window manager to use by default:"
+msgstr "Seleziona il window manager predefinito:"
+#: wmconfig:105
+msgid "Cancelled."
+msgstr "Annullato."

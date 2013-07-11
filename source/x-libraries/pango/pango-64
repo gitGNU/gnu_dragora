@@ -1,0 +1,130 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.29.4
+ARCH=${ARCH:-x86_64}
+B=3
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-pango
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/pango-${V}
+lzip -cd ${CWD}/pango-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/pango-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Make ATSUI backend compile again:
+zcat ${CWD}/cbc881d42159e9a72e6ed408695f59df1a34513e.patch.gz | \
+ patch -p1 --verbose
+
+# Fix ChanContext backtrack matching with GPOS:
+zcat ${CWD}/fa647d19c1db22b308e5c118d2adcc792bd591ac.patch.gz | \
+ patch -p1 --verbose
+
+# Fix zero-width spaces cause missing characters:
+zcat ${CWD}/dbf40154eb5804f4e8c582f12b30b8291c9c3532.patch.gz | \
+ patch -p1 --verbose
+
+autoconf
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --libdir=/usr/lib64 \
+ --localstatedir=/var \
+ --disable-static \
+ --enable-shared \
+ --enable-debug=no \
+ --enable-introspection=no \
+ --with-included-modules=no \
+ --with-dynamic-modules=yes \
+ --build=${ARCH}-dragora-linux-gnu
+
+make V=1 $JOBS
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+gzip -9N ${PKG}/usr/man/man?/*  # Compress manpage(s).
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/pango-${V}
+cp -a \
+ AUTHORS COPYING ChangeLog HACKING MAINTAINERS NEWS README THANKS \
+ ${PKG}/usr/doc/pango-${V}
+
+# Add the post install script:
+mkdir -p ${PKG}/install
+cat << "EOF" > ${PKG}/install/post-install
+if [ -x /sbin/ldconfig ]; then
+  /sbin/ldconfig -r .
+fi
+# Update the pango modules:
+if [ -x /usr/bin/pango-querymodules ]; then
+  /usr/bin/pango-querymodules > /etc/pango/pango.modules
+fi
+
+EOF
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l prepend ${OUT}/pango-${V}-${ARCH}-${B}.tlz
+

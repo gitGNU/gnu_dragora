@@ -1,0 +1,7 @@
+apr - Tiempo de ejecución portable de Apache.
+
+La misión del proyecto de tiempo de ejecución portable de Apache o
+Apache Portable Runtime (APR), es crear y mantener bibliotecas de
+software que proporcionan una interfaz coherente y predecible para
+las aplicaciones específicas de la plataforma.
+

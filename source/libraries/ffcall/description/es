@@ -1,0 +1,6 @@
+ffcall - Librerías extranjeras de la llamada de función.
+
+Esta es una colección de cuatro librerías que pueden ser usadas para
+construir interfaces de llamada de función extranjeras a intérpretes
+embebidos.
+

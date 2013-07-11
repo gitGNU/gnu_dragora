@@ -1,0 +1,6 @@
+orbit2 - Object request broker.
+
+The orbit package contains a high-performance CORBA Object Request Broker.
+This allows programs to send requests and receive replies from other
+programs.
+

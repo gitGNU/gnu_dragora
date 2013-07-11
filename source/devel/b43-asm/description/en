@@ -1,0 +1,4 @@
+b43-asm - Assembler Broadcom BCM43xx firmware.
+
+This package includes the assembler to build some firmwares like openfwwf.
+

@@ -1,0 +1,141 @@
+#!/bin/bash
+#  Copyright (C) 2009-2010  Matias A. Fonzo, Santiago del Estero, AR
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localización:
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=wmconfig
+
+# Funciones #
+
+# Función para comprobar un directorio vacío:
+empty_dir() {
+  shopt -s nullglob dotglob
+  files=( $@ )
+  if (( ${#files[*]} == 0 )); then
+    shopt -u nullglob dotglob
+    return 0;
+  else
+    shopt -u nullglob dotglob
+    return 1;
+  fi
+}
+
+# Sale ante cualquier error:
+set -e
+
+# Variables #
+
+# Directorio por defecto donde se encuentra "xinitrc":
+DIR=${DIR:-/etc/X11/xinit}
+
+# Variable del directorio temporal:
+TMP=${TMP:-/tmp}
+
+# Chequeo de sanidad #
+
+# Comprueba si el directorio está vacío:
+if empty_dir ${DIR}/* ; then
+  echo $"The directory $DIR is empty."
+  exit 1;
+fi
+
+# Creación del directorio y el archivo temporal:
+if [[ ! -d $TMP ]]; then
+  mkdir -p $TMP
+fi
+TMPFILE=${TMP}/wmconfig-reply$$
+
+# Determina el archivo que se mostrará por defecto:
+if [[ -L ${DIR}/xinitrc && -e ${DIR}/xinitrc ]]; then
+  # Comprueba si es un enlace simbólico válido-existente:
+  FILE=$(readlink ${DIR}/xinitrc)
+elif [[ -f ${DIR}/xinitrc ]]; then
+  # El archivo también podría ser sólo un archivo regular;
+  # por ello, lo comprobaremos para moverlo.  Más tarde,
+  # será recreado como un enlace simbólico:
+  mv -f ${DIR}/xinitrc{,.unknown} 2> /dev/null || true;
+  FILE=${DIR}/xinitrc.unknown
+fi
+if [[ -n $FILE ]]; then  # Traslada a mayúsculas cada palabra.
+  FILE=${FILE#*.}
+  FILE=$(printf $FILE | LC_ALL=C tr a-z A-Z)
+fi
+
+# Items para el menú:
+while :
+do
+  unset saved
+  index=0
+  items=( ${DIR}/xinitrc.* )
+  for file in "${items[@]}" ; do
+    file=${file##*/}  # Nombre base de él o los archivos.
+    file=${file#*.}   # Remueve el prefijo "xinitrc.".
+    file=$(printf "$file" | LC_ALL=C tr a-z A-Z)
+    saved[index++]=$file
+    saved[index++]=""
+  done
+  break;
+done
+
+# Aquí, necesitamos manejar el estado de salida para
+# poder borrar el archivo temporal en caso de que
+# no sea igual a cero. Por eso, desactivaremos:
+set +e
+
+# Muestra el menú:
+dialog \
+ --backtitle $"Window manager configuration tool" \
+ --title "$DIR" --default-item "$FILE" --menu \
+ $"Select the window manager to use by default:" 13 33 4 "${saved[@]}" 2> $TMPFILE
+STATUS=$?
+if (( $STATUS != 0 )); then
+  echo $"Cancelled."
+  rm -f $TMPFILE
+  exit  $STATUS;
+fi
+
+# Activamos nuevamente para estar seguros de cualquier error:
+set -e
+
+# Comprobaremos la selección del usuario para hacerla:
+ANSWER=$(cut -f 1 -d ' ' $TMPFILE | LC_ALL=C tr A-Z a-z)
+
+TYPE_USERID=$(id -u)  # Determina el tipo de usuario.
+
+# Hacemos la selección:
+if [[ -f ${DIR}/xinitrc.${ANSWER} ]]; then
+  # Si es el super-usuario, entonces establecemos el manejador de ventana para
+  # el resto de los usuarios que no poseen un $HOME/.xinitrc:
+  if (( $TYPE_USERID == 0 )); then
+    ( cd $DIR
+      rm -rf xinitrc
+      ln -sf xinitrc.${ANSWER} xinitrc
+      chmod 755 xinitrc.${ANSWER}
+    )
+  fi
+  # Se hará una copia de un xinitrc existente y luego un nuevo
+  # $HOME/.xinitrc sea cual fuera o fuese el usuario:
+  if [[ -r ${HOME}/.xinitrc ]]; then
+    mv -f ${HOME}/.xinitrc{,-backup}
+    chmod 644 ${HOME}/.xinitrc-backup
+  fi
+  install -m 755 ${DIR}/xinitrc.${ANSWER} ${HOME}/.xinitrc
+fi
+
+# Limpieza:
+rm -f $TMPFILE
+rmdir $TMP 2> /dev/null || true;
+

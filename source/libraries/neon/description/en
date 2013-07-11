@@ -1,0 +1,6 @@
+neon - An HTTP and WebDAV client library.
+
+Neon is an HTTP and WebDAV client library, with a C interface.
+
+For more information, visit:  http://www.webdav.org/neon
+

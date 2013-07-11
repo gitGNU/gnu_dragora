@@ -1,0 +1,6 @@
+module-init-tools - Utilities to handle Kernel modules.
+
+The package module-init-tools contains programs to
+handle kernel modules in Linux Kernel version with
+greater or equal to 2.5.47.
+

@@ -1,0 +1,8 @@
+glibc - La librería C de GNU.
+
+La librería C de GNU es el sistema estándar de la librería C para
+todos los sistemas GNU.  Proporciona el sistema de interfaz de
+programación de aplicaciones (API) para todos los programas
+escritos en C y lenguajes C-compatibles tales como C++ y
+Objective-C.
+

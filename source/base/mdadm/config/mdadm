@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# mdadm:  RAID devices monitor/administrator.
+#
+
+# Replace with your user-name if you needed:
+MAIL_TO="$(id -nu)"
+
+if [ -x /sbin/mdadm ]; then
+  exec /sbin/mdadm --monitor --scan --mail "$MAIL_TO"
+fi
+

@@ -1,0 +1,4 @@
+lsof - List open files tool.
+
+lsof displays information about files open to Unix processes.
+

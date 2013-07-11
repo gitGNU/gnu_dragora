@@ -1,0 +1,6 @@
+libdrm - Core library routines for X.
+
+libdrm provides core library routines for the X Window System to
+directly interface with video hardware using the Linux Kernel's
+Direct Rendering Modules.
+

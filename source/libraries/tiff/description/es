@@ -1,0 +1,7 @@
+tiff - Librería TIFF y utilidades.
+
+El paquete tiff contiene las librerías TIFF y aplicaciones asociadas.
+Las librerías son utilizadas por muchos programas para leer y
+escribir archivos TIFF, y las aplicaciones son útiles para
+todo tipo de operaciones con archivos TIFF.
+

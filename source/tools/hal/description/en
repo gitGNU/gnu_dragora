@@ -1,0 +1,8 @@
+hal - Hardware abstraction layer.
+
+HAL is a hardware abstraction layer, which is a piece of software that provides
+a view of the various hardware attached to a system. In addition to this, HAL
+keeps detailed metadata for each piece of hardware and provides hooks such that
+system and desktop-level software can react to changes in the hardware
+configuration in order to maintain system policy.
+

@@ -1,0 +1,4 @@
+zcat \
+ ${currentWorkDir}/patches/files/xfdesktop/dragora-default-wallpaper.diff.gz | \
+  patch -p0 --verbose
+

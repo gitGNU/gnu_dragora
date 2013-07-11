@@ -1,0 +1,6 @@
+libpipeline - Librería de manipulación de tuberías.
+
+libpipeline es una biblioteca de C para la creación y gestión de tuberías
+de los procesos, sin necesidad de involucrar a la línea de comandos de
+shell en el análisis, que a menudo es inseguro y propenso a errores.
+

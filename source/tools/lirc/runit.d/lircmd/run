@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# lircmd:  LIRC mouse daemon translates infrared signals into
+#          mouse events.
+#
+
+if [ -x /usr/sbin/lircmd ]; then
+  sv up lircd || exit 1;
+  exec /usr/sbin/lircmd -n | logger -t lircmd -p daemon.info
+fi
+

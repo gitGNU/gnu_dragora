@@ -1,0 +1,44 @@
+atk:Accessibility for GTK2 applications:ON:atk-1.32.0 - Size 288K [C], 2.8M [U].
+babl:Pixel format translation library:ON:babl-0.1.6 - Size 88K [C], 350K [U].
+cairo:The 2D graphics library:ON:cairo-1.10_20110608 - Size 476K [C], 1.5M [U].
+fontconfig:Library for font configuration:ON:fontconfig-2.8.0 - Size 796K [C], 3.6M [U].
+freetype:Font engine:ON:freetype-2.4.9 - Size 500K [C], 3.1M [U].
+gconf:A configuration database system:ON:gconf-2.32.4 - Size 956K [C], 7.7M [U].
+gdk-pixbuf:Image library for GTK2:ON:gdk-pixbuf-2.24.1 - Size 596K [C], 3.7M [U].
+gegl:Generic graphics library:ON:gegl-0.1.8 - Size 492K [C], 3.4M [U].
+giblib:Library for imlib2:ON:giblib-1.2.4 - Size 20K [C], 110K [U].
+giflib:A library for processing GIFs:ON:giflib-20091204 - Size 108K [C], 580K [U].
+glew:An OpenGL library:ON:glew-1.7.0 - Size 240K [C], 2.2M [U].
+gnome-icon-theme:Icons for GNOME and other desktops:ON:gnome-icon-theme-3.0.0 - Size 14M [C], 67M [U].
+gnome-mount:Programs for mounting and umounting devices:ON:gnome-mount-20101226 - Size 152K [C], 1.1M [U].
+gtk1+:The legacy of GTK+:ON:gtk1+-1.2.10 - Size 880K [C], 3.3M [U].
+gtk2+:Toolkit for creating graphical user interfaces:ON:gtk2+-2.24.10 - Size 6.2M [C], 50M [U].
+gvfs:A userspace virtual filesystem:ON:gvfs-1.9.2 - Size 928K [C], 5.7M [U].
+hicolor-icon-theme:Icon theme specification:ON:hicolor-icon-theme-0.12 - Size 12K [C], 230K [U].
+imlib2:Image library:ON:imlib2-1.4.4 - Size 508K [C], 1.1M [U].
+jasper:JPEG 2000 support:ON:jasper-1.900.1 - Size 164K [C], 570K [U].
+libcanberra:XDG sound theme specification:ON:libcanberra-0.26 - Size 92K [C], 460K [U].
+libdrm:Core library routines for X:ON:libdrm-2.4.33 - Size 140K [C], 580K [U].
+libglade:Glade interface:ON:libglade-2.6.4 - Size 112K [C], 530K [U].
+libgnome-keyring:Library of gnome-keyring:ON:libgnome-keyring-2.32.0 - Size 112K [C], 970K [U].
+libidl:Libraries for language files:ON:libidl-0.8.14 - Size 120K [C], 410K [U].
+libnice:Glib ICE library:ON:libnice-0.1.0 - Size 168K [C], 1.2M [U].
+libnotify:Desktop notification library:ON:libnotify-0.5.2 - Size 44K [C], 260K [U].
+librsvg:A high performance SVG rendering library:ON:librsvg-2.35.2 - Size 244K [C], 1.2M [U].
+libsexy:Extend the functionality of standard widgets:ON:libsexy-0.1.11 - Size 60K [C], 280K [U].
+libwnck:Window navigator construction kit:ON:libwnck-2.30.7 - Size 356K [C], 2.9M [U].
+libxklavier:API for X Keyboard extension:ON:libxklavier-5.1 - Size 76K [C], 460K [U].
+mesa-7:3D graphics library:ON:mesa-7.11.2 - Size 4.9M [C], 59M [U].
+mesa-demos:Mesa demonstration programs:ON:mesa-demos-8.0.1 - Size 432K [C], 3.5M [U].
+notification-daemon:Notification daemon:ON:notification-daemon-0.5.0 - Size 72K [C], 340K [U].
+orbit2:Object request broker:ON:orbit2-2.14.19 - Size 324K [C], 2.3M [U].
+pango:Library for the layout and rendering of text:ON:pango-1.29.4 - Size 528K [C], 3.7M [U].
+sdl-1:Simple directmedia layer:ON:sdl-1.2 - Size 408K [C], 2.0M [U].
+sdl_image:An image file loading library:ON:sdl_image-1.2.10 - Size 40K [C], 160K [U].
+sdl_mixer:Multi-channel audio mixer library:ON:sdl_mixer-1.2.11 - Size 116K [C], 520K [U].
+sdl_net:Networking library for SDL:ON:sdl_net-1.2.7 - Size 16K [C], 70K [U].
+sdl_ttf:Library to use TrueType fonts in SDL:ON:sdl_ttf-2.0.10 - Size 20K [C], 80K [U].
+shared-mime-info:MIME database:ON:shared-mime-info-0.90 - Size 528K [C], 5.5M [U].
+startup-notification:Shows when an application is loading:ON:startup-notification-0.12 - Size 32K [C], 130K [U].
+vte:Library for terminal emulators based on GTK+:ON:vte-0.28.2 - Size 596K [C], 3.3M [U].
+xine-lib:Multimedia playback engine:ON:xine-lib-1.1.20 - Size 2.8M [C], 7.2M [U].

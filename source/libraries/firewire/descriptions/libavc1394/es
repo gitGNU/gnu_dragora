@@ -1,0 +1,5 @@
+libavc1394 - Control de audio/video para IEEE 1394.
+
+libavc1394 es una interfaz de programación para el AV/C de la
+especificación de la Trade Association 1394.
+

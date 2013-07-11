@@ -1,0 +1,11 @@
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --enable-static=no \
+ --enable-shared=yes \
+ --with-default-font-path="/usr/share/fonts/X11/misc,/usr/share/fonts/X11/Type1,/usr/share/fonts/X11/100dpi:unscaled,/usr/share/fonts/X11/75dpi:unscaled,/usr/share/fonts/X11/cyrillic,/usr/share/fonts/X11/TTF,/usr/share/fonts/X11/OTF" \
+ $BUILD_SYSTEM

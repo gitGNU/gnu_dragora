@@ -1,0 +1,5 @@
+libparserutils - A utility library for parser building.
+
+LibParserUtils provides various pieces of functionality that
+are useful when writing parsers.
+

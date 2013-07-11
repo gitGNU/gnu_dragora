@@ -1,0 +1,6 @@
+xfsdump - XFS incremental dump utility.
+
+xfsdump backs up files and their attributes in a filesystem.
+The files are dumped to storage media, a regular file, or
+standard output.
+

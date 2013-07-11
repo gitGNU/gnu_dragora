@@ -1,0 +1,5 @@
+sysklogd - GNU/Linux system logging utilities.
+
+The sysklogd package contains programs for logging system messages,
+such as those given by the Kernel when unusual things happen.
+

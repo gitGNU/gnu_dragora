@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# dhclient:  The DHCP protocol client.
+#
+
+if [ -x /sbin/dhclient ]; then
+  exec /sbin/dhclient -d -w | logger -t dhclient -p daemon.info
+fi
+

@@ -1,0 +1,9 @@
+gtk1+-1 - El legado de GTK+.
+
+Esta es la versión de GTK+ 1.2.10.  GTK+, apoya el juego de
+herramientas de Gimp, es una librería para crear interfaces
+gráficas de usuario para el sistema de ventana X.
+Está diseñado para ser pequeño, eficiente y flexible.
+
+GTK+ está escrito en C con un enfoque orientado a objetos.
+

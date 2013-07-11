@@ -1,0 +1,18 @@
+perl/uri:Uniform resource identifiers:ON:uri-1.59 - Size 88K [C], 260K [U].
+perl/xml-parser:A perl module for parsing XML documents:ON:xml-parser-2.41 - Size 160K [C], 530K [U].
+perl/xml-simple:Simple XML parser for Perl:ON:xml-simple-2.18 - Size 68K [C], 180K [U].
+python/dbus-python:A Python binding for DBus:ON:dbus-python-0.84.0 - Size 108K [C], 690K [U].
+python/gobject-introspection:Collects information:ON:gobject-introspection-0.10.8 - Size 792K [C], 6.7M [U].
+python/mutagen:Audio metadata editing library:ON:mutagen-1.20 - Size 148K [C], 760K [U].
+python/notify-python:Python bindings for libnotify:ON:notify-python-0.1.1 - Size 24K [C], 100K [U].
+python/paramiko:SSH library for Python:ON:paramiko-1.7.7.1 - Size 164K [C], 960K [U].
+python/py-notify:Observer programming pattern:ON:py-notify-0.2.1 - Size 100K [C], 630K [U].
+python/py2cairo:Python bindings for Cairo:ON:py2cairo-1.10.0 - Size 44K [C], 210K [U].
+python/pycrypto:Python cryptography toolkit:ON:pycrypto-2.4.1 - Size 288K [C], 1.8M [U].
+python/pygobject:Python bindings for GObject:ON:pygobject-2.28.6 - Size 552K [C], 4.4M [U].
+python/pygtk:Creates GUI's using Python:ON:pygtk-2.24.0 - Size 1.7M [C], 17M [U].
+python/pyrex:Language for writing Python extension modules:ON:pyrex-0.9.9 - Size 260K [C], 1.4M [U].
+python/python-cddb:CDDB for Python:ON:python-cddb-1.4 - Size 24K [C], 80K [U].
+python/scons:Software construction tool:ON:scons-2.0.1 - Size 692K [C], 3.6M [U].
+python/sexy-python:Python bindings for libsexy:ON:sexy-python-0.1.9 - Size 20K [C], 80K [U].
+python/urwid:Console user interface library:ON:urwid-1.0.1 - Size 296K [C], 1.6M [U].

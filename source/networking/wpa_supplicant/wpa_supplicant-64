@@ -1,0 +1,123 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=0.7.3
+ARCH=${ARCH:-x86_64}
+B=4
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+PKG=${TMP}/package-wpa_supplicant
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/wpa_supplicant-${V}
+lzip -cd ${CWD}/wpa_supplicant-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/wpa_supplicant-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+cd wpa_supplicant
+
+# Fix usr path:
+sed -i 's#/usr/local#/usr#' Makefile
+
+cat ${CWD}/config > .config
+export CFLAGS="$DCFLAGS"
+make
+make install PREFIX=/usr DESTDIR=$PKG
+
+# Add configuration files:
+install -m 644 wpa_supplicant.conf -D \
+ ${PKG}/etc/wpa_supplicant.conf-sample
+
+install -m 644 dbus/dbus-wpa_supplicant.conf \
+ -D ${PKG}/etc/dbus-1/system.d/dbus-wpa_supplicant.conf.new
+
+# Add the dbus-services:
+mkdir -p ${PKG}/usr/share/dbus-1/system-services
+
+cat ${CWD}/dbus-services/fi.epitest.hostap.WPASupplicant.service \
+ > ${PKG}/usr/share/dbus-1/system-services/fi.epitest.hostap.WPASupplicant.service
+
+cat ${CWD}/dbus-services/fi.w1.wpa_supplicant1.service \
+ > ${PKG}/usr/share/dbus-1/system-services/fi.w1.wpa_supplicant1.service
+
+# Increments a little the security:
+find ${PKG}/usr/sbin -type f | xargs chmod -v 750
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Add missing manpages:
+( mkdir -p ${PKG}/usr/man/man{8,5}
+  cd doc/docbook
+  for page in *.8 ; do
+    gzip -9Nc < $page > ${PKG}/usr/man/man8/${page}.gz
+  done
+  rm -f ${PKG}/usr/man/man8/wpa_gui.8.gz
+  gzip -9Nc < wpa_supplicant.conf.5 \
+   > ${PKG}/usr/man/man5/wpa_supplicant.conf.5.gz
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/wpa_supplicant-${V}
+cp -a \
+ README README-WPS ../COPYING examples/ \
+ ${PKG}/usr/doc/wpa_supplicant-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/wpa_supplicant-${V}-${ARCH}-${B}.tlz
+

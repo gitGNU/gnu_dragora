@@ -1,0 +1,5 @@
+libxslt - Soporte XSLT para libxml2.
+
+El paquete libxslt contiene librerías XSLT.  Estas son útiles para
+extender las librerías libxml2 para soportar los archivos XSLT.
+

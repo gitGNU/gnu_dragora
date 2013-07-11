@@ -1,0 +1,8 @@
+dev86 - Ensamblador y enlazador para procesadores 8086 - 80386.
+	
+Se trata de un simple ensamblador y enlazador de
+8086 - 80386 código máquina.
+
+Esto se basa en la distribución de as86 y ld86 escrito por
+Bruce Evans.
+

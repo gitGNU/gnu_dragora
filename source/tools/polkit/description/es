@@ -1,0 +1,6 @@
+polkit - Kit de herramienta para manipular autorizaciones.
+
+PolicyKit es un conjunto de herramientas para la definición y manipulación
+de autorizaciones. Se utiliza para permitir que los procesos sin privilegios
+puedan hablar con procesos con privilegios.
+

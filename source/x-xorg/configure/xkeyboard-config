@@ -1,0 +1,10 @@
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --enable-xkbcomp-symlink \
+ --enable-compat-rules \
+ --with-xkb-base=/etc/X11/xkb \
+ --with-xkb-rules-symlink=xfree86,xorg \
+ $BUILD_SYSTEM

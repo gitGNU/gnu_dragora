@@ -1,0 +1,9 @@
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --with-xinitdir=/etc/X11/xinit \
+ $BUILD_SYSTEM

@@ -1,0 +1,6 @@
+xcb-util-mage - Port of Xlib's XImage and XShmImage.
+
+The xcb-util-image module provides a number of libraries which sit on
+top of libxcb, the core X protocol library, and some of the extension
+libraries.
+

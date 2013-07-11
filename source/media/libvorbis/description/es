@@ -1,0 +1,7 @@
+libvorbis - Librería de códec vorbis.
+
+El paquete libvorbis contiene un formato de codificación de audio y
+música de propósito general.  Es útil para crear (codificar) y
+reproducir (decodificar) sonido en un formato abierto (libre de
+patentes).
+

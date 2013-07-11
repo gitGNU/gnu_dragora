@@ -1,0 +1,5 @@
+obex-data-server - Funcionalidad de lado de cliente y servidor OBEX.
+
+obex-data-server proporciona un servicio D-Bus de alto-nivel 
+de cliente y la funcionalidad del lado del servidor OBEX.
+

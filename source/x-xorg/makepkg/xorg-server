@@ -1,0 +1,94 @@
+# Make individual packages:
+
+# Xdmx server package:
+if [ -x ${packageDir}/usr/bin/Xdmx ]; then
+  rm -rf ${buildDir}/package-xorg-server-xdmx
+  mkdir -p ${buildDir}/package-xorg-server-xdmx/usr/bin
+  mv ${packageDir}/usr/bin/Xdmx ${buildDir}/package-xorg-server-xdmx/usr/bin
+  for binary in ${packageDir}/usr/bin/*dmx* ; do
+    if [ -x $binary ]; then
+      mv $binary ${buildDir}/package-xorg-server-xdmx/usr/bin
+    fi
+  done
+  if [ -r ${packageDir}/usr/man/man1/Xdmx.1.gz ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xdmx/usr/man/man1  
+    mv ${packageDir}/usr/man/man1/Xdmx.1.gz ${buildDir}/package-xorg-server-xdmx/usr/man/man1
+    for manpage in ${packageDir}/usr/man/man1/*dmx*.gz ; do
+      if [ -r $manpage ]; then
+        mv $manpage ${buildDir}/package-xorg-server-xdmx/usr/man/man1
+      fi
+    done
+  fi
+  if [ -d ${currentWorkDir}/descriptions/xorg-server-xdmx ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xdmx/description
+    cp ${currentWorkDir}/descriptions/xorg-server-xdmx/* \
+     ${buildDir}/package-xorg-server-xdmx/description
+  fi
+  cd ${buildDir}/package-xorg-server-xdmx
+  makepkg -l ${outDir}/xorg-server-xdmx-${sourceVersion}-${archPackage}-${buildNumPkg}.tlz
+fi
+
+# Xnest server package:
+if [ -x ${packageDir}/usr/bin/Xnest ]; then
+  rm -rf ${buildDir}/package-xorg-server-xnest
+  mkdir -p ${buildDir}/package-xorg-server-xnest/usr/bin
+  mv ${packageDir}/usr/bin/Xnest ${buildDir}/package-xorg-server-xnest/usr/bin
+  if [ -r ${packageDir}/usr/man/man1/Xnest.1.gz ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xnest/usr/man/man1  
+    mv ${packageDir}/usr/man/man1/Xnest.1.gz ${buildDir}/package-xorg-server-xnest/usr/man/man1
+  fi
+  if [ -d ${currentWorkDir}/descriptions/xorg-server-xnest ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xnest/description
+    cp ${currentWorkDir}/descriptions/xorg-server-xnest/* \
+     ${buildDir}/package-xorg-server-xnest/description
+  fi
+  cd ${buildDir}/package-xorg-server-xnest
+  makepkg -l ${outDir}/xorg-server-xnest-${sourceVersion}-${archPackage}-${buildNumPkg}.tlz
+fi
+
+# Xvfb server package:
+if [ -x ${packageDir}/usr/bin/Xvfb ]; then
+  rm -rf ${buildDir}/package-xorg-server-xvfb
+  mkdir -p ${buildDir}/package-xorg-server-xvfb/usr/bin
+  mv ${packageDir}/usr/bin/Xvfb ${buildDir}/package-xorg-server-xvfb/usr/bin
+  if [ -r ${packageDir}/usr/man/man1/Xvfb.1.gz ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xvfb/usr/man/man1  
+    mv ${packageDir}/usr/man/man1/Xvfb.1.gz ${buildDir}/package-xorg-server-xvfb/usr/man/man1
+  fi
+  if [ -d ${currentWorkDir}/descriptions/xorg-server-xvfb ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xvfb/description
+    cp ${currentWorkDir}/descriptions/xorg-server-xvfb/* \
+     ${buildDir}/package-xorg-server-xvfb/description
+  fi
+  cd ${buildDir}/package-xorg-server-xvfb
+  makepkg -l ${outDir}/xorg-server-xvfb-${sourceVersion}-${archPackage}-${buildNumPkg}.tlz
+fi
+
+# Xephyr server package:
+if [ -x ${packageDir}/usr/bin/Xephyr ]; then
+  rm -rf ${buildDir}/package-xorg-server-xephyr
+  mkdir -p ${buildDir}/package-xorg-server-xephyr/usr/bin
+  mv ${packageDir}/usr/bin/Xephyr ${buildDir}/package-xorg-server-xephyr/usr/bin
+  if [ -r ${packageDir}/usr/man/man1/Xephyr.1.gz ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xephyr/usr/man/man1  
+    mv ${packageDir}/usr/man/man1/Xephyr.1.gz ${buildDir}/package-xorg-server-xephyr/usr/man/man1
+  fi
+  if [ -d ${currentWorkDir}/descriptions/xorg-server-xephyr ]; then
+    mkdir -p ${buildDir}/package-xorg-server-xephyr/description
+    cp ${currentWorkDir}/descriptions/xorg-server-xephyr/* \
+     ${buildDir}/package-xorg-server-xephyr/description
+  fi
+  cd ${buildDir}/package-xorg-server-xephyr
+  makepkg -l ${outDir}/xorg-server-xephyr-${sourceVersion}-${archPackage}-${buildNumPkg}.tlz
+fi
+
+# Main Xorg server:
+cd ${packageDir}
+if [ -f ${buildDir}/xorg-server-${sourceVersion}/config/xorg-server.conf ]; then
+  mkdir -p etc/dbus-1/system.d
+  cp -p \
+   ${buildDir}/xorg-server-${sourceVersion}/config/xorg-server.conf \
+   etc/dbus-1/system.d/
+fi
+makepkg -l ${outDir}/xorg-server-${sourceVersion}-${archPackage}-${buildNumPkg}.tlz
+

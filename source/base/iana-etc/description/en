@@ -1,0 +1,6 @@
+iana-etc - Provides /etc/services and /etc/protocols files.
+
+The iana-etc package provides the Unix/Linux /etc/services and
+/etc/protocols files.  Using data from the Internet Assigned
+Numbers Authority <http://www.iana.org>.
+

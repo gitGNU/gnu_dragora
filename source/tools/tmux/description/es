@@ -1,0 +1,7 @@
+tmux - Multiplexor de terminal.
+
+Tmux es un multiplexor de terminal, que activa a un número de terminales
+(o ventanas) para acceder y controlar desde una sola terminal. Tmux esta
+destinada a ser una simple alternativa moderna, con licencia BSD a
+programas tales como GNU screen.
+

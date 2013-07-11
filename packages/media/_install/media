@@ -1,0 +1,43 @@
+a52dec:A free ATSC A/52 stream decoder:ON:a52dec-0.7.4 - Size 60K [C], 190K [U].
+aalib:An ASCII art library:ON:aalib-1.4rc5 - Size 140K [C], 360K [U].
+adcd:A CD player with a text mode interface:ON:adcd-1.0 - Size 32K [C], 100K [U].
+agg:High quality rendering engine:ON:agg-2.5 - Size 252K [C], 2.1M [U].
+cdparanoia:An audio CD utility:ON:cdparanoia-10.2 - Size 112K [C], 340K [U].
+cdrkit:Command-line CD/DVD recorder software:ON:cdrkit-1.1.11 - Size 688K [C], 2.9M [U].
+celt:Audio codec for high-quality communications:ON:celt-0.9.1 - Size 56K [C], 140K [U].
+dvd+rw-tools: Tools to master the DVD media:ON:dvd+rw-tools-7.1 - Size 92K [C], 300K [U].
+farsight2:GStreamer libraries for videoconferencing:ON:farsight2-0.0.26 - Size 332K [C], 1.8M [U].
+ffmpeg:Complete audio/video codec library:ON:ffmpeg-0.8.10 - Size 2.9M [C], 8.6M [U].
+flac:Audio codec similar to MP3:ON:flac-1.2.1 - Size 808K [C], 5.9M [U].
+gst-ffmpeg:Plugins for FFmpeg:ON:gst-ffmpeg-0.10.13 - Size 2.5M [C], 7.1M [U].
+gst-fluendo-mp3:Fluendo MP3 decoder:ON:gst-fluendo-mp3-0.10.15 - Size 76K [C], 240K [U].
+gst-plugins-bad:Plugins that need more quality:ON:gst-plugins-bad-0.10.22 - Size 1.4M [C], 6.5M [U].
+gst-plugins-base:Plugins for GStreamer:ON:gst-plugins-base-0.10.35 - Size 1.6M [C], 13M [U].
+gst-plugins-good:Plugins of good quality:ON:gst-plugins-good-0.10.30 - Size 1.6M [C], 7.4M [U].
+gst-python:Python bindings for Gstreamer:ON:gst-python-0.10.22 - Size 248K [C], 1.4M [U].
+gstreamer:Streaming media framework:ON:gstreamer-0.10.35 - Size 1.7M [C], 16M [U].
+jack:Audio connection kit:ON:jack-1.9.7 - Size 448K [C], 2.1M [U].
+lame:Ain't an MP3 encoder:ON:lame-3.99.3 - Size 392K [C], 1.6M [U].
+libao:Cross-platform audio library:ON:libao-1.1.0 - Size 56K [C], 250K [U].
+libburn:Library to put data onto optical media:ON:libburn-1.1.8 - Size 224K [C], 610K [U].
+libdvdnav:Library for DVD navigation:ON:libdvdnav-4.2.0 - Size 64K [C], 280K [U].
+libdvdread:Library to read DVD video disks:ON:libdvdread-4.2.0 - Size 68K [C], 230K [U].
+libisofs:Library to create an ISO-9660 filesystem:ON:libisofs-1.1.6 - Size 188K [C], 610K [U].
+libmad:MPEG audio decoder of 24-bit output:ON:libmad-0.15.1b - Size 76K [C], 180K [U].
+libogg:Library which contains the Ogg file structure:ON:libogg-1.3.0 - Size 72K [C], 370K [U].
+libsamplerate:Library for the conversion of audio data:ON:libsamplerate-0.1.8 - Size 980K [C], 1.7M [U].
+libsndfile:Library for read and write sampled sound:ON:libsndfile-1.0.25 - Size 292K [C], 1.1M [U].
+libtheora:Free and open video compression format:ON:libtheora-1.1.1 - Size 188K [C], 920K [U].
+libvorbis:Vorbis codec library:ON:libvorbis-1.3.3 - Size 276K [C], 2.3M [U].
+libvpx:The VP8 codec:ON:libvpx-0.9.7p1 - Size 304K [C], 1.7M [U].
+mp4v2:Functions to read and create mp4 files:ON:mp4v2-1.9.1 - Size 396K [C], 1.5M [U].
+mpg123:Fast MP3 player:ON:mpg123-1.13.7 - Size 184K [C], 540K [U].
+openal-soft:3D audio API:ON:openal-soft-1.13 - Size 108K [C], 390K [U].
+pulseaudio:Sound server:ON:pulseaudio-0.9.23 - Size 968K [C], 5.3M [U].
+smpeg:SDL MPEG library:ON:smpeg-r389 - Size 116K [C], 410K [U].
+speex:Audio compression format designed for speech:ON:speex-1.2rc1 - Size 512K [C], 740K [U].
+taglib:Audio meta data library:ON:taglib-1.7 - Size 264K [C], 1.3M [U].
+vorbis-tools:Command-line tools for Ogg audio files:ON:vorbis-tools-1.4.0 - Size 172K [C], 750K [U].
+wavpack:Open audio compression format:ON:wavpack-4.60.1 - Size 152K [C], 450K [U].
+x264:h264/avc encoder:ON:x264-20111215 - Size 408K [C], 1.3M [U].
+xvidcore:MPEG-4 video codifier:ON:xvidcore-1.3.2 - Size 280K [C], 1.8M [U].

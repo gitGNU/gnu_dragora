@@ -1,0 +1,102 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=10.0
+ARCH=${ARCH:-i486}
+if [[ $ARCH = i486 ]]; then
+  PKG_ARCH=i686
+else
+  PKG_ARCH=$ARCH
+fi
+
+B=1
+
+XULRUNNER_VERSION=10.0
+
+PKG=${TMP}/package-xulrunner
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+( cd $TMP
+  rm -rf icecat-${V}
+  tar -xvf ${CWD}/icecat-${V}.tar.lz
+)
+
+cd ${TMP}/icecat-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Insert our config:
+cat ${CWD}/files/xulrunner.mozconfig > .mozconfig
+
+if [[ $ARCH = x86_64 ]]; then
+  sed -i 's#--libdir=/usr/lib#--libdir=/usr/lib64#g' .mozconfig
+fi
+
+./configure \
+ --host=${ARCH}-dragora-linux-gnu \
+ --target=${ARCH}-dragora-linux-gnu \
+ --build=${ARCH}-dragora-linux-gnu
+
+make -j1
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || :
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null || :
+)
+
+# Make a symlink for the compatibility with Icedtea:
+( cd ${PKG}/usr/include/xulrunner-${XULRUNNER_VERSION}
+  ln -sf . stable
+)
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/descriptions/xulrunner/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/xulrunner-${XULRUNNER_VERSION}-${PKG_ARCH}-${B}.tlz
+

@@ -1,0 +1,6 @@
+cracklib - Una librería para aplicar contraseñas seguras.
+
+El paquete cracklib contiene una librería utilizada para aplicar
+contraseñas seguras mediante la comparación de las contraseñas
+del usuario, selecciona a las palabras en la lista de palabras.
+

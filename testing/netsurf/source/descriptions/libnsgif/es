@@ -1,0 +1,6 @@
+libnsgif - Librería de decodificación GIF.
+
+Libnsgif es una librería de decodificación para los archivos de imagen GIF,
+escrita en C. Ha sido desarrollado como parte del proyecto NetSurf y está
+disponible para ser utilizado por otro software bajo la licencia MIT.
+

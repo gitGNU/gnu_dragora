@@ -1,0 +1,7 @@
+sane-backends - Scanner access now easy.
+
+Este paquete contiene las librerías SANE (esto significa backends y
+las partes de red) y la línea de comandos del frontend scanimage.
+
+Para más información, visite:  http://www.sane-project.org
+

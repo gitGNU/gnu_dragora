@@ -1,0 +1,5 @@
+pm-utils - Power management utilities.
+
+pm-utils is a small collection of scripts that handle
+suspend and resume on behalf of HAL.
+

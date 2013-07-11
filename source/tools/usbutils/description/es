@@ -1,0 +1,6 @@
+usbutils - Una utilidad para listar dispositivos USB.
+
+El paquete usbutils contiene una utilidad usada para mostrar
+información acerca de la línea de datos USB en el sistema y
+los dispositivos conectados a ellos.
+

@@ -1,0 +1,5 @@
+sdl_mixer - Multi-channel audio mixer library.
+
+It supports any number of simultaneously playing channels of
+16 bit stereo audio.
+

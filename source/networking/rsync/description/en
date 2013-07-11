@@ -1,0 +1,7 @@
+rsync - Utility for fast file transfer.
+
+rync is an open source utility that provides fast incremental file transfer.
+
+rsync is freely available under the GNU General Public License and is
+currently being maintained by Wayne Davison.
+

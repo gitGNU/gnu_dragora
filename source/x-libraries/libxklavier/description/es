@@ -1,0 +1,6 @@
+libxklavier - API para la extensiÃ³n X Keyboard.
+
+Libxklavier es una librería proporcionando una API de
+alto-nivel para la extensión X Keyboard conocida como
+XKB.
+

@@ -1,0 +1,5 @@
+librsvg - A high performance SVG rendering library.
+
+The librsvg package contains librsvg libraries and tools used to
+manipulate, convert and view Scalable Vector Graphic images.
+

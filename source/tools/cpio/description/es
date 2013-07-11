@@ -1,0 +1,6 @@
+cpio - Una herramienta para crear y extraer archivos.
+
+GNU cpio es una herramienta para crear y extraer archivos, o copiar
+archivos de un lugar a otro.  Maneja un número de formatos de cpio,
+así como leer y escribir archivos tar.
+

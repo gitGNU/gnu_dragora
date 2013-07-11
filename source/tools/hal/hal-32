@@ -1,0 +1,156 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+P=hal
+V=${V:-20111030}
+V_INFO=${V_INFO:-20091130}
+ARCH=${ARCH:-i486}
+B=${B:-2}
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j5}
+
+PKG=${TMP}/package-${P}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+rm -rf ${TMP}/${P}-${V}
+echo "Uncompressing the tarball(s)..."
+tar -xvf ${CWD}/${P}-${V}.tar.lz -C $TMP
+
+cd ${TMP}/${P}-${V}
+
+tar -xvf ${CWD}/hal-info-${V_INFO}.tar.lz
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \
+ \) -exec chmod 755 {} + \
+ -o \
+ \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \
+ \) -exec chmod 644 {} +
+
+pushd hal-info-${V_INFO}
+  ./configure --prefix=/usr --sysconfdir=/etc
+  make && make install DESTDIR=$PKG
+popd
+
+# Apply patches.
+
+# https://bugs.launchpad.net/ubuntu/+source/hal/+bug/546992
+zcat ${CWD}/patches/do_not_check_hal_on_bus.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/60-create-run-hald-directory.patch.gz | patch -p1 --verbose
+
+chmod 755 autogen.sh
+
+CFLAGS="$DCFLAGS" \
+./autogen.sh \
+ --prefix=/usr \
+ --libdir=/usr/lib \
+ --libexecdir=/usr/libexec/hal \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --disable-static \
+ --disable-acl-management \
+ --disable-policy-kit \
+ --disable-verbose-mode \
+ --disable-maintainer-mode \
+ --disable-acpi-acpid \
+ --enable-acpi-proc \
+ --enable-umount-helper \
+ --enable-console-kit \
+ --enable-sonypic \
+ --enable-parted \
+ --with-udev-prefix=/lib \
+ --with-hal-user=haldaemon \
+ --with-hal-group=haldaemon \
+ --with-hwdata=/usr/share \
+ --with-pid-file=/var/run/hald/hald.pid \
+ --with-socket-dir=/var/run/hald \
+ --with-eject=/usr/bin/eject \
+ --with-os-type=dragora \
+ --with-backend=linux \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS || make;
+make install DESTDIR=$PKG
+
+# Set permissions:
+chmod -v 750 ${PKG}/usr/sbin/hald
+
+# Include our custom config:
+rm -f ${PKG}/etc/dbus-1/system.d/hal.conf
+install -m 644 ${CWD}/hal.conf -D ${PKG}/etc/dbus-1/system.d/hal.conf.new
+
+# Add the daemon:
+mkdir -p ${PKG}/etc/rc.d
+zcat ${CWD}/rc.hald.gz > ${PKG}/etc/rc.d/rc.hald.new
+chmod 755 ${PKG}/etc/rc.d/rc.hald.new
+
+# Compress .info page(s)?:
+if [[ -d ${PKG}/usr/info ]]; then
+  ( cd ${PKG}/usr/info
+    rm -f dir  # Redundancy.
+    gzip -9N *.info*
+  )
+fi
+
+# Compress and link .man page(s)?:
+if [[ -d ${PKG}/usr/man ]]; then
+  ( cd ${PKG}/usr/man
+    find . -type f -exec gzip -9N '{}' +
+    find . -type l | while read file ; do
+      ln -sf $(readlink $file).gz ${file}.gz
+      rm $file
+    done
+  )
+fi
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/${P}-${V}
+cp -a \
+ AUTHORS COPYING HACKING NEWS README \
+ ${PKG}/usr/doc/${P}-${V}
+
+cd $PKG
+
+# Strip binaries & libraries:
+find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+ cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true;
+
+# Copy the description files and the post install script:
+mkdir -p description install
+cp ${CWD}/description/?? description/
+zcat ${CWD}/post-install.gz > install/post-install
+
+# Build the package:
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
+

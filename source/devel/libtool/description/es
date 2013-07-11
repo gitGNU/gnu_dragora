@@ -1,0 +1,6 @@
+libtool - La herramienta de librería portable de GNU.
+
+GNU libtool es un script de soporte para la librería.  Libtool oculta la
+complejidad del uso de librerías compartidas detrás de una interfaz
+consistente y portable.
+

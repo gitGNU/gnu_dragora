@@ -1,0 +1,6 @@
+shared-mime-info - Base de datos MIME.
+
+El paquete shared-mime-info contiene una base de datos MIME.
+Permite una actualización centralizada de la información
+MIME para todas las aplicaciones que lo soporten.
+

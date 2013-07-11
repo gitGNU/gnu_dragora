@@ -1,0 +1,9 @@
+adcd - A CD player with a text mode interface.
+
+Adcd can play all the tracks from a disc in order (linear mode),
+or in the order specified by the user (playlist mode), and
+includes all the functions expected in a stand-alone cd player,
+including random play and loop mode.
+
+Adcd was written by Antonio Diaz Diaz.
+

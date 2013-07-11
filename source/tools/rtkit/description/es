@@ -1,0 +1,5 @@
+rtkit - Servicio RealtimeKit.
+
+RealtimeKit es un servicio del sistema D-Bus que cambia el planificador
+de la política de los procesos de usuario y los hilos.
+

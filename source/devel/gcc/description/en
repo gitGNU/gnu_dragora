@@ -1,0 +1,8 @@
+gcc - The GNU C Compiler Collection.
+
+The GNU C Compiler Collection includes: the ADA compiler, the compilers of
+C/C++, the Fortran compiler, the Java compiler (GCJ), and the compilers of
+Objective-C/C++.
+
+For more information about GCC, visit:  http://gcc.gnu.org
+

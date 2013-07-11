@@ -1,0 +1,6 @@
+libid3tag - Librería ID3 de manipulación de etiqueta.
+
+libid3tag es una librería para la lectura y (eventualmente) para
+escribir etiquetas ID3, tanto de ID3v1 y las diferentes
+versiones de ID3v2.
+

@@ -1,0 +1,10 @@
+lzip - Un compresor de datos basado en el algoritmo LZMA.
+
+Lzip es un compresor sin pérdidas de datos basado en el algoritmo LZMA,
+con una muy segura comprobación de integridad y una interfaz de usuario
+similar a la de gzip o bzip2. Lzip descomprime casi tan rápido como
+gzip y comprime mejor que bzip2, por lo que resulta muy adecuado para
+la distribución de software y datos de archivos.
+
+El autor de Lzip es Antonio Diaz Diaz.
+

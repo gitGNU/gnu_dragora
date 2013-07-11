@@ -1,0 +1,5 @@
+sg3_utils - Utilidades SCSI.
+
+sg3_utils es un paquete de utilidades para el acceso a
+dispositivos que utilizan conjuntos de comandos SCSI.
+

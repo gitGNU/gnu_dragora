@@ -1,0 +1,8 @@
+iptables - Tool for filtering the network.
+
+Iptables is the userspace command line program used to configure the
+Linux 2.4.x and 2.6.x IPv4 packet filtering ruleset.  It is
+targeted towards system administrators.
+
+For more information, see:  http://en.wikipedia.org/wiki/Iptables
+

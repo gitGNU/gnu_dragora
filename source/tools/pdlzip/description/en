@@ -1,0 +1,5 @@
+pdlzip - Public domain version of lzip data compressor.
+
+Pdlzip is a public domain version of the lzip data compressor
+also able to decompress legacy lzma-alone (.lzma) files.
+

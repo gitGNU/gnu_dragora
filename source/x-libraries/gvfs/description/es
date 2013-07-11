@@ -1,0 +1,6 @@
+gvfs - Un sistema de archivos virtual en espacio de usuario.
+
+gvfs es un sistema de archivos virtual de espacio de usuario diseñado para
+trabajar con la E/S de abstracciones GIO (una librería disponible en
+Glib2).
+

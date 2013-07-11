@@ -1,0 +1,5 @@
+# ACPI default configuration file.
+
+# Run the handler:
+event=.*
+action=/etc/acpi/acpi_handler "%e"

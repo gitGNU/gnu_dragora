@@ -1,0 +1,133 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.4.24
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-dbus
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/dbus-${V}
+lzip -cd ${CWD}/dbus-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/dbus-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+zcat ${CWD}/allow_superuser.diff.gz | patch -p0 --verbose
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --disable-static \
+ --disable-selinux \
+ --disable-verbose-mode \
+ --disable-checks \
+ --disable-tests \
+ --disable-asserts \
+ --enable-x11-autolaunch \
+ --with-xml=expat \
+ --with-dbus-user=messagebus \
+ --with-system-pid-file=/var/run/dbus/dbus.pid \
+ --with-system-socket=/var/run/dbus/system_bus_socket \
+ --with-session-socket-dir=/tmp \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Set properly permissions:
+chown -v messagebus ${PKG}/var/lib/dbus || true;
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Move config files:
+( cd ${PKG}/etc/dbus-1
+  mv session.conf{,.new}
+  mv system.conf{,.new}
+)
+
+# Add the init script:
+mkdir -p ${PKG}/etc/rc.d
+zcat ${CWD}/rc.messagebus.gz > ${PKG}/etc/rc.d/rc.messagebus.new
+chmod 755 ${PKG}/etc/rc.d/rc.messagebus.new
+
+# Compress manpages:
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+rm -rf ${PKG}/usr/share/doc
+mkdir -p ${PKG}/usr/doc/dbus-${V}/html
+cp -a \
+ AUTHORS COPYING ChangeLog HACKING NEWS README doc/TODO \
+ ${PKG}/usr/doc/dbus-${V}
+cp -a \
+ doc/*.html \
+ ${PKG}/usr/doc/dbus-${V}/html
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/dbus-${V}-${ARCH}-${B}.tlz
+

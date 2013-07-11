@@ -1,0 +1,6 @@
+groff - System for typesetting documents.
+
+The groff (GNU roff) software is a typesetting package which
+reads plain text mixed with formatting commands and produces
+formatted output.
+

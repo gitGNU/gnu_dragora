@@ -1,0 +1,7 @@
+guile - Un intérprete de Scheme.
+
+Guile es un intérprete de Scheme, empaquetado como una biblioteca que puede
+vincular a sus aplicaciones para darles su propio lenguaje de scripts.
+
+Para más detalles, visite:  http://www.gnu.org/software/guile
+

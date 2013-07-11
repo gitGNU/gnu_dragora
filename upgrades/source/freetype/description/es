@@ -1,0 +1,10 @@
+freetype - Motor de fuente.
+
+FreeType es un motor de fuente de software que es diseñado para
+ser pequeño, eficiente, sumamente customizable, y portable
+mientras que es capaz de producir la salida de alta-calidad
+(imágenes glifo).  Esto puede ser usado en librerías gráficas,
+pantalla de servidores, herramientas de conversión de fuentes,
+herramientas de generación de imagen de texto, y muchos otros
+productos también.
+

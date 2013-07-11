@@ -1,0 +1,24 @@
+zcat \
+ ${currentWorkDir}/patches/files/xfwm4/bug8304.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfwm4/name-wm.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfwm4/bug8263.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfwm4/bug8304-2.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfwm4/avoid-moveresize-loop.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfwm4/bug8323.patch.gz | \
+  patch -p1 --verbose
+

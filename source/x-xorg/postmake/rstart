@@ -1,0 +1,8 @@
+if [ -d ${packageDir}/usr/lib${libSuffix}/X11/rstart ]; then
+  (
+    mkdir -p ${packageDir}/etc/X11
+    cd ${packageDir}/usr/lib${libSuffix}/X11
+    mv rstart ${packageDir}/etc/X11
+    ln -sf ../../../etc/X11/rstart .
+  )
+fi

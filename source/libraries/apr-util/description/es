@@ -1,0 +1,5 @@
+apr-util - Utilidades del tiempo de ejecución portable de Apache.
+
+Este paquete contiene las utilidades para apr, como el
+soporte de XML, interface de base de datos, etc.
+

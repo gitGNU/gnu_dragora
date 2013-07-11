@@ -1,0 +1,172 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+set_sane_permissions() {
+  chown -R 0:0 .
+  find . \
+   \( -perm 2777 -o \
+      -perm 777  -o \
+      -perm 775  -o \
+      -perm 711  -o \
+      -perm 555  -o \
+      -perm 511     \
+   \) -exec chmod 755 {} + \
+    -o \
+   \( -perm 666 -o \
+      -perm 664 -o \
+      -perm 600 -o \
+      -perm 444 -o \
+      -perm 440 -o \
+      -perm 400    \
+   \) -exec chmod 644 {} +
+}
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+P=emacs
+V=${V:-23.4}
+ARCH=${ARCH:-i486}
+B=${B:-1}
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j7}
+
+PKG=${TMP}/package-${P}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/${P}-${V}
+tar -xvf ${CWD}/${P}-${V}.tar.lz -C $TMP
+
+cd ${TMP}/${P}-${V}
+set_sane_permissions
+
+# Build the X11 version of Emacs:
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/${P}-${V} \
+ --localstatedir=/var \
+ --program-prefix= \
+ --program-suffix= \
+ --with-x \
+ --with-x-toolkit=gtk \
+ --build=${ARCH}-dragora-linux-gnu
+make $JOBS || make;
+make install DESTDIR=$PKG
+
+# Without hard links:
+( cd ${PKG}/usr/bin
+  rm -f emacs-${V}
+  mv emacs emacs-x11
+  ln -s emacs-x11 emacs
+)
+
+# Build the Console version of Emacs:
+cd $TMP
+rm -rf ${P}-${V}
+tar -xf ${CWD}/${P}-${V}.tar.lz
+cd ${P}-${V}
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/${P}-${V} \
+ --localstatedir=/var \
+ --program-prefix= \
+ --program-suffix= \
+ --without-x \
+ --build=${ARCH}-dragora-linux-gnu
+make $JOBS || make;
+install -m 1755 src/emacs -D ${PKG}/usr/bin/emacs-console
+
+chown -R 0:games ${PKG}/var/games/emacs/  # Sane ownerships.
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true;
+)
+
+# This can be provided by the ctags/etags package:
+( cd ${PKG}/usr
+  ( cd bin
+    mv ctags ctags-emacs
+    ln -s ctags-emacs ctags
+  )
+  ( cd man/man1
+    rm -f ctags.1  # Don't look to etags man page.
+    mv etags.1 etags-emacs.1
+    ln -s etags-emacs.1 etags.1
+    ln -s etags-emacs.1 ctags.1
+  )
+)
+
+# Overwrite with our .desktop file:
+mkdir -p ${PKG}/usr/share/applications
+zcat ${CWD}/emacs.desktop.gz \
+ > ${PKG}/usr/share/applications/emacs.desktop
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Compress manual(s):
+( cd ${PKG}/usr/info
+  rm -f dir  # Redundancy.
+  find . -type f -exec gzip -9N '{}' +
+)
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/${P}-${V}
+cp -a \
+ BUGS COPYING ChangeLog README \
+ ${PKG}/usr/doc/${P}-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+# Add the post install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,53 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Variable de entorno donde se alojan las partes:
+BASEDIR=${BASEDIR:-/usr/libexec/pkg}
+
+# Funciones #
+
+# Emulación de `cat':
+dog() {
+  while read -r ; do
+    printf "%s\n" "$REPLY"
+  done < "$1"
+}
+
+# Función que imprime el archivo de ayuda (de acuerdo a $LANG):
+print_help_file() {
+  if [[ -r ${BASEDIR}/language/HELP.${LANG} ]]; then
+    dog ${BASEDIR}/language/HELP.${LANG}
+  elif [[ -r ${BASEDIR}/language/HELP ]]; then
+    dog ${BASEDIR}/language/HELP
+  fi
+}
+
+# Cuerpo #
+
+# Si no hay argumentos, llama a la función print_help_file():
+if (( $# == 0 )); then
+  print_help_file
+  exit 0;
+fi
+
+# Corre el archivo si existe y es un ejecutable:
+if [[ -x ${BASEDIR}/commands/$1 ]]; then
+  "${BASEDIR}/commands/$1" "${@:2}"
+else
+  print_help_file >&2
+  exit 1;
+fi
+

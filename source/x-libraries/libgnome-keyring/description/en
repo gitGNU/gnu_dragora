@@ -1,0 +1,5 @@
+libgnome-keyring - Library of gnome-keyring.
+
+The library libgnome-keyring is used by applications to integrate
+with the GNOME keyring system.
+

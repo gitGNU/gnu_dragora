@@ -1,0 +1,5 @@
+libcap - Librería con capacidades para POSIX.1e.
+
+Esta es una librería para obtener y establecer
+POSIX.1e (anteriormente POSIX 6).
+

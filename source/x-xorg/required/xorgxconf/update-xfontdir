@@ -1,0 +1,20 @@
+#! /bin/sh
+# This script is part of Dragora GNU/Linux.
+#
+# Published under the terms of the GNU General Public License.
+
+FONTDIR=/usr/share/fonts/X11
+
+for font in 100dpi 75dpi OTF Speedo TTF Type1 cyrillic wqy-zenhei ; do
+  if [ -d ${FONTDIR}/$font ]; then
+    /usr/bin/mkfontscale ${FONTDIR}/$font &>/dev/null
+    /usr/bin/mkfontdir   ${FONTDIR}/$font &>/dev/null
+  fi
+done
+if [ -d ${FONTDIR}/misc ] && [ -d ${FONTDIR}/encodings ]; then
+  /usr/bin/mkfontscale ${FONTDIR}/misc &>/dev/null
+  /usr/bin/mkfontdir \
+   -e ${FONTDIR}/encodings \
+   -e ${FONTDIR}/encodings/large ${FONTDIR}/misc &>/dev/null
+fi
+

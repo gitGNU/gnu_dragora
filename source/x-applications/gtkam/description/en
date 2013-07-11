@@ -1,0 +1,5 @@
+gtkam - Software for digital cameras.
+
+gtkam provides access to information on protocols of digital cameras
+using libgphoto2 and libexif.
+

@@ -1,0 +1,6 @@
+orbit2 - Ejecutor de peticiones de objetos.
+
+El paquete orbit contiene un Ejecutor de Peticiones de Objetos (Object Request
+Broker) CORBA de alto rendimiento. Esto permite a los programas hacer
+peticiones y recibir respuestas de otros programas.
+

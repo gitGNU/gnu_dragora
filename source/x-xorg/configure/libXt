@@ -1,0 +1,12 @@
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --enable-static=no \
+ --enable-shared=yes \
+ --enable-xkb=yes \
+ --with-appdefaultdir=/etc/X11/app-defaults \
+ $BUILD_SYSTEM

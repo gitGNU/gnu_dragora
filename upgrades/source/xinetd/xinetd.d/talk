@@ -1,0 +1,12 @@
+# Begin /etc/xinetd.d/talk
+
+service talk
+{
+   disable        = yes
+   socket_type    = dgram
+   wait           = yes
+   user           = 0
+   server         = /usr/sbin/in.talkd
+}
+
+# End /etc/xinetd.d/talk

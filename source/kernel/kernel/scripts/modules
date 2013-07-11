@@ -1,0 +1,51 @@
+BUILD=${BUILD:-1}
+
+PKG=${TMP}/linux/modules
+
+rm -rf $PKG
+mkdir -pv $PKG $OUT
+
+RC_FILE=${CWD}/rc.modules-${KVERSION}${SUFFIX}.lz
+
+echo "*** Copying modules from /lib/modules/${KVERSION} ..."
+if ls -d /lib/modules/${KVERSION}$SUFFIX ; then
+  mkdir -p ${PKG}/lib/modules
+  cp -a /lib/modules/${KVERSION}$SUFFIX ${PKG}/lib/modules/
+fi
+
+if [ -f $RC_FILE ]; then
+  ( mkdir -p ${PKG}/etc/rc.d
+    cd ${PKG}/etc/rc.d
+    zcat $RC_FILE > rc.modules-${KVERSION}$SUFFIX
+    chown 0:0 rc.modules-${KVERSION}$SUFFIX
+    chmod 755 rc.modules-${KVERSION}$SUFFIX
+    ln -s rc.modules-${KVERSION}$SUFFIX rc.modules
+  )
+else
+  warn "WARNING: The file ${RC_FILE##*/} was not found."
+  sleep 5
+fi
+
+install -m 750 ${CWD}/modtool -D ${PKG}/sbin/modtool
+
+# Build the package:
+cd $PKG
+
+DIR_SUFFIX=$(echo "$SUFFIX" | tr -d -)
+if [ -d ${CWD}/descriptions/image/${DIR_SUFFIX} ]; then
+  mkdir -pv description
+  cp -v ${CWD}/descriptions/image/${DIR_SUFFIX}/* description/
+fi
+
+# Add the post-install script:
+mkdir -p install
+cat << EOF > install/post-install
+# Update modules:
+if [ -x sbin/depmod ]; then
+  chroot . /sbin/depmod -a ${KVERSION}$SUFFIX >/dev/null 2>&1
+fi
+
+EOF
+
+makepkg -l ${OUT}/kernel-modules${SUFFIX}-${KVERSION}-${PKGARCH}-${BUILD}.tlz
+

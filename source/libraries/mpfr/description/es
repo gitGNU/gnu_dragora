@@ -1,0 +1,7 @@
+mpfr - Librería para precisión-múltiple de punto flotante.
+
+La biblioteca MPFR es una librería C para precisión-múltiple
+de punto-flotante con correctos cálculos de redondeo.
+
+Para más información, visite:  http://www.mpfr.org
+

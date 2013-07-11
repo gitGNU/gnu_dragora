@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# atd:  Runs jobs queued by at(1).
+#
+
+if [ -x /usr/sbin/atd ]; then
+  exec /usr/sbin/atd -d
+fi
+

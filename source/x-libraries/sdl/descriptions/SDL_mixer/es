@@ -1,0 +1,5 @@
+sdl_mixer - Librería de audio de mezclado multi-canal.
+
+Soporta cualquier número de canales al mismo tiempo que
+reproduce audio estéreo de 16 bits.
+

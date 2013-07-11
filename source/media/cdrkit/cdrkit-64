@@ -1,0 +1,130 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.1.11
+ARCH=${ARCH:-x86_64}
+B=3
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j2}
+
+PKG=${TMP}/package-cdrkit
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/cdrkit-${V}_libre
+lzip -cd ${CWD}/cdrkit-${V}_libre.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/cdrkit-${V}_libre
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Apply patches from Fedora (thanks!).
+zcat ${CWD}/patches/cdrkit-1.1.9-efi-boot.patch | patch -p1 --verbose
+
+# Fix man page typo:
+zcat ${CWD}/patches/cdrkit-1.1.9-no_mp3.patch | patch -p1 --verbose
+
+zcat ${CWD}/patches/cdrkit-1.1.9-buffer_overflow.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/cdrkit-1.1.10-build-fix.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/cdrkit-1.1.11-manpagefix.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/cdrkit-1.1.11-rootstat.patch.gz | patch -p1 --verbose
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=682591
+zcat ${CWD}/patches/cdrkit-1.1.11-readsegfault.patch.gz | patch -p1 --verbose
+
+make $JOBS CFLAGS="$DCFLAGS"
+make install MANSUBDIR=man PREFIX=${PKG}/usr
+
+# Increments a little the security:
+find ${PKG}/usr/sbin -type f -exec chmod -v 750 '{}' +
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Make compatibility with cdrtools:
+( cd ${PKG}/usr/bin
+  ln -sf wodim cdrecord
+  ln -sf icedax cdda2wav
+  ln -sf genisoimage mkisofs
+  ln -sf genisoimage mkhybrid
+  ln -sf readom readcd
+)
+
+# Fix man page location (if detected):
+if [[ -f ${PKG}/usr/share/man/man1/dirsplit.1 ]]; then
+  mkdir -p ${PKG}/usr/man/man1
+  mv ${PKG}/usr/share/man/man1/dirsplit.1 ${PKG}/usr/man/man1/
+fi
+
+# Compress man pages:
+gzip -9N ${PKG}/usr/man/man?/*.?
+( cd ${PKG}/usr/man/man1
+  ln -sf wodim.1.gz cdrecord.1.gz
+  ln -sf icedax.1.gz cdda2wav.1.gz
+  ln -sf genisoimage.1.gz mkisofs.1.gz
+  ln -sf genisoimage.1.gz mkhybrid.1.gz
+  ln -sf readom.1.gz readcd.1.gz
+)
+
+# Deletes empty directories:
+find ${PKG}/usr -type d -empty -delete
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/cdrkit-${V}
+cp -a \
+ COPYING ABOUT Changelog FAQ FORK START TODO VERSION doc/ \
+ ${PKG}/usr/doc/cdrkit-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/cdrkit-${V}-${ARCH}-${B}.tlz
+

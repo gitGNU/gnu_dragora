@@ -1,0 +1,8 @@
+lvm2 - Logical Volume Management version 2.
+
+LVM2 refers to a new userspace toolset that provide
+Logical Volume Management facilities on GNU/Linux.
+
+This package includes the application library and
+the device-mapper library.
+

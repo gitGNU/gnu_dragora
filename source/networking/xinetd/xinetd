@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# xinetd:  Extended internet daemon.
+#
+
+if [ -x /usr/sbin/xinetd ]; then
+  exec /usr/sbin/xinetd -dontfork
+fi
+

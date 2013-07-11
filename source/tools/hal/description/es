@@ -1,0 +1,9 @@
+hal - Capa de abstracción de hardware.
+
+HAL es una capa de abstracción de hardware, que es una pieza de software que
+proporciona una vista de los diferentes dispositivos conectados a un sistema.
+Además de esto, HAL mantiene metadatos detallados de cada pieza de hardware
+y provee de manera que los ganchos y el sistema de escritorio a nivel de
+software puedan reaccionar a los cambios en la configuración de hardware
+a fin de mantener la política del sistema.
+

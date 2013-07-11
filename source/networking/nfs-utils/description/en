@@ -1,0 +1,7 @@
+nfs-utils - Network filesystem daemons and utilities.
+
+The nfs-utils package contains the necessary daemons and utilities to
+run an NFS server on GNU/Linux.
+
+You'll also need the portmap package to use NFS.
+

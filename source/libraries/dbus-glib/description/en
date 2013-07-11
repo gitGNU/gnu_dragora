@@ -1,0 +1,4 @@
+dbus-glib - Glib bindings for dbus.
+
+This package contains the Glib bindings for D-Bus.
+

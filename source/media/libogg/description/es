@@ -1,0 +1,6 @@
+libogg - Librería que contiene la estructura de archivos Ogg.
+
+El paquete libogg contiene la estructura de ficheros Ogg.  Es útil
+para crear (codificar) o reproducir (decodificar) un flujo de bits
+físico único.
+

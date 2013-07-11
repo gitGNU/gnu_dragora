@@ -1,0 +1,10 @@
+bzip2 - Compresor de datos de alta calidad.
+
+Bzip2 es un compresor de datos de alta calidad que usa las
+mejores técnicas de compresión (de la familia PPM de
+compresores estadísticos).  Por lo general, la
+compresión es considerablemente mejor al de los
+compresores basados en el algoritmo LZ77/LZ78.
+
+El autor de bzip2 es Julian Seward.
+

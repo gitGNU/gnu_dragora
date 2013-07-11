@@ -1,0 +1,6 @@
+setserial - Utilidad para configurar un dispositivo de serie.
+
+Setserial es un programa que le permite ver y modificar varios
+atributos de un dispositivo serie, incluyendo su puerto,
+su IRQ, y otras opciones de puerto serie.
+

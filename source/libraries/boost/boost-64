@@ -1,0 +1,145 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1_49_0
+PKG_VER=${V//_/.}
+ARCH=${ARCH:-x86_64}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-Os}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j8}
+
+# Get Python serie number:
+PYTHON_VER=$(python -c 'import sys; print sys.version[:3]')
+
+PKG=${TMP}/package-boost
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $TMP
+rm -rf boost_${V}
+echo "Uncompressing the tarball..."
+tar -xvf ${CWD}/boost_${V}.tar.lz
+
+cd boost_${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Include MPI support:
+echo "using mpi ;" >> tools/build/v2/user-config.jam
+
+# Build and install JAM:
+pushd tools/build/v2/engine
+  chmod 755 build.sh
+  CFLAGS="$DCFLAGS" ./build.sh cc
+  install -m 0755 bin.linuxx86_64/bjam -D ${PKG}/usr/bin/bjam
+popd
+
+# Build and install BCP:
+pushd tools/bcp
+  ../build/v2/engine/bin.linuxx86_64/bjam  # Run bjam.
+popd
+install -m 0755 dist/bin/bcp -D ${PKG}/usr/bin/bcp
+
+# And now, turn to build BOOST (-:
+./tools/build/v2/engine/bin.linuxx86_64/bjam $JOBS \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --layout=system \
+ --toolset=gcc \
+ threading=multi \
+ runtime-link=shared link=shared,static \
+ variant=release \
+ debug-symbols=off \
+ cflags="$DCFLAGS" \
+ -sZLIB_INCLUDE=/usr/include \
+ -sZLIB_LIBPATH=/usr/lib64 \
+ -sEXPAT_INCLUDE=/usr/include \
+ -sEXPAT_LIBPATH=/usr/lib64 \
+ -sPYTHON_ROOT=/usr \
+ -sPYTHON_VERSION="$PYTHON_VER"
+
+# Install BOOST:
+install -d ${PKG}/usr/{lib64,include}
+./tools/build/v2/engine/bin.linuxx86_64/bjam \
+ --prefix=${PKG}/usr \
+ --libdir=${PKG}/usr/lib64 \
+ --layout=system \
+ --toolset=gcc \
+ threading=multi \
+ runtime-link=shared link=shared,static \
+ variant=release \
+ debug-symbols=off \
+ cflags="$DCFLAGS" \
+ -sZLIB_INCLUDE=/usr/include \
+ -sZLIB_LIBPATH=/usr/lib64 \
+ -sEXPAT_INCLUDE=/usr/include \
+ -sEXPAT_LIBPATH=/usr/lib64 \
+ -sPYTHON_ROOT=/usr \
+ -sPYTHON_VERSION="$PYTHON_VER" \
+ install
+
+# Build and install "pyste" (the boost code generator for Python):
+pushd libs/python/pyste/install
+  python setup.py install --root=$PKG
+popd
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+strip --strip-debug ${PKG}/usr/lib64/*.a
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/boost-${PKG_VER}
+cp -a LICENSE* ${PKG}/usr/doc/boost-${PKG_VER}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/boost-${PKG_VER}-${ARCH}-${B}.tlz
+

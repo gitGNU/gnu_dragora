@@ -1,0 +1,6 @@
+slang - La librería S-Lang y el intérprete.
+
+El paquete slang contiene la librería S-Lang, que suministra
+características como la administración de pantalla, entrada
+del teclado y mapas de teclado.
+

@@ -1,0 +1,8 @@
+gegl - Librería de gráficos genérica.
+
+GEGL proporciona la infraestructura para hacer la demanda basada en caché no
+destructivas de edición de imágenes más grandes que en los buffers de
+memoria RAM.
+
+Este paquete requiere el paquete babl.
+

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+sv up portmap || exit 1;
+
+# Number of servers to be started up by default.
+RPCNFSDCOUNT=8
+RPCMOUNTDOPTS=
+
+trap '/usr/bin/killall -2 nfsd' 0
+trap 'exit 2' 1 2 3 15
+
+exportfs -r
+rpc.nfsd -- $RPCNFSDCOUNT
+rpcinfo -u localhost nfs 3 >/dev/null 2>&1 || \
+ RPCMOUNTDOPTS="$RPCMOUNTDOPTS --no-nfs-version 4"
+exec rpc.mountd -F $RPCMOUNTDOPTS
+

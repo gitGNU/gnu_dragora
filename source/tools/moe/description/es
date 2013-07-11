@@ -1,0 +1,15 @@
+moe - My Own Editor.
+
+GNU Moe es un potente editor de textos para los conjuntos de
+caracteres ASCII e ISO-8859 (8-bit).  Tiene un interfaz sin
+modos muy fácil de usar, ayuda en línea, múltiples ventanas,
+capacidad ilimitada de deshacer/rehacer cambios, longitud de
+línea ilimitada, busqueda y reemplazo globales (en todos los
+ficheros simultaneamente), operaciones de bloque, sangrado
+automÃ¡tico, retorno de línea automático, compleción de
+nombres de ficheros, navegador de directorios, eliminación
+de duplicados de las historias de comandos, emparejamiento
+de delimitadores, etc.
+
+Vea la página de Moe en:  http://www.gnu.org/software/moe
+

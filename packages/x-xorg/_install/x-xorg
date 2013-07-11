@@ -1,0 +1,257 @@
+app/appres:list X application resource database:ON:appres-1.0.3 - Size 12K [C], 40K [U].
+app/bdftopcf:Font compiler for the X server:ON:bdftopcf-1.0.3 - Size 12K [C], 40K [U].
+app/beforelight:Screen saver:ON:beforelight-1.0.4 - Size 12K [C], 40K [U].
+app/bitmap:Bitmap editor utility for the X Window System:ON:bitmap-1.0.5 - Size 56K [C], 170K [U].
+app/editres:A dynamic resource editor for X:ON:editres-1.0.5 - Size 36K [C], 100K [U].
+app/fonttosfnt:Wrap a bitmap font:ON:fonttosfnt-1.0.4 - Size 20K [C], 60K [U].
+app/fslsfonts:Lists the fonts served by X font server:ON:fslsfonts-1.0.3 - Size 12K [C], 40K [U].
+app/fstobdf:Generates a BDF font from X font server:ON:fstobdf-1.0.4 - Size 12K [C], 40K [U].
+app/iceauth:ICE authority file utility:ON:iceauth-1.0.5 - Size 20K [C], 60K [U].
+app/ico:Animates a polyhedron:ON:ico-1.0.3 - Size 20K [C], 70K [U].
+app/listres:Lists the resources in widgets:ON:listres-1.0.2 - Size 12K [C], 40K [U].
+app/luit:Convert terminal I/O from legacy encodings to UTF-8:ON:luit-1.1.0 - Size 28K [C], 70K [U].
+app/mkfontdir:Create an index of X font files in a directory:ON:mkfontdir-1.0.6 - Size 12K [C], 30K [U].
+app/mkfontscale:Create an index of scalable font files for X:ON:mkfontscale-1.0.9 - Size 24K [C], 60K [U].
+app/oclock:Displays the time on an analog display:ON:oclock-1.0.2 - Size 16K [C], 50K [U].
+app/rgb:Builds the color name database:ON:rgb-1.0.4 - Size 16K [C], 60K [U].
+app/rstart:Implementation of a remote start client:ON:rstart-1.0.4 - Size 24K [C], 80K [U].
+app/scripts:Set of scripts for X:ON:scripts-1.0.1 - Size 8.0K [C], 30K [U].
+app/sessreg:Register X sessions in system utmp/utmpx databases:ON:sessreg-1.0.7 - Size 16K [C], 50K [U].
+app/setxkbmap:Set the keyboard using the X Keyboard Extension:ON:setxkbmap-1.2.0 - Size 16K [C], 50K [U].
+app/showfont:Font dumper for X font server:ON:showfont-1.0.3 - Size 12K [C], 40K [U].
+app/smproxy:Session manager proxy:ON:smproxy-1.0.5 - Size 16K [C], 50K [U].
+app/viewres:Graphical class browser for Xt:ON:viewres-1.0.3 - Size 20K [C], 60K [U].
+app/x11perf:Simple X server performance benchmarker:ON:x11perf-1.5.4 - Size 64K [C], 200K [U].
+app/xauth:X authority file utility:ON:xauth-1.0.6 - Size 28K [C], 70K [U].
+app/xbiff:Mailbox for X:ON:xbiff-1.0.3 - Size 16K [C], 50K [U].
+app/xcalc:A calculator for X:ON:xcalc-1.0.4.1 - Size 24K [C], 90K [U].
+app/xclipboard:X clipboard client:ON:xclipboard-1.1.1 - Size 20K [C], 70K [U].
+app/xclock:Classic X Window System clock:ON:xclock-1.0.5 - Size 28K [C], 80K [U].
+app/xcmsdb:Utility for X color management system:ON:xcmsdb-1.0.3 - Size 20K [C], 50K [U].
+app/xconsole:Monitors the system console messages with X:ON:xconsole-1.0.4 - Size 16K [C], 50K [U].
+app/xcursorgen:Create an X cursor file from PNG images:ON:xcursorgen-1.0.4 - Size 12K [C], 40K [U].
+app/xdbedizzy:A demo of DBE:ON:xdbedizzy-1.1.0 - Size 16K [C], 50K [U].
+app/xditview:Display distroff output:ON:xditview-1.0.2 - Size 24K [C], 100K [U].
+app/xdm:X Display Manager:ON:xdm-1.1.11 - Size 128K [C], 410K [U].
+app/xdpyinfo:Display information utility for X:ON:xdpyinfo-1.3.0 - Size 24K [C], 70K [U].
+app/xdriinfo:Query configuration information of DRI drivers:ON:xdriinfo-1.0.4 - Size 8.0K [C], 30K [U].
+app/xedit:Simple text editor for X:ON:xedit-1.2.0 - Size 272K [C], 870K [U].
+app/xev:Print contents of X events:ON:xev-1.1.0 - Size 16K [C], 50K [U].
+app/xeyes:Follows the mouse:ON:xeyes-1.1.1 - Size 16K [C], 50K [U].
+app/xf86dga:Test program for the XFree86-DGA extension:ON:xf86dga-1.0.3 - Size 12K [C], 40K [U].
+app/xfd:Displays the characters in an X font:ON:xfd-1.1.0 - Size 20K [C], 60K [U].
+app/xfontsel:Selection of X font names:ON:xfontsel-1.0.3 - Size 28K [C], 70K [U].
+app/xfs-1:X font server:ON:xfs-1.1.1 - Size 68K [C], 170K [U].
+app/xfsinfo:X font server information utility:ON:xfsinfo-1.0.3 - Size 12K [C], 40K [U].
+app/xgamma:Alter a monitor's gamma correction through the X server:ON:xgamma-1.0.4 - Size 12K [C], 40K [U].
+app/xgc:X graphics demo:ON:xgc-1.0.3 - Size 32K [C], 100K [U].
+app/xhost:Server access control program for X:ON:xhost-1.0.4 - Size 16K [C], 50K [U].
+app/xinit:X Window System initializer:ON:xinit-1.3.1 - Size 32K [C], 100K [U].
+app/xinput:Utility to configure and test Input devices:ON:xinput-1.5.3 - Size 32K [C], 110K [U].
+app/xkbcomp:Compile XKB keyboard description:ON:xkbcomp-1.2.3 - Size 88K [C], 230K [U].
+app/xkbevd:XKB event daemon demo:ON:xkbevd-1.1.2 - Size 24K [C], 60K [U].
+app/xkbprint:Prints an XKB keyboard description:ON:xkbprint-1.0.3 - Size 48K [C], 120K [U].
+app/xkbutils:XKB utility demos:ON:xkbutils-1.0.3 - Size 24K [C], 70K [U].
+app/xkill:Kill a client by its X resource:ON:xkill-1.0.3 - Size 16K [C], 40K [U].
+app/xload:System load average display for X:ON:xload-1.1.0 - Size 16K [C], 50K [U].
+app/xlogo:X Window System logo:ON:xlogo-1.0.3 - Size 20K [C], 60K [U].
+app/xlsatoms:List interned atoms defined on server:ON:xlsatoms-1.1.0 - Size 12K [C], 30K [U].
+app/xlsclients:List client applications running on a display:ON:xlsclients-1.1.2 - Size 16K [C], 40K [U].
+app/xlsfonts:Lists the fonts that match the given pattern:ON:xlsfonts-1.0.3 - Size 16K [C], 50K [U].
+app/xmag:Magnifies the parts of the screen:ON:xmag-1.0.4 - Size 24K [C], 70K [U].
+app/xman:Manual page browser:ON:xman-1.1.2 - Size 40K [C], 120K [U].
+app/xmessage:Displays a message in a window:ON:xmessage-1.0.3 - Size 16K [C], 50K [U].
+app/xmh:Sends and reads mails with an X interface:ON:xmh-1.0.2 - Size 72K [C], 150K [U].
+app/xmodmap:Utility for modifying keymaps and button mappings:ON:xmodmap-1.0.5 - Size 24K [C], 70K [U].
+app/xmore:Plain text display program for X:ON:xmore-1.0.2 - Size 12K [C], 40K [U].
+app/xprop:Property displayer for X:ON:xprop-1.2.1 - Size 28K [C], 80K [U].
+app/xrandr:Command line interface to RandR extension:ON:xrandr-1.3.5 - Size 56K [C], 140K [U].
+app/xrdb:X server resource database utility:ON:xrdb-1.0.9 - Size 24K [C], 60K [U].
+app/xrefresh:Refresh all or part of an X screen:ON:xrefresh-1.0.4 - Size 12K [C], 40K [U].
+app/xset-1:User preference utility for X:ON:xset-1.2.2 - Size 28K [C], 80K [U].
+app/xsetmode:Set the mode for an X Input device:ON:xsetmode-1.0.0 - Size 4.0K [C], 20K [U].
+app/xsetpointer:Set an X Input device as the main pointer:ON:xsetpointer-1.0.1 - Size 8.0K [C], 30K [U].
+app/xsetroot:Root window parameter setting utility:ON:xsetroot-1.1.0 - Size 16K [C], 40K [U].
+app/xsm:X session manager:ON:xsm-1.0.2 - Size 40K [C], 120K [U].
+app/xstdcmap:X standard colormap utility:ON:xstdcmap-1.0.2 - Size 12K [C], 40K [U].
+app/xtrap:Sample clients:ON:xtrap-1.0.2 - Size 16K [C], 80K [U].
+app/xvidtune:Video mode tuner:ON:xvidtune-1.0.2 - Size 24K [C], 70K [U].
+app/xvinfo:Print out X-Video extension adaptor information:ON:xvinfo-1.1.1 - Size 12K [C], 40K [U].
+app/xwd:Dump current contents of X window to fil:ON:xwd-1.0.4 - Size 20K [C], 50K [U].
+app/xwininfo:Window information utility for X:ON:xwininfo-1.1.2 - Size 28K [C], 80K [U].
+app/xwud:Display an X window dump from xwd:ON:xwud-1.0.3 - Size 20K [C], 50K [U].
+data/xbitmaps:Standard set of X bitmaps:ON:xbitmaps-1.1.1 - Size 24K [C], 260K [U].
+data/xcursor-themes:Standard set of X cursors:ON:xcursor-themes-1.0.3 - Size 308K [C], 3.6M [U].
+data/xkeyboard-config:X keyboard extension:ON:xkeyboard-config-2.4.1 - Size 528K [C], 5.1M [U].
+doc/xorg-docs:Xorg documentation:ON:xorg-docs-1.6 - Size 220K [C], 970K [U].
+doc/xorg-sgml-doctools:Document format conversion tools for SGML docs:ON:xorg-sgml-doctools-1.10 - Size 20K [C], 110K [U].
+driver/xf86-input-acecad:Acecad Flair Input Driver:ON:xf86-input-acecad-1.5.0 - Size 20K [C], 70K [U].
+driver/xf86-input-aiptek:Aiptek USB Digital Tablet Input Driver:ON:xf86-input-aiptek-1.4.1 - Size 24K [C], 80K [U].
+driver/xf86-input-evdev:Generic GNU/Linux Input Driver:ON:xf86-input-evdev-2.6.0 - Size 76K [C], 240K [U].
+driver/xf86-input-joystick:Joystick Input Driver:ON:xf86-input-joystick-1.6.0 - Size 40K [C], 130K [U].
+driver/xf86-input-keyboard:Keyboard Input Driver:ON:xf86-input-keyboard-1.6.0 - Size 28K [C], 100K [U].
+driver/xf86-input-mouse:Mouse Input Driver:ON:xf86-input-mouse-1.7.1 - Size 56K [C], 170K [U].
+driver/xf86-input-synaptics:Synaptics Touchpad Input Driver:ON:xf86-input-synaptics-1.5.0 - Size 140K [C], 480K [U].
+driver/xf86-input-vmmouse:VMware Mouse Input Driver:ON:xf86-input-vmmouse-12.7.0 - Size 20K [C], 80K [U].
+driver/xf86-input-void:Null Input Driver:ON:xf86-input-void-1.4.0 - Size 12K [C], 40K [U].
+driver/xf86-video-apm:Alliance ProMotion Video Driver:ON:xf86-video-apm-1.2.3 - Size 64K [C], 170K [U].
+driver/xf86-video-ark:Ark Video Driver:ON:xf86-video-ark-0.7.3 - Size 16K [C], 50K [U].
+driver/xf86-video-ast:Ast Video Driver:ON:xf86-video-ast-0.93.9 - Size 36K [C], 110K [U].
+driver/xf86-video-ati:ATI Video Driver:ON:xf86-video-ati-6.14.3 - Size 532K [C], 1.9M [U].
+driver/xf86-video-chips:Chips and Technologies Video Driver:ON:xf86-video-chips-1.2.4 - Size 84K [C], 240K [U].
+driver/xf86-video-cirrus:Cirrus Logic Video Driver:ON:xf86-video-cirrus-1.3.2 - Size 32K [C], 100K [U].
+driver/xf86-video-dummy:Dummy Video Driver:ON:xf86-video-dummy-0.3.4 - Size 12K [C], 40K [U].
+driver/xf86-video-fbdev:Video Driver for Framebuffer Device:ON:xf86-video-fbdev-0.4.2 - Size 16K [C], 50K [U].
+driver/xf86-video-geode:Video Driver for AMD Geode GX/LX processors:ON:xf86-video-geode-2.11.12 - Size 132K [C], 350K [U].
+driver/xf86-video-glint:GLINT/Permedia Video Driver:ON:xf86-video-glint-1.2.6 - Size 84K [C], 260K [U].
+driver/xf86-video-i128:Video Driver for I128 chip family:ON:xf86-video-i128-1.3.4 - Size 32K [C], 100K [U].
+driver/xf86-video-i740:Intel I740 Video Driver:ON:xf86-video-i740-1.3.2 - Size 24K [C], 70K [U].
+driver/xf86-video-intel:Intel integrated graphics chipsets:ON:xf86-video-intel-2.16.0 - Size 468K [C], 2.0M [U].
+driver/xf86-video-mach64:Mach64 series video driver:ON:xf86-video-mach64-6.9.0 - Size 184K [C], 590K [U].
+driver/xf86-video-mga:Matrox Video Driver:ON:xf86-video-mga-1.4.13 - Size 100K [C], 250K [U].
+driver/xf86-video-neomagic:Neomagic Video Driver:ON:xf86-video-neomagic-1.2.5 - Size 40K [C], 110K [U].
+driver/xf86-video-nouveau:Open source driver for nVidia cards:ON:xf86-video-nouveau-20120322 - Size 76K [C], 210K [U].
+driver/xf86-video-nv:NVIDIA Video Driver:ON:xf86-video-nv-20110425 - Size 72K [C], 180K [U].
+driver/xf86-video-openchrome:Video Driver for VIA Unichromes:ON:xf86-video-openchrome-0.2.904 - Size 144K [C], 520K [U].
+driver/xf86-video-r128:ATI Rage 128 Video Driver:ON:xf86-video-r128-6.8.1 - Size 144K [C], 460K [U].
+driver/xf86-video-rendition:Rendition Video Driver:ON:xf86-video-rendition-4.2.4 - Size 44K [C], 140K [U].
+driver/xf86-video-s3-0:Video Driver for S3 chipsets:ON:xf86-video-s3-0.6.3 - Size 28K [C], 80K [U].
+driver/xf86-video-s3virge:S3 ViRGE Video Driver:ON:xf86-video-s3virge-1.10.4 - Size 36K [C], 100K [U].
+driver/xf86-video-savage:S3 Savage Video Driver:ON:xf86-video-savage-2.3.3 - Size 84K [C], 220K [U].
+driver/xf86-video-siliconmotion:Silicon Motion Video Driver:ON:xf86-video-siliconmotion-1.7.5 - Size 76K [C], 220K [U].
+driver/xf86-video-sis-0:SiS and XGI Video Driver:ON:xf86-video-sis-0.10.3 - Size 252K [C], 650K [U].
+driver/xf86-video-sisusb:SiS USB Video Driver:ON:xf86-video-sisusb-0.9.4 - Size 40K [C], 100K [U].
+driver/xf86-video-tdfx:3Dfx Video Driver:ON:xf86-video-tdfx-1.4.3 - Size 28K [C], 80K [U].
+driver/xf86-video-tga:DEC 21030 Video Driver:ON:xf86-video-tga-1.2.1 - Size 24K [C], 70K [U].
+driver/xf86-video-trident:Trident Video Driver:ON:xf86-video-trident-1.3.4 - Size 68K [C], 180K [U].
+driver/xf86-video-tseng:Tseng Labs Video Driver:ON:xf86-video-tseng-1.2.4 - Size 28K [C], 90K [U].
+driver/xf86-video-v4l:video4linux driver:ON:xf86-video-v4l-0.2.0 - Size 12K [C], 30K [U].
+driver/xf86-video-vesa:Generic VESA Video Driver:ON:xf86-video-vesa-2.3.0 - Size 20K [C], 60K [U].
+driver/xf86-video-voodoo:Voodoo Video Driver:ON:xf86-video-voodoo-1.2.4 - Size 20K [C], 60K [U].
+font/encodings:Encodings files:ON:encodings-1.0.4 - Size 568K [C], 700K [U].
+font/font-adobe-100dpi:Font files:ON:font-adobe-100dpi-1.0.3 - Size 6.0M [C], 6.9M [U].
+font/font-adobe-75dpi:Font files:ON:font-adobe-75dpi-1.0.3 - Size 5.3M [C], 6.3M [U].
+font/font-adobe-utopia-100dpi:Font files:ON:font-adobe-utopia-100dpi-1.0.4 - Size 1.5M [C], 1.7M [U].
+font/font-adobe-utopia-75dpi:Font files:ON:font-adobe-utopia-75dpi-1.0.4 - Size 1.2M [C], 1.4M [U].
+font/font-adobe-utopia-type1:Font files:ON:font-adobe-utopia-type1-1.0.4 - Size 172K [C], 410K [U].
+font/font-alias:Font files:ON:font-alias-1.0.3 - Size 8.0K [C], 40K [U].
+font/font-arabic-misc:Font files:ON:font-arabic-misc-1.0.3 - Size 20K [C], 40K [U].
+font/font-bh-100dpi:Font files:ON:font-bh-100dpi-1.0.3 - Size 3.7M [C], 4.2M [U].
+font/font-bh-75dpi:Font files:ON:font-bh-75dpi-1.0.3 - Size 3.2M [C], 3.7M [U].
+font/font-bh-ttf:Font files:ON:font-bh-ttf-1.0.3 - Size 280K [C], 940K [U].
+font/font-bh-type1:Font files:ON:font-bh-type1-1.0.3 - Size 528K [C], 1.3M [U].
+font/font-bitstream-100dpi:Font files:ON:font-bitstream-100dpi-1.0.3 - Size 168K [C], 200K [U].
+font/font-bitstream-75dpi:Font files:ON:font-bitstream-75dpi-1.0.3 - Size 148K [C], 190K [U].
+font/font-bitstream-speedo:Font files:ON:font-bitstream-speedo-1.0.2 - Size 244K [C], 560K [U].
+font/font-bitstream-type1:Font files:ON:font-bitstream-type1-1.0.3 - Size 304K [C], 470K [U].
+font/font-cronyx-cyrillic:Font files:ON:font-cronyx-cyrillic-1.0.3 - Size 304K [C], 370K [U].
+font/font-cursor-misc:Font files:ON:font-cursor-misc-1.0.3 - Size 12K [C], 30K [U].
+font/font-daewoo-misc:Font files:ON:font-daewoo-misc-1.0.3 - Size 656K [C], 840K [U].
+font/font-dec-misc:Font files:ON:font-dec-misc-1.0.3 - Size 8.0K [C], 30K [U].
+font/font-ibm-type1:Font files:ON:font-ibm-type1-1.0.3 - Size 280K [C], 640K [U].
+font/font-isas-misc:Font files:ON:font-isas-misc-1.0.3 - Size 792K [C], 950K [U].
+font/font-jis-misc:Font files:ON:font-jis-misc-1.0.3 - Size 536K [C], 630K [U].
+font/font-micro-misc:Font files:ON:font-micro-misc-1.0.3 - Size 8.0K [C], 30K [U].
+font/font-misc-cyrillic:Font files:ON:font-misc-cyrillic-1.0.3 - Size 76K [C], 100K [U].
+font/font-misc-ethiopic:Font files:ON:font-misc-ethiopic-1.0.3 - Size 136K [C], 450K [U].
+font/font-misc-meltho:Font files:ON:font-misc-meltho-1.0.3 - Size 732K [C], 5.6M [U].
+font/font-misc-misc:Font files:ON:font-misc-misc-1.1.2 - Size 3.4M [C], 4.4M [U].
+font/font-mutt-misc:Font files:ON:font-mutt-misc-1.0.3 - Size 216K [C], 270K [U].
+font/font-schumacher-misc:Font files:ON:font-schumacher-misc-1.1.2 - Size 160K [C], 220K [U].
+font/font-screen-cyrillic:Font files:ON:font-screen-cyrillic-1.0.4 - Size 16K [C], 40K [U].
+font/font-sony-misc:Font files:ON:font-sony-misc-1.0.3 - Size 24K [C], 50K [U].
+font/font-sun-misc:Font files:ON:font-sun-misc-1.0.3 - Size 32K [C], 50K [U].
+font/font-util:Font utilities:ON:font-util-1.2.0 - Size 32K [C], 260K [U].
+font/font-winitzki-cyrillic:Font files:ON:font-winitzki-cyrillic-1.0.3 - Size 12K [C], 30K [U].
+font/font-xfree86-type1:Font files:ON:font-xfree86-type1-1.0.4 - Size 32K [C], 80K [U].
+lib/libFS:X Font Service client library:ON:libFS-1.0.3 - Size 32K [C], 100K [U].
+lib/libICE:Exchange library:ON:libICE-1.0.7 - Size 80K [C], 390K [U].
+lib/libSM:Session management library:ON:libSM-1.2.0 - Size 56K [C], 300K [U].
+lib/libX11:X11 client library:ON:libX11-1.4.4 - Size 2.0M [C], 9.1M [U].
+lib/libXScrnSaver:Extension library Screensaver:ON:libXScrnSaver-1.2.1 - Size 20K [C], 70K [U].
+lib/libXTrap:XFIXES Extension:ON:libXTrap-1.0.0 - Size 16K [C], 50K [U].
+lib/libXau:X authorization routines:ON:libXau-1.0.6 - Size 20K [C], 70K [U].
+lib/libXaw:Athena toolkit:ON:libXaw-1.0.9 - Size 316K [C], 1.7M [U].
+lib/libXcomposite:Composite extension:ON:libXcomposite-0.4.3 - Size 16K [C], 70K [U].
+lib/libXcursor:Library files:ON:libXcursor-1.1.13 - Size 36K [C], 130K [U].
+lib/libXdamage:Damage extension:ON:libXdamage-1.1.3 - Size 12K [C], 50K [U].
+lib/libXdmcp:Library of routines:ON:libXdmcp-1.1.0 - Size 32K [C], 170K [U].
+lib/libXevie:X Event Interception Extension:ON:libXevie-1.0.3 - Size 12K [C], 50K [U].
+lib/libXext:Common X extensions library:ON:libXext-1.3.0 - Size 92K [C], 290K [U].
+lib/libXfixes:X-Fixes extension:ON:libXfixes-5.0 - Size 20K [C], 70K [U].
+lib/libXfont-1:Utilities for X font handling:ON:libXfont-1.4.4 - Size 136K [C], 350K [U].
+lib/libXfontcache:Extension library X-TrueType:ON:libXfontcache-1.0.5 - Size 12K [C], 50K [U].
+lib/libXft:Font rendering library:ON:libXft-2.2.0 - Size 56K [C], 150K [U].
+lib/libXi-1:X Input Extension library:ON:libXi-1.4.3 - Size 172K [C], 680K [U].
+lib/libXinerama:Xinerama protocol library:ON:libXinerama-1.1.1 - Size 16K [C], 60K [U].
+lib/libXmu:X miscellaneous utility routines:ON:libXmu-1.1.0 - Size 76K [C], 380K [U].
+lib/libXp-1:X Print extension:ON:libXp-1.0.1 - Size 84K [C], 150K [U].
+lib/libXpm:XPM format pixmap library:ON:libXpm-3.5.9 - Size 60K [C], 170K [U].
+lib/libXrandr:Xrandr extension library:ON:libXrandr-1.3.2 - Size 32K [C], 120K [U].
+lib/libXrender:RENDER extension library:ON:libXrender-0.9.6 - Size 28K [C], 100K [U].
+lib/libXres:X resource extension:ON:libXres-1.0.5 - Size 16K [C], 60K [U].
+lib/libXt-1:X toolkit intrinsics library:ON:libXt-1.1.1 - Size 400K [C], 1.2M [U].
+lib/libXtst:Library files:ON:libXtst-1.2.0 - Size 36K [C], 160K [U].
+lib/libXv-1:X-Video extension library:ON:libXv-1.0.6 - Size 40K [C], 110K [U].
+lib/libXvMC:Library files:ON:libXvMC-1.0.6 - Size 28K [C], 110K [U].
+lib/libXxf86dga:Library files:ON:libXxf86dga-1.1.2 - Size 24K [C], 90K [U].
+lib/libXxf86misc:Library files:ON:libXxf86misc-1.0.3 - Size 16K [C], 50K [U].
+lib/libXxf86vm:Library files:ON:libXxf86vm-1.1.1 - Size 20K [C], 90K [U].
+lib/libdmx:Library files:ON:libdmx-1.1.1 - Size 40K [C], 90K [U].
+lib/libfontenc:Font encoding library:ON:libfontenc-1.1.0 - Size 20K [C], 70K [U].
+lib/libpciaccess:Library files:ON:libpciaccess-0.12.1 - Size 36K [C], 120K [U].
+lib/libxcb:Interface to the X Window System protocol:ON:libxcb-1.8 - Size 264K [C], 3.7M [U].
+lib/libxkbfile:XKB file handling routines:ON:libxkbfile-1.0.7 - Size 72K [C], 210K [U].
+lib/libxkbui:The xkbui library:ON:libxkbui-1.0.2 - Size 12K [C], 40K [U].
+lib/pixman:Library for pixel manipulation:ON:pixman-0.24.4 - Size 152K [C], 470K [U].
+lib/xtrans:X network transport layer shared code:ON:xtrans-1.2.6 - Size 64K [C], 340K [U].
+proto/bigreqsproto:Header files:ON:bigreqsproto-1.1.1 - Size 8.0K [C], 40K [U].
+proto/compositeproto:Header files:ON:compositeproto-0.4.2 - Size 12K [C], 60K [U].
+proto/damageproto:Header files:ON:damageproto-1.2.1 - Size 12K [C], 40K [U].
+proto/dmxproto:Header files:ON:dmxproto-2.3.1 - Size 8.0K [C], 40K [U].
+proto/dri2proto:Header files:ON:dri2proto-2.6 - Size 16K [C], 60K [U].
+proto/evieext:Header files:ON:evieext-1.1.1 - Size 8.0K [C], 30K [U].
+proto/fixesproto:Header files:ON:fixesproto-5.0 - Size 16K [C], 70K [U].
+proto/fontcacheproto:Header files:ON:fontcacheproto-0.1.3 - Size 8.0K [C], 30K [U].
+proto/fontsproto:Header files:ON:fontsproto-2.1.1 - Size 36K [C], 200K [U].
+proto/glproto:Header files:ON:glproto-1.4.14 - Size 24K [C], 140K [U].
+proto/inputproto:Header files:ON:inputproto-2.0.2 - Size 68K [C], 340K [U].
+proto/kbproto:Header files:ON:kbproto-1.0.5 - Size 28K [C], 150K [U].
+proto/printproto:Header files:ON:printproto-1.0.5 - Size 20K [C], 80K [U].
+proto/randrproto:Header files:ON:randrproto-1.3.2 - Size 32K [C], 150K [U].
+proto/recordproto:Header files:ON:recordproto-1.14.1 - Size 20K [C], 100K [U].
+proto/renderproto:Header files:ON:renderproto-0.11.1 - Size 24K [C], 90K [U].
+proto/resourceproto:Header files:ON:resourceproto-1.2.0 - Size 12K [C], 50K [U].
+proto/scrnsaverproto:Header files:ON:scrnsaverproto-1.2.1 - Size 16K [C], 70K [U].
+proto/trapproto:Header files:ON:trapproto-3.4.3 - Size 16K [C], 80K [U].
+proto/videoproto:Header files:ON:videoproto-2.3.1 - Size 16K [C], 80K [U].
+proto/xcb-proto:Provides the XML-XCB protocol descriptions:ON:xcb-proto-1.7 - Size 64K [C], 590K [U].
+proto/xcmiscproto:Header files:ON:xcmiscproto-1.2.1 - Size 8.0K [C], 40K [U].
+proto/xextproto:Header files:ON:xextproto-7.2.0 - Size 112K [C], 730K [U].
+proto/xf86bigfontproto:Header files:ON:xf86bigfontproto-1.2.0 - Size 8.0K [C], 30K [U].
+proto/xf86dgaproto:Header files:ON:xf86dgaproto-2.1 - Size 8.0K [C], 50K [U].
+proto/xf86driproto:Header files:ON:xf86driproto-2.1.1 - Size 8.0K [C], 40K [U].
+proto/xf86miscproto:Header files:ON:xf86miscproto-0.9.3 - Size 8.0K [C], 30K [U].
+proto/xf86vidmodeproto:Header files:ON:xf86vidmodeproto-2.3.1 - Size 8.0K [C], 50K [U].
+proto/xineramaproto:Header files:ON:xineramaproto-1.2.1 - Size 8.0K [C], 40K [U].
+proto/xproto:Header files:ON:xproto-7.0.22 - Size 164K [C], 1.3M [U].
+util/desktop-file-utils:Utilities for manipulating desktop files:ON:desktop-file-utils-0.18 - Size 44K [C], 170K [U].
+util/gccmakedep:Creates dependencies in Makefiles using gcc:ON:gccmakedep-1.0.2 - Size 4.0K [C], 20K [U].
+util/icon-naming-utils:A useful utility for the icons:ON:icon-naming-utils-0.8.90 - Size 20K [C], 100K [U].
+util/imake:C preprocessor interface to the make utility:ON:imake-1.0.4 - Size 36K [C], 90K [U].
+util/lndir:Creates a shadow directory to another directory tree:ON:lndir-1.0.2 - Size 12K [C], 30K [U].
+util/makedepend:Makefile dependency listing generator:ON:makedepend-1.0.3 - Size 24K [C], 60K [U].
+util/util-macros:Macros used in X modular files:ON:util-macros-1.15.0 - Size 32K [C], 140K [U].
+util/xcb-util-0:XCB utility functions:ON:xcb-util-0.3.8 - Size 20K [C], 80K [U].
+util/xcb-util-image:Port of Xlib's XImage and XShmImage:ON:xcb-util-image-0.3.8 - Size 24K [C], 80K [U].
+util/xcb-util-keysyms:Standard X constants:ON:xcb-util-keysyms-0.3.8 - Size 12K [C], 40K [U].
+util/xcb-util-renderutil:Functions for the Render extension:ON:xcb-util-renderutil-0.3.8 - Size 12K [C], 50K [U].
+util/xcb-util-wm:Client ICCCM y EWMH:ON:xcb-util-wm-0.3.8 - Size 40K [C], 260K [U].
+util/xdg-user-dirs:Tool to manage user directories:ON:xdg-user-dirs-0.14 - Size 56K [C], 420K [U].
+util/xdg-utils:Scripts for the desktop integration:ON:xdg-utils-20111209 - Size 60K [C], 260K [U].
+util/xorg-cf-files:Configuration files for Xorg:ON:xorg-cf-files-1.0.4 - Size 200K [C], 1.4M [U].
+util/xorgxconf:Configuration files of Dragora for Xorg:ON:xorgxconf-1.5 - Size 8.0K [C], 50K [U].
+xserver/xorg-server-1:The main Xorg server:ON:xorg-server-1.11.4 - Size 2.4M [C], 10M [U].
+xserver/xorg-server-xephyr:A replacement for Xnest:ON:xorg-server-xephyr-1.11.4 - Size 680K [C], 1.8M [U].
+xserver/xorg-server-xnest:A nested X server:ON:xorg-server-xnest-1.11.4 - Size 536K [C], 1.4M [U].
+xserver/xorg-server-xvfb:Virtual Framebuffer X server:ON:xorg-server-xvfb-1.11.4 - Size 612K [C], 1.6M [U].

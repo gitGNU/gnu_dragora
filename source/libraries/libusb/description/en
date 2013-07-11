@@ -1,0 +1,5 @@
+libusb - Library for USB device access.
+
+The libusb package contains a library used by some
+applications for USB device access.
+

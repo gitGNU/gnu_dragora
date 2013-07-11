@@ -1,0 +1,116 @@
+#!/bin/bash
+#  Copyright (C) 2011-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+P=ConsoleKit
+PKG_NAME=consolekit
+V=${V:-0.4.5}
+ARCH=${ARCH:-i486}
+B=${B:-2}
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-${PKG_NAME}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+rm -rf ${TMP}/${P}-${V}
+echo "Uncompressing the tarball..."
+tar -xvf ${CWD}/${P}-${V}.tar.lz -C $TMP
+
+cd ${TMP}/${P}-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \
+ \) -exec chmod 755 {} + \
+ -o \
+ \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --libexecdir=/usr/lib/ConsoleKit \
+ --disable-static \
+ --enable-shared \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS || make;
+make install DESTDIR=$PKG
+
+# Handle config file:
+mv ${PKG}/etc/dbus-1/system.d/ConsoleKit.conf{,.new}
+
+# Adjust permissions:
+chmod -v 750 ${PKG}/usr/sbin/console-kit-daemon
+chmod -v 750 ${PKG}/usr/sbin/ck-log-system-*
+
+# Compress .info page(s)?:
+if [[ -d ${PKG}/usr/info ]]; then
+  ( cd ${PKG}/usr/info
+    rm -f dir  # Redundancy.
+    gzip -9N *.info*
+  )
+fi
+
+# Compress and link .man page(s)?:
+if [[ -d ${PKG}/usr/man ]]; then
+  ( cd ${PKG}/usr/man
+    find . -type f -exec gzip -9N '{}' +
+    find . -type l | while read file ; do
+      ln -sf $(readlink $file).gz ${file}.gz
+      rm $file
+    done
+  )
+fi
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/${PKG_NAME}-${V}
+install -p -m 644 \
+ AUTHORS COPYING ChangeLog HACKING NEWS README TODO \
+ ${PKG}/usr/doc/${PKG_NAME}-${V}
+
+cd $PKG
+
+# Strip binaries & libraries:
+find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+ cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || :
+
+# Copy description files, adding the post install script:
+mkdir -p description install
+install -m 644 ${CWD}/description/?? description/
+zcat ${CWD}/post-install.gz > install/post-install
+
+# Build the package:
+makepkg -l ${OUT}/${PKG_NAME}-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,9 @@
+cvs - Sistema de versiones concurrentes.
+
+Sistema de versiones concurrentes (CVS) es un sistema de control de
+versiones que puede registrar la historia de los archivos (por lo
+general, aunque no siempre, código fuente).  CVS almacena sólo las
+diferencias entre versiones, en lugar de cada versión de cada
+archivo que hayas creado.  CVS también mantiene un registro de
+quién, cuándo y por qué se produjeron los cambios.
+

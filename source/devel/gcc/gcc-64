@@ -1,0 +1,302 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources/gcc}-$(mcookie)
+OUT=${OUT:-/tmp/packages}
+
+V=4.5.3
+ARCH=${ARCH:-x86_64}
+B=4
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+# System type:
+TYPE=${ARCH}-dragora-linux-gnu
+
+PKG=${TMP}/package-gcc
+PKG2=${TMP}/package-gcc_libs
+
+rm -rf $PKG $PKG2
+mkdir -p $PKG $PKG2 $OUT
+
+echo "Uncompressing the tarball..."
+( cd $TMP
+  rm -rf gcc-${V}
+  lzip -cd ${CWD}/gcc-${V}.tar.lz | tar -xvf -
+)
+
+cd ${TMP}/gcc-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# These sed lines are courtesy of LFS...
+#
+# Don't install libiberty.  The version of libiberty is
+# provided by binutils:
+sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in
+
+# Don't execute the script "fixincludes" to fix some headers:
+sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
+
+# With ECJ for javac:
+cat ${CWD}/ecj-3.6.2.jar > ecj.jar
+
+# Determines the short version of Python:
+PYVER=$(python -c 'import sys; print sys.version[:3]')
+
+export CFLAGS="$DCFLAGS"
+export CXXFLAGS="$DCFLAGS"
+
+# GCC needs a separate build directory:
+rm -rf ../gcc-build
+mkdir ../gcc-build
+cd ../gcc-build
+
+../gcc-${V}/configure \
+ --prefix=/usr \
+ --bindir=/bin \
+ --libdir=/usr/lib64 \
+ --libexecdir=/usr/lib64 \
+ --mandir=/usr/man \
+ --infodir=/usr/info \
+ --enable-shared \
+ --enable-threads=posix \
+ --enable-__cxa_atexit \
+ --enable-clocale=gnu \
+ --enable-long-long \
+ --enable-gnu-unique-object \
+ --enable-bootstrap \
+ --enable-libgcj \
+ --enable-interpreter \
+ --enable-lto \
+ --enable-gold \
+ --enable-libssp \
+ --enable-objc-gc \
+ --enable-languages=c,ada,c++,fortran,java,objc,obj-c++ \
+ --enable-checking=release \
+ --disable-multilib \
+ --disable-libstdcxx-pch \
+ --with-python-dir=/lib/python${PYVER}/site-packages \
+ --with-system-zlib \
+ --with-libelf=/usr \
+ --with-ppl \
+ --with-cloog \
+ --build=$TYPE \
+ --target=$TYPE
+
+make $JOBS
+
+if [[ -n $CHECK ]]; then
+  make check;
+fi
+
+make install DESTDIR=$PKG
+
+# Add "specs" file to GCC:
+mkdir -p ${PKG}/usr/lib64/gcc/${TYPE}/${V}
+cat gcc/specs > ${PKG}/usr/lib64/gcc/${TYPE}/${V}/specs
+
+# Fix permissions of the GCC library:
+chmod 755 ${PKG}/usr/lib64/libgcc_s.so.1
+
+# Strip commentaries and notes:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --remove-section=.comment --remove-section=.note 2> /dev/null
+)
+# Small size for the binaries:
+strip --strip-unneeded ${PKG}/bin/* 2> /dev/null || true;
+
+# Creates symlinks (compatibility) for GCC:
+( cd ${PKG}/bin
+  mv gcc gcc-${V}
+  ln -sf gcc-${V} gcc
+  ln -sf gcc cc
+  ln -sf gcc gnatgcc
+  ln -sf gcc-${V} ${TYPE}-gcc
+  ln -sf gcc-${V} ${TYPE}-gcc-${V}
+  mv g++ g++-gcc-${V}
+  ln -sf g++-gcc-${V} g++
+  ln -sf g++ c++
+  ln -sf g++-gcc-${V} ${TYPE}-g++
+  ln -sf g++-gcc-${V} ${TYPE}-c++
+  mkdir -p ${PKG}/lib64
+  ( cd ${PKG}/lib64
+    ln -sf /bin/cpp .
+    ln -sf /usr/lib64/gcc .
+  )
+  # Some sources don't take a look properly about cpp in /lib64:
+  ( mkdir -p ${PKG}/lib
+    cd ${PKG}/lib
+    ln -sf ../lib64/cpp .
+  )
+  mv gfortran gfortran-gcc-${V}
+  ln -sf gfortran-gcc-${V} gfortran
+  ln -sf gfortran-gcc-${V} ${TYPE}-gfortran
+  ln -sf gfortran-gcc-${V} ${TYPE}-gfortran-${V}
+  ln -sf gfortran-gcc-${V} ${TYPE}-g77
+  ln -sf gfortran g77
+  ln -sf g77 f77
+  ln -sf gfortran-gcc-${V} ${TYPE}-g95
+  ln -sf gfortran g95
+  ln -sf g95 f95
+  ln -sf gcj ${TYPE}-gcj
+  ln -sf gcjh ${TYPE}-gcjh
+)
+
+if [[ -f ${PKG}/usr/lib64/gcc/${TYPE}/${V}/include/ffitarget.h ]]; then
+  ( cd ${PKG}/usr/include
+    ln -sf /usr/lib64/gcc/${TYPE}/${V}/include/ffitarget.h .
+  )
+fi
+
+# Remove temporary directory reference in .la files:
+find $PKG -type f -name '*.la' | \
+ xargs sed -i 's|-L.*/gcc-[[:graph:]]* ||g'
+
+# Move this to the right location:
+if ls ${PKG}/usr/lib64/libstdc++.so.*.py ; then
+  mkdir -p ${PKG}/usr/share/gcc-${V}/python
+  ( cd ${PKG}/usr/lib64
+    for file in libstdc++.so.*.py ; do
+      mv $file ${PKG}/usr/share/gcc-${V}/python
+    done
+  )
+fi
+
+# Compress GNU info documents:
+( cd ${PKG}/usr/info
+  rm -f dir
+  gzip -9N *
+)
+
+# Compress man-pages:
+( cd ${PKG}/usr/man
+  find . -type f -name '*.?' -exec gzip -9N '{}' +
+)
+# Link man-pages:
+( cd ${PKG}/usr/man/man1
+  ln -sf gcc.1.gz cc.1.gz
+  ln -sf g++.1.gz c++.1.gz
+)
+
+# Back to the source:
+cd -
+
+# Copy general documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}
+cp -a \
+ ABOUT-NLS COPYING* ChangeLog* README* \
+ ${PKG}/usr/doc/gcc-${V}
+
+# Copy Ada (GNAT) documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/{ada,libada}
+cp -a gcc/ada/ChangeLog ${PKG}/usr/doc/gcc-${V}/ada
+cp -a libada/ChangeLog ${PKG}/usr/doc/gcc-${V}/libada
+
+# Copy C documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/{gcc,libgomp,libmudflap,libssp}
+( cd gcc
+  cp -a \
+   ABOUT-GCC-NLS COPYING* ChangeLog LANGUAGES ONEWS README* \
+   ${PKG}/usr/doc/gcc-${V}/gcc
+)
+cp -a libgomp/ChangeLog ${PKG}/usr/doc/gcc-${V}/libgomp
+cp -a libmudflap/ChangeLog ${PKG}/usr/doc/gcc-${V}/libmudflap
+cp -a libssp/ChangeLog ${PKG}/usr/doc/gcc-${V}/libssp
+
+# Copy C++ documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/libstdc++-v3
+cp -a \
+ libstdc++-v3/{ChangeLog,README} \
+ ${PKG}/usr/doc/gcc-${V}/libstdc++-v3
+
+# Copy Fortran documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/{fortran,libgfortran}
+cp -a gcc/fortran/ChangeLog ${PKG}/usr/doc/gcc-${V}/fortran
+cp -a libgfortran/ChangeLog ${PKG}/usr/doc/gcc-${V}/libgfortran
+
+# Copy java (GCJ) documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/{java,libffi,libjava}
+cp -a gcc/java/ChangeLog ${PKG}/usr/doc/gcc-${V}/java
+( cd libffi
+  cp -a \
+   ChangeLog ChangeLog.libgcj LICENSE README \
+   ${PKG}/usr/doc/gcc-${V}/libffi
+)
+( cd libjava
+  cp -a \
+   COPYING ChangeLog HACKING LIBGCJ_LICENSE NEWS README THANKS \
+   ${PKG}/usr/doc/gcc-${V}/libjava
+)
+
+# Copy Objc documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/{objc,libobjc}
+cp -a gcc/objc/{ChangeLog,README} ${PKG}/usr/doc/gcc-${V}/objc
+cp -a \
+ libobjc/{ChangeLog,README,README.threads,THREADS,THREADS.MACH} \
+ ${PKG}/usr/doc/gcc-${V}/libobjc
+
+# Copy Objcp documentation:
+mkdir -p ${PKG}/usr/doc/gcc-${V}/objcp
+cp -a gcc/objcp/ChangeLog ${PKG}/usr/doc/gcc-${V}/objcp
+
+# Make the GCC shared libraries package;
+mkdir -p ${PKG2}/description
+cp ${CWD}/description-gcc_libs/* ${PKG2}/description
+
+mkdir -p ${PKG2}/usr/lib64
+( cd ${PKG}/usr/lib64
+  cp -a libgcc_s.so* libstdc++.so* ${PKG2}/usr/lib64
+)
+( cd $PKG2
+  makepkg -l ${OUT}/gcc_libs-${V}-${ARCH}-${B}.tlz
+)
+
+# Main GCC package:
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/gcc-${V}-${ARCH}-${B}.tlz
+

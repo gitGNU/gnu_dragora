@@ -1,0 +1,120 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.3.15
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j2}
+
+PKG=${TMP}/package-xinetd
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/xinetd-${V}
+lzip -cd ${CWD}/xinetd-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/xinetd-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Apply patches from Debian:
+zcat ${CWD}/patches/xinetd_2.3.14-7.diff.gz | patch -p0 --verbose
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --with-loadavg \
+ --with-libwrap \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install prefix=${PKG}/usr
+
+chmod -v 750 ${PKG}/usr/sbin/*
+strip -s ${PKG}/usr/sbin/* 2> /dev/null || true
+
+# Add configuration:
+mkdir -p ${PKG}/etc/xinetd.d
+cat ${CWD}/xinetd.conf > ${PKG}/etc/xinetd.conf.new
+for file in ${CWD}/xinetd.d/* ; do
+  cat $file > ${PKG}/etc/xinetd.d/${file##*/}
+done
+
+# Add our xinetd daemon:
+mkdir -p ${PKG}/etc/sv/xinetd
+cat ${CWD}/xinetd > ${PKG}/etc/sv/xinetd/run.new
+chmod 755 ${PKG}/etc/sv/xinetd/run.new
+mkdir -p ${PKG}/etc/runit/runsvdir/default
+( cd ${PKG}/etc/runit/runsvdir/default ; ln -sf /etc/sv/xinetd . )
+
+# Compress and link manpages (if needed):
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/xinetd-${V}
+cp -a \
+ AUDIT CHANGELOG COPYRIGHT README TODO \
+ xinetd/sample.conf contrib/empty.conf \
+ ${PKG}/usr/doc/xinetd-${V}
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/xinetd-${V}-${ARCH}-${B}.tlz
+

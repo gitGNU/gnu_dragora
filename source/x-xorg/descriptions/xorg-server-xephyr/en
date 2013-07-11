@@ -1,0 +1,5 @@
+xorg-server-xephyr - A replacement for Xnest.
+
+Xephyr is the replacement for the Xnest server, with
+additional features like the XRender support.
+

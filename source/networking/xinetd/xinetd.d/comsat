@@ -1,0 +1,13 @@
+# Begin /etc/xinetd.d/comsat
+
+service comsat
+{
+   disable        = yes
+   socket_type    = dgram
+   wait           = yes
+   user           = nobody
+   group          = tty
+   server         = /usr/sbin/in.comsat
+}
+
+# End /etc/xinetd.d/comsat

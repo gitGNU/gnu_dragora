@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# acpid:  ACPI event daemon.
+#
+
+if [ -x /usr/sbin/acpid ] && [ -d /proc/acpi ]; then
+  sv up syslogd || exit 1;
+  exec /usr/sbin/acpid -d
+fi
+

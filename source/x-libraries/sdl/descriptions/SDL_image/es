@@ -1,0 +1,6 @@
+sdl_image - Una librería para cargar archivos de imagen.
+
+Carga las imágenes como las superficies de SDL, y soporta los
+siguientes formatos: BMP, GIF, JPEG, LBM, PCX, PNG, PNM, TGA,
+TIFF, XCF, XPM, XV.
+

@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# portmap:  Daemon to manage RPC connections.
+#
+
+if [ -x /sbin/rpc.portmap ]; then
+  exec /sbin/rpc.portmap -f | logger -t portmap -p daemon.info
+fi
+

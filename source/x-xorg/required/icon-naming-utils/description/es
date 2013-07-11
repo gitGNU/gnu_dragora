@@ -1,0 +1,7 @@
+icon-naming-utils - Una utilidad útil para los iconos.
+
+El paquete icon-naming-utils contiene un script de Perl usado para
+mantener compatibilidad hacia atrás con temas de icono actuales
+de escritorio, emigrando a los nombres especificados en la
+Especificación de Nombres de Icono.
+

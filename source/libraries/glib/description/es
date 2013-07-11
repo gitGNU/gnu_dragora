@@ -1,0 +1,5 @@
+glib - Librería que incluye soporte para rutinas de C.
+
+GLib es una librería que incluye soporte para rutinas de C tales como
+listas, árboles, hashes, asignación de memoria, y muchas otras cosas.
+

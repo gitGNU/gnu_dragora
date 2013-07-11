@@ -1,0 +1,7 @@
+babl - Librería de traducción de formato de pixel.
+
+Esto permite la conversión entre diferentes métodos de almacenar pixeles
+conocidos como los formatos de pixel que tienen con diferente bitdepths
+y otras representaciones de datos, modelos de colores y permutaciones de
+componentes.
+

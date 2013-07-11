@@ -1,0 +1,7 @@
+libnsbmp - Librería de decodificación BMP.
+
+Libnsbmp es una librería de decodificación de imágenes BMP e ICO,
+escrita en C. Ha sido desarrollado como parte del proyecto
+NetSurf y está disponible para ser utilizado por otro software
+bajo la licencia MIT.
+

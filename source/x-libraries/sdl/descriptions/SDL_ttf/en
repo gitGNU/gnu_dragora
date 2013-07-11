@@ -1,0 +1,4 @@
+sdl_ttf - Library to use TrueType fonts in SDL.
+
+Library which allows you to use TrueType fonts in your SDL applications.
+

@@ -1,0 +1,8 @@
+eject - Program for ejecting removable media.
+
+Eject allows removable media (typically a CD-ROM, floppy disk, tape, or
+JAZ or ZIP disk) to be ejected under software control.  The command can
+also control some multi-disc CD-ROM changers, the auto-eject feature
+supported by some devices, and close the disc tray of some CD-ROM
+drives.
+

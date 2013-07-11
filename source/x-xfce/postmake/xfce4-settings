@@ -1,0 +1,5 @@
+if [ -f ${packageDir}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]; then
+  sed -i 's/Rodent/gnome/g' \
+   ${packageDir}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+fi
+

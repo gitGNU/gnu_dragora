@@ -1,0 +1,87 @@
+alsa-lib:ALSA library:ON:alsa-lib-1.0.25 - Size 356K [C], 1.6M [U].
+alsa-oss:ALSA OSS compatibility:ON:alsa-oss-1.0.25 - Size 44K [C], 150K [U].
+alsa-plugins:Various plugins of ALSA:ON:alsa-plugins-1.0.25 - Size 60K [C], 250K [U].
+apr-util:Apache portable runtime utilities:ON:apr-util-1.3.12 - Size 112K [C], 460K [U].
+apr1:Apache portable runtime:ON:apr1-1.4.5 - Size 200K [C], 920K [U].
+boost:Boost C++ libraries:ON:boost-1.49.0 - Size 7.4M [C], 126M [U].
+cloog-ppl:Code generator in the polyhedral model's:ON:cloog-ppl-0.15.11 - Size 96K [C], 290K [U].
+cracklib:A library to enforce strong passwords:ON:cracklib-2.8.18 - Size 2.8M [C], 8.3M [U].
+db-4:Berkeley database library:ON:db-4.8.30 - Size 1.2M [C], 11M [U].
+dbus-glib:Glib bindings for dbus:ON:dbus-glib-0.98 - Size 208K [C], 1.2M [U].
+expat:Library for parsing XML files:ON:expat-2.0.1 - Size 88K [C], 260K [U].
+ffcall:foreign function call librarie:ON:ffcall-20100903cvs - Size 48K [C], 300K [U].
+fribidi:Implementation of the Unicode Bidirectional Algorithm:ON:fribidi-0.19.2 - Size 84K [C], 330K [U].
+fuse:Filesystem in userspace:ON:fuse-2.8.6 - Size 112K [C], 450K [U].
+gamin:File alteration monitor:ON:gamin-0.1.10 - Size 80K [C], 340K [U].
+gdbm:The GNU database library:ON:gdbm-1.10 - Size 112K [C], 310K [U].
+glib-1:Library which includes support routines for C:ON:glib-1.2.10 - Size 136K [C], 470K [U].
+glib2:General purpose library of C routines:ON:glib2-2.28.8 - Size 2.8M [C], 28M [U].
+glibc:The GNU C library:ON:glibc-2.13_20110720 - Size 10M [C], 127M [U].
+glibmm:A C++ interface for Glib:ON:glibmm-2.28.2 - Size 628K [C], 4.1M [U].
+gmp:The GNU multiple precision arithmetic library:ON:gmp-5.0.3 - Size 712K [C], 3.2M [U].
+iso_codes:Various ISO standards:ON:iso_codes-3.28 - Size 1.7M [C], 13M [U].
+lcms2:Color management engine:ON:lcms2-2.2 - Size 156K [C], 520K [U].
+libarchive:Library for streaming files:ON:libarchive-2.8.5 - Size 232K [C], 530K [U].
+libasyncns:Asynchronous name service:ON:libasyncns-0.8 - Size 24K [C], 80K [U].
+libatasmart:ATA SMART monitoring library:ON:libatasmart-04052011 - Size 36K [C], 120K [U].
+libatomic_ops:Implementations for atomic memory:ON:libatomic_ops-7.2alpha6 - Size 64K [C], 490K [U].
+libavc1394:Audio/video control for IEEE 1394:ON:libavc1394-0.5.4 - Size 40K [C], 150K [U].
+libcap:Library with capabilities for POSIX.1e:ON:libcap-2.22 - Size 48K [C], 180K [U].
+libcddb:Library to access data on a server:ON:libcddb-1.3.2 - Size 76K [C], 330K [U].
+libcdio:Library for CD-ROM access:ON:libcdio-20110913 - Size 280K [C], 1010K [U].
+libcroco:Library to provide a CSS API:ON:libcroco-0.6.3 - Size 168K [C], 1.6M [U].
+libdatrie:An implementation of double array:ON:libdatrie-0.2.4 - Size 40K [C], 140K [U].
+libelf:ELF object file access library:ON:libelf-0.8.13 - Size 84K [C], 350K [U].
+libevent:An event notification library:ON:libevent-2.0.17 - Size 220K [C], 1000K [U].
+libexif:EXIF tag library:ON:libexif-0.6.20 - Size 336K [C], 2.0M [U].
+libffado:Firewire audio drivers:ON:libffado-2.0.1 - Size 488K [C], 1.9M [U].
+libftdi:Library to talk to FTDI chips:ON:libftdi-0.19 - Size 48K [C], 200K [U].
+libgcrypt:Basic cryptographic library:ON:libgcrypt-1.5.0 - Size 332K [C], 830K [U].
+libgpg-error:Small library with error codes:ON:libgpg-error-1.10 - Size 84K [C], 440K [U].
+libgphoto2:Library for easy access to digital cameras:ON:libgphoto2-2.4.13 - Size 1.1M [C], 6.0M [U].
+libgsf:Library for read/write structured file formats:ON:libgsf-1.14.21 - Size 252K [C], 2.1M [U].
+libid3tag:ID3 tag manipulation library:ON:libid3tag-0.15.1b - Size 36K [C], 120K [U].
+libidn:Library to encode and decode domain names:ON:libidn-1.22 - Size 372K [C], 1.3M [U].
+libiec61883:Media library over IEEE 1394:ON:libiec61883-1.2.0 - Size 44K [C], 170K [U].
+libieee1284:A library for interfacing IEEE 1284-compatible devices:ON:libieee1284-0.2.11 - Size 64K [C], 200K [U].
+libjpeg-turbo:Library for JPEG images:ON:libjpeg-turbo-1.1.1 - Size 172K [C], 660K [U].
+libmng:Multiple image network graphics library:ON:libmng-1.0.10 - Size 192K [C], 760K [U].
+libnl:Netlink library:ON:libnl-3.1 - Size 188K [C], 850K [U].
+liboil:A library of simple functions:ON:liboil-0.3.17 - Size 152K [C], 1.6M [U].
+libpcap:Library for user-level packet capture:ON:libpcap-1.2.1 - Size 236K [C], 850K [U].
+libpipeline:Pipeline manipulation library:ON:libpipeline-1.2.0 - Size 56K [C], 180K [U].
+libpng:PNG library:ON:libpng-1.4.10 - Size 204K [C], 590K [U].
+libpthread-stubs:Provides weak aliases for pthread functions:ON:libpthread-stubs-20101223 - Size 4.0K [C], 20K [U].
+libraw1394:Support for the IEEE1394 subsystem:ON:libraw1394-2.0.7 - Size 64K [C], 230K [U].
+libsigc++:Framework for C++:ON:libsigc++-2.2.10 - Size 96K [C], 1.4M [U].
+libsigsegv:Library for page faults:ON:libsigsegv-2.10 - Size 28K [C], 120K [U].
+libsoup:An HTTP client/server library:ON:libsoup-2.34.3 - Size 276K [C], 2.3M [U].
+libspectre:Library for rendering Postscript documents:ON:libspectre-0.2.6 - Size 36K [C], 130K [U].
+libtasn1:ASN.1 library:ON:libtasn1-2.8 - Size 124K [C], 380K [U].
+libthai:Thai language support:ON:libthai-0.1.15 - Size 172K [C], 760K [U].
+libusb:Library for USB device access:ON:libusb-20101224 - Size 44K [C], 150K [U].
+libusb-compat:Libusb-0.1 compatibility library:ON:libusb-compat-0.1.3 - Size 24K [C], 90K [U].
+libx86:library for executing real-mode x86 code:ON:libx86-1.1 - Size 8.0K [C], 40K [U].
+libxml++:A C++ binding for libxml:ON:libxml++-2.34.2 - Size 88K [C], 380K [U].
+libxml2:The XML C parser and toolkit of GNOME:ON:libxml2-2.7.8 - Size 1.1M [C], 8.3M [U].
+libxslt:XSLT support for libxml2:ON:libxslt-1.1.26 - Size 384K [C], 2.6M [U].
+mpc:Library for the arithmetic of complex numbers:ON:mpc-0.9 - Size 88K [C], 300K [U].
+mpfr:Library for multiple-precision floating point:ON:mpfr-3.0.1 - Size 532K [C], 2.9M [U].
+ncurses:Emulation library of curses:ON:ncurses-5.9_20110702 - Size 1.3M [C], 6.8M [U].
+neon:An HTTP and WebDAV client library:ON:neon-0.29.6 - Size 236K [C], 1.1M [U].
+nettle:A low-level cryptographic library:ON:nettle-2.4 - Size 248K [C], 1.1M [U].
+nspr:API for system level and libc like functions:ON:nspr-4.8.9 - Size 220K [C], 1.4M [U].
+nss:Network security services:ON:nss-3.13.1 - Size 1.3M [C], 5.6M [U].
+onig:Regular expression library:ON:onig-5.9.2 - Size 132K [C], 530K [U].
+openmpi:MPI library:ON:openmpi-1.5.4 - Size 3.5M [C], 14M [U].
+pcre:Perl-compatible regular expressions:ON:pcre-8.21 - Size 540K [C], 2.0M [U].
+popt:Command-line option parsing library:ON:popt-1.16 - Size 68K [C], 300K [U].
+ppl-0.11:Parma polyhedra library:ON:ppl-0.11.2 - Size 6.8M [C], 25M [U].
+pth:The GNU portable threads:ON:pth-2.0.7 - Size 120K [C], 350K [U].
+readline:A library with line-editing capabilities:ON:readline-6.2 - Size 336K [C], 960K [U].
+slang:The S-Lang library and the interpreter:ON:slang-2.2.4 - Size 584K [C], 2.7M [U].
+tiff:TIFF library and utilities:ON:tiff-3.9.5 - Size 700K [C], 2.4M [U].
+tzdatabase:Sources for the data time:ON:tzdatabase-2012c - Size 168K [C], 3.1M [U].
+wv:Library to convert MS Word files:ON:wv-1.2.9 - Size 196K [C], 1.2M [U].
+wvstreams:Network programming library:ON:wvstreams-4.6.1 - Size 1.2M [C], 7.7M [U].
+zlib:A compression data library:ON:zlib-1.2.6 - Size 128K [C], 400K [U].

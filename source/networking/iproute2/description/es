@@ -1,0 +1,9 @@
+iproute2 - Colección de utilidades para controlar TCP/IP.
+
+iproute2 es una colección de utilidades para el control de las
+redes TCP/IP y control del tráfico en Linux.  En la actualidad
+es mantenido por Stephen Hemminger.
+
+El autor original, Alexey Kuznetsov, es bien conocido por la
+implementación de QoS en el Kernel de Linux.
+

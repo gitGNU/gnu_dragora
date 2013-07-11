@@ -1,0 +1,8 @@
+glew - An OpenGL library.
+
+GLEW is an open-source C/C++ extension loading library.
+
+GLEW provides efficient run-time mechanisms for
+determining which OpenGL extensions are
+supported on the target platform.
+

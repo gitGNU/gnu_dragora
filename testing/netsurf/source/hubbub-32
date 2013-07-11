@@ -1,0 +1,84 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$PWD
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+P=hubbub
+V=r10656
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-${P}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/${P}-${V}
+lzip -cd ${CWD}/sources/${P}-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/${P}-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+echo "CFLAGS += $DCFLAGS" > build/Makefile.config.override
+
+make COMPONENT_TYPE=lib-shared
+make install PREFIX=/usr DESTDIR=$PKG
+
+mkdir -p ${PKG}/usr/lib
+cp -a build-*-lib-shared/libhubbub.so* ${PKG}/usr/lib
+
+strip -s ${PKG}/usr/lib/libhubbub.so.0.0.2
+strip -g ${PKG}/usr/lib/libhubbub.a
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/${P}-${V}
+cp -a COPYING README \
+ ${PKG}/usr/doc/${P}-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/descriptions/${P}/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
+

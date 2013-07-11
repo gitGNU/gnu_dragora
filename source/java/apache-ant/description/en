@@ -1,0 +1,6 @@
+apache-ant - Java based build tool.
+
+Ant is a Java based build tool.  In theory it is kind of
+like "make" without makes wrinkles and with the full
+portability of pure java code.
+

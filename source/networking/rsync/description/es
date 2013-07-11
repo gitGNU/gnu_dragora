@@ -1,0 +1,7 @@
+rsync - Utilidad rápida para transferencias de archivo.
+
+rsync es una utilidad de código abierto que proporciona una transferencia
+rápida de archivos adicionales. rsync está disponible libremente bajo la
+licencia GNU General Public License y está siendo mantenido por
+Wayne Davison.
+

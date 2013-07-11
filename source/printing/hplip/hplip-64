@@ -1,0 +1,134 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=3.11.12
+ARCH=${ARCH:-x86_64}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j5}
+
+PKG=${TMP}/package-hplip
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/hplip-${V}
+lzip -cd ${CWD}/hplip-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/hplip-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Note about '--disable-network-build':
+#
+# This option requires net-snmp,
+# which is a non-free program - see:
+#
+# http://libreplanet.org/wiki/Software_blacklist
+# http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=498475
+#
+
+# Replace old udev rules by new rules:
+sed -i 's#SYSFS#ATTR#g' data/rules/*.rules
+
+zcat ${CWD}/Makefile.in.diff.gz | patch -p0 --verbose
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib64 \
+ --localstatedir=/var \
+ --with-docdir=/usr/doc/hplip-${V} \
+ --with-hpppddir=/usr/share/cups/model/HP \
+ --with-drvdir=/usr/share/cups/drv/hp \
+ --enable-shared \
+ --disable-static \
+ --disable-network-build \
+ --enable-udev-acl-rules \
+ --enable-pp-build \
+ --enable-shadow-build \
+ --enable-gui-build \
+ --enable-scan-build \
+ --enable-hpijs-install \
+ --enable-foomatic-ppd-install \
+ --enable-foomatic-drv-install \
+ --disable-qt4 \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG rulesdir=/lib/udev/rules.d
+
+# This require qt4:
+rm -f ${PKG}/usr/bin/hp-systray
+rm -f ${PKG}/etc/xdg/autostart/hplip-systray.desktop
+rm -f ${PKG}/usr/bin/hp-toolbox
+rm -f ${PKG}/usr/share/applications/hplip.desktop
+
+# Sorry. We don't have HAL, so:
+#rm -rf ${PKG}/usr/share/hal
+
+# Move sane config file to the right location:
+mkdir -p ${PKG}/etc/sane.d/dll.d
+mv ${PKG}/etc/sane.d/dll.conf ${PKG}/etc/sane.d/dll.d/hpaio.conf
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Add the post install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/hplip-${V}-${ARCH}-${B}.tlz
+

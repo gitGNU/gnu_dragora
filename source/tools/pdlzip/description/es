@@ -1,0 +1,5 @@
+pdlzip - Versión de dominio público del compresor lzip.
+
+Pdlzip es una versión de dominio público del compresor de datos lzip
+también es capaz de descomprimir archivos del legado lzma-alone (.lzma).
+

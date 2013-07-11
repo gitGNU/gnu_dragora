@@ -1,0 +1,9 @@
+giflib - A library for processing GIFs.
+
+The giflib package contains libraries for reading and
+writing GIFs as well as programs for converting and
+working with GIF files. The libraries are useful for
+any graphics program wishing to deal with GIF files
+while the programs are useful for conversion purposes
+as well as cleaning up images.
+

@@ -1,0 +1,6 @@
+lirc - Soporte de los controles remotos por infrarrojos.
+
+LIRC es un paquete que le permite decodificar y enviar señales de
+infrarrojos de muchos (aunque no todos) controles remotos de uso
+común.
+

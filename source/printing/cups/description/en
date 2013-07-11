@@ -1,0 +1,9 @@
+cups - Common UNIX Printing System.
+
+The Common UNIX Printing System (or CUPS) is a printing system and 
+general replacement for lpd and the like. It supports the Internet
+Printing Protocol (IPP), and has its own filtering driver model
+for handling various document types.
+
+Visit the web site of CUPS at:  http://www.cups.org
+

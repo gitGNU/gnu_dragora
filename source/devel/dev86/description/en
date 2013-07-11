@@ -1,0 +1,7 @@
+dev86 - Assember and linker for 8086 - 80386 processors.
+
+This is a simple assember and linker for 8086 - 80386 machine code.
+
+This is based on the as86 and ld86 distribution written by
+Bruce Evans.
+

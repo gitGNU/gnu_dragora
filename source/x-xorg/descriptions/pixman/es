@@ -1,0 +1,6 @@
+pixman - Librería para manipulación de píxeles.
+
+pixman es una librería que proporciona manipulación de píxel de
+bajo-nivel, características tales como composición de imagen y
+rasterización de trapezoide.
+

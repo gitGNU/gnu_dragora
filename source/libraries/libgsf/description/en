@@ -1,0 +1,6 @@
+libgsf - Library for read/write structured file formats.
+
+The libgsf package contains libgsf libraries. These are useful for
+providing an extensible input/output abstraction layer for
+structured file formats.
+

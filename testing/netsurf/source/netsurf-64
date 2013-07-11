@@ -1,0 +1,109 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$PWD
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+P=netsurf
+V=r10656
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -fPIC}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-${P}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/${P}
+lzip -cd ${CWD}/sources/${P}-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/${P}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Use libpng14:
+zcat ${CWD}/patches/Makefile.libpng14.diff.gz | patch -p0 --verbose
+zcat ${CWD}/patches/Makefile.lcms2.diff.gz | patch -p0 --verbose
+
+# Set the configuration:
+cat << EOF > Makefile.config
+
+NETSURF_USE_PLUGINS := YES
+NETSURF_UA_FORMAT_STRING := "NetSurf/%d.%d (%s; %s; Dragora GNU/Linux)"
+
+EOF
+
+# Change defaults:
+sed -i \
+ -e "s%CFLAGS :=%CFLAGS := $DCFLAGS%" \
+ -e 's%PREFIX ?= /usr/local%PREFIX ?= /usr%' \
+ Makefile.defaults
+
+make $JOBS
+make install DESTDIR=$PKG
+
+strip -s ${PKG}/usr/bin/netsurf
+
+# Include desktop entry:
+mkdir -p ${PKG}/usr/share/applications
+zcat ${CWD}/netsurf.desktop > ${PKG}/usr/share/applications/netsurf.desktop
+
+mkdir -p ${PKG}/usr/share/pixmaps
+cp -a \
+ ${PKG}/usr/share/netsurf/netsurf.xpm \
+ ${PKG}/usr/share/pixmaps/netsurf.xpm
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/${P}-${V}
+cp -a \
+ COPYING README \
+ ${PKG}/usr/doc/${P}-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/descriptions/${P}/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
+

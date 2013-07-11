@@ -1,0 +1,5 @@
+libarchive - Library for streaming files.
+
+libarchive provides a flexible interface for reading and
+writing streaming archive files such as tar and cpio.
+

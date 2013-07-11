@@ -1,0 +1,14 @@
+if [ -d ${packageDir}/usr/lib${libSuffix}/X11/xinit ]; then
+  (
+    mkdir -p ${packageDir}/etc/X11
+    cd ${packageDir}/usr/lib${libSuffix}/X11
+    rm -f xinit/xinitrc  # Manipulado por wmconfig.
+    mv xinit ${packageDir}/etc/X11
+    ln -sf ../../../etc/X11/xinit .
+  )
+fi
+rm -f ${packageDir}/etc/X11/xinit/xinitrc
+
+install -m 644 ${currentWorkDir}/postmake/files/xserverrc \
+ -D ${packageDir}/etc/X11/xinit/xserverrc
+

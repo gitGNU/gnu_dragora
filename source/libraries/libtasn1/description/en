@@ -1,0 +1,6 @@
+libtasn1 - ASN.1 library.
+
+This is the libtasn1 library developed for ASN.1 (Abstract Syntax Notation
+One) structures management and DER (Distinguished Encoding Rules) encoding
+functions. 
+

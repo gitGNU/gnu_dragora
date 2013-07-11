@@ -1,0 +1,16 @@
+# Begin /etc/xinetd.d/walld
+
+service walld
+{
+   disable      = yes
+   type         = RPC
+   rpc_version  = 1
+   socket_type  = dgram
+   protocol     = udp
+   wait         = yes
+   user         = nobody
+   group        = tty
+   server       = /usr/sbin/rpc.rwalld
+}
+
+# End /etc/xinetd.d/walld

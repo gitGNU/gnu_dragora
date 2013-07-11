@@ -1,0 +1,4 @@
+libsigc++ - Framework for C++.
+
+libsigc++ implements a typesafe callback system for standard C++.
+

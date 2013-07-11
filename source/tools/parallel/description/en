@@ -1,0 +1,9 @@
+parallel - Executes shell command lines in parallel.
+
+GNU parallel is a shell tool for executing jobs in parallel using one
+or more computers. A job is can be a single command or a small script
+that has to be run for each of the lines in the input.
+
+For more information, type `man 1 parallel', or visit:
+http://www.gnu.org/software/parallel
+

@@ -1,0 +1,11 @@
+mailx - Una herramienta para comprobar el correo.
+
+Mailx se deriva desde el correo de Berkeley y es un intento por
+proveer la funcionalidad del comando POSIX mailx con el soporte
+adicional para MIME, IMAP, POP3, SMTP, y S/MIME. Se proporciona
+una mayor característica para el uso interactivo, tales como el
+almacenamiento en caché y operaciones de desconexión para IMAP,
+hilo de mensaje, puntuación, y filtrado.  También es utilizable
+como un lenguaje de proceso por lotes de correo electrónico,
+ambos para enviar y recibir correo electrónico.
+

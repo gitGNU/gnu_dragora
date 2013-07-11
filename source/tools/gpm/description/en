@@ -1,0 +1,11 @@
+gpm - Utility and mouse server for virtual consoles.
+
+The gpm daemon tries to be a useful mouse server for
+applications running on the GNU/Linux console.  Its
+roots are in the "selection" package, by
+Andrew Haylett, and the original code comes from
+selectionitself.
+
+This package is intended as a replacement for
+selection, to provide additional facilities.
+

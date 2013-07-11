@@ -1,0 +1,13 @@
+pkgsystem - The package system of Dragora.
+
+Includes command line utilities for:  build, install,
+remove, and upgrade software packages.
+
+The package system of Dragora used GNU tar and
+lzip as default compression format.
+
+The packaging system was influenced and inspired by
+the Slackware Linux packaging system.
+
+The package system was written by Matias A. Fonzo.
+

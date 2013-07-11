@@ -1,0 +1,6 @@
+xcb-util-keysyms - Standard X constants.
+
+The xcb-util-keysyms module provides a number of libraries which sit on
+top of libxcb, the core X protocol library, and some of the extension
+libraries.
+

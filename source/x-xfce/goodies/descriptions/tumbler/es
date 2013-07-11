@@ -1,0 +1,5 @@
+tumbler - Servicio de miniatura o thumbnail.
+
+Tumbler es un servicio de D-Bus para aplicaciones
+que requieran petición en miniatura.
+

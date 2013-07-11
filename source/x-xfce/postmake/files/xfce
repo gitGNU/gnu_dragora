@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -z $XDG_CONFIG_DIRS ]; then
+  XDG_CONFIG_DIRS=/etc/xdg
+else
+  if ! echo "$XDG_CONFIG_DIRS" | grep -q etc/xdg/xfce4 ; then
+    XDG_CONFIG_DIRS=$XDG_CONFIG_DIRS:/etc/xdg/xfce4
+  fi
+fi
+
+export XDG_CONFIG_DIRS
+

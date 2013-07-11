@@ -1,0 +1,5 @@
+at - Corre trabajos para su ejecución posterior.
+
+at, batch, atq, atrm - queue, examina o elimina trabajos
+para su ejecución posterior.
+

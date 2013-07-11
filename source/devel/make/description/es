@@ -1,0 +1,13 @@
+make - El ponderado "make".
+
+Make es una herramienta que controla la generación de ejecutables y
+otros archivos no-fuente de un programa desde los archivos fuente
+del programa.
+
+Make obtiene la forma de como construir un programa de un
+archivo llamado Makefile, el cual lista cada uno de los
+archivos no-fuente y como calcularlo desde otros archivos.
+Cuando se escribe un programa, se debe de escribir un
+Makefile para él, tal que sea posible usar Make para
+construir e instalar el programa.
+

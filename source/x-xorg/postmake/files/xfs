@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# xfs:  X font server.
+#
+
+SOCKET_DIR=/tmp/.font-unix
+
+if [ -x /usr/bin/xfs ]; then
+  if [ ! -d "$SOCKET_DIR" ]; then
+    mkdir -p "$SOCKET_DIR"
+    chown 0:0 "$SOCKET_DIR"
+    chmod 1777 "$SOCKET_DIR"
+  fi
+  exec /usr/bin/xfs -nodaemon
+fi
+

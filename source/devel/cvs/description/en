@@ -1,0 +1,8 @@
+cvs - Concurrent versions system.
+
+Concurrent versions system (CVS) is a version control system which can
+record the history of your files (usually, but not always, source
+code).  CVS only stores the differences between versions, instead of
+every version of every file you've ever created.  CVS also keeps a
+log of who, when and why changes occurred.
+

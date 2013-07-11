@@ -1,0 +1,7 @@
+libisofs - Librería para crear un sistema de archivos ISO-9660.
+
+Libisofs es una librería para crear un sistema de archivos ISO-9660, y soporta
+extensiones como RockRidge o Joliet. También ofrece un completo editor de
+ISO-9660, lo que le permite modificar una imagen ISO o disco multisesión,
+incluyendo además agregar/eliminar, cambiar nombres de archivos y atributos.
+

@@ -1,0 +1,86 @@
+# Bookmarks file for gFTP. Copyright (C) 1998-2002 Brian Masney
+# <masneyb@gftp.org>. Warning: Any comments that you add to this file WILL be
+# overwritten
+
+# Sorry Brian. We don't want recommend the fucking non-free software.
+
+[General Sites/gFTP]
+hostname=www.gftp.org
+port=21
+protocol=FTP
+remote directory=/pub/gftp
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[General Sites/GNU Archive]
+hostname=prep.ai.mit.edu
+port=21
+protocol=FTP
+remote directory=/pub/gnu
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[X11 Sites/Gimp]
+hostname=ftp.gimp.org
+port=21
+protocol=FTP
+remote directory=/pub/gimp
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[X11 Sites/GTK+]
+hostname=ftp.gtk.org
+port=21
+protocol=FTP
+remote directory=/pub/gtk
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[X11 Sites/KDE]
+hostname=ftp.kde.org
+port=21
+protocol=FTP
+remote directory=/pub
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[X11 Sites/LessTif]
+hostname=ftp.hungry.com
+port=21
+protocol=FTP
+remote directory=/pub/hungry/lesstif
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[X11 Sites/Qt]
+hostname=ftp.troll.no
+port=21
+protocol=FTP
+remote directory=/qt/source
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+
+[X11 Sites/ftp.x.org]
+hostname=ftp.x.org
+port=21
+protocol=FTP
+remote directory=/pub
+local directory=
+username=anonymous
+password=@EMAIL@
+account=
+

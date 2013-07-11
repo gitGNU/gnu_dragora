@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Update locate database:
+if [ -x /usr/bin/updatedb ]; then
+  if [ -r /etc/updatedb.conf ]; then
+    /usr/bin/updatedb -c /etc/updatedb.conf
+  else
+    /usr/bin/updatedb -f proc
+  fi
+fi
+

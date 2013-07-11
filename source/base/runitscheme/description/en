@@ -1,0 +1,5 @@
+runitscheme - Init scheme of Dragora GNU/Linux.
+
+This essential package contains the init scheme of
+runit(8) for Dragora GNU/Linux.
+

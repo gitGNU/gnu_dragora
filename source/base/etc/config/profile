@@ -1,0 +1,63 @@
+# /etc/profile:  Contains all settings by default for all shells.
+
+# Set our umask to 022.  If we create a new file,
+# we don't want it to be group and world-writable
+# by default:
+umask 022
+
+# Load $HOME/.inputrc or set default /etc/inputrc:
+if [ ! -r $HOME/.inputrc ]; then
+  INPUTRC=/etc/inputrc
+fi
+
+# Set default system PATH:
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Expand the path to the super-user and non-super users:
+if [ "$(id -u)" = "0" ]; then
+  PATH=${PATH}:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/games:/usr/games
+else
+  PATH=${PATH}:/usr/sbin:/sbin:/usr/local/games:/usr/games:.
+fi
+
+# Set the default MANPATH:
+MANPATH=/usr/local/man:/usr/man
+
+# Set the default TERM:
+if [ -z "$TERM" ]; then
+  TERM=linux
+fi
+
+# Set the default VISUAL editor:
+if [ -z "$VISUAL" ]; then
+  VISUAL=/usr/bin/moe
+fi
+# Set the default EDITOR:
+if [ -z "$EDITOR" ]; then
+  EDITOR=/usr/bin/moe
+fi
+
+# Set default system prompt:
+case "$SHELL" in
+  *[ba]sh)  # Bourne-shell:
+    PS1='\u@\h:\w\$ '
+    ;;
+  *)
+    PS1='\u@\h:\w\$ '
+    ;;
+esac
+PS2='> '
+
+export PATH INPUTRC TERM VISUAL EDITOR PS1 PS2
+
+# Load profiles found in /etc/profile.d:
+for file in /etc/profile.d/* ; do
+  if [ "$file" = *.new ]; then  # Skip .new files.
+    continue;
+  fi
+  if [ -x "$file" ]; then
+    . "$file"
+  fi
+done
+unset file
+

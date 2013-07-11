@@ -1,0 +1,4 @@
+zcat \
+ ${currentWorkDir}/patches/files/terminal/bug7909.patch.gz | \
+  patch -p1 --verbose
+

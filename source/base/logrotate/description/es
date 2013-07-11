@@ -1,0 +1,9 @@
+logrotate - Rota los registros del sistema.
+
+logrotate está diseñado para facilitar la administración de los
+sistemas que generan un gran número de archivos de registro.
+Permite rotación automática, compresión, expulsión y envío de
+archivos de registro.  Cada archivo de registro puede ser
+manejado diariamente, semanalmente, mensualmente o cuando crece
+demasiado grande.
+

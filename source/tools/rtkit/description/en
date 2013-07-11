@@ -1,0 +1,5 @@
+rtkit - RealtimeKit service.
+
+RealtimeKit is a D-Bus system service that changes the
+scheduling policy of user processes and threads.
+

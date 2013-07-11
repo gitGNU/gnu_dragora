@@ -1,0 +1,97 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=${V:-3.39}
+ARCH=noarch
+B=${B:-1}
+
+PKG=${TMP}/package-man-pages
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $TMP
+rm -rf man-pages-${V}
+
+echo "Uncompressing the tarball..."
+tar -xvf ${CWD}/man-pages-${V}.tar.lz
+
+cd man-pages-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Change the location of the man pages:
+sed -i \
+ 's%MANDIR=$(prefix)/share/man%MANDIR=\$(prefix)/man%' \
+  Makefile
+
+make install DESTDIR=$PKG
+
+# Compress and link manpages:
+cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+cd - > /dev/null
+
+echo "Assume existing man pages as newer versions (searching in /var/db/pkg)..."
+( cd $PKG
+  for page in usr/man/man?/*.gz ; do
+    if grep -d skip -x "$page" /var/db/pkg/* | grep -v man-pages ; then
+      rm -f --verbose "$page"
+    fi
+  done
+)
+
+# Copy documentation:
+mkdir -p ${PKG}/usr/doc/man-pages-${V}
+cp -a \
+ Changes README man-pages-*.{Announce,lsm} \
+ ${PKG}/usr/doc/man-pages-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/man-pages-${V}-${ARCH}-${B}.tlz
+

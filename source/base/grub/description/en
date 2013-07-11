@@ -1,0 +1,12 @@
+grub2 - The GRand Unified Bootloader.
+
+GNU GRUB is a very powerful boot loader, which can load a wide variety of
+free operating systems, as well as proprietary operating systems. GRUB is
+designed to address the complexity of booting a personal computer.
+
+GRUB understands filesystems and kernel executable formats, so you can
+load an arbitrary operating system the way you like, without recording
+the physical position of your kernel on the disk. Thus you can load the
+kernel just by specifying its file name and the drive and partition where
+the kernel resides. 
+

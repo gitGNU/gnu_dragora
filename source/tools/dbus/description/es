@@ -1,0 +1,10 @@
+dbus - Sistema de mensajes.
+
+D-Bus es un sistema de mensajes, una manera simple para las
+aplicaciones que se hablan unas con otras.  Además de la
+comunicación, D-Bus ayuda a coordinar el proceso del ciclo
+de vida, que hace que sea sencillo y fiable a un código de
+"instancia única" aplicación o demonio, y el lanzamiento de
+aplicaciones y demonios sobre la demanda de sus servicios
+cuando son necesarios.
+

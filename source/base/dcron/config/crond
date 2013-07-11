@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# crond:  Dillon's cron daemon.
+#
+
+if [ -x /usr/sbin/crond ]; then
+  exec /usr/sbin/crond -d
+fi
+

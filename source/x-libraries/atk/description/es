@@ -1,0 +1,6 @@
+atk - Accesibilidad para aplicaciones GTK2.
+
+El paquete atk contiene las librerías ATK, que sirven para poner a
+disposición de todas las aplicaciones GTK2 las soluciones de
+accesibilidad.
+

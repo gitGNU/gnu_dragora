@@ -1,0 +1,7 @@
+xorg-server-xdmx - Servidor X Multicabeza Distribuido.
+
+Xdmx o DMX actúa como un servidor X proxy para múltiples servidores X.
+Cuando es combinado con el soporte de Xinerama, múltiples pantallas
+son manejadas por DMX y son presentadas al usuario como una sola
+pantalla unificada.
+

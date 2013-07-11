@@ -1,0 +1,6 @@
+gdbm - La librería GNU de base de datos.
+
+GNU dbm es un conjunto de las rutinas de la base de datos que
+utilizan hashing extensible y trabaja similar a las rutinas
+estándares del dbm de UNIX.
+

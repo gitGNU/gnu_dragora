@@ -1,0 +1,5 @@
+libraw1394 - Support for the IEEE1394 subsystem.
+
+libraw1394 is the only supported interface of the
+Linux kernel IEEE-1394 subsystem.
+

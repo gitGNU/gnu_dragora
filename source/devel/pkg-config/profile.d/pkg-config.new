@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -z $PKG_CONFIG_PATH ]; then
+  PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+else
+  if ! echo "$PKG_CONFIG_PATH" | grep -q usr/lib/pkgconfig ; then
+    PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/lib/pkgconfig
+  fi
+fi
+
+export PKG_CONFIG_PATH
+

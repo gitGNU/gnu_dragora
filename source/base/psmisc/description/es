@@ -1,0 +1,15 @@
+psmisc - Pequeñas utilidades que usan el sistema de archivos /proc.
+
+El paquete psmisc es un conjunto de algunas pequeÃ±as utilidades que
+usan el sistema de archivos /proc.
+
+El paquete contiene los siguientes programas:
+
+* fuser   - Identifica qué procesos están usando archivos.
+* killall - Mata un proceso por su nombre, similar a un
+            pkill encontrado en algunos otros Unices.
+* pstree  - Muestra los procesos que se están ejecutando
+            actualmente en un formato de árbol.
+* peekfd  - Echa una mirada a los descriptores de archivo de
+            los procesos que corren.
+

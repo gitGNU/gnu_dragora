@@ -1,0 +1,117 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=10.2
+ARCH=${ARCH:-x86_64}
+B=3
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-mtune=generic -fPIC}
+
+PKG=${TMP}/package-cdparanoia-III
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $TMP
+rm -rf cdparanoia-III-${V}
+echo "Uncompressing the tarball..."
+lzip -cd ${CWD}/cdparanoia-III-${V}.src.tar.lz | tar -xvf -
+
+cd cdparanoia-III-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Apply patches.
+zcat ${CWD}/patches/cdparanoia-III-10.2-gcc_fixes-1.patch.gz | \
+ patch -p1 --verbose
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=463009
+# https://trac.xiph.org/changeset/15338
+zcat ${CWD}/patches/changeset_r15338.diff.gz | patch -p3 -R --verbose
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --includedir=/usr/include/cdda \
+ --localstatedir=/var \
+ --enable-static \
+ --enable-shared \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+mkdir -p ${PKG}/usr/lib64
+make install prefix=${PKG}/usr LIBDIR=${PKG}/usr/lib64
+
+# Fix library permissions:
+( cd ${PKG}/usr/lib64
+  chmod 0755 libcdda_interface.so.0.10.2 libcdda_paranoia.so.0.10.2
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+strip --strip-debug ${PKG}/usr/lib64/*.a
+
+# Include the headers on usr/include/cdda:
+mkdir -p ${PKG}/usr/include/cdda
+install -m 0644 \
+ utils.h paranoia/cdda_paranoia.h interface/cdda_interface.h \
+ ${PKG}/usr/include/cdda
+
+# Build the documentation:
+gzip -9N ${PKG}/usr/man/man1/cdparanoia.1
+mkdir -p ${PKG}/usr/doc/cdparanoia-III-${V}
+cp -a COPYING* README ${PKG}/usr/doc/cdparanoia-III-${V}
+# Add the missing man page:
+mkdir -p ${PKG}/usr/man/jp/man1
+gzip -9Nc < cdparanoia.1.jp \
+ > ${PKG}/usr/man/jp/man1/cdparanoia.1.gz
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/cdparanoia-${V}-${ARCH}-${B}.tlz
+

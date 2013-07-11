@@ -1,0 +1,6 @@
+alsa-lib - ALSA library.
+
+The alsa-lib package contains the ALSA library.  This is used by
+programs (including ALSA Utilities) requiring access to the ALSA
+sound interface.
+

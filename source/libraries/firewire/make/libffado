@@ -1,0 +1,6 @@
+if [ "$Arch" = "x86_64" ]; then
+  scons PREFIX=/usr LIBDIR=/usr/lib64
+else
+  scons PREFIX=/usr
+fi
+scons install DESTDIR=$packageDir

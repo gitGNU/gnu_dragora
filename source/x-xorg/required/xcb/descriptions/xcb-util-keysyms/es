@@ -1,0 +1,6 @@
+xcb-util-keysyms - Constantes estándar de X.
+
+El módulo xcb-util-keysyms proporciona un número de librerías que sientan
+sobre la cima de libxcb, el corazón de la librería del protocolo X, y
+algunas bibliotecas de extensión.
+

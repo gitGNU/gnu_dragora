@@ -1,0 +1,5 @@
+libieee1284 - Una librería compatible con la interfaz IEEE 1284.
+
+La librería libieee1284 es para comunicarse con los dispositivos de
+puerto paralelo.
+

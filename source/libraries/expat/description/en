@@ -1,0 +1,6 @@
+expat - Library for parsing XML files.
+
+The expat package contains a stream oriented C library for parsing XML.
+
+For more information, visit:  http://expat.sourceforge.net
+

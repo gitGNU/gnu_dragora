@@ -1,0 +1,11 @@
+if [ -d ${packageDir}/usr/doc/Thunar ]; then
+  mv ${packageDir}/usr/doc/Thunar \
+     ${packageDir}/usr/doc/thunar-${sourceVersion}
+  ( # Make symlink compatibility:
+    cd ${packageDir}/usr/doc
+    ln -sf thunar-${sourceVersion}/Thunar .
+  )
+fi
+
+makepkg -l \
+ ${outDir}/${sourceName}-${sourceVersion}-${archPackage}-${buildNumPkg}.tlz

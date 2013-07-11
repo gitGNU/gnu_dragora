@@ -1,0 +1,6 @@
+libexif - Librería de etiqueta EXIF.
+
+libexif es una librería para analizar, editar, y guardar datos EXIF. Es
+destinada a sustituir a muchas de las implementaciones redundantes en
+la línea-de-comandos, utilidades y programas con GUI. 
+

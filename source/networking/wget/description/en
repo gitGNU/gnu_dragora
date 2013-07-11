@@ -1,0 +1,8 @@
+wget - A network utility to download files.
+
+GNU Wget is a free software utility for non-interactive download of
+files from the Web.  It supports HTTP, HTTPS, and FTP protocols,
+as well as retrieval through HTTP proxies.
+
+For more information, visit:  http://www.gnu.org/software/wget
+

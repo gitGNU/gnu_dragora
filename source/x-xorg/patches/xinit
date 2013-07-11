@@ -1,0 +1,4 @@
+if [ -f ${currentWorkDir}/patches/files/serverauth_and_hostname.patch.gz ]; then
+  zcat ${currentWorkDir}/patches/files/serverauth_and_hostname.patch.gz | patch -p1 --verbose
+fi
+

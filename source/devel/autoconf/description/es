@@ -1,0 +1,6 @@
+autoconf - Un paquete extensible de macros M4.
+
+Autoconf es un paquete extensible de macros M4 que produce scripts de
+shell para configurar software automáticamente de los paquetes con
+código fuente.
+

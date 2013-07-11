@@ -1,0 +1,8 @@
+netqmail - Simple message transfer agent.
+
+netqmail is a secure, reliable, efficient, simple message transfer agent.
+It is meant as a replacement for the entire sendmail-binmail system on
+typical Internet-connected UNIX hosts.
+
+The web page of qmail is http://www.qmail.org
+

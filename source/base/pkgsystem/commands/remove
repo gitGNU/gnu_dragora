@@ -1,0 +1,348 @@
+#!/bin/bash
+#  Copyright (C) 2007-2011  Matias A. Fonzo, Santiago del Estero, AR
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localización % Idioma:
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=remove
+
+VERSION=2.6
+
+# Funciones #
+
+# Una función para mostrar mensajes normales:
+msg() { local LC_ALL ; printf '%s\n' "$@"; }
+
+# Una función para mensajes de advertencia:
+warn() { local LC_ALL; printf '%b\n' "$@" >&2; }
+
+usage() {
+  msg $"Removes one or more packages installed in your system."            \
+       ""                                                                  \
+      $"Usage: remove [options] package_name.tlz ..."                      \
+       ""                                                                  \
+      $"Options:"                                                          \
+      $"  -h, --help                Show this help and exit."              \
+      $"  -v, --version             Show the version of the program."      \
+      $"  -k, --keep                Keep temporary files on the"           \
+      $"                            temporary directory (debugging)."      \
+      $"  -q, --quiet               Supress output messages."              \
+      $"  -w, --warn                Warn about of the files and"           \
+      $"                            directories that will be removed."     \
+       ""
+}
+
+version() {
+  msg "remove $VERSION"                                                    \
+      "Copyright (C) 2007-2011 Matias A. Fonzo <selk@dragora.org>."        \
+      "License GPLv3+: GNU GPL version 3 or later:"                        \
+      "<http://gnu.org/licenses/gpl.html>"                                 \
+      "This is free software: you are free to change and redistribute it." \
+      "There is NO WARRANTY, to the extent permitted by law."
+}
+
+# Opciones:
+while (( $# )); do
+  case "$1" in
+    -k|--keep)
+      OPT=KEEP
+      shift
+      ;;
+    -q|--quiet)
+      OPT=QUIET
+      shift
+      ;;
+    -w|--warn)
+      OPT=WARN
+      shift
+      ;;
+    -[h?]|--help)
+      usage
+      exit 0
+      ;;
+    -[vV]|--version)
+      version
+      exit 0
+      ;;
+    -*)
+      warn $"${0##*/}: Invalid option: $1"
+      exit 1
+      ;;
+    *)
+      break;
+  esac
+done
+
+# Si no hay argumentos, llama a la función de ayuda:
+(( $# == 0 )) && { usage ; exit 0; }
+
+# Comprobamos la variable de entorno ROOT:
+if [[ -n $ROOT && ! -d $ROOT ]]; then
+  warn $"${0##*/}: ROOT=${ROOT}: Invalid directory"
+  exit 1;
+fi
+
+umask 022
+
+# Chequeo de sanidad.
+#
+# Comprueba si el sistema de archivos
+# se encuentra en modo de sólo-lectura:
+if ! touch ${ROOT}/pkg-remove$$ ; then
+  warn $"The filesystem (on $ROOT) is in read-only mode."
+  exit 1;
+fi
+rm -f ${ROOT}/pkg-remove$$
+
+# Base de datos por defecto:
+DB="${ROOT}/var/db"
+
+# Asegura la existencia de las partes de la base de datos:
+for directory in \
+ pkg/removed \
+ pkg/removed/pre-post \
+ pkg/removed/post-install \
+ pkg/removed/description
+do
+  if [[ ! -d ${DB}/$directory ]]; then
+    mkdir -p "${DB}/$directory"
+  fi
+done
+
+# Creación de un directorio temporal seguro:
+TMP="${DB}/tmp"
+if [[ ! -d $TMP ]]; then
+  mkdir -p -m 0700 "$TMP"
+fi
+
+# Crea los archivos temporales de forma segura:
+S=$RANDOM$$
+
+# Hace que algunos comandos corran más rápido:
+export LC_ALL=C
+
+# Más Funciones #
+
+# Una función para reflejar el nombre base:
+_basename() { local name ; name=${1##*/} ; printf "${name%$2}"; }
+
+cat_except() {
+  ( cd "$1"
+    mapfile -n 2 -t lines < <(find . -maxdepth 1 -type f -print)
+    if (( ${#lines[*]} == 2 )); then
+      find . -maxdepth 1 -type f ! -name "$2" -exec cat '{}' +
+    fi
+  )
+}
+
+move_install() {
+  local dirName=$1 fileName=$2
+  if [[ -r ${DB}/pkg/${dirName}/$fileName ]]; then
+    ( cd ${DB}/pkg/$dirName
+      install -m 0644 $fileName -D ${DB}/pkg/removed/${dirName}/$fileName
+      rm -f $fileName
+    )
+  fi
+}
+
+empty_dir() {
+  shopt -s nullglob dotglob
+  files=( $@ )
+  shopt -u nullglob dotglob
+  if (( ${#files[*]} == 0 )); then
+    return 0;
+  else
+    return 1;
+  fi
+}
+
+keep_lnk() {
+  while read link ; do
+    if [[ -L ${ROOT}/$link ]]; then
+      if [[ $OPT != WARN ]]; then
+        msg $"${ROOT}/${link}: Symlink found in another package.  Dodging."
+      else
+        msg $"LINK -> ${ROOT}/$link"
+      fi
+    else
+      warn $"WARNING: ${ROOT}/${link}: Symlink non-existent, found in another package.  Dodging."
+    fi
+  done
+}
+
+keep_file() {
+  while read file ; do
+    [[ -f ${ROOT}/$file ]] || continue;
+    if [[ -r ${ROOT}/$file ]]; then
+      if [[ $OPT != WARN ]]; then
+        msg $"${ROOT}/${file}: File found in another package.  Dodging."
+      else
+        if [[ ${ROOT}/$file -nt ${DB}/pkg/$pkgname ]]; then
+          warn $"WARNING: ${ROOT}/${file}: Changed after package installation."
+        fi
+        msg $"FILE -> ${ROOT}/$file"
+      fi
+    else
+      warn $"WARNING: ${ROOT}/${file}: File non-existent, found in another package.  Dodging."
+    fi
+  done
+}
+
+extract_lnk() { awk '$2 == "Link:" { print $3 }'; }
+
+delete_lnk() {
+  while read link ; do
+    if [[ -L ${ROOT}/$link ]]; then
+      if [[ $OPT != WARN ]]; then
+        if [[ $OPT != QUIET ]]; then
+          rm -v -rf ${ROOT}/$link
+        else
+          rm -rf ${ROOT}/$link
+        fi
+      else
+        msg $"LINK -> ${ROOT}/$link"
+      fi
+    else
+      msg $"${ROOT}/${link}: Symlink no longer exists.  Dodging."
+    fi
+  done
+}
+
+delete_file() {
+  while read file ; do
+    [[ -d ${ROOT}/$file ]] && continue;
+    if [[ -r ${ROOT}/$file || -L ${ROOT}/$file ]]; then
+      if [[ $OPT != WARN ]]; then
+        if [[ $OPT != QUIET ]]; then
+          rm -v -rf ${ROOT}/$file
+        else
+          rm -rf ${ROOT}/$file
+        fi
+      else
+        if [[ ${ROOT}/$file -nt ${DB}/pkg/$pkgname ]]; then
+          warn $"WARNING: ${ROOT}/${file}: Changed after package installation."
+        fi
+        msg $"FILE -> ${ROOT}/$file"
+      fi
+    else
+      msg $"${ROOT}/${file}: No longer exists.  Dodging."
+    fi
+  done
+}
+
+delete_dir() {
+  sort -r | while read dir ; do
+    [[ -d ${ROOT}/$dir ]] || continue;
+    if [[ $OPT != WARN ]]; then
+      if empty_dir "${ROOT}/${dir%/}/*" ; then
+        if [[ $OPT != QUIET ]]; then
+          rmdir -v ${ROOT}/$dir
+        else
+          rmdir ${ROOT}/$dir
+        fi
+      else
+        warn $"rmdir: ${ROOT}/${dir}: Directory not empty."
+      fi
+    else
+      msg $"DIR  -> ${ROOT}/$dir"
+    fi
+  done
+}
+
+# Loop:
+for package in "$@" ; do
+  pkgname=$(_basename $package .tlz)
+
+  # Simple package_name notación.
+  #
+  # Comprueba la disponibilidad del paquete buscando
+  # una coincidencia en la base de datos. Intentando
+  # encontrar el paquete por su nombre largo, como
+  # "name-version-arch-build":
+  if [[ ! -e ${DB}/pkg/$pkgname ]]; then
+    if ls ${DB}/pkg/${pkgname}* &>/dev/null ; then
+      for long_name in ${DB}/pkg/${pkgname}* ; do
+        short_name=${long_name##*/}
+        if printf "$short_name" | grep -qwo "$pkgname" ; then
+          pkgname=$short_name
+        fi
+      done
+    fi
+  fi
+
+  # Si el paquete está disponible, manos a la obra:
+  if [[ -f ${DB}/pkg/$pkgname ]]; then
+    # Imprime un mensaje según la opción:
+    if [[ $OPT != WARN ]]; then
+      msg "" $"< Removing ${DB}/pkg/$pkgname ..." ""
+    else
+      msg "" "% Scanning ${DB}/pkg/$pkgname ..." ""
+    fi
+    cat_except ${DB}/pkg $pkgname | sort -u > ${TMP}/filelist$S
+    if [[ -f ${DB}/pkg/post-install/$pkgname ]]; then
+      cat_except ${DB}/pkg/post-install $pkgname | extract_lnk | sort -u > ${TMP}/linklist$S
+      extract_lnk < ${DB}/pkg/post-install/$pkgname | sort -u > ${TMP}/deletelnk$S
+      ( cd $TMP
+        sort deletelnk$S linklist$S | uniq -d | keep_lnk
+        sort deletelnk$S linklist$S linklist$S | uniq -u | delete_lnk
+      )
+    else
+      find ${DB}/pkg/post-install -maxdepth 1 -type f -exec cat '{}' + | \
+       extract_lnk | sort -u > ${TMP}/linklist$S
+      mv ${TMP}/filelist$S ${TMP}/filelist$S.moved
+      sort -u ${TMP}/linklist$S ${TMP}/filelist$S.moved > ${TMP}/filelist$S
+    fi
+    sort ${DB}/pkg/$pkgname ${TMP}/filelist$S | uniq -d | keep_file
+    sort ${DB}/pkg/$pkgname ${TMP}/filelist$S ${TMP}/filelist$S | \
+     uniq -u > $TMP/uniq$S
+    delete_file < ${TMP}/uniq$S
+    delete_dir < ${TMP}/uniq$S
+
+    # Si la opción KEEP no está activada, borramos los archivos temporales:
+    if [[ $OPT != KEEP ]]; then
+      rm -f \
+       ${TMP}/linklist$S ${TMP}/deletelnk$S ${TMP}/filelist$S* ${TMP}/uniq$S
+    fi
+
+    # Si la opción WARN no está activada, movemos los
+    # archivos de pre y post instalación:
+    if [[ $OPT != WARN ]]; then
+      move_install pre-post $pkgname
+      move_install post-install $pkgname
+
+      # También, los archivos de descripción:
+      if [[ -d ${DB}/pkg/description ]]; then
+        ( cd ${DB}/pkg/description
+          for file in ${pkgname}_?? ; do
+            if [[ -f $file ]]; then
+              mv $file ${DB}/pkg/removed/description
+              lzip -fF ${DB}/pkg/removed/description/$file
+            fi
+          done
+        )
+      fi
+
+      # Mueve el registro del paquete al directorio de removidos:
+      mv ${DB}/pkg/$pkgname ${DB}/pkg/removed/
+    fi
+  else
+    warn "${DB}/pkg/${pkgname}: No such package"
+    CODE=1
+    continue;
+  fi
+done
+
+exit $CODE
+

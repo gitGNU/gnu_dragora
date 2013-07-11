@@ -1,0 +1,26 @@
+abiword:The AbiWord word processor:ON:abiword-2.8.6 - Size 4.6M [C], 22M [U].
+claws-mail-3:Lightweight and fast Email client:ON:claws-mail-3.8.0cvs39 - Size 2.2M [C], 11M [U].
+claws-mail-extra-plugins:Various plugins for Claws Mail:ON:claws-mail-extra-plugins-3.8.0 - Size 756K [C], 4.4M [U].
+epdfview:Lightweight PDF document viewer:ON:epdfview-0.1.8 - Size 112K [C], 480K [U].
+exaile:Amarok-like Media Player for GTK+:ON:exaile-0.3.2.2 - Size 1.2M [C], 8.2M [U].
+fcitx:Chinese Input Toy for X:ON:fcitx-3.6.3 - Size 8.0M [C], 34M [U].
+geany:A small and lightweight IDE:ON:geany-0.21 - Size 2.1M [C], 7.7M [U].
+gftp:A graphical FTP client:ON:gftp-2.0.19 - Size 616K [C], 3.8M [U].
+gimp:GNU Image Manipulation Program:ON:gimp-2.6.12 - Size 9.6M [C], 57M [U].
+glade3:User interface designer for GTK+-2:ON:glade3-3.6.7 - Size 1.1M [C], 6.8M [U].
+gtkam:Software for digital cameras:ON:gtkam-0.1.18 - Size 492K [C], 1.3M [U].
+heybuddy:A client for identi.ca:ON:heybuddy-0.2.3 - Size 76K [C], 430K [U].
+icecat:GNU version of the Firefox browser:ON:icecat-10.0 - Size 16M [C], 86M [U].
+icewm:A window manager for X:ON:icewm-1.3.7 - Size 508K [C], 2.9M [U].
+ktsuss:Graphical su wrapper in GTK+-2:ON:ktsuss-1.4 - Size 28K [C], 70K [U].
+mtpaint:Mark Tylers painting program:ON:mtpaint-3.40 - Size 508K [C], 1.7M [U].
+pidgin:Graphical IM client:ON:pidgin-2.10.3 - Size 6.6M [C], 35M [U].
+scrotwm:Minimalistic Window Manager:ON:scrotwm-0.10.0 - Size 80K [C], 170K [U].
+squeeze:Archive manager for Xfce:ON:squeeze-0.2.3 - Size 120K [C], 560K [U].
+transmission:A BitTorrent client:ON:transmission-2.51 - Size 1.2M [C], 6.7M [U].
+vim-gvim:Powerful text editor:ON:vim-gvim-7.3 - Size 5.8M [C], 26M [U].
+wqy-zenhei:WenQuanYi font for X:ON:wqy-zenhei-0.8.38 - Size 5.6M [C], 13M [U].
+xchat:IRC chat program:ON:xchat-rev1499 - Size 1.3M [C], 5.3M [U].
+xine-ui:A free (libre) video player:ON:xine-ui-0.99.6 - Size 1.3M [C], 3.0M [U].
+xterm:Terminal emulator for X:ON:xterm-278 - Size 248K [C], 610K [U].
+xulrunner:Mozilla runtime package:ON:xulrunner-10.0 - Size 15M [C], 86M [U].

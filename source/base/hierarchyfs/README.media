@@ -1,0 +1,7 @@
+/media:  Mount point for removeable media.
+
+This directory contains subdirectories which are used as mount points for
+removeable media such as floppy disks, cdroms and zip disks.
+
+See also the file README in the /mnt directory.
+

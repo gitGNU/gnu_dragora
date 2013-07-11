@@ -1,0 +1,8 @@
+sdl - La capa simple de Directmedia.
+
+La capa simple de DirectMedia (acortando, SDL) es una librería multiplataforma
+diseñada para faciltar la escritura de software multimedia, como juegos y
+emuladores.
+
+Para más información, visite:  http://www.libsdl.org
+

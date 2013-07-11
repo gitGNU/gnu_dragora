@@ -1,0 +1,10 @@
+emacs - The Emacs text editor.
+
+GNU Emacs is an extensible, customizable text editor and more.
+At its core is an interpreter for Emacs Lisp, a dialect of the
+Lisp programming language with extensions to support text
+editing.
+
+For more information about Emacs, visit:
+http://www.gnu.org/software/emacs
+

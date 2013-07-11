@@ -1,0 +1,7 @@
+/var/log/auth.log /var/log/syslog /var/log/user.log /var/log/debug /var/log/messages /var/log/kernel.log /var/log/daemon.log /var/log/mail.log {
+  sharedscripts
+  postrotate
+    kill -s HUP "$(pidof syslogd 2> /dev/null)" 2> /dev/null || true
+  endscript
+}
+

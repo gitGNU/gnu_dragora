@@ -1,0 +1,5 @@
+pm-utils - Utilidades de administración de energía.
+
+pm-utils es una pequeña colección de secuencias de comandos
+que se encargan de suspender y reanudar en nombre de HAL.
+

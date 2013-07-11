@@ -1,0 +1,6 @@
+uri - Uniform resource identifiers.
+
+This module implements the URI class.  Objects of this class
+represent "Uniform Resource Identifier references" as
+specified in RFC 2396 (and updated by RFC 2732).
+

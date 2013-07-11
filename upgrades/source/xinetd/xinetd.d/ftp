@@ -1,0 +1,18 @@
+# Begin /etc/xinetd.d/ftp
+
+service ftp
+{
+   disable        = yes
+   socket_type    = stream
+   wait           = no
+   user           = 0
+   server         = /usr/sbin/in.ftpd
+   server_args    = -l
+   instances      = 4
+   log_on_success += DURATION USERID
+   log_on_failure += USERID
+   access_times   = 2:00-8:59 12:00-23:59
+   nice           = 10
+}
+
+# End /etc/xinetd.d/ftp

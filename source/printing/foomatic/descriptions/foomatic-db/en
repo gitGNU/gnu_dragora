@@ -1,0 +1,5 @@
+foomatic-db - Foomatic database.
+
+The collected knowledge about printers, drivers, and driver options in
+XML files, used by foomatic-db-engine to generate PPD files.
+

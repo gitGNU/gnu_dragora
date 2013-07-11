@@ -1,0 +1,5 @@
+lsof - Herramienta de listado de archivos abiertos.
+
+lsof muestra información sobre los archivos abiertos a
+los procesos de Unix.
+

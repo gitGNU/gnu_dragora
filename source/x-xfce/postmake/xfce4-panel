@@ -1,0 +1,7 @@
+mkdir -p ${packageDir}/install
+cat << "EOF" > ${packageDir}/install/post-install
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  /usr/bin/gtk-update-icon-cache -qfi /usr/share/icons/hicolor
+fi
+
+EOF

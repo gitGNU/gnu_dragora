@@ -1,0 +1,41 @@
+# Determines the OS name:
+OS_NAME=${OS_NAME:-GNU/Linux}
+OS_VENDOR=${OS_VENDOR:-Dragora}
+
+# Xorg servers:
+XORG_SERVERS=" \
+ --enable-xorg=yes \
+ --enable-xvfb=yes \
+ --enable-xnest=yes \
+ --enable-kdrive=yes \
+ --enable-xephyr=yes \
+ --enable-dmx=no"
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --enable-shared=yes \
+ --enable-static=no \
+ --enable-debug=no \
+ --enable-glx-tls=yes \
+ --enable-config-udev \
+ --enable-xcsecurity=yes \
+ --enable-install-libxf86config=yes \
+ --enable-install-setuid=yes \
+ $XORG_SERVERS \
+ --with-sha1=libgcrypt \
+ --with-pic \
+ --with-int10=x86emu \
+ --with-os-name="$OS_NAME" \
+ --with-os-vendor="$OS_VENDOR" \
+ --with-default-font-path="/usr/share/fonts/X11/misc,/usr/share/fonts/X11/Type1,/usr/share/fonts/X11/100dpi:unscaled,/usr/share/fonts/X11/75dpi:unscaled,/usr/share/fonts/X11/cyrillic,/usr/share/fonts/X11/TTF,/usr/share/fonts/X11/OTF,/usr/share/fonts/X11/wqy-zenhei" \
+ --with-module-dir=/usr/lib${libSuffix}/xorg/modules \
+ --with-xkb-path=/etc/X11/xkb \
+ --with-xkb-output=/var/lib/xkb \
+ --disable-config-hal \
+ --disable-xfake \
+ $BUILD_SYSTEM

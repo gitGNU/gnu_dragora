@@ -1,0 +1,7 @@
+if [ -f ${currentWorkDir}/patches/files/Xsession.diff.gz ]; then
+  zcat ${currentWorkDir}/patches/files/Xsession.diff.gz | patch -p0 --verbose
+fi
+if [ -f ${currentWorkDir}/patches/files/Xsetup_0.diff.gz ]; then
+  zcat ${currentWorkDir}/patches/files/Xsetup_0.diff.gz | patch -p0 --verbose
+fi
+

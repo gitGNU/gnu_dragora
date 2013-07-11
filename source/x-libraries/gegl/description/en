@@ -1,0 +1,7 @@
+gegl - Generic graphics library.
+
+GEGL provides infrastructure to do demand based cached non
+destructive image editing on larger than RAM buffers.
+
+This package requires the babl package.
+

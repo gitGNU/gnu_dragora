@@ -1,0 +1,12 @@
+ncurses - Librería de emulación de curses.
+
+La librería Ncurses es una emulación de software libre de curses en el
+Release 4.0 de System V.  El código Ncurses fue desarrollado sobre
+GNU/Linux.  Ha sido usado por algun tiempo por OpenBSD como la
+librería curses del sistema, y en FreeBSD y NetBSD como un paquete
+externo.
+
+La distribución de Ncurses incluye la librería y utilerías de soporte,
+incluyendo un compilador tic terminfo, un decompilador infocmp, clear,
+tput, tset, y la herramienta captoinfo de conversión termcap.
+

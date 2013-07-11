@@ -1,0 +1,22 @@
+if [ -d ${packageDir}/usr/lib${libSuffix}/mozilla/plugins ]; then
+  (
+    cd ${packageDir}/usr/lib${libSuffix}
+    mv mozilla/plugins .
+    rmdir mozilla
+    mkdir -p plugins/mozilla
+    mv plugins/*.so* plugins/mozilla/
+  )
+fi
+
+mkdir -p ${packageDir}/install
+cat << "EOF" > ${packageDir}/install/post-install
+if [ -x /usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database -q /usr/share/applications
+fi
+
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  /usr/bin/gtk-update-icon-cache -qfi /usr/share/icons/hicolor
+fi
+
+EOF
+

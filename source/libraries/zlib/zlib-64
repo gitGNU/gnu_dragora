@@ -1,0 +1,89 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.2.6
+ARCH=${ARCH:-x86_64}
+B=1
+
+PKG=${TMP}/package-zlib
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/zlib-${V}
+lzip -cd ${CWD}/zlib-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/zlib-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+
+unset CFLAGS CXXFLAGS
+
+# Build the shared library:
+./configure --prefix=/usr --libdir=/lib64 --shared
+
+make
+
+mkdir -p ${PKG}/lib64 ; cp -Pp libz.so* ${PKG}/lib64
+( cd ${PKG}/lib64
+  rm -f libz.so
+  strip --remove-section=.comment --remove-section=.note libz.so.${V}
+)
+
+mkdir -p ${PKG}/usr/lib64
+( cd ${PKG}/usr/lib64 ; ln -sf ../../lib64/libz.so.${V} libz.so )
+
+make clean
+
+# Build the static library:
+./configure --prefix=/usr --libdir=/usr/lib64
+
+make
+
+cat libz.a > ${PKG}/usr/lib64/libz.a
+strip -g ${PKG}/usr/lib64/libz.a
+
+# Include headers:
+mkdir -p ${PKG}/usr/include
+cat zconf.h > ${PKG}/usr/include/zconf.h
+cat zlib.h > ${PKG}/usr/include/zlib.h
+
+# Include manpages:
+mkdir -p ${PKG}/usr/man/man3
+gzip -9Nc < zlib.3 > ${PKG}/usr/man/man3/zlib.3.gz
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/zlib-${V}
+cp -a \
+ ChangeLog FAQ INDEX README \
+ ${PKG}/usr/doc/zlib-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/zlib-${V}-${ARCH}-${B}.tlz
+

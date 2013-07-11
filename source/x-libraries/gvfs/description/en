@@ -1,0 +1,5 @@
+gvfs - A userspace virtual filesystem.
+
+gvfs is a userspace virtual filesystem designed to work with the I/O
+abstractions of GIO (a library available in Glib2).
+

@@ -1,0 +1,4 @@
+strace - System call tracer tool.
+
+Strace is a tool to trace system calls and signals.
+

@@ -1,0 +1,150 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.1.5
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+PKG=${TMP}/package-shadow
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/shadow-${V}
+lzip -cd ${CWD}/shadow-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/shadow-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Disable the installation of the groups program and its man pages,
+# as coreutils provides a better version (thanks to LFS):
+sed -i 's/groups$(EXEEXT) //' src/Makefile.in
+find man -name 'Makefile.in' -exec sed -i 's/groups\.1 / /' '{}' +
+
+# Add our custom "login.defs":
+zcat ${CWD}/diffs/login.defs.diff.gz | \
+ patch -p0 --verbose -b --suffix=.orig
+
+# Support cracklib:
+sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' etc/login.defs
+
+# Apply patches.
+zcat ${CWD}/patches/shadow-4.1.5-nscd-1.patch.gz | patch -p1 --verbose
+zcat ${CWD}/patches/shadow-add-missing-include.patch.gz | patch -p1 --verbose
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --with-libcrack \
+ --without-selinux \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Time to add some files.
+
+# The amazing 'adduser' from Dragora:  ;-)
+mkdir -p ${PKG}/sbin
+zcat ${CWD}/adduser.gz > ${PKG}/sbin/adduser
+# The 'shadowconfig' script:
+zcat ${CWD}/shadowconfig.gz > ${PKG}/sbin/shadowconfig
+
+# Increments a little the security:
+for dir in ${PKG}/sbin ${PKG}/usr/sbin ; do
+  ( cd $dir
+    find . -type f -exec chmod -v 0750 '{}' +
+  )
+done
+
+# Handle config files:
+( cd ${PKG}/etc
+  for file in limits login.{access,defs}; do
+    mv $file ${file}.new
+  done
+)
+# No, thanks:
+rm -rf ${PKG}/etc/default
+
+# Compress GNU .info documentos (if any):
+if [[ -d ${PKG}/usr/info ]]; then
+  rm -f ${PKG}/usr/info/dir # Redundancy
+  gzip -9N ${PKG}/usr/info/*
+fi
+
+# Compress and link man-pages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/shadow-${V}
+cp -a \
+ ABOUT-NLS COPYING ChangeLog NEWS README TODO \
+ ${PKG}/usr/doc/shadow-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/{description,install}
+cp ${CWD}/description/* ${PKG}/description
+
+# Add post-install script:
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/shadow-${V}-${ARCH}-${B}.tlz
+

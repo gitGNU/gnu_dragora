@@ -1,0 +1,6 @@
+fetchmail - Utility to fetch emails.
+
+fetchmail is a mail-retrieval and forwarding utility. It fetches mail
+from remote mailservers and forwards it to your local (client)
+machine's delivery system.
+

@@ -1,0 +1,6 @@
+gftp - A graphical FTP client.
+
+gFTP is a multiprotocol file transfer program for X Windows and the
+console.  It features support for the FTP, SSH, HTTP, and local
+file system protocols.
+

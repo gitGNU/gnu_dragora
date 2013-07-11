@@ -1,0 +1,38 @@
+#! /bin/sh
+#
+# Remove non-free files from the source of 'agg'.
+#
+# References:
+#
+# http://www.antigrain.com/license/index.html#toc0005
+#
+
+set -e
+
+CWD=$(pwd)
+
+VERSION="$1"
+
+if [ "$VERSION" = "" ]; then
+  echo "You need to specify the version of agg."
+  exit 1;
+fi
+
+rm -rf agg-${VERSION}
+tar xvf agg-${VERSION}.tar.?z*
+
+cd agg-${VERSION} || exit 1;
+  for file in gpc/* ; do
+    if [ -f "$file" ]; then
+      rm -v "$file"
+    fi
+  done
+  rm -v include/agg_conv_gpc.h
+  zcat ${CWD}/clean-rules.diff.gz | patch -p0 --verbose
+cd - >/dev/null
+
+rm -f agg-${VERSION}_libre.tar
+tar cvf agg-${VERSION}_libre.tar agg-${VERSION}/
+
+echo "Done."
+

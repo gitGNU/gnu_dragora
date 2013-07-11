@@ -1,0 +1,6 @@
+patch - A tool to patch files.
+
+The patch package contains a program to modify or
+create files through the aplication of a patch
+file created with the diff program.
+

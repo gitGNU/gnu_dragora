@@ -1,0 +1,6 @@
+xulrunner - Mozilla runtime package.
+
+XULRunner is a Mozilla runtime package that can be used to
+bootstrap XUL+XPCOM applications that are as rich as
+Firefox and Thunderbird.
+

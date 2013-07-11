@@ -1,0 +1,15 @@
+m4 - Macro tradicional del procesador Unix.
+
+GNU M4 es una implementación de la macro tradicional del procesador Unix.
+Es en su mayor parte compatible con SVR4, aunque tiene algunas
+extensiones (por ejemplo, soporta más de 9 parámetros posicionales a
+macros).
+
+GNU M4 también tiene funciones pre-construidas para incluir archivos,
+ejecutar comandos de shell, realizar funciones aritméticas, etc.
+
+GNU M4 es un macro procesador en el sentido de que copia su entrada en
+la salida expandiendo macros en la medida que avanza.
+
+Para más información, visite:  http://www.gnu.org/software/m4
+

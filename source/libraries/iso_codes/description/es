@@ -1,0 +1,6 @@
+iso_codes - Diversas normas ISO.
+
+Este paquete proporciona las listas de diversas normas ISO (por ejemplo,
+país, idioma, lenguaje de scripts, los nombres y la moneda) en un solo
+lugar, en lugar de repetirse en muchos programas en todo el sistema.
+

@@ -1,0 +1,135 @@
+#!/bin/bash
+#  Copyright (C) 2009-2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.06
+ARCH=${ARCH:-i486}
+B=1
+
+PKG=${TMP}/package-netqmail
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/netqmail-${V}
+lzip -cd ${CWD}/netqmail-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/netqmail-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# This is needed to avoid compilation problems:
+sed -i 's#cc -O2#cc -O2 -include /usr/include/errno.h#' conf-cc
+
+# Set umask to 022:
+sed -i 's#002#022#' conf-patrn
+
+# Compile the programs:
+make
+make setup
+
+# Prepares the directories and files:
+install -d --group=qmail ${PKG}/var/qmail/alias
+( cd ${PKG}/var/qmail/alias
+  touch .qmail-postmaster .qmail-mailer-daemon .qmail-root
+)
+install -d --group=qmail ${PKG}/var/qmail/control
+
+install -d --group=qmail ${PKG}/var/qmail/boot
+for file in binm1 binm1+df binm2 binm2+df binm3 binm3+df \
+ home home+df proc proc+df ; do
+  cp -a $file ${PKG}/var/qmail/boot
+done
+
+install -d --group=qmail ${PKG}/var/qmail/bin
+find . -type f \( -name 'qmail-*' -o -name 'auto-*' \) | xargs file | \
+ awk '/ELF/ && /executable/' | cut -f 1 -d : | while read file ; do
+  cp -a $file ${PKG}/var/qmail/bin
+ done
+
+find . -type f -name 'mail*' | xargs file | awk '/ELF/ && /executable/' | \
+ cut -f 1 -d : | while read file ; do
+  cp -a $file ${PKG}/var/qmail/bin
+done
+
+for file in bouncesaying conderedirect datemail elq except forward \
+ ping predate preline qail qbiff qreceipt qsmhook sendmail splooger \
+ tcp-env ; do
+  if [[ -x $file ]]; then
+    cp -a $file ${PKG}/var/qmail/bin
+  fi
+done
+
+# Make symlink compatibility in usr/sbin for sendmail:
+mkdir -p ${PKG}/usr/sbin
+( cd ${PKG}/usr/sbin ; ln -sf /var/qmail/bin/sendmail . )
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Add man-pages:
+mkdir -p ${PKG}/usr/man/man{1,3,5,7,8,9}
+for i in *.1 *.3 *.5 *.7 *.8 *.9 ; do
+  if file $i | grep -q troff ; then
+    gzip -9Nc < $i > ${PKG}/usr/man/man${i#*.}/${i}.gz
+  fi
+done
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/netqmail-${V}
+cp -a \
+ BIN.README BLURB* CHANGES FAQ INTERNALS README SECURITY SENDMAIL \
+ THANKS THOUGHTS TODO VERSION COPYRIGHT \
+ ${PKG}/usr/doc/netqmail-${V}
+# Make symlink compatibility:
+( cd ${PKG}/var/qmail
+  ln -sf /usr/doc/netqmail-${V} doc
+)
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/netqmail-${V}-${ARCH}-${B}.tlz
+

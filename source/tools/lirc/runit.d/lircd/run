@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# lircd:  LIRC  daemon  decodes infrared signals and
+#         provides them on a Unix domain socket.
+#
+
+if [ -x /usr/sbin/lircd ]; then
+  exec /usr/sbin/lircd -n --device=/dev/lirc | logger -t lircd -p daemon.info
+fi
+

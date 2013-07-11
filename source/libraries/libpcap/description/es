@@ -1,0 +1,5 @@
+libpcap - Librería para la captura de paquetes de nivel-de-usuario.
+
+libpcap proporciona funciones de nivel de usuario de paquetes de captura,
+utilizados en el monitoreo de la red de bajo-nivel.
+

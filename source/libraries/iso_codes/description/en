@@ -1,0 +1,6 @@
+iso_codes - Various ISO standards.
+
+This package provides lists of various ISO standards (e.g. country,
+language, language scripts, and currency names) in one place,
+rather than repeated in many programs throughout the system.
+

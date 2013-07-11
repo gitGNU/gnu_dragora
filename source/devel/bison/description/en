@@ -1,0 +1,12 @@
+bison - GNU parser generator.
+
+Bison is a general-purpose parser generator that converts an annotated
+context-free grammar into an LALR(1) or GLR parser for that grammar.
+Once you are proficient with Bison, you can use it to develop a wide
+range of language parsers, from those used in simple desk calculators
+to complex programming languages.
+
+For more information, visit:
+
+http://www.gnu.org/software/bison/bison.html
+

@@ -1,0 +1,130 @@
+#!/bin/bash
+#  Copyright (C) 2009-2010  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.0.6
+ARCH=${ARCH:-i486}
+B=2
+
+PKG=${TMP}/package-bzip2
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/bzip2-${V}
+lzip -cd ${CWD}/bzip2-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/bzip2-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Apply a patch to install the documentation (thanks to LFS):
+zcat ${CWD}/patches/bzip2-1.0.5-install_docs-1.patch.gz | patch -p1 --verbose
+
+# Compiles without debug information:
+sed -i 's/-g//' Makefile
+sed -i 's/-g//' Makefile-libbz2_so
+
+# The following command ensures installation of
+# symbolic links are relative (thanks to LFS):
+sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+
+make -f Makefile-libbz2_so
+make clean
+make
+make install PREFIX=${PKG}/usr
+
+mkdir -p ${PKG}/{bin,lib}
+cp -a bzip2-shared ${PKG}/bin/bzip2
+cp -a libbz2.so* ${PKG}/lib
+
+# Nope:
+( cd ${PKG}/usr/bin
+  rm -f bzip2 bunzip2 bzcat
+  ln -s ../../bin/bzip2 bunzip2
+  ln -s ../../bin/bzip2 bzcat
+)
+
+mkdir -p ${PKG}/usr/lib
+( cd ${PKG}/usr/lib ; ln -sf ../../lib/libbz2.so.?.0 libbz2.so )
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+)
+
+# Compress and link some man-pages:
+gzip -9N ${PKG}/usr/man/man?/*
+( cd ${PKG}/usr/man/man1
+  ln -sf bzip2.1.gz bzcat.1.gz
+  ln -sf bzip2.1.gz bzip2recover.1.gz
+)
+# Replace hard links:
+( cd ${PKG}/usr/man/man1
+  ln -sf bzmore.1.gz bzless.1.gz
+  ln -sf bzgrep.1.gz bzegrep.1.gz
+  ln -sf bzgrep.1.gz bzfgrep.1.gz
+  ln -sf bzdiff.1.gz bzcmp.1.gz
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/bzip2-${V}
+cp -a \
+ CHANGES LICENSE README README.COMPILATION.PROBLEMS \
+ ${PKG}/usr/doc/bzip2-${V}
+mv \
+ ${PKG}/usr/share/doc/bzip2-${V}/{manual.html,bzip2.txt} \
+ ${PKG}/usr/doc/bzip2-${V}
+rm -rf ${PKG}/usr/share/doc
+
+# Remove empty directory:
+rmdir ${PKG}/usr/share || true
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/bzip2-${V}-${ARCH}-${B}.tlz
+

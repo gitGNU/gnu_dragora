@@ -1,0 +1,9 @@
+pth - The GNU portable threads.
+
+The pth package contains a very portable POSIX/ANSI-C based library for
+Unix platforms which provides non-preemptive priority-based scheduling
+for multiple threads of execution (multithreading) inside event-driven
+applications.
+
+For more information, visit:  http://www.gnu.org/software/pth
+

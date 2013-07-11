@@ -1,0 +1,5 @@
+libpthread-stubs - Provee aliases débiles para funciones de pthread.
+
+El paquete libpthread-stubs proporciona aliases débiles para
+las funciones de pthread no proporcionadas en libc.
+

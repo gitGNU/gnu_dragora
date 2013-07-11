@@ -1,0 +1,4 @@
+libasyncns - Asynchronous name service.
+
+libasyncns is a C library for executing name service queries asynchronously.
+

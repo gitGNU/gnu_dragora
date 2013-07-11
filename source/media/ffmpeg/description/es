@@ -1,0 +1,6 @@
+ffmpeg - Completa librería de códec de audio/vídeo.
+
+FFmpeg es una solución completa, multi-plataforma para grabar, convertir y
+reproducir audio y vídeo. Incluye libavcodec - la librería líder de códec
+de audio/vídeo.
+

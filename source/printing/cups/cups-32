@@ -1,0 +1,149 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=1.4.8
+ARCH=${ARCH:-i486}
+B=3
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j5}
+
+PKG=${TMP}/package-cups
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/cups-${V}
+lzip -cd ${CWD}/cups-${V}-source.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/cups-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --disable-static \
+ --enable-shared \
+ --enable-ssl \
+ --enable-dbus \
+ --enable-threads \
+ --disable-pam \
+ --disable-gnutls \
+ --disable-debug \
+ --with-docdir=/usr/doc/cups-${V}/html \
+ --with-logdir=/var/log/cups \
+ --with-optim="$DCFLAGS" \
+ --without-php \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install BUILDROOT=$PKG
+
+# Increments a little the security:
+find ${PKG}/usr/sbin -type f | xargs chmod -v 750
+
+# Fix directory permission:
+find ${PKG}/var -type d | xargs chmod -v 755
+
+# We don't need this:
+rm -rf \
+ ${PKG}/etc/rc.d \
+ ${PKG}/etc/rc?.d \
+ ${PKG}/etc/init.d
+
+# Add our cups init script:
+mkdir -p ${PKG}/etc/sv/cupsd
+zcat ${CWD}/cupsd.gz > ${PKG}/etc/sv/cupsd/run.new
+chmod 755 ${PKG}/etc/sv/cupsd/run.new
+mkdir -p ${PKG}/etc/runit/runsvdir/default
+(
+  cd ${PKG}/etc/runit/runsvdir/default
+  ln -sf /etc/sv/cupsd .
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Handle config files:
+( cd ${PKG}/etc/cups
+  # Apply our custom configuration:
+  zcat ${CWD}/cups.conf.diff.gz | patch -p0
+  
+  for file in * ; do
+    if [[ -f $file ]]; then
+      mv $file ${file}.new
+    fi
+  done
+)
+
+# Handle dbus config file:
+( cd ${PKG}/etc/dbus-1/system.d
+  # Inserts our dbus config:
+  zcat ${CWD}/cups.conf-dbus.gz > cups.conf
+  mv cups.conf{,.new}
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/cups-${V}
+cp -a \
+ CHANGES.txt CREDITS.txt LICENSE.txt README.txt \
+ ${PKG}/usr/doc/cups-${V}
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/cups-${V}-${ARCH}-${B}.tlz
+

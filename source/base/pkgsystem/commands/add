@@ -1,0 +1,242 @@
+#!/bin/bash
+#  Copyright (C) 2007-2011  Matias A. Fonzo, Santiago del Estero, AR
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localización % Idioma:
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=add
+
+VERSION=3.5
+
+# Funciones #
+
+# Una función para mostrar mensajes normales:
+msg() { local LC_ALL ; printf '%s\n' "$@"; }
+
+# Una función para mensajes de advertencia:
+warn() { local LC_ALL; printf '%b\n' "$@" >&2; }
+
+usage() {
+  msg $"Installs one or more packages in your system."                     \
+       ""                                                                  \
+      $"Usage: add [options] package_name.tlz ..."                         \
+       ""                                                                  \
+      $"Options:"                                                          \
+      $"  -h, --help                Show this help and exit."              \
+      $"  -v, --version             Show the version of the program."      \
+      $"  -f, --force               Overwrite installed package."          \
+      $"  -w, --warn                Warn about of the files and"           \
+      $"                            directories that will be"              \
+      $"                            installed or overwritten."             \
+       ""
+}
+
+version() {
+  msg "add $VERSION"                                                       \
+      "Copyright (C) 2007-2011 Matias A. Fonzo <selk@dragora.org>."        \
+      "License GPLv3+: GNU GPL version 3 or later:"                        \
+      "<http://gnu.org/licenses/gpl.html>"                                 \
+      "This is free software: you are free to change and redistribute it." \
+      "There is NO WARRANTY, to the extent permitted by law."
+}
+
+# Opciones:
+while (( $# )); do
+  case "$1" in
+    -f|--force)
+      OPT=FORCE
+      shift
+      ;;
+    -w|--warn)
+      OPT=WARN
+      shift
+      ;;
+    -[h?]|--help)
+      usage
+      exit 0
+      ;;
+    -[vV]|--version)
+      version
+      exit 0
+      ;;
+    -*)
+      warn $"${0##*/}: Invalid option: $1"
+      exit 1
+      ;;
+    *)
+      break;
+  esac
+done
+
+# Si no hay argumentos, llama a la función de ayuda:
+(( $# == 0 )) && { usage ; exit 0; }
+
+# Sale ante cualquier error:
+set -e
+
+# Advierte acerca de los directorios y archivos del
+# paquete que serán instalados o sobreescritos:
+if [[ $OPT = WARN ]]; then
+  while [[ -f $1 ]]; do
+    msg "" $"% Scanning $1 ..." ""
+    LC_ALL=C tar --use-compress-program=lzip -tvvf "$1" | awk '!/^drwx/'
+    msg ""
+    shift
+  done
+  exit 0;
+fi
+
+# Comprobamos la variable de entorno ROOT:
+if [[ -n $ROOT && ! -d $ROOT ]]; then
+  warn $"${0##*/}: ROOT=${ROOT}: Invalid directory"
+  exit 1;
+fi
+
+umask 022
+
+# Chequeo de sanidad.
+#
+# Comprueba si el sistema de archivos
+# se encuentra en modo de sólo-lectura:
+if ! touch ${ROOT}/pkg-add$$ ; then
+  warn $"The filesystem (on $ROOT) is in read-only mode."
+  exit 1;
+fi
+rm -f ${ROOT}/pkg-add$$
+
+# Base de datos por defecto:
+DB="${ROOT}/var/db"
+
+# Nos aseguramos de que las partes de la base de datos exista:
+for directory in \
+ pkg/pre-post \
+ pkg/post-install \
+ pkg/description
+do
+  if [[ ! -d ${DB}/$directory ]]; then
+    mkdir -p "${DB}/$directory"
+  fi
+done
+
+# Más funciones #
+
+# Una función para reflejar el nombre base:
+_basename() { local name ; name=${1##*/} ; printf "${name%$2}"; }
+
+# Una función que ejecuta los scripts de pre y post instalación:
+exe_install() {
+  local fileName
+  fileName="$1"
+  if [[ -r ${ROOT}/install/$fileName ]]; then
+    msg $"| $fileName execution for $pkgname ..."
+    ( cd $ROOT/
+      sh install/$fileName
+      install -m 0755 install/$fileName \
+       -D ${DB}/pkg/${fileName}/$pkgname && \
+      rm -f install/$fileName
+    )
+  fi
+}
+
+# Guardamos y exportamos la variable de entorno LC_ALL
+# para que algunos comandos corran más rápido:
+DLANG=$LANG
+export LC_ALL=C
+
+# Loop:
+for package in "$@" ; do
+  if [[ -f $package ]]; then
+    # Comprueba la extensión del paquete:
+    case "$package" in
+      *.tlz)
+        pkgname=$(_basename $package .tlz)
+        ;;
+      *)
+        warn "${package}: Does not end in .tlz"
+        CODE=1
+        continue;
+    esac
+  else
+    warn $"${0##*/}: ${package}: File not found or non-regular"
+    CODE=1
+    continue;
+  fi
+
+  # Si el paquete no está en la base de datos, lo instalamos:
+  if [[ ! -r ${DB}/pkg/$pkgname || $OPT = FORCE ]]; then
+    msg "" $"> Installing $pkgname ..." ""
+
+    # Chequea la integridad del paquete:
+    msg $"% Testing integrity ..." ""
+    tar --use-compress-program=lzip -tf $package >/dev/null
+
+    # Descomprime el tarball:
+    ( cd $ROOT/
+      tar \
+       --use-compress-program=lzip \
+       --strip-components=1 --show-stored-names \
+       -xvphlf -
+    ) < $package > ${DB}/pkg/$pkgname
+    CODE=$?
+    if (( $CODE != 0 )); then
+      rm -f ${DB}/pkg/$pkgname
+      break;
+    fi
+  else
+    warn $"${DB}/pkg/${pkgname}: Already installed"
+    CODE=3
+    continue;
+  fi
+
+  # Muestra la descripción en el lenguaje disponible, de acuerdo a la
+  # "locale" usada por el sistema, y a la variable de entorno $LANG:
+  case "$DLANG" in
+    *.UTF-8*|*.utf8)
+      DLANG=${DLANG%_*}
+      UTF8_OUTPUT=y
+      ;;
+    ??_??|*.ISO8859-1|*.iso88591|*.ISO-8859-1)
+      DLANG=${DLANG%_*}
+      ;;
+    *)
+      DLANG=en;
+  esac
+  # Imprime el archivo de descripción:
+  if [[ -f ${ROOT}/description/${DLANG} ]]; then
+    ( cd ${ROOT}/description
+      if [[ $UTF8_OUTPUT ]]; then
+        fmt <(iconv --from-code=ISO8859-1 --to-code=UTF-8 $DLANG)
+      else
+        fmt $DLANG
+      fi
+      # Movemos los archivos a la base de datos:
+      for file in ?? ; do
+        mv "$file" "${DB}/pkg/description/${pkgname}_${file}"
+      done
+    )
+  fi
+
+  # Ejecuta el script de pre-post instalación:
+  exe_install "pre-post"
+
+  # Ejecuta el script de post-instalación:
+  exe_install "post-install"
+
+  # Remueve los directorios de descripción e instalación:
+  rmdir ${ROOT}/{description,install} >/dev/null 2>&1 || :
+done
+
+exit $CODE
+

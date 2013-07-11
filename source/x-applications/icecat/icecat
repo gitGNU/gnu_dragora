@@ -1,0 +1,138 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=10.0
+ARCH=${ARCH:-i486}
+if [[ $ARCH = i486 ]]; then
+  PKG_ARCH=i686
+else
+  PKG_ARCH=$ARCH
+fi
+B=2
+
+PKG=${TMP}/package-icecat
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+( cd $TMP
+  rm -rf icecat-${V}
+  lzip -cd ${CWD}/icecat-${V}.tar.lz | tar -xvf -
+)
+
+cd ${TMP}/icecat-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Insert our config:
+cat ${CWD}/files/mozconfig > .mozconfig
+
+if [[ $ARCH = x86_64 ]]; then
+  sed -i 's#--libdir=/usr/lib#--libdir=/usr/lib64#g' .mozconfig
+  suffix=64
+fi
+
+./configure \
+ --host=${ARCH}-dragora-linux-gnu \
+ --target=${ARCH}-dragora-linux-gnu \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Make symlink compatibility with "Mozilla Firefox":
+( cd ${PKG}/usr/bin
+  ln -sf icecat firefox
+  ln -sf icecat mozilla-firefox
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || :
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null || :
+)
+
+# Create a "standard" directory for the plugins/extensions.
+# This is to preserve new plugins and extensions in an upgrade:
+mkdir -p ${PKG}/usr/lib${suffix}/plugins/mozilla
+mkdir -p ${PKG}/usr/lib${suffix}/extensions/mozilla
+( cd ${PKG}/usr/lib${suffix}/icecat-${V}
+  for file in plugins/* ; do
+    if [[ -e $x ]]; then
+      cp -a $x ${PKG}/usr/lib${suffix}/plugins/mozilla
+    fi
+  done
+  for x in extensions/* ; do
+    if [[ -e $x ]]; then
+      cp -a $x ${PKG}/usr/lib${suffix}/extensions/mozilla
+    fi
+  done
+  rm -rf plugins extensions
+  ln -s /usr/lib${suffix}/plugins/mozilla plugins
+  ln -s /usr/lib${suffix}/extensions/mozilla extensions
+)
+
+# Incompatible extensions:
+( cd ${PKG}/usr/lib${suffix}/extensions/mozilla
+  rm -rf MafiaaFire@mafiaafire.com priv3@icsi.berkeley.edu
+)
+
+# Add desktop entry:
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+cat ${CWD}/files/icecat.desktop > ${PKG}/usr/share/applications/icecat.desktop
+cat ${CWD}/files/icecat.png > ${PKG}/usr/share/pixmaps/icecat.png
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/icecat-${V}
+cp -a \
+ ChangeLog LEGAL LICENSE README* \
+ ${PKG}/usr/doc/icecat-${V}
+find ${PKG}/usr/doc/icecat-${V} -type f | xargs chmod 644
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/descriptions/icecat/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/icecat-${V}-${PKG_ARCH}-${B}.tlz
+

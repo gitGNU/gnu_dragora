@@ -1,0 +1,7 @@
+libdrm - Librería principal de rutinas para X.
+
+libdrm proporciona rutinas de la librería central para el
+sistema de ventana X directamente a la interfaz con el
+hardware de video utilizando los Módulos de Renderizado
+Directo que provee el Kernel de Linux.
+

@@ -1,0 +1,5 @@
+libiec61883 - Media library over IEEE 1394.
+
+The libiec61883 library provides a higher level API for streaming DV,
+MPEG-2 and audio over Linux IEEE 1394.
+

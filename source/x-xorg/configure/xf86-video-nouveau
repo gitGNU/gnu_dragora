@@ -1,0 +1,10 @@
+sh autogen.sh \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --enable-static=no \
+ --enable-shared=yes \
+ $BUILD_SYSTEM

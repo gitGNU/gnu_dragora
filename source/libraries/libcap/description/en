@@ -1,0 +1,4 @@
+libcap - Library with capabilities for POSIX.1e.
+
+This is a library for getting and setting POSIX.1e (formerly POSIX 6).
+

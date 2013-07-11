@@ -1,0 +1,9 @@
+icedtea6 - Java support based on OpenJDK 6.
+
+This package contains the Java support, including OpenJDK and OpenJRE.
+
+This package was build with using free software tools.
+
+For more information about the project Icedtea, visit:
+http://icedtea.classpath.org
+

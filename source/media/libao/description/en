@@ -1,0 +1,7 @@
+libao - Cross-platform audio library.
+
+The libao package contains a cross-platform audio library.  This is
+useful to output audio on a wide variety of platforms. It currently
+supports WAV files, OSS, ESD, ALSA, NAS, aRTS and PulseAudio (next
+generation GNOME sound architecture).
+

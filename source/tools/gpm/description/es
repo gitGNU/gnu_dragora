@@ -1,0 +1,11 @@
+gpm - Utilidad y servidor de ratÃ³n para consolas virtuales.
+
+El demonio gpm intenta ser un servidor de ratón útil para
+aplicaciones que se ejecutan en la consola de GNU/Linux.
+Sus raíces están en la "selección" de paquetes, por
+Andrew Haylett, y el código original proviene de la
+propia selección.
+
+Este paquete se presenta como un reemplazo para
+selección, para proveer facilidades adicionales.
+

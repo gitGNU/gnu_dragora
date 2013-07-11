@@ -1,0 +1,13 @@
+#!/bin/sh
+# Set default international language:
+#
+# Type "locale -a" to see the locales supported.
+
+# Traditional sorting order according to ASCII values (LC_COLLATE=C):
+LC_COLLATE=C
+
+# Default locale (en_US):
+LANG=en_US
+
+export LC_COLLATE LANG
+

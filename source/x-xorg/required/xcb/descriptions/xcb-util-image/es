@@ -1,0 +1,6 @@
+xcb-util-image - Port Xlib de XImage y XShmImage.
+
+El módulo xcb-util-image proporciona un número de librerías que sientan
+sobre la cima de libxcb, el corazón de la librería del protocolo X, y
+algunas bibliotecas de extensión.
+

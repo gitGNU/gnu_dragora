@@ -1,0 +1,4 @@
+if [ -d ${packageDir}/usr/share/pkgconfig ]; then
+  mkdir -p ${packageDir}/usr/lib${libSuffix}
+  mv ${packageDir}/usr/share/pkgconfig ${packageDir}/usr/lib${libSuffix}
+fi

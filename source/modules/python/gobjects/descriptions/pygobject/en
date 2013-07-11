@@ -1,0 +1,7 @@
+pygobject - Python bindings for GObject.
+
+PyGObject provides Python bindings to the GObject class from GLib.
+
+For more information, visit:
+http://www.pygtk.org
+

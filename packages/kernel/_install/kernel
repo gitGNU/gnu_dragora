@@ -1,0 +1,4 @@
+kernel-firmware:Firmwares of the Kernel:ON:kernel-firmware-3.2.15 - Size 4.0K [C], 20K [U].
+kernel-gen:The Generic Linux Kernel:ON:kernel-gen-3.2.15 - Size 4.5M [C], 6.0M [U].
+kernel-headers:The Linux Kernel headers:ON:kernel-headers-3.2.15 - Size 624K [C], 3.3M [U].
+kernel-modules-gen:The Generic Linux Kernel:ON:kernel-modules-gen-3.2.15 - Size 19M [C], 73M [U].

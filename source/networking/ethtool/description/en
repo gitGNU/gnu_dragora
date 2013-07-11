@@ -1,0 +1,5 @@
+ethtool - Utility for the ethernet network interface.
+
+ethtool is a small utility for examining and tuning your ethernet-based
+network interface.
+

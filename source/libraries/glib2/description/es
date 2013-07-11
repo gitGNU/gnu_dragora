@@ -1,0 +1,9 @@
+glib2 - Librería de propósito general de rutinas de C.
+
+GLib2 es la biblioteca central de bajo-nivel que constituye la
+base de proyectos como GTK+ y GNOME.  Proporciona manejo de
+estructura de datos para C, envoltorios de portabilidad,
+e interfaces para funcionalidades en tiempo de ejecución,
+tales como bucles, hilos, carga dinámica, y un objeto del
+sistema.
+

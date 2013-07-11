@@ -1,0 +1,8 @@
+netqmail - Agente simple de mensaje.
+
+netqmail es un agente simple de mensaje seguro, fiable, eficiente.
+Está pensado como un reemplazo para el sistema entero sendmail-
+binmail en los hosts de Internet de conexión típica de UNIX.
+
+La página web de qmail es http://www.qmail.org
+

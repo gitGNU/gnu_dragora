@@ -1,0 +1,15 @@
+# Begin /etc/xinetd.d/rusersd
+
+service rusersd
+{
+   disable     = yes
+   type        = RPC
+   rpc_version = 1-2
+   socket_type = dgram
+   protocol    = udp
+   wait        = yes
+   user        = 0
+   server      = /usr/sbin/rpc.rusersd
+}
+
+# End /etc/xinetd.d/rusersd

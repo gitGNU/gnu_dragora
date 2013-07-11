@@ -1,0 +1,6 @@
+findutils - Utilidades para encontrar archivos.
+
+El conjunto de utilidades find de GNU contiene programas para
+buscar archivos tales como nombre exacto de archivo, fecha de
+creación, tamaño, permisos, etc.
+

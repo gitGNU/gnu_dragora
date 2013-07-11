@@ -1,0 +1,6 @@
+findutils - Utilities to find files.
+
+The set of GNU find utilities contains tools to
+find files such as exact name, creation date,
+size, permissions, etc.
+

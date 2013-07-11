@@ -1,0 +1,5 @@
+vte - Library for terminal emulators based on GTK+.
+
+The vte (Virtual Terminal Emulator) package contains a
+termcap file implementation for terminal emulators.
+

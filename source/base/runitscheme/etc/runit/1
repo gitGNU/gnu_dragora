@@ -1,0 +1,283 @@
+#!/bin/sh
+#
+# /etc/runit/1:  System one time tasks (Stage 1).
+#
+# Version:       (#) 1.00  2009-12-07 (MAF)
+#                (#) 1.01  2010-03-12 (MAF)
+#                (#) 1.02  2010-06-16 (MAF)
+#                (#) 1.03  2010-06-17 (MAF)
+#                (#) 1.04  2010-06-22 (MAF)
+#                (#) 1.05  2010-06-30 (MAF)
+#                (#) 1.06  2010-07-02 (MAF)
+#                (#) 2.00  2010-07-09 (MAF)
+#                (#) 2.01  2010-07-21 (MAF)
+#                (#) 2.02  2010-07-29 (MAF)
+#                (#) 2.03  2010-07-30 (MAF)
+#                (#) 2.04  2010-12-21 (MAF)
+#                (#) 2.05  2011-03-30 (MAF)
+#                (#) 2.06  2011-04-14 (MAF)
+#                (#) 2.07  2011-05-11 (MAF)
+#                (#) 2.08  2011-06-03 (MAF)
+#                (#) 2.09  2011-06-07 (MAF)
+#                (#) 2.10  2012-01-14 (MAF)
+#                (#) 2.11  2012-02-02 (MAF)
+#                (#) 2.12  2012-02-28 (MAF)
+#                (#) 2.13  2012-03-01 (MAF)
+#                (#) 2.14  2012-04-06 (MAF)
+#
+# Author:        Matias A. Fonzo, <selk@dragora.org>.
+#
+# Under the terms of the GNU General Public License.
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export PATH
+
+# Functions.
+
+# A function for display a message:
+msg() { printf '%s\n' "$@"; }
+
+msg "Mounting kernel-based filesystems ..."
+mount -vn -t proc  proc  /proc
+mount -vn -t sysfs sysfs /sys
+
+# Initialize the dynamic device directory system (udev) #
+
+# Sanity creation to mount:
+mkdir -p --mode=0755 /run /dev/pts /dev/shm
+
+# Mount tmpfs over /run (required by udev):
+mount -vn -t tmpfs tmpfs /run -o mode=0755
+
+# Mount devpts over /dev/pts:
+mount -vn -t devpts devpts /dev/pts -o mode=0620,gid=4
+
+# Mount POSIX shared memory:
+mount -vn -t tmpfs none /dev/shm
+
+# Udev handles the uevents itself, so we don't need to have
+# the kernel call out to any binary in response to them:
+if [ -f /sys/kernel/uevent_helper ]; then
+  msg "" >/sys/kernel/uevent_helper
+elif [ -f /proc/sys/kernel/hotplug ]; then
+  msg "" >/proc/sys/kernel/hotplug
+fi
+
+# Start the daemon:
+msg "Starting udev daemon:  /sbin/udevd --daemon"
+udevd --daemon
+
+# Create the "/dev/root" symlink:
+mkdir -p --mode=0755 /run/udev/rules.d
+eval $(udevadm info --export --device-id-of-file=/ --export-prefix=ROOT_)
+msg 'ACTION=="add|change", SUBSYSTEM=="block", ENV{MAJOR}=="'$ROOT_MAJOR'", ENV{MINOR}=="'$ROOT_MINOR'", SYMLINK+="root"' \
+ >/run/udev/rules.d/61-dev-root-link.rules
+
+# Request device uevents to replay events at system coldplug:
+udevadm trigger --type=subsystems
+udevadm trigger --type=devices
+# End of Initialize the dynamic device directory system (udev) #
+
+# Initialize LVM2 (Logical Volume Manager version 2):
+#
+# See the backup directory:
+if [ -r /etc/lvm/lvm.conf ]; then
+  BACKUP_DIR="$(awk '/backup_dir/ && !/^#/' /etc/lvm/lvm.conf | awk -F '["]' '{ print $2 }')"
+else  # This is the default directory:
+  BACKUP_DIR=/etc/lvm/backup
+fi
+# Check the backup directory:
+if [ -d "$BACKUP_DIR" ]; then  # Load the device-mapper module:
+  modprobe -q dm-mod
+  # Scan all volume groups and make the attributes:
+  vgscan --mknodes --ignorelockingfailure 1>/dev/null 2>&1 && \
+   vgchange -ay --ignorelockingfailure 1>/dev/null 2>&1
+fi
+
+# Check if the filesystem is still in read-only mode:
+if touch /if-not-read-only$$ 2>/dev/null ; then
+  rm -f /if-not-read-only$$
+  mount -vn -o remount,ro /
+fi
+
+msg "*** Checking the root filesystem ..."
+if [ ! -e /etc/fastboot ]; then
+  if [ -r /etc/forcefsck ]; then
+    FORCE_CHK=-f
+  fi
+
+  fsck -a $FORCE_CHK -C /
+  ERR_CODE=$?
+
+  if [ $ERR_CODE -eq 0 ]; then
+    msg "*** Checking the rest of the filesystems ..."
+    fsck -a $FORCE_CHK -R -A -T -C
+  fi
+
+  if [ $ERR_CODE -eq 2 ] || [ $ERR_CODE -eq 3 ]; then
+    msg \
+     "o=====================CHECK FAILED======================o" \
+     "An error ocurred while the root filesystem was checked."   \
+     ""                                                          \
+     "The system should be rebooted or halted."                  \
+     ""                                                          \
+     "ERROR CODE: $ERR_CODE"                                     \
+     "o=======================================================o" \
+     ""
+    read -p "Press ENTER to reboot (or halt the system)..."
+    exit 100;
+  fi
+
+  if [ $ERR_CODE -gt 3 ] && [ $ERR_CODE -lt 16 ]; then
+    msg \
+     "o=====================CHECK FAILED======================o" \
+     "An error ocurred while the root filesystem was checked."   \
+     ""                                                          \
+     "This is your chance to repair the system manually."        \
+     "For help, check the *fsck utilities according to"          \
+     "your filesystem."                                          \
+     ""                                                          \
+     "Note:"                                                     \
+     ""                                                          \
+     "The system is currently mounted in read-only mode."        \
+     "To remount the system in read-write mode, type:"           \
+     ""                                                          \
+     "mount -vn -o remount,rw /"                                 \
+     ""                                                          \
+     "ERROR CODE: $ERR_CODE"                                     \
+     "o=======================================================o" \
+     ""
+    read -p "Press ENTER to continue..."
+    exec env - PS1='Repairme:\w# ' /bin/su --shell /bin/sh --login
+  fi
+
+  if [ $ERR_CODE -ge 16 ]; then
+    msg "" "Unexpected fsck error: $ERR_CODE" ""
+  fi
+else
+  msg "/etc/fastboot is present: Dodging checking."
+fi
+
+msg "Remounting root filesystem in read-write mode ..."
+mount -vn -o remount,rw /
+
+# In a modern GNU/Linux distribution,
+# /etc/mtab is a symlink to /proc/mounts:
+rm -f /etc/mtab*
+ln -s /proc/mounts /etc/mtab
+
+# Enable devices for paging and swapping are to take place:
+if [ -f /etc/rc.d/rc.swap ]; then
+  sh /etc/rc.d/rc.swap start
+fi
+
+# Load kernel parameters:
+if [ -r /etc/sysctl.conf ]; then
+  msg "[-] Loading kernel parameters via /etc/sysctl.conf ..."
+  sysctl -q -p /etc/sysctl.conf
+fi
+
+# Refresh kernel modules:
+msg "Refreshing kernel modules:  depmod -A"
+depmod -A
+
+# Load modules from /etc/rc.d/rc.modules:
+if [ -L /etc/rc.d/rc.modules ] && [ -e /etc/rc.d/rc.modules ]; then
+  RC_MODULES="$(readlink /etc/rc.d/rc.modules)"
+  msg "[-] Loading modules from /etc/rc.d/${RC_MODULES} ..."
+  . /etc/rc.d/${RC_MODULES}
+fi
+
+# Set ISA Plug-And-Play devices (if any):
+if [ -x /sbin/isapnp ]; then
+  if [ -r /etc/isapnp.conf ]; then
+    /sbin/isapnp /etc/isapnp.conf
+  else
+    if [ -x /sbin/pnpdump ]; then
+      msg "Detecting ISA Plug-And-Play devices (wait) ..."
+      /sbin/pnpdump >/etc/isapnp.conf
+
+      msg "Establishing ISA Plug-And-Play devices ..."
+      /sbin/isapnp /etc/isapnp.conf
+    fi
+  fi
+fi
+
+# Mount USB filesystem (if supported):
+msg "Mounting usbfs (if supported) ..."
+if grep -qw usbfs /proc/filesystems ; then
+  if ! grep -wq usbfs /proc/mounts ; then
+    if ! mount -f /proc/bus/usb 2>/dev/null ; then
+      mount -v -t usbfs usbfs /proc/bus/usb
+    else  # Mount from fstab:
+      mount -v /proc/bus/usb
+    fi
+  fi
+fi
+
+# Try to mount FUSE:
+msg "Trying to mount fusectl ..."
+if modprobe -q fuse 2>/dev/null ; then
+  mount -v -t fusectl fusectl /sys/fs/fuse/connections 2>/dev/null
+fi
+
+# Mount the Control Groups filesystem:
+msg "Trying to mount cgroups ..."
+if grep -q cgroup /proc/filesystems ; then
+  mkdir -p --mode=0755 /dev/cgroup
+  mount -v -t cgroup cpuset -o cpuset /dev/cgroup
+fi
+
+msg "Mounting local filesystems:"
+mount -v -a -t no,fs,rootfs,usbfs,proc,sysfs,devpts
+
+# Seek & destroy temporary files:
+find /var/lock /var/run \( ! -type d -a ! -name 'utmp' \) -delete
+rm -rf \
+ /etc/fastboot \
+ /etc/forcefsck \
+ /etc/nologin \
+ /tmp/.ICE-unix/* \
+ /tmp/.X11-unix/* \
+ /tmp/.*-ICE-* \
+ /tmp/.Xauth* \
+ /tmp/.X?-lock \
+ /tmp/serverauth.* \
+ /tmp/cron.* \
+ /tmp/pulse-* \
+ /tmp/gpg-* \
+ /tmp/orbit-* \
+ /tmp/mc-* \
+ /tmp/gnash-cookies.*
+
+# Initialize random number generator #
+msg "/etc/random-seed:  Initializing random number generator ..."
+if [ -r /etc/random-seed ]; then
+  cat /etc/random-seed 1>/dev/urandom
+else
+  touch /etc/random-seed
+fi
+chmod 0600 /etc/random-seed
+
+# Set the pool size:
+printf -v bytes "$(sysctl -n -e kernel.random.poolsize)"
+
+# Test variable to assign a new value if needed:
+if [ "$bytes" = "" ]; then
+  bytes=1024
+fi
+
+# Save the seed file:
+dd if=/dev/urandom of=/etc/random-seed count=1 bs="$bytes" 2>/dev/null
+# End of Initialize random number generator #
+
+# Save dmesg output:
+dmesg &>/var/log/dmesg
+
+# Update shared libraries:
+msg "Updating recent shared libraries:  ldconfig"
+ldconfig
+
+touch /etc/runit/stopit
+chmod 0 /etc/runit/stopit
+

@@ -1,0 +1,8 @@
+
+                              [ Kernels ]
+
+
+- smp64.k:  Kernel prepared for 64 bits machines.
+
+Type the name of the kernel that you want to boot:
+

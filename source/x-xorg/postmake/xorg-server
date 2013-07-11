@@ -1,0 +1,36 @@
+if [ -d ${packageDir}/usr/share/X11/xorg.conf.d ]; then
+  (
+    mkdir -p ${packageDir}/etc/X11
+    cd ${packageDir}/usr/share/X11
+    mv xorg.conf.d ${packageDir}/etc/X11
+    ln -sf ../../../etc/X11/xorg.conf.d .
+  )
+fi
+
+mkdir -p ${packageDir}/etc/X11/xorg.conf.d
+install -m 0644 ${currentWorkDir}/postmake/files/10-quirks.conf \
+ -D ${packageDir}/etc/X11/xorg.conf.d/10-quirks.conf.new
+mv ${packageDir}/etc/X11/xorg.conf.d/10-evdev.conf \
+ ${packageDir}/etc/X11/xorg.conf.d/10-evdev.conf.new
+
+mkdir -p ${packageDir}/install
+cat << "EOF" >> ${packageDir}/install/post-install
+# Handle config files:
+config() {
+  local new old
+  new="$1"
+  old=${1%.new}
+  if [ ! -r $old ]; then
+    mv $new $old
+  elif [ "$(md5sum $old | cut -f 1 -d ' ')" = "$(md5sum $new | cut -f 1 -d ' ')" ]; then
+    rm $new
+  else
+    echo "You have a new config file \"${ROOT}/${new}\" at your consideration."
+  fi
+}
+
+config etc/X11/xorg.conf.d/10-quirks.conf.new
+config etc/X11/xorg.conf.d/10-evdev.conf.new
+
+EOF
+

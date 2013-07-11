@@ -1,0 +1,13 @@
+pkgsystem - El sistema de paquetes de Dragora.
+
+Incluye las utilidades de la línea de comandos para:  construir,
+instalar, remover, actualizar paquetes de software.
+
+El sistema de paquetes de Dragora utiliza GNU tar y lzip como
+formato de compresión predeterminado.
+
+El sistema de paquetes fue influenciado e inspirado por el
+sistema de paquetes de Slackware Linux.
+
+El sistema de paquetes fue escrito por Matías A. Fonzo.
+

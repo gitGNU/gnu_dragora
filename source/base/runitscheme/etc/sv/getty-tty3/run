@@ -1,0 +1,2 @@
+#!/bin/sh
+/sbin/agetty 38400 tty3 linux && /sbin/utmpset -w tty3

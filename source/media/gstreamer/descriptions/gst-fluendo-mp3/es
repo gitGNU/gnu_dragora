@@ -1,0 +1,5 @@
+gst-fluendo-mp3 - Decodificador MP3 de Fluendo.
+
+Este plugin para GStreamer le permite la decodificación de flujos
+del MPEG 1 Audio Layer III.
+

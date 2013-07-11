@@ -1,0 +1,12 @@
+#: wmconfig:51
+msgid "The directory $DIR is empty."
+msgstr "O directorio $DIR está baleiro."
+#: wmconfig:100
+msgid "Window manager configuration tool"
+msgstr "Ferramenta de configuración de xestor de xanela"
+#: wmconfig:102
+msgid "Select the window manager to use by default:"
+msgstr "Seleccione o xestor de xanela a usar por defecto:"
+#: wmconfig:105
+msgid "Cancelled."
+msgstr "Cancelado."

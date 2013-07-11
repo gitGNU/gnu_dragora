@@ -1,0 +1,6 @@
+patch - Una herramienta para parchear archivos.
+
+El paquete patch contiene un programa para modificar o
+crear archivos mediante la aplicación de un archivo
+parche creado con el programa diff.
+

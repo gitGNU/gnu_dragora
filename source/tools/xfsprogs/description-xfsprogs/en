@@ -1,0 +1,8 @@
+xfsprogs - A high-performance journaling filesystem.
+
+XFS combines advanced journaling technology with
+full 64-bit addressing and scalable structures
+and algorithms.  This combination delivers the
+most scalable high-performance filesystem ever
+conceived.
+

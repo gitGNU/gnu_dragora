@@ -1,0 +1,7 @@
+wireless_tools - Tools for wireless extension.
+
+The wireless tools package is a set of tools allowing manipulation of
+the Wireless Extensions.  They use a textual interface to support the
+full Wireless Extension.
+
+

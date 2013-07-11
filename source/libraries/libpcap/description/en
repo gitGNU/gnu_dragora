@@ -1,0 +1,5 @@
+libpcap - Library for user-level packet capture.
+
+libpcap provides functions for user-level packet capture,
+used in low-level network monitoring.
+

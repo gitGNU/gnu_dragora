@@ -1,0 +1,9 @@
+fuse - Sistema de archivos en espacio de usuario.
+
+FUSE (Filesystem in Userspace) es una simple interfaz para los
+programas de espacio de usuario para exportar un sistema de
+archivos virtual para el núcleo Linux. FUSE también tiene por
+objeto proporcionar un método seguro para los usuarios no
+privilegiados para crear y montar sus implementaciones en su
+propio sistema de archivos.
+

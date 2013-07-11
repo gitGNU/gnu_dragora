@@ -1,0 +1,7 @@
+uri - Identificadores de recurso uniformes.
+
+Este módulo implementa la clase URI.  Los objetos de esta clase
+representan el "Uniform Resource Identifier references", tal
+como se especifica en el RFC 2396 (y actualizado por el
+RFC 2732).
+

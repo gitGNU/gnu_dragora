@@ -1,0 +1,4 @@
+notify-python - Python bindings for libnotify.
+
+This package contains Python bindings for libnotify.
+

@@ -1,0 +1,10 @@
+poppler - Free software library for viewing PDF documents.
+
+Poppler is a free software library for viewing PDF documents.
+It is maintained by freedesktop.org.  Poppler is based on
+Xpdf-3.0 codebase and was created for two stated reasons:
+to allow easier reuse of the rendering engine to reduce
+redundant work, and to go beyond the goals of Xpdf and
+integrate more closely and reuse more functionality
+provided by the operating system.
+

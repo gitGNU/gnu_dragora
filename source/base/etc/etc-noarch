@@ -1,0 +1,74 @@
+#!/bin/bash
+#  Copyright (C) 2007-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.6
+ARCH=noarch
+B=6
+
+PKG=${TMP}/package-etc
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $PKG
+
+# Creation of directories:
+mkdir -p \
+ etc/X11 \
+ etc/profile.d \
+ etc/skel \
+ var/log \
+ var/run
+
+# Add config files:
+for file in ${CWD}/config/* ; do
+  cat $file > ${PKG}/etc/${file##*/}.new
+done
+
+# Set sane permissions:
+chown -R 0:0 .
+find . -type d -exec chmod 755 '{}' +
+find . -type f -exec chmod 644 '{}' +
+
+# Set permissions for shadow files:
+( cd etc
+  chmod 640 gshadow.new shadow.new
+  chown 0:shadow gshadow.new shadow.new
+)
+
+# Add profiles:
+for file in ${CWD}/profile.d/* ; do
+  cat $file > ${PKG}/etc/profile.d/${file##*/}.new
+done
+chmod 755 ${PKG}/etc/profile.d/*
+
+# Copy the description files:
+mkdir -p description
+cp ${CWD}/description/* description/
+
+# Add post-install script:
+mkdir -p install
+zcat ${CWD}/post-install.gz > install/post-install
+
+makepkg ${OUT}/etc-${V}-${ARCH}-${B}.tlz
+

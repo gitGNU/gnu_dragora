@@ -1,0 +1,11 @@
+tcp_wrappers - Monitor de las conexiones TCP entrantes.
+
+TCP Wrapper es un sistema de red ACL que trabaja en terminales y que se
+usa para filtrar el acceso de red a servicios de protocolos de Internet
+que corren en sistemas operativos (tipo UNIX), como Linux o BSD.
+
+Permite que las direcciones IP, los nombres de terminales y/o
+respuestas de consultas ident de las terminales o subredes
+sean usadas como tokens sobre los cuales filtrar para
+propósitos de control de acceso.
+

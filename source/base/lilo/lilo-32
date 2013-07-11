@@ -1,0 +1,83 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=23.2
+ARCH=${ARCH:-i486}
+B=1
+
+PKG=${TMP}/package-lilo
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+rm -rf ${TMP}/lilo-${V}
+echo "Uncompressing the tarball..."
+tar -xvf ${CWD}/lilo-${V}.tar.lz -C $TMP
+
+cd ${TMP}/lilo-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+make
+make install MAN_DIR=/usr/man DESTDIR=$PKG
+
+find ${PKG}/sbin -type f | xargs chmod -v 750
+find ${PKG}/usr/sbin -type f | xargs chmod -v 750
+
+# Without Debian BMPs:
+rm -vf ${PKG}/boot/*.bmp
+
+# Nope:
+rm -rf ${PKG}/etc/initramfs
+rm -rf ${PKG}/etc/kernel
+
+gzip -9N ${PKG}/usr/man/man?/*.?
+mkdir -p ${PKG}/usr/doc/lilo-${V}
+cp -a \
+ CHANGELOG* COPYING NEWS README TODO lilo.lsm \
+ ${PKG}/usr/doc/lilo-${V}
+
+# Copy description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg ${OUT}/lilo-${V}-${ARCH}-${B}.tlz
+

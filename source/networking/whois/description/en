@@ -1,0 +1,4 @@
+whois - Client for the whois directory service.
+
+whois searches for an object in a RFC 3921 database.
+

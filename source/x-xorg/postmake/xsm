@@ -1,0 +1,8 @@
+if [ -d ${packageDir}/usr/lib${libSuffix}/X11/xsm ]; then
+  (
+    mkdir -p ${packageDir}/etc/X11
+    cd ${packageDir}/usr/lib${libSuffix}/X11
+    mv xsm ${packageDir}/etc/X11
+    ln -sf ../../../etc/X11/xsm .
+  )
+fi

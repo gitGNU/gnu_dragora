@@ -1,0 +1,6 @@
+slang - The S-Lang library and the interpreter.
+
+The slang package contains the S-Lang library, which provides
+facilities such as display/screen management, keyboard input,
+and keymaps.
+

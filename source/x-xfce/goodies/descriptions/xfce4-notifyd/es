@@ -1,0 +1,6 @@
+xfce4-notifyd - Demonio de notificación de Xfce.
+
+El demonio de notificación de Xfce es un programa más bien pequeño que
+implementa la porción del "lado-del-servidor" de la especificación
+de notificaciones de Freedesktop.
+

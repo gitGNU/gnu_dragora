@@ -1,0 +1,5 @@
+module-init-tools - Utilidades para manejar los módulos del Kernel.
+
+El paquete module-init-tools contiene programas para manejar módulos del
+kernel de Linux con versión mayor o igual a 2.5.47.
+

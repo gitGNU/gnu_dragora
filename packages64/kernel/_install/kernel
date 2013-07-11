@@ -1,0 +1,4 @@
+kernel-firmware:Firmwares of the Kernel:ON:kernel-firmware-3.2.15 - Size 4.0K [C], 20K [U].
+kernel-headers:The Linux Kernel headers:ON:kernel-headers-3.2.15 - Size 624K [C], 3.3M [U].
+kernel-modules-smp64:The Linux Kernel 64 with SMP support:ON:kernel-modules-smp64-3.2.15 - Size 20M [C], 97M [U].
+kernel-smp64:The Linux Kernel 64 with SMP support:ON:kernel-smp64-3.2.15 - Size 5.0M [C], 7.0M [U].

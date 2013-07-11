@@ -1,0 +1,9 @@
+lftp - Sofisticado cliente ftp/http.
+
+LFTP es un sofisticado cliente ftp/http programa de transferencia de
+archivo soportando un numero de protocolos de red.  Como BASH, tiene
+control de trabajo y utiliza la biblioteca readline de entrada.
+Tiene marcadores, incorporada espejo, puede transferir varios
+archivos en paralelo.  Fue diseñado con la fiabilidad en mente.
+Lftp es software libre, distribuido bajo licencia GNU GPL.
+

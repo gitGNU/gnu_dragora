@@ -1,0 +1,116 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=3071000
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-sqlite
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/sqlite-autoconf-${V}
+tar -xvf ${CWD}/sqlite-autoconf-${V}.tar.lz -C $TMP
+
+cd ${TMP}/sqlite-autoconf-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+export CFLAGS="$DCFLAGS"
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --disable-static \
+ --enable-shared \
+ --enable-readline \
+ --enable-threadsafe \
+ --enable-dynamic-extensions \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Build the TCL extension (tea):
+pushd tea
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --disable-static \
+ --enable-shared \
+ --enable-threads \
+ --with-system-sqlite \
+ --build=${ARCH}-dragora-linux-gnu
+
+  make
+  make install DESTDIR=$PKG
+popd
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress manpage(s):
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/sqlite-${V}
+cp -a README ${PKG}/usr/doc/sqlite-${V}
+zcat ${CWD}/copyright.html.gz > \
+ ${PKG}/usr/doc/sqlite-${V}/copyright.html
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/sqlite-${V}-${ARCH}-${B}.tlz
+

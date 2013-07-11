@@ -1,0 +1,7 @@
+xorg-server-xvfb - Servidor Virtual X Framebuffer.
+
+Xvfb es un servidor X que puede correr sobre máquinas sin el
+hardware de pantalla y ningún dispositivo de entrada físico.
+
+Esto emula un framebuffer bobo usando la memoria virtual.
+

@@ -1,0 +1,12 @@
+# Begin /etc/xinetd.d/exec
+
+service exec
+{
+   disable        = yes
+   socket_type    = stream
+   wait           = no
+   user           = 0
+   server         = /usr/sbin/in.rexecd
+}
+
+# End /etc/xinetd.d/exec

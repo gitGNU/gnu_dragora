@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Name=Xfce window manager
+Exec=/usr/bin/xfwm4
+Terminal=false
+Type=Application
+StartupNotify=false

@@ -1,0 +1,5 @@
+obexftp - FTP support for OBEX.
+
+ObexFTP implements the Object Exchange (OBEX) file transfer feature for
+clients and servers.
+

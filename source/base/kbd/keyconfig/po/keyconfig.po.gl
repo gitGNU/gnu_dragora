@@ -1,0 +1,23 @@
+#: keyconfig:34
+msgid "No such file or directory."
+msgstr "Non hai tal ficheiro ou directorio."
+
+#: keyconfig:81
+msgid "Keyboard configuration tool"
+msgstr "Ferramenta de configuración de teclado"
+
+#: keyconfig:82
+msgid "KEYBOARD MAP"
+msgstr "MAPA DE TECLADO"
+
+#: keyconfig:85
+msgid "Welcome to keyconfig.\\n\\nSelect the keyboard map that you use:"
+msgstr "Benvido a keyconfig.\\n\\nSeleccione o mapa de teclado que desexa empregar:"
+
+#: keyconfig:104
+msgid "TESTING FOR KEYBOARD"
+msgstr "PROBA DE TECLADO"
+
+#: keyconfig:105
+msgid "Write or type something to test your keyboard map:"
+msgstr "Escriba algo para probar o mapa de teclado:"

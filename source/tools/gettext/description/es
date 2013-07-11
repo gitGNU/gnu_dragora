@@ -1,0 +1,7 @@
+gettext - Utilidades para la internacionalización y localización.
+
+El paquete Gettext contiene utilidades para la internacionalización y
+localización.  Esto permite a los programas compilarse con Soporte de
+Lenguaje Nativo (NLS), lo que les permite mostrar mensajes en el
+idioma nativo del usuario.
+

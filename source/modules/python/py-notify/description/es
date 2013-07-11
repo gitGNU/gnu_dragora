@@ -1,0 +1,6 @@
+py-notify - Patrón de programación Observer.
+
+Py-notify es un package Python proporcionando herramientas para
+la aplicación de Patrón de programación Observer.  Estas
+herramientas incluyen señales, condiciones y variables.
+

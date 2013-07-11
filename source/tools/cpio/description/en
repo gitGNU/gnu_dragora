@@ -1,0 +1,7 @@
+cpio - A tool for creating and extracting archives.
+
+GNU cpio is a tool for creating and extracting archives,
+or copying files from one place to another. It handles a
+number of cpioformats as well as reading and writing tar
+files.
+

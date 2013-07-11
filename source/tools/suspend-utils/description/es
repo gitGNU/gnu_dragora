@@ -1,0 +1,7 @@
+suspend-utils - Soporte para para suspender.
+
+Este paquete contiene algunas herramientas de usuario que le permite
+suspender un sistema GNU/Linux ya sea en disco o la memoria RAM.
+Estas herramientas proporcionan algunas capacidades que no están
+disponibles en el kernel de Linux.
+

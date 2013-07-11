@@ -1,0 +1,10 @@
+parted - Herramienta de manipulación de partición.
+
+GNU parted es un paquete para crear, destruir, cambiar el tamaño,
+comprobar y copiar particiones, y los sistemas de archivos en
+ellas.
+
+Esto es útil para crear espacio para nuevos sistemas operativos,
+reorganizar el uso de disco, copia de datos en discos duros y
+los discos de imágenes.
+

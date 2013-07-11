@@ -1,0 +1,224 @@
+#!/bin/sh
+#
+# /etc/runit/2:  Normally for run services (Stage 2).
+#
+# Version:       (#) 1.01  2010-05-18 (MAF)
+#                (#) 1.02  2010-07-02 (MAF)
+#                (#) 2.00  2010-07-09 (MAF)
+#                (#) 2.01  2010-07-20 (MAF)
+#                (#) 2.02  2010-07-31 (MAF)
+#                (#) 2.03  2010-08-21 (MAF)
+#                (#) 2.04  2010-10-23 (MAF)
+#                (#) 2.05  2010-11-18 (MAF)
+#                (#) 2.06  2010-11-25 (MAF)
+#                (#) 2.07  2010-12-16 (MAF)
+#                (#) 2.08  2011-05-11 (MAF)
+#                (#) 2.09  2011-06-30 (MAF)
+#                (#) 2.10  2011-11-16 (MAF)
+#                (#) 2.11  2012-01-14 (MAF)
+#                (#) 2.12  2012-02-02 (MAF)
+#                (#) 2.13  2012-04-06 (MAF)
+#
+# Author:        Matias A. Fonzo, <selk@dragora.org>.
+#
+# Under the terms of the GNU General Public License.
+
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+export PATH
+
+# Functions.
+
+# A function for display a message:
+msg() { printf '%s\n' "$@"; }
+
+# Set the system clock from the hardware clock:
+if [ -x /etc/rc.d/rc.clock ]; then
+  /etc/rc.d/rc.clock start
+fi
+
+# Load the keyboard map:
+if [ -x /etc/rc.d/rc.keymap ]; then
+  /etc/rc.d/rc.keymap
+fi
+
+# Start the local interface:
+if [ -x /etc/rc.d/rc.iface_lo ]; then
+  /etc/rc.d/rc.iface_lo start
+fi
+
+# Check the single user-mode:
+if grep -q single /proc/cmdline ; then
+  runsvchdir single 1>/dev/null  # Oh!.. Lonely, in the sky!
+  exec env - PATH=$PATH runsvdir -P /service 'log:...'
+fi
+
+# Update documentation #
+
+# GNU info documents:
+if [ -x /usr/bin/install-info ]; then
+  msg "Updating .info documents..."
+  for file in /usr/info/*.gz ; do
+    if [ "$file" -nt "/usr/info/dir" ]; then
+      UPDATE=y
+      break;
+    fi
+  done
+  if [ "$UPDATE" = "y" ] || [ ! -e /usr/info/dir ]; then
+    find /usr/info -maxdepth 1 -type f -name '*.gz' \
+     -exec /usr/bin/install-info --quiet "{}" /usr/info/dir \;
+  fi
+fi
+# Manual pages:
+if [ -x /usr/bin/mandb ]; then
+  msg "Updating database for manual pages (waiting)..."
+  MANPATH=/usr/local/man:/usr/man /usr/bin/mandb -q -s -p
+fi
+# End of Update documentation #
+
+# Services #
+
+# Initialize the IrDA daemon:
+#
+# We need this before to run the PCMCIA subsystem,
+# if we don't want to leave out some models.
+if [ -x /etc/rc.d/rc.irda ]; then
+  /etc/rc.d/rc.irda start
+fi
+
+# Initialize the PCMCIA subsystem:
+if [ -x /etc/rc.d/rc.pcmcia ]; then
+  /etc/rc.d/rc.pcmcia start
+  if [ $? -eq 0 ]; then
+    # Extra time to initialize the PCMCIA card:
+    for number in 5 4 3 2 1 0; do
+      printf "$number "
+      sleep 1
+    done
+    echo
+  fi
+fi
+
+# Start the message bus daemon:
+if [ -x /etc/rc.d/rc.messagebus ]; then
+  /etc/rc.d/rc.messagebus start
+fi
+
+# Start the Console kit daemon:
+if [ -x /usr/sbin/console-kit-daemon ]; then
+  msg "Running console-kit: /usr/sbin/console-kit-daemon"
+  /usr/sbin/console-kit-daemon
+fi
+
+# Start HAL daemon:
+if [ -x /etc/rc.d/rc.hald ]; then
+  /etc/rc.d/rc.hald start
+fi
+
+# Start the bluetooth daemon:
+if [ -x /etc/rc.d/rc.bluez ]; then
+  /etc/rc.d/rc.bluez start
+fi
+
+# Load runit services:
+runsvchdir default 1>/dev/null
+for file in /service/* ; do  # Print a message:
+  if [ -L "$file" ] && [ -e "$file" ]; then
+    msg "Monitoring $file"
+  fi
+done
+
+# Load ALSA sound system:
+if [ -x /etc/rc.d/rc.alsa ]; then
+  /etc/rc.d/rc.alsa
+fi
+# End of Services #
+
+# Update X database #
+
+# Sanity check:
+mkdir -p -m 1777 /tmp/.ICE-unix /tmp/.X11-unix
+chmod 1777 /tmp
+
+# X font index cache:
+if [ -x /usr/bin/fc-cache ]; then
+  msg "Updating X font index cache:  /usr/bin/fc-cache -s"
+  /usr/bin/fc-cache -s
+fi
+
+# Update pango modules:
+if [ -x /usr/bin/pango-querymodules ]; then
+  msg "Updating pango modules:  /usr/bin/pango-querymodules"
+  /usr/bin/pango-querymodules 1>/etc/pango/pango.modules
+fi
+# Update gtk-2.0 modules:
+if [ -x /usr/bin/gtk-query-immodules-2.0 ]; then
+  msg "Updating gtk-2.0 modules:  /usr/bin/gtk-query-immodules-2.0"
+  /usr/bin/gtk-query-immodules-2.0 1>/etc/gtk-2.0/gtk.immodules
+fi
+# Update gdk pixbuffer loaders:
+if [ -x /usr/bin/gdk-pixbuf-query-loaders ]; then
+  msg "Updating gdk pixbuffer loaders:  /usr/bin/gdk-pixbuf-query-loaders"
+  /usr/bin/gdk-pixbuf-query-loaders --update-cache
+  /usr/bin/gdk-pixbuf-query-loaders 1>/etc/gtk-2.0/gdk-pixbuf.loaders
+fi
+# Update GIO modules:
+if [ -x /usr/bin/gio-querymodules ]; then
+  msg "Updating GIO modules cache:  /usr/bin/gio-querymodules"
+  if [ -d /usr/lib64/gio/modules ]; then
+    /usr/bin/gio-querymodules /usr/lib64/gio/modules
+  else
+    /usr/bin/gio-querymodules /usr/lib/gio/modules
+  fi
+fi
+
+# MIME database:
+if [ -x /usr/bin/update-mime-database ]; then
+  msg "Updating mime database:  /usr/bin/update-mime-database /usr/share/mime"
+  /usr/bin/update-mime-database /usr/share/mime
+fi
+# Desktop database:
+if [ -x /usr/bin/update-desktop-database ]; then
+  msg "Updating desktop database:  /usr/bin/update-desktop-database -q"
+  /usr/bin/update-desktop-database -q
+fi
+# Icon cache:
+if [ -x /usr/bin/gtk-update-icon-cache ] && [ -d /usr/share/icons ]; then
+  msg "Updating icon \`index.theme' cache on /usr/share/icons ..."
+  find /usr/share/icons -type f -name 'index.theme' -printf '%h\n' | \
+   while read directory ; do
+    /usr/bin/gtk-update-icon-cache -qfi $directory
+   done
+fi
+# End of Update X database #
+
+# Start the rc.local script:
+if [ -x /etc/rc.d/rc.local ]; then
+  msg "Running /etc/rc.d/rc.local..."
+  sh /etc/rc.d/rc.local
+fi
+
+# Start quota support (if needed):
+if egrep -q -m 1 '(usr|grp)quota' /etc/fstab ; then
+  for mount_point in \
+   $(awk '/usrquota/ || /grpquota/ { print $2 }' /etc/fstab)
+  do
+    rm -f $mount_point/*quota.{user,group}.new
+  done
+
+  if [ -x /usr/sbin/quotacheck ]; then
+    msg "Checking quotas:  /usr/sbin/quotacheck -avugm"
+    /usr/sbin/quotacheck -avugm
+  fi
+
+  if [ -x /usr/sbin/quotaon ]; then
+    msg "Turning on quotas:  /usr/sbin/quotaon -avug"
+    /usr/sbin/quotaon -avug
+  fi
+fi
+ 
+# Set terminal settings (using APM, if available):
+setterm -blank 15 -powersave on -powerdown 30
+
+exec env - PATH=$PATH \
+ runsvdir -P /service 'log:...................................................'
+

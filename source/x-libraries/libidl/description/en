@@ -1,0 +1,5 @@
+libidl - Libraries for language files.
+
+The libidl package contains libraries for Interface Definition Language
+files.  This is a specification for defining portable interfaces.
+

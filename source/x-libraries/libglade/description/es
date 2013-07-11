@@ -1,0 +1,6 @@
+libglade - Interfaz Glade.
+
+El paquete libglade contiene las librerías libglade. Son útiles para
+cargar archivos de interfaz Glade en un programa en tiempo de
+ejecución.
+

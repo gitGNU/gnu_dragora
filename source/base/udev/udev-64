@@ -1,0 +1,164 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=175
+ARCH=${ARCH:-x86_64}
+B=4
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-udev
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/udev-${V}
+tar -xvf ${CWD}/udev-${V}.tar.lz -C "$TMP"
+
+cd ${TMP}/udev-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Change the location of the ConsoleKit directory
+# to look into usr/lib64 directory:
+sed -i 's#lib/ConsoleKit#lib64/ConsoleKit#' Makefile.in
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --sbindir=/sbin \
+ --with-rootlibdir=/lib64 \
+ --libdir=/usr/lib64 \
+ --libexecdir=/lib/udev \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/udev-${V} \
+ --disable-introspection \
+ --enable-rule_generator \
+ --enable-udev_acl \
+ --enable-floppy \
+ --enable-edd \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+chmod -v 750 ${PKG}/lib/udev/udevd
+
+# Make symlink compatibility:
+mkdir -p ${PKG}/sbin
+( cd ${PKG}/sbin
+  ln -sf /lib/udev/udevd .
+)
+
+# No.. don't smoke crack or paco!:
+if [[ -d ${PKG}/usr/share/pkgconfig ]]; then
+  mkdir -p ${PKG}/usr/lib64/pkgconfig
+  mv ${PKG}/usr/share/pkgconfig/* ${PKG}/usr/lib64/pkgconfig/
+  rmdir ${PKG}/usr/share/pkgconfig || true
+fi
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Creates some devices and directories that Udev cannot handle due to
+# them being required very early in the boot process (thanks to LFS):
+#mkdir -p ${PKG}/lib/{firmware,udev/devices/{pts,shm}}
+#mknod -m 666 ${PKG}/lib/udev/devices/null c 1 3
+#mknod -m 600 ${PKG}/lib/udev/devices/kmsg c 1 11
+#( cd ${PKG}/lib/udev/devices
+#  ln -sf /proc/self/fd .
+#  ln -sf /proc/self/fd/0 stdin
+#  ln -sf /proc/self/fd/1 stdout
+#  ln -sf /proc/self/fd/2 stderr
+#  ln -sf /proc/kcore core
+#)
+
+# Additional links.  This is for the multipath:
+( cd ${PKG}/sbin ; ln -sf /lib/udev/scsi_id . )
+
+# Add our custom rules:
+mkdir -p ${PKG}/etc/udev/rules.d
+cat ${CWD}/rules.d/55-dragora.rules > ${PKG}/etc/udev/rules.d/55-dragora.rules
+cat ${CWD}/rules.d/65-permissions.rules > ${PKG}/etc/udev/rules.d/65-permissions.rules
+
+# Handle config file:
+mv ${PKG}/etc/udev/udev.conf{,.new}
+
+mkdir -p ${PKG}/etc/modprobe.d
+cat << "EOF" > ${PKG}/etc/modprobe.d/blacklist.conf.new
+# This is the blacklist file for kernel modules.
+#
+# Put here your modules that you don't want to load.
+#
+# Example:  blacklist <module-name>
+#
+
+
+EOF
+
+# Compress manpages:
+gzip -9N ${PKG}/usr/man/man?/*
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/udev-${V}
+cp -a \
+ COPYING ChangeLog NEWS README TODO \
+ ${PKG}/usr/doc/udev-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Add post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/udev-${V}-${ARCH}-${B}.tlz
+

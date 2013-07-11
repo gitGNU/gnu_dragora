@@ -1,0 +1,6 @@
+net-tools - Tools for controlling the network.
+
+This package includes the important tools for controlling the
+network subsystem of the Linux kernel.  This includes arp,
+rarp, netstat and nameif.
+

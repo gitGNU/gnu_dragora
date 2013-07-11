@@ -1,0 +1,139 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+# Functions.
+
+unpack() {
+  local name
+  name="$1"
+  echo "Uncompressing tarball ${name}..."
+  ( cd $TMP
+    rm -rf $name
+    tar -xvf ${CWD}/$name
+  )
+}
+
+fix_perms() {
+  # Set sane ownerships and permissions:
+  chown -R 0:0 .
+  find . \
+   \( -perm 2777 -o -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \
+   \) -exec chmod 755 {} + \
+   -o \
+   \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \
+   \) -exec chmod 644 {} +
+}
+
+configure_args() {
+  ./configure "$@"
+}
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=3.0.0
+ARCH=${ARCH:-i486}
+B=3
+
+PKG=${TMP}/package-gnome-icon-theme
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+# Build GNOME-ICON-THEME #
+unpack gnome-icon-theme-${V}.tar.lz
+cd ${TMP}/gnome-icon-theme-${V}
+fix_perms
+
+# Change /usr/share/pkgconfig to /usr/lib/pkgconfig:
+sed -i \
+ 's|pkgconfigdir = $(datadir)/pkgconfig|pkgconfigdir = $(libdir)/pkgconfig|' \
+  Makefile.in
+
+configure_args \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib \
+ --enable-icon-mapping \
+ --build=${ARCH}-dragora-linux-gnu
+make
+make install DESTDIR=$PKG
+
+# Copy documentation:
+mkdir -p ${PKG}/usr/doc/gnome-icon-theme-${V}
+cp -a \
+ AUTHORS COPYING NEWS README TODO \
+ ${PKG}/usr/doc/gnome-icon-theme-${V}
+
+# Build GNOME-ICON-THEME-SYMBOLIC #
+unpack gnome-icon-theme-symbolic-${V}.tar.lz
+cd ${TMP}/gnome-icon-theme-symbolic-${V}
+fix_perms
+configure_args \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib \
+ --enable-icon-mapping \
+ --build=${ARCH}-dragora-linux-gnu
+make
+make install DESTDIR=$PKG
+
+# Copy documentation:
+mkdir -p ${PKG}/usr/doc/gnome-icon-theme-symbolic-${V}
+cp -a \
+ AUTHORS COPYING NEWS README \
+ ${PKG}/usr/doc/gnome-icon-theme-symbolic-${V}
+
+# Build GNOME-ICON-THEME-EXTRAS #
+unpack gnome-icon-theme-extras-${V}.tar.lz
+cd ${TMP}/gnome-icon-theme-extras-${V}
+fix_perms
+configure_args \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib \
+ --enable-icon-mapping \
+ --build=${ARCH}-dragora-linux-gnu
+make
+make install DESTDIR=$PKG
+
+# Copy documentation:
+mkdir -p ${PKG}/usr/doc/gnome-icon-theme-symbolic-${V}
+cp -a \
+ AUTHORS COPYING NEWS README \
+ ${PKG}/usr/doc/gnome-icon-theme-symbolic-${V}
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+cat << EOF >> ${PKG}/install/post-install
+# Update icon cache:
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  /usr/bin/gtk-update-icon-cache -qfi /usr/share/icons/gnome
+fi
+
+EOF
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l prepend ${OUT}/gnome-icon-theme-${V}-${ARCH}-${B}.tlz
+

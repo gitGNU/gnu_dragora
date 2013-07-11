@@ -1,0 +1,6 @@
+coreutils - Las utilidades base de GNU.
+
+Las utilidades base de GNU son las de archivo, shell y manipulación de
+textos del sistema operativo GNU.  Estas son las utilidades base que
+se espera que existan en cualquier sistema operativo.
+

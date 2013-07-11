@@ -1,0 +1,11 @@
+openssl - La capa abierta de zócalos seguros.
+
+El proyecto de OpenSSL es un esfuerzo de colaboración para desarrollar un
+juego de herramientas robusto, de categoría comercial, completamente
+equipado, y de fuente abierta que aplica los protocolos de la capa de
+zócalos seguros (SSL v2/v3) y de la seguridad de la capa de transporte
+(TLS v1) así como una biblioteca de fines generales con toda la fuerza de
+la criptografía manejada por una comunidad mundial de voluntarios que
+utilicen Internet para comunicar, para planear, y para desarrollar el
+juego de herramientas de OpenSSL y su documentación relacionada.
+

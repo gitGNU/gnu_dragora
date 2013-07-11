@@ -1,0 +1,7 @@
+zcat \
+ ${currentWorkDir}/patches/files/xcb-util-image/missing-xcb_bitops.h.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xcb-util-image/fix-xcb-bitops.h.patch.gz | \
+  patch -p1 --verbose

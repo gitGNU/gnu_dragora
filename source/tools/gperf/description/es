@@ -1,0 +1,9 @@
+gperf - Generador perfecto de función hash.
+
+GNU gperf es un generador perfecto de función hash.  Para una lista dada de
+cadenas, esto produce una función de hash y una tabla hash, en forma de
+código de C o C++, para buscar un valor dependiendo de la cadena de
+entrada.  La función hash es perfecta, que quiere decir que la tabla hash
+no tiene colisiones, y la tabla hash de búsqueda necesita de una sola
+cadena de comparación solamente.
+

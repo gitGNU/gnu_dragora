@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# pulseaudio:  Sound server.
+#
+
+if [ -x /usr/bin/pulseaudio ]; then
+  exec /usr/bin/pulseaudio
+fi
+

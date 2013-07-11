@@ -1,0 +1,6 @@
+grep - Una herramienta para buscar cadenas.
+
+El comando grep busca e imprime las líneas que coinciden con
+el patrón especificado en uno o más archivos de entrada.
+Por defecto, grep imprime las líneas que coinciden.
+

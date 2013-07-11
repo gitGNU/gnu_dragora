@@ -1,0 +1,13 @@
+iptables - Herramienta para el filtrado de la red.
+
+Iptables es el nombre de la herramienta de espacio de usuario mediante la
+cual el administrador puede definir políticas de filtrado del tráfico que
+circula por la red. El nombre iptables se utiliza frecuentemente de forma
+errónea para referirse a toda la infraestructura ofrecida por el proyecto
+Netfilter.  Sin embargo, el proyecto ofrece otros subsistemas
+independientes de iptables tales como el connection tracking system o
+sistema de seguimiento de conexiones, o queue, que permite encolar
+paquetes para que sean tratados desde espacio de usuario.
+
+Información tomada desde:  http://es.wikipedia.org/wiki/Iptables
+

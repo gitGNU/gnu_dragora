@@ -1,0 +1,34 @@
+
+# Directories
+sources/
+
+# Extensions
+*.tlz
+*.tlz.sig
+*.tar.lz
+*.tar.lz.sig
+*.tar.bz2
+*.tar.bz2.sig
+*.TXT
+*.TXT.asc
+*.bin
+*.img
+*.dsk
+
+# Backups / patches
+*~
+*.orig
+*.rej
+
+# Files
+kernels/32b/**/System.map
+kernels/32b/**/config
+kernels/32b/**/vmlinuz
+kernels/64b/**/System.map
+kernels/64b/**/config
+kernels/64b/**/vmlinuz
+btmgr/rawrite/rawrite2.exe
+btmgr/rawrite/source/rawrite2.c
+btmgr/rawrite/source/rawrite2.c.sig
+
+!.gitignore

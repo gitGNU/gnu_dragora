@@ -1,0 +1,12 @@
+wcd - Dondequiera cambiar directorio.
+
+Wcd es un programa de línea de comandos para cambiar rápido de directorio.
+Ahorra tiempo escribiendo en el teclado.  Uno necesita para escribir sólo
+una parte de un nombre de directorio y wcd saltará a ella.  Wcd tiene un
+método de selección rápida en caso de múltiples coincidencias, y permite
+suavizado y prohibición de directorios.
+
+Wcd fue modelado después de Norton Change Directory (NCD). NCD apareció
+por primera vez en Las Utilidades Norton, Lanzamiento 4, para DOS en
+1987, publicado por Peter Norton. NCD fue escrito por Brad Kingsbury.
+

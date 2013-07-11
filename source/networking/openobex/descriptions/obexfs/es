@@ -1,0 +1,5 @@
+obexfs - Sistema de archivos FUSE para acceso OBEX.
+
+Obexfs es un sistema de archivos FUSE para el acceso al
+protocolo OBEX.
+

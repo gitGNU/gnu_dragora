@@ -1,0 +1,5 @@
+gamin - Monitor de alteración de archivo.
+
+Gamin es un sistema de monitoreo de archivo y directorio definido para
+ser un subconjunto del sistema FAM (File Alteration Monitor).
+

@@ -1,0 +1,5 @@
+gpgme - GnuPG hecho fácil.
+
+GPGME (GnuPG Made Easy) es una librería en lenguaje C que
+permite agregar soporte para criptografía a un programa.
+

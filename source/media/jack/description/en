@@ -1,0 +1,8 @@
+jack - Audio connection kit.
+
+JACK is system for handling real-time, low latency audio (and MIDI).
+It can connect a number of different applications to an audio device,
+as well as allowing them to share audio between themselves.
+
+Visit the web page of JACK at http://jackaudio.org
+

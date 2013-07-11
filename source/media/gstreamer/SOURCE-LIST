@@ -1,0 +1,7 @@
+gstreamer
+gst-plugins-base
+gst-plugins-good
+gst-plugins-bad
+gst-ffmpeg
+gst-python
+gst-fluendo-mp3

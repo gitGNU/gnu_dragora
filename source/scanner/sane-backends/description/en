@@ -1,0 +1,7 @@
+sane-backends - Scanner access now easy.
+
+This package contains the SANE libraries (this means backends and
+network scanning parts) and the command line frontend scanimage.
+
+For more information, visit:  http://www.sane-project.org
+

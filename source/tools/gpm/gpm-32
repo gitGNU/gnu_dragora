@@ -1,0 +1,142 @@
+#!/bin/bash
+#  Copyright (C) 2009-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=20090311
+ARCH=${ARCH:-i486}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+PKG=${TMP}/package-gpm
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/gpm-${V}
+tar xvf ${CWD}/gpm-${V}.tar.lz -C $TMP
+
+cd ${TMP}/gpm-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+./autogen.sh
+
+export CFLAGS="$DCFLAGS"
+
+./configure \
+ --prefix=/usr \
+ --localstatedir=/var \
+ --sysconfdir=/etc/gpm \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+strip -g ${PKG}/usr/lib/libgpm.a
+
+# Install "gpmconfig" script:
+install -v -m 750 ${CWD}/gpmconfig/gpmconfig -D ${PKG}/usr/sbin/gpmconfig
+
+# Translation files:
+( cd ${CWD}/gpmconfig/po
+  for file in * ; do
+    ext=${file#*.*.}
+
+    mkdir -p ${PKG}/usr/share/locale/${ext}/LC_MESSAGES
+    msgfmt -o ${PKG}/usr/share/locale/${ext}/LC_MESSAGES/gpmconfig.mo $file
+
+    # Convert our translation files to UTF-8:
+    mkdir -p ${PKG}/usr/share/locale/${ext}.utf8/LC_MESSAGES
+    iconv --from-code=ISO8859-1 --to-code=UTF8 $file | msgfmt - -o \
+     ${PKG}/usr/share/locale/${ext}.utf8/LC_MESSAGES/gpmconfig.mo
+  done
+)
+
+# Increments a little the security:
+chmod -v 750 ${PKG}/usr/sbin/{gpm,gpmconfig}
+
+# Make symlink compatibility, just in case:
+( cd ${PKG}/usr/lib ; ln -sf libgpm.so.2.1.0 libgpm.so )
+
+# Fix permissions:
+chmod 755 ${PKG}/usr/lib/libgpm.so.2.1.0
+
+# Copy files configuration of the source:
+mkdir -p ${PKG}/etc/gpm
+cp -a conf/*.conf ${PKG}/etc/gpm
+# Handle config:
+for f in ${PKG}/etc/gpm/*.conf ; do
+  mv $f{,.new}
+done
+
+# Compress GNU info files and man-pages:
+gzip -9N ${PKG}/usr/info/gpm.info ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/gpm-${V}
+cp -a \
+ BUGS COPYING MANIFEST README* TODO \
+ $PKG/usr/doc/gpm-${V}
+ ( cd doc
+   cp -a \
+    Announce FAQ HACK_GPM README.* changes/1.20.7 \
+    ${PKG}/usr/doc/gpm-${V}
+ )
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/gpm-${V}-${ARCH}-${B}.tlz
+

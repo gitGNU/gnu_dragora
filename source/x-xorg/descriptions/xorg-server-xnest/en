@@ -1,0 +1,6 @@
+xorg-server-xnest - A nested X server.
+
+Xnest is an X server that shows its output in a window.  In other words,
+Xnest opens a window that works like another screen in which the user
+can open windows, etc.
+

@@ -1,0 +1,9 @@
+eject - Programa para expulsar medios extraíbles.
+
+Eject permite expulsar medios extraíbles (por lo general, un CD-ROM,
+disquete, cinta o disco JAZ o ZIP) para ser expulsados bajo el
+control de programas.  El comando también puede controlar algunos
+CD-ROM multi-discos, la característica auto-expulsión es soportada
+por algunos dispositivos, y cerrar la bandeja de algunas unidades de
+CD-ROM.
+

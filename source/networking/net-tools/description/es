@@ -1,0 +1,6 @@
+net-tools - Herramientas para controlar la red de trabajo.
+
+Este paquete incluye importantes herramientas para controlar el
+subsistema de la red de trabajo del kernel de Linux.
+Esto incluye arp, rarp, netstat y nameif.
+

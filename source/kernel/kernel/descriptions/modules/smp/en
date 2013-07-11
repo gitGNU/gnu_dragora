@@ -1,0 +1,6 @@
+kernel-modules - Linux Kernel modules with SMP support.
+
+Include all the essential support for devices and hardware.
+
+It is the libre version of the Kernel modules.
+

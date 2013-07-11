@@ -1,0 +1,8 @@
+nmap - Network mapper.
+
+Nmap is a security scanner originally written by Gordon Lyon (Fyodor).
+It may be used to discover computers and services on a computer
+network, thus creating a "map" of the network.
+
+For more information, visit:  http://nmap.org
+

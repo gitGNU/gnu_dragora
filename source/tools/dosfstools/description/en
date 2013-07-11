@@ -1,0 +1,6 @@
+dosfstools - DOS filesystem tools.
+
+The dosfstools package includes the mkdosfs (a.k.a. mkfs.dos and mkfs.vfat)
+and dosfsck (a.k.a. fsck.msdos and fsck.vfat) utilities, which respectively
+make and check MS-DOS FAT filesystems on hard drives or on floppies.
+

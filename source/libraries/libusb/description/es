@@ -1,0 +1,5 @@
+libusb - Librería para el acceso a dispositivos USB.
+
+El paquete libusb contiene una librería usada por algunas
+aplicaciones para acceder a dispositivos USB.
+

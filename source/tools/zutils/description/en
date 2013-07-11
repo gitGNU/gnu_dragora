@@ -1,0 +1,6 @@
+zutils - Utilities for dealing with any compressed files.
+
+Zutils is a collection of utilities for dealing with
+any combination of compressed and non-compressed
+files transparently.
+

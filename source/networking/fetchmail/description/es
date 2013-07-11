@@ -1,0 +1,6 @@
+fetchmail - Utilidad para descargar correos.
+
+fetchmail es una utilidad de recuperación y reenvío de correo. Obtiene
+los correos desde servidores remotos de correo electrónico y lo envía
+a tu cliente local (máquina del sistema de entrega).
+

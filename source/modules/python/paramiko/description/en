@@ -1,0 +1,7 @@
+paramiko - SSH library for Python.
+
+Paramiko is a module for python that implements the SSH2 protocol for secure
+(encrypted and authenticated) connections to remote machines.
+
+This package requires pyCrypto.
+

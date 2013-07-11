@@ -1,0 +1,225 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+unpack() {
+  echo "Uncompressing the tarball..."
+  tar -xvf "$1"
+}
+
+set_sane_permissions() {
+  chown -R 0:0 .
+  find . \
+   \( -perm 2777 -o \
+      -perm 777  -o \
+      -perm 775  -o \
+      -perm 711  -o \
+      -perm 555  -o \
+      -perm 511     \
+   \) -exec chmod 755 {} + \
+    -o \
+   \( -perm 666 -o \
+      -perm 664 -o \
+      -perm 600 -o \
+      -perm 444 -o \
+      -perm 440 -o \
+      -perm 400    \
+   \) -exec chmod 644 {} +
+}
+
+strip_bin_and_libs() {
+  ( cd "$1"
+    find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+     cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true;
+  )
+}
+
+clean_perl_files() {
+  local DIR
+  DIR="$1"
+
+  # Remove the temporary directory from the inventory file of Perl:
+  perlVersion=$(eval $(perl -V:version); printf "$version")
+
+  ( cd ${DIR}/usr || exit 1;
+    find . -type f -name '.packlist' -exec sed -i "s#$DIR##g" '{}' +
+    find . -type f -name 'perllocal.pod' -delete
+  )
+}
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.0-20120123
+PKG_VER=20120123
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG1=${TMP}/package-foomatic-db
+PKG2=${TMP}/package-foomatic-filters
+PKG3=${TMP}/package-foomatic-db-engine
+
+rm -rf $PKG{1,2,3}
+mkdir -p $PKG{1,2,3} $OUT
+
+export CFLAGS="$DCFLAGS" CXXFLAGS="$DCFLAGS"
+
+cd $TMP
+
+#
+# Build & install foomatic-db.
+#
+rm -rf foomatic-db-${PKG_VER}
+unpack ${CWD}/sources/foomatic-db-${V}.tar.lz
+
+pushd foomatic-db-${PKG_VER}
+  set_sane_permissions
+
+  ./configure \
+   --prefix=/usr \
+   --libdir=/usr/lib64 \
+   --build=${ARCH}-dragora-linux-gnu
+
+  make $JOBS
+  make install DESTDIR=$PKG1
+
+  strip_bin_and_libs
+  clean_perl_files $PKG1
+
+  # Copy documentation:
+  mkdir -p ${PKG1}/usr/doc/foomatic-db-${PKG_VER}
+  cp -a \
+   COPYING README USAGE \
+   ${PKG1}/usr/doc/foomatic-db-${PKG_VER}
+
+  # Copy description files:
+  mkdir -p ${PKG1}/description
+  cp ${CWD}/descriptions/foomatic-db/* ${PKG1}/description/
+
+  ( cd $PKG1
+    makepkg -l ${OUT}/foomatic-db-${PKG_VER}-${ARCH}-${B}.tlz
+
+    # Upgrade the package ?:
+    if [[ -n $UP ]]; then
+      pkg upgrade -f ${OUT}/foomatic-db-${PKG_VER}-${ARCH}-${B}.tlz
+    fi
+  )
+popd
+
+#
+# Build & install foomatic-filters.
+#
+rm -rf foomatic-filters-devel-${V}
+unpack ${CWD}/sources/foomatic-filters-devel-${V}.tar.lz
+
+pushd foomatic-filters-devel-${V}
+  set_sane_permissions
+
+  autoreconf -f -i
+
+  ./configure \
+   --prefix=/usr \
+   --libdir=/usr/lib64 \
+   --sysconfdir=/etc \
+   --mandir=/usr/man \
+   --build=${ARCH}-dragora-linux-gnu
+
+  make $JOBS
+  make install DESTDIR=$PKG2
+
+  strip_bin_and_libs
+  clean_perl_files $PKG2
+
+  # Compress man page(s):
+  gzip -9N ${PKG2}/usr/man/man?/*.?
+
+  # Copy documentation:
+  mkdir -p ${PKG2}/usr/doc/foomatic-filters-${PKG_VER}
+  cp -a \
+   AUTHORS COPYING NEWS README TODO USAGE VERSION* \
+   ${PKG2}/usr/doc/foomatic-filters-${PKG_VER}
+
+  # Copy description files:
+  mkdir -p ${PKG2}/description
+  cp ${CWD}/descriptions/foomatic-filters/* ${PKG2}/description/
+
+  ( cd $PKG2
+    makepkg -l ${OUT}/foomatic-filters-${PKG_VER}-${ARCH}-${B}.tlz
+
+    # Upgrade the package ?:
+    if [[ -n $UP ]]; then
+      pkg upgrade -f ${OUT}/foomatic-filters-${PKG_VER}-${ARCH}-${B}.tlz
+    fi
+  )
+popd
+
+#
+# Build & install foomatic-db-engine.
+#
+rm -rf foomatic-db-engine-devel-${V}
+unpack ${CWD}/sources/foomatic-db-engine-devel-${V}.tar.lz
+
+pushd foomatic-db-engine-devel-${V}
+  set_sane_permissions
+
+  ./configure \
+   --prefix=/usr \
+   --libdir=/usr/lib64 \
+   --sysconfdir=/etc \
+   --mandir=/usr/man \
+   --build=${ARCH}-dragora-linux-gnu
+
+  make $JOBS
+  make install DESTDIR=$PKG3
+
+  strip_bin_and_libs
+  clean_perl_files $PKG3
+
+  # Increments a little the security:
+  find ${PKG3}/usr/sbin -type f -exec chmod -v 0750 '{}' +
+
+  # Compress man page(s):
+  gzip -9N ${PKG3}/usr/man/man?/*.?
+
+  # Copy documentation:
+  mkdir -p ${PKG3}/usr/doc/foomatic-db-engine-${PKG_VER}
+  cp -a \
+   COPYING ChangeLog README TODO USAGE \
+   ${PKG3}/usr/doc/foomatic-db-engine-${PKG_VER}
+
+  # Copy description files:
+  mkdir -p ${PKG3}/description
+  cp ${CWD}/descriptions/foomatic-db-engine/* ${PKG3}/description/
+
+  ( cd $PKG3
+    makepkg -l ${OUT}/foomatic-db-engine-${PKG_VER}-${ARCH}-${B}.tlz
+
+    # Upgrade the package ?:
+    if [[ -n $UP ]]; then
+      pkg upgrade -f ${OUT}/foomatic-db-engine-${PKG_VER}-${ARCH}-${B}.tlz
+    fi
+  )
+popd
+

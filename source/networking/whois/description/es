@@ -1,0 +1,4 @@
+whois - Cliente para el servicio de directorio whois.
+
+whois busca por un objeto en una base de datos RFC 3921.
+

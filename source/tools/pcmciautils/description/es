@@ -1,0 +1,6 @@
+pcmciautils - Utilidades para el subsistema PCMCIA.
+
+PCMCIAutils contiene la inicialización de las herramientas necesarias para
+permitir al subsistema PCMCIA comportarse (casi) como cualquier otro
+sistema de bus "hotpluggable" (por ejemplo: USB, IEEE1394).
+

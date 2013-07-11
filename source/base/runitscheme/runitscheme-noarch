@@ -1,0 +1,76 @@
+#!/bin/bash
+#  Copyright (C) 2009-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=3.3
+ARCH=noarch
+B=13
+
+PKG=${TMP}/package-runitscheme
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+cd $PKG/
+
+# Creation of directories:
+mkdir -p etc/
+
+# Copy the scheme:
+cp -r ${CWD}/etc/{rc.d,runit,sv} etc/
+
+# Set permissions:
+find etc/ -type f | xargs chmod 755
+
+# Handle "daemons":
+mv etc/rc.d/rc.clock{,.new}
+mv etc/rc.d/rc.local{,.new}
+mv etc/rc.d/rc.swap{,.new}
+
+# Handle runlevels:
+mkdir -p etc/runit/runsvdir/{single,default}
+( cd etc/runit/runsvdir/single
+  ln -sf /etc/sv/getty-tty1 .
+)
+( cd etc/runit/runsvdir/default
+  ln -sf /etc/sv/getty-tty1 .
+  ln -sf /etc/sv/getty-tty2 .
+  ln -sf /etc/sv/getty-tty3 .
+)
+( cd etc/runit/runsvdir
+  ln -sf default current
+)
+ln -sf etc/runit/runsvdir/current service
+
+# Make symlink compatibility:
+( cd etc/ ; ln -sf rc.d init.d )
+
+# Set sane permissions:
+chown -R 0:0 .
+
+# Copy description files adding the post install script:
+mkdir -p description install
+cp ${CWD}/description/?? description/
+zcat ${CWD}/post-install.gz > install/post-install
+
+makepkg -l ${OUT}/runitscheme-${V}-${ARCH}-${B}.tlz
+

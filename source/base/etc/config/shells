@@ -1,0 +1,3 @@
+# /etc/shells:  Pathnames of valid login shells:
+/bin/sh
+/bin/bash

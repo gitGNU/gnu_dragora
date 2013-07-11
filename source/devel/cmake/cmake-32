@@ -1,0 +1,112 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.8.4
+ARCH=${ARCH:-i486}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-cmake
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/cmake-${V}
+lzip -cd ${CWD}/cmake-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/cmake-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./bootstrap \
+ --prefix=/usr \
+ --bindir=/bin \
+ --mandir=/man \
+ --docdir=/doc/cmake-${V} \
+ --system-libs \
+ --paralell=$JOBS \
+ --verbose \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Add the profile for the cmake environment:
+mkdir -p ${PKG}/etc/profile.d
+zcat ${CWD}/profile.d/cmake.gz > ${PKG}/etc/profile.d/cmake.new
+chmod 755 ${PKG}/etc/profile.d/cmake.new
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Include extras:
+( cd Docs
+  install -D -m 644 cmake-indent.vim ${PKG}/usr/share/vim/indent/cmake-indent.vim
+  install -D -m 644 cmake-syntax.vim ${PKG}/usr/share/vim/indent/cmake-syntax.vim
+  install -D -m 644 cmake-mode.el ${PKG}/usr/share/emacs/site-lisp/cmake-mode.el
+)
+
+gzip -9N ${PKG}/usr/man/man?/*.?  # Compress man pages.
+
+# Add extra documentation:
+mkdir -p ${PKG}/usr/doc/cmake-${V}
+cp -a \
+ ChangeLog.txt Copyright.txt Readme.txt \
+ ${PKG}/usr/doc/cmake-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/{description,install}
+cp ${CWD}/description/* ${PKG}/description
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/cmake-${V}-${ARCH}-${B}.tlz
+

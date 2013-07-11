@@ -1,0 +1,7 @@
+sudo - Herramienta para dar a ciertos usuarios privilegios de root.
+
+El paquete sudo permite a un administrador del sistema para dar a
+ciertos usuarios (o grupos de usuarios) la capacidad de ejecutar
+algunos (o todos) los comandos como root u otro usuario, mientras
+que registra los comandos y argumentos.
+

@@ -1,0 +1,5 @@
+strace - Rastreador de llamadas del sistema.
+
+Strace es una herramienta para rastrear llamadas y
+señales del sistema.
+

@@ -1,0 +1,5 @@
+foomatic-filters - Filtros de Foomatic.
+
+Scripts de filtros usados por impresoras para convertir la entrada de datos
+Postscript en formato nativo de la impresora.
+

@@ -1,0 +1,9 @@
+a52dec - Un decodificador libre de flujos de ATSC A/52.
+
+liba52 es una librería libre para decodificar los flujos de
+ATSC A/52. Es liberada bajo los términos de la licencia GPL.
+
+El estándar A/52 es usado en una variedad de aplicaciones,
+incluyendo la televisión digital y los DVDs.  También es
+conocido como AC-3.
+

@@ -1,0 +1,6 @@
+intltool - Herramientas de internacionalización.
+
+intltool es un conjunto de herramientas para centralizar la
+traducción de muchos diferentes formatos de archivo usando
+GNU gettext-compatible con archivos PO.
+

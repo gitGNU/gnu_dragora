@@ -1,0 +1,118 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=${V:-2.24.1}
+ARCH=${ARCH:-i486}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-gdk-pixbuf
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/gdk-pixbuf-${V}
+tar -xvf ${CWD}/gdk-pixbuf-${V}.tar.lz -C $TMP
+
+cd ${TMP}/gdk-pixbuf-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# https://bugzilla.gnome.org/show_bug.cgi?id=662009
+zcat ${CWD}/patches-gdk-pixbuf/gdk_pixbuf_get_pixels_with_length.patch.gz | \
+ patch -p1 --verbose
+
+# https://bugzilla.gnome.org/show_bug.cgi?id=629396
+zcat ${CWD}/patches-gdk-pixbuf/io-qtif.patch.gz | patch -p1 --verbose
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --infodir=/usr/info \
+ --localstatedir=/var \
+ --disable-static \
+ --disable-introspection \
+ --enable-debug=no \
+ --with-libjasper=yes \
+ --with-x11 \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress man pages:
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/gdk-pixbuf-${V}
+cp -a \
+ ABOUT-NLS AUTHORS COPYING NEWS README \
+ ${PKG}/usr/doc/gdk-pixbuf-${V}
+
+# Make the post-install script:
+mkdir -p ${PKG}/install
+cat << "EOF" > ${PKG}/install/post-install
+if [ -x /usr/bin/gdk-pixbuf-query-loaders ]; then
+  /usr/bin/gdk-pixbuf-query-loaders --update-cache
+fi
+
+EOF
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/descriptions/gdk/?? ${PKG}/description
+
+cd $PKG
+makepkg -l prepend ${OUT}/gdk-pixbuf-${V}-${ARCH}-${B}.tlz
+

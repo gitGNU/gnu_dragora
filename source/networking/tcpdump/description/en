@@ -1,0 +1,6 @@
+tcpdump - Dumps the traffic on a network.
+
+tcpdump is a utility to dump the traffic on a network.
+
+For more information, type `man tcpdump'.
+

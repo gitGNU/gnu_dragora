@@ -1,0 +1,6 @@
+imlib2 - Image library.
+
+Imlib2 is a library that does image file loading and
+saving as well as rendering, manipulation, arbitrary
+polygon support, etc.
+

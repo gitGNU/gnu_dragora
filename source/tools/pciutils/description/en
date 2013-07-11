@@ -1,0 +1,5 @@
+pciutils - The PCI utilities.
+
+The PCI Utilities package is a set of programs for listing PCI devices,
+inspecting their status and setting their configuration registers.
+

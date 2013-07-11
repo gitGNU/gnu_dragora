@@ -1,0 +1,122 @@
+2011-06-15  Matias A. Fonzo  <selk@dragora.org>
+
+  Changes in the tools:
+
+    - upgrade:
+
+        * pkg_name(): Use "here strings" for packages with
+          four or more segments.
+        * date(1) has been replaced with the printf built-in.
+
+2011-06-08  Matias A. Fonzo  <selk@dragora.org>
+
+  Changes in the tools:
+
+    - remove:
+
+        * Handle those packages that do not have a post-install script,
+          this is on the pre-removal routine.
+        * The cat_except() function has been simplified.
+        * Minor changes.
+
+    - upgrade:
+
+        * Move the scripts of pre and post installation for easy removal.
+
+2011-05-31  Matias A. Fonzo  <selk@dragora.org>
+
+  Changes in the tools:
+
+    - add:
+
+        * Added a sanity check to see if the filesystem is in read-only mode.
+        * Show description files even in a clear environment.
+        * Solved the UTF-8 conversion for description files (if $LANG
+          is in UTF-8).
+        * Minor cleanup.
+
+    - remove:
+
+        * Added a sanity check to see if the filesystem is in read-only mode.
+        * Compress (using lzip) the removed description files.          
+
+    - upgrade:
+
+        * Added a sanity check to see if the filesystem is in read-only mode.
+        * The usage of sed(1) has been removed from the pkg_name() function.
+        * upgrade now removes descriptions of old packages.
+        * Minor cleanup.
+        
+
+2011-05-17  Matias A. Fonzo  <selk@dragora.org>
+
+  Changes in the tools:
+
+    - remove:
+
+        * Removed trailing slash when checking for an
+          empty directory from the database.
+
+2011-05-05  Matias A. Fonzo  <selk@dragora.org>
+
+  Changes in the tools:
+
+    - add:
+
+        * Use options '--strip-components=1' and '--show-stored-names'
+          on `tar' to avoid the (unnecessary) usage of sed(1).
+
+    - remove:
+
+        * The function empty_dir() has been changed, adapting to
+          the changes of "add".
+
+    - makepkg:
+
+        * Check if the destiny is a valid directory.
+        * Added more verbosity to lzip(1) output.
+
+2010-11-08  Matias A. Fonzo  <selk@dragora.org>
+
+        * Bumped version 2.4.
+        * Added the option: --deference (-h) and --check-links (-l)
+          in the `add' command. This is for newer behavior on the
+          latest versions of tar.
+
+2010-08-13  Matias A. Fonzo  <selk@dragora.org>
+
+  These are the current changes since previous version (2.2):
+
+        * Version 2.3 released.
+        * Centralized: Implemented a main order called `pkg'.
+        * Modularized: The tools for: install, remove, and
+          upgrade packages are now in a separate directory.
+        * A new tool called "size" has been added.
+        * Fixed localization issues + code correctness.
+        
+  Changes in the new tools:
+  
+    - add (ex dragin):
+    
+        * Now the testing and installation of packages is more fast,
+          with the tar option '--use-compress-program='.
+        * Preformatted descriptions using `fmt' for the output.
+        * The descriptions can also be show in UTF-8 (according to the system).
+    
+    - remove (ex dragout):
+    
+        * A better version of the function cat_except() has been implemented.
+    
+    - upgrade (ex dragup):
+    
+        * Added a new option `-i' for install a package (if not installed).
+        * The options are handled by getopts for more flexibility.
+    
+    - size:
+
+        This is a new tool to get the compressed size and uncompressed
+        size of a package.
+
+    - erupt
+    
+        * Number of version: incremented.

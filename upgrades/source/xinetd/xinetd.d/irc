@@ -1,0 +1,15 @@
+# Begin /etc/xinetd.d/irc
+
+service irc
+{
+   disable      = yes
+   socket_type  = stream
+   wait         = no
+   user         = 0
+   flags        = SENSOR
+   type         = INTERNAL
+   bind         = 192.168.1.30
+   deny_time    = 60
+}
+
+# End /etc/xinetd.d/irc

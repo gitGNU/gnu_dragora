@@ -1,0 +1,7 @@
+attr - Extended attributes.
+
+The extended attributes are name:value pairs associated permanently with
+files and directories.
+
+For more information, type: "man 5 attr".
+

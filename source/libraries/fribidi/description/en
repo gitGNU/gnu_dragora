@@ -1,0 +1,7 @@
+fribidi - Implementation of the Unicode Bidirectional Algorithm.
+
+GNU FriBidi is an implementation of the
+Unicode Bidirectional Algorithm (bidi).
+
+For more about GNU FriBidi, visit: http://www.fribidi.org
+

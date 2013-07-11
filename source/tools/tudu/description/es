@@ -1,0 +1,9 @@
+tudu - Un administrador de lista de tareas.
+
+TuDu es una interfaz de la línea de comandos para gestionar
+tareas pendientes jerárquicas.  Cada tarea tiene un título,
+una descripción de texto largo, una fecha límite (Tudu le
+avisa cuando la fecha está cerca), y una fecha prevista.
+Hay categorías y prioridades.
+
+

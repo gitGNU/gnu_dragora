@@ -1,0 +1,4 @@
+zcat \
+ ${currentWorkDir}/patches/files/thunar/Thunar-1.3.0-CVE-2011-1588.patch.gz | \
+  patch -p1 --verbose
+

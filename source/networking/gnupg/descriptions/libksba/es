@@ -1,0 +1,6 @@
+libksba - Librería de acceso CMS o SCM y X.509.
+
+El paquete libksba contiene una librería utiliza para hacer
+certificados X.509, así como hacer Sintaxis de Cifrado de
+Mensajes, fácilmente accesible por otras aplicaciones.
+

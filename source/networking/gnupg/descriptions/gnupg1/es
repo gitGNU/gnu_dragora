@@ -1,0 +1,7 @@
+gnupg1 - El Guardia de Privacidad de GNU.
+
+El paquete GnuPG contiene un encriptador de llaves públicas/privadas.
+Es útil para firmar archivos o mensajes de correo como prueba de
+identidad y prevenir que se trampee el contenido del fichero o
+del mensaje.
+

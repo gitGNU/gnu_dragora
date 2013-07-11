@@ -1,0 +1,6 @@
+wvstreams - Network programming library.
+
+wvstreams is a network programming library written in C++.
+
+This library is required by wvdial.
+

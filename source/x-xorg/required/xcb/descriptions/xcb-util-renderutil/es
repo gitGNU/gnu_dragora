@@ -1,0 +1,6 @@
+xcb-util-renderutil - Funciones para la extensión Render.
+
+El módulo xcb-util-renderutil proporciona un número de librerías que
+sientan sobre la cima de libxcb, el corazón de la librería del
+protocolo X, y algunas bibliotecas de extensión.
+

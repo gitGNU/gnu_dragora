@@ -1,0 +1,6 @@
+pciutils - Las utilidades PCI.
+
+El paquete PCI Utilities está formado por programas que permiten
+listar dispositivos PCI, inspeccionar su estado y establecer sus
+registros de configuración.
+

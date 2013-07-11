@@ -1,0 +1,6 @@
+foomatic-db - Base de datos Foomatic.
+
+Los conocimientos adquiridos sobre impresoras, controladores y opciones del
+controlador en archivos XML, usado por foomatic-db-engine para generar los
+archivos PPD.
+

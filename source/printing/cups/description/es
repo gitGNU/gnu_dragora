@@ -1,0 +1,10 @@
+cups - Sistema común de impresión UNIX.
+
+El sistema común de impresión UNIX (o CUPS) es un sistema de
+impresión y un reemplazo general de lpd y similares. Admite
+el protocolo de impresión de internet (IPP), y tiene su
+propio modelo de controladores de filtrado para gestionar
+varios tipos de documentos.
+
+Visite el sitio web de CUPS en:  http://www.cups.org
+

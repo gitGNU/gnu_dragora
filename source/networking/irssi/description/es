@@ -1,0 +1,10 @@
+irssi - Irssi es un cliente de IRC.
+
+Irssi es un cliente de IRC originalmente escrito por Timo Sirainen en
+C y liberado bajo la licencia GPL en enero de 1999.
+
+Esta escrito desde cero, sin usar código de otros clientes de IRC, lo
+que hace que sea más seguro, estable y fácil de modificar.  Tiene la
+posibilidad de usar el lenguaje Perl para scripts.  Además tiene
+soporte de IPv6, UTF-8 y conexión simultánea a varias redes.
+

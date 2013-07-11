@@ -1,0 +1,7 @@
+#!/bin/sh
+
+XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/local/share:/usr/share}
+XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:-/etc/xdg}
+
+export XDG_DATA_DIRS XDG_CONFIG_DIRS
+

@@ -1,0 +1,5 @@
+libasyncns - Librería asincrónica de nombre de servicios.
+
+libasyncns es una librería de C para ejecutar consultas de
+servicio de nombres de forma asincrónica.
+

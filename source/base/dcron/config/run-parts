@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
+if [ ! -d $1 ]; then
+  echo "Error: $1 is not a directory"
+  exit 1
+fi
+
+for crontab in $1/* ; do
+  if [ -x $crontab ]; then
+    $crontab 2>&1
+  fi
+done
+

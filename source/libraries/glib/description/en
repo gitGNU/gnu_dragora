@@ -1,0 +1,5 @@
+glib - Library which includes support routines for C.
+
+GLib is a library which includes support routines for C such as
+lists, trees, hashes, memory allocation, and many other things.
+

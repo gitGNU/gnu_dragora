@@ -1,0 +1,11 @@
+gzip - Compression utility.
+
+Gzip (GNU zip) is a compression utility designed to be
+a replacement for compress.  Its main advantages over
+compress are much better compression and freedom from
+patented algorithms.  It has been adopted by the
+GNU project and is now relatively popular on the
+Internet.
+
+Gzip was written by Jean-loup Gailly and Mark Adler.
+

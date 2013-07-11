@@ -1,0 +1,172 @@
+#!/bin/bash
+#  Copyright (C) 2010  Thomas Bourdon, <tb@halpanet.org>
+#  Copyright (C) 2011-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+P=nfs-utils
+
+# Get the latest version of the tarball:
+if [[ -z $V ]]; then
+  printf -v V "%s" ""*.tar.lz""
+  V=${V##*-}
+  V=${V%.tar.*}
+fi
+
+B=${B:-1}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+# The architecture (ARCH) can be exported:
+ARCH=${ARCH:-i486}
+
+# Flags for the compiler (according to the ARCH):
+case "$ARCH" in
+  i486)
+    DCFLAGS="-O2 -march=i486 -mtune=i686";
+    ;;
+  x86_64)
+    DCFLAGS="-O2 -mtune=generic"
+    libSuffix=64
+    ;;
+  *)
+    DCFLAGS="$DCFLAGS"
+    libSuffix="$libSuffix"
+    ;;
+esac
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j3}
+
+PKG=${TMP}/package-${P}
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/${P}-${V}
+tar -xvf ${CWD}/${P}-${V}.tar.lz -C "$TMP"
+
+cd ${TMP}/${P}-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+  \( -perm 2777 -o -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \
+  \) -exec chmod 755 {} + \
+  -o \
+  \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \
+  \) -exec chmod 644 {} + 
+
+# Apply this patch to compile nfs-utils-1.2.4:
+if [[ $V = 1.2.5 ]]; then
+  zcat ${CWD}/03-handle-mtab-symlink.patch.gz | patch -p1 --verbose
+  zcat ${CWD}/18-dont-use-PAGE_SIZE.patch.gz | patch -p1 --verbose
+fi
+
+# Note:
+#
+# The NFSv4 support require additional libraries.
+#
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sbindir=/sbin \
+ --libdir=/usr/lib${libSuffix} \
+ --mandir=/usr/man \
+ --with-statedir=/var/lib/nfs \
+ --enable-mountconfig \
+ --disable-nfsv4 \
+ --disable-nfsv41 \
+ --disable-gss \
+ --disable-tirpc \
+ --disable-ipv6 \
+ --program-prefix= \
+ --program-suffix= \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS || make;
+make install DESTDIR=$PKG
+
+# Include configuration file from nfs-utils:
+if [[ -f utils/mount/nfsmount.conf ]]; then
+  mkdir -p ${PKG}/etc
+  sed -e "s%# Defaultvers=4%Defaultvers=3%g" \
+   utils/mount/nfsmount.conf > ${PKG}/etc/nfsmount.conf.new
+fi
+
+# Set permissions:
+find ${PKG}/sbin -type f | xargs chmod -v 0750
+
+# Strip binaries, libraries and archives:
+find $PKG -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+ cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || :
+
+find $PKG -type f | xargs file | grep "current ar archive" | \
+ cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null || :
+
+# These might be in use:
+( cd ${PKG}/var/lib/nfs
+  for config_file in etab rmtab state xtab ; do
+    mv $config_file ${config_file}.new
+  done
+)
+
+# No NFSv4 yet.
+rm -f ${PKG}/sbin/*nfs4
+
+# Add configuration:
+install -m 0644 ${CWD}/exports -D ${PKG}/etc/exports.new
+
+# Add init script:
+install -m 0755 ${CWD}/runit/run -D ${PKG}/etc/sv/knfsd/run.new
+install -m 0755 ${CWD}/runit/finish -D ${PKG}/etc/sv/knfsd/finish.new
+install -d ${PKG}/etc/runit/runsvdir/default
+( cd ${PKG}/etc/runit/runsvdir/default
+  ln -sf /etc/sv/knfsd .
+)
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -name "*.?" -exec gzip -9N {} \;
+  for manpage in $(find . -type l); do
+    ln -s $(readlink $manpage).gz ${manpage}.gz
+    rm -f $manpage
+  done
+)
+ 
+# Add documentation:
+mkdir -p ${PKG}/usr/doc/${P}-${V}/statd
+install -m 0644 \
+  COPYING INSTALL NEWS README \
+  ${PKG}/usr/doc/${P}-${V}
+install -m 0644 \
+  utils/statd/COPYING utils/statd/TODO \
+  ${PKG}/usr/doc/${P}-${V}/statd
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
+

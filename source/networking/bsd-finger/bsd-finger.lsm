@@ -1,0 +1,17 @@
+Begin3
+Title:          bsd-finger
+Version:        0.17
+Entered-date:   Jul 30 2000
+Description:    Basic network tools, fixed and ported from BSD code.
+                Updates bsd-finger-0.16.
+                Contains: finger fingerd
+Keywords: daemons network tools netkit security
+Author:         various
+Maintained-by:  netbug@ftp.uk.linux.org (NetKit maintainer)
+Primary-site:   ftp.uk.linux.org /pub/linux/Networking/netkit
+                    bsd-finger-0.17.tar.gz 25521
+Alternate-site: sunsite.unc.edu /pub/Linux/system/Network
+Original-site:  
+Platform:       Portable; intended for Linux
+Copying-policy: BSD
+End

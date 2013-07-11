@@ -1,0 +1,6 @@
+libksba - CMS and X.509 access library.
+
+The libksba package contains a library used to make X.509 certificates as
+well as making the Cryptographic Message Syntax easily accessible by
+other applications.
+

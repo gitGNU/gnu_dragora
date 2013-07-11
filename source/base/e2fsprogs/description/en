@@ -1,0 +1,6 @@
+e2fsprogs - Ext2 filesystem utilities.
+
+The Ext2 Filesystem Utilities (e2fsprogs) contain all of the
+standard utilities for creating, fixing, configuring, and
+debugging Ext2 filesystems.
+

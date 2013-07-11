@@ -1,0 +1,6 @@
+vte - Librería para emuladores de terminales basados en GTK+.
+
+El paquete vte (Virtual Terminal Emulator) contiene una
+implementación del archivo termcap para los emuladores
+de terminales.
+

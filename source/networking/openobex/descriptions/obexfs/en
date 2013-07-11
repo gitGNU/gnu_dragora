@@ -1,0 +1,4 @@
+obexfs - FUSE filesystem to access OBEX.
+
+Obexfs is a FUSE filesystem to access to the OBEX protocol.
+

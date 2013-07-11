@@ -1,0 +1,6 @@
+dcron - Dillon's cron.
+
+Dillon's Cron is a multi-user cron written from scratch, similar to
+vixie-cron but with major differences.  Attention is paid less to
+feature-creep and more to usability and reliability.
+

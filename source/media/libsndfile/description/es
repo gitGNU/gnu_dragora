@@ -1,0 +1,6 @@
+libsndfile - Librería para leer y escribir muestras de sonido.
+
+Libsndfile es una librería C para la lectura y escritura de archivos que
+contienen muestras de sonido (como MS Windows WAV y el formato Apply/SGI
+AIFF) a través de una interfaz de librería estándar.
+

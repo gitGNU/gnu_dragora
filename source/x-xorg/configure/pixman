@@ -1,0 +1,16 @@
+if [ "$archPackage" = "i486" ]; then
+  EXTRA_OPTIONS="--disable-sse2"
+fi
+
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --libdir=/usr/lib${libSuffix} \
+ --localstatedir=/var \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --enable-static=no \
+ --enable-shared=yes \
+ --enable-vmx=no \
+ $EXTRA_OPTIONS \
+ $BUILD_SYSTEM

@@ -1,0 +1,6 @@
+suspend-utils - Userland support for suspend.
+
+This package contains some userland tools allowing you to suspend
+a GNU/Linux system either to disk or to RAM.  These tools provide
+some capabilities that are not available in the vanilla Linux kernel.
+

@@ -1,0 +1,14 @@
+# Begin /etc/xinetd.d/login
+
+service login
+{
+   disable        = yes
+   socket_type    = stream
+   protocol       = tcp
+   wait           = no
+   user           = 0
+   server         = /usr/sbin/in.rlogind
+   log_type       = SYSLOG local4 info
+}
+
+# End /etc/xinetd.d/login

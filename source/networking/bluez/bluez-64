@@ -1,0 +1,143 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.98
+ARCH=${ARCH:-x86_64}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-bluez
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/bluez-${V}
+lzip -cd ${CWD}/bluez-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/bluez-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc \
+ --mandir=/usr/man \
+ --localstatedir=/var \
+ --libdir=/usr/lib64 \
+ --libexecdir=/lib \
+ --enable-pnat \
+ --enable-gstreamer \
+ --enable-alsa \
+ --enable-usb \
+ --enable-tools \
+ --enable-bccmd \
+ --enable-pcmcia \
+ --enable-hid2hci \
+ --enable-dfutool \
+ --enable-hidd \
+ --enable-pand \
+ --enable-dund \
+ --enable-cups \
+ --disable-static \
+ --disable-debug \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+find ${PKG}/usr/sbin -type f | xargs chmod -v 750
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Move files on etc/ to handle config:
+( cd ${PKG}/etc
+  mv bluetooth/main.conf{,.new}
+  mv bluetooth/rfcomm.conf{,.new}
+  mv dbus-1/system.d/bluetooth.conf{,.new}
+)
+
+# Add our bluez daemon:
+mkdir -p ${PKG}/etc/rc.d
+zcat ${CWD}/rc.bluez.gz > ${PKG}/etc/rc.d/rc.bluez.new
+chmod 755 ${PKG}/etc/rc.d/rc.bluez.new
+zcat ${CWD}/rc.bluez.conf > ${PKG}/etc/rc.d/rc.bluez.conf.new
+
+# Include the simple-agent script if available:
+if [[ -f test/simple-agent ]]; then
+  install -v -m 0750 test/simple-agent -D ${PKG}/usr/sbin/simple-agent
+fi
+
+# Compress and link manpages:
+( cd $PKG/usr/man
+  find . -type f -exec gzip -9N '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/bluez-${V}
+cp -a \
+ AUTHORS COPYING* NEWS README ChangeLog \
+ ${PKG}/usr/doc/bluez-${V}
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/bluez-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,11 @@
+portmap - un demonio para administrar las conexiones RPC.
+
+El portmapper es un demonio de red que se utiliza para administrar las
+conexiones a los servicios de RPC. Los demonios que ofrecen servicios
+de RPC (como los demonios de NFS) le dicen al portmapper en qué puertos
+escuchar. A diferencia de los servicios registrados con el xinetd, los
+números de puerto de red se pueden cambiar cada vez que se arranca el
+sistema.
+
+El portmapper es necesario para utilizar NFS y otros servicios RPC.
+

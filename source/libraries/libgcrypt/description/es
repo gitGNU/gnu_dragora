@@ -1,0 +1,5 @@
+libgcrypt - Librería básica de criptografía.
+
+El paquete libgcrypt contiene una librería de criptografía de
+propósito general basada en el código usado en GnuPG.
+

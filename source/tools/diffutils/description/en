@@ -1,0 +1,5 @@
+diffutils - Utilities to differentiate files.
+
+The set of utilities contains GNU diff programs showing the
+differences between files and directories.
+

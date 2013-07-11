@@ -1,0 +1,6 @@
+libmng - Multiple image network graphics library.
+
+The libmng library supports decoding, displaying, encoding, and various
+other manipulations of the Multiple-image Network Graphics (MNG) format
+image files.
+

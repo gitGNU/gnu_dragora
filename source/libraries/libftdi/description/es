@@ -1,0 +1,6 @@
+libftdi - Librería para hablar con chips FTDI.
+
+libftdi es una librería de código-abierto para hablar con chips FTDI:
+FT232BM, FT245BM, FT2232C, FT2232D y FT245R, incluyendo el popular
+modo bitbang.
+

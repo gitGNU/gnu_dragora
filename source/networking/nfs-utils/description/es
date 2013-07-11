@@ -1,0 +1,7 @@
+nfs-utils - Demonios y utilidades del sistema de archivos NFS.
+
+El paquete nfs-utils contiene los demonios y las utilidades
+necesarias para ejecutar un servidor NFS en GNU/Linux.
+
+Usted también necesitará el paquete portmap para usar NFS.
+

@@ -1,0 +1,10 @@
+dhcp - Suite de herramientas de DHCP.
+
+Este paquete ofrece una libremente redistribuible implementación de
+referencia de todos los aspectos de DHCP, a través de una suite de
+herramientas de DHCP:
+
+ * Un servidor DHCP
+ * Un cliente DHCP
+ * Un agente de relevo DHCP
+

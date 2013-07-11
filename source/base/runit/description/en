@@ -1,0 +1,11 @@
+runit - A UNIX init scheme with service supervision.
+
+Runit is a cross-platform Unix init scheme with service supervision,
+a replacement for sysvinit, and other init schemes.  It runs on
+GNU/Linux, *BSD, MacOSX, Solaris, and can easily be adapted to other
+Unix operating systems.
+
+Runit was written by Gerrit Pape.
+
+For more information, visit:  http://smarden.org/runit
+

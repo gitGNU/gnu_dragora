@@ -1,0 +1,105 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.22
+ARCH=${ARCH:-x86_64}
+B=1
+
+PKG=${TMP}/package-libcap
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/libcap-${V}
+tar xvf ${CWD}/libcap-${V}.tar.lz -C $TMP
+
+cd ${TMP}/libcap-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Change the location of the manpages:
+sed -i -e s#'man_prefix=$(prefix)/share'#'man_prefix=$(prefix)'# Make.Rules
+
+# Compiles without debug information:
+sed -i 's/-g #-DDEBUG//' Make.Rules
+
+make
+make install FAKEROOT=$PKG
+
+# Set properly for the /sbin directory:
+for file in ${PKG}/sbin/* ; do
+  if [[ ( -f $file && ! -L $file ) ]]; then
+    chmod -v 750 $file
+  fi
+done
+
+# Fix library permissions:
+find ${PKG}/lib64 -type f -name 'libcap.so*' | xargs chmod 755
+
+# Copy contrib scripts:
+mkdir -p ${PKG}/usr/bin
+cp -a contrib/pcaps4* ${PKG}/usr/bin
+find ${PKG}/usr/bin -type f | xargs chmod 755
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null
+)
+
+# Compress man-pages:
+( cd ${PKG}/usr/man ; gzip -9N man?/*.? )
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/libcap-${V}
+cp -a \
+ License CHANGELOG README doc/capability.notes \
+ ${PKG}/usr/doc/libcap-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/libcap-${V}-${ARCH}-${B}.tlz
+

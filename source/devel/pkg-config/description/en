@@ -1,0 +1,6 @@
+pkg-config - Tool to compile/link.
+
+The pkg-config program is used to retrieve information about
+installed libraries in the system.  It is typically used to
+compile and link against one or more libraries.
+

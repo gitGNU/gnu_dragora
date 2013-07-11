@@ -1,0 +1,31 @@
+_hierarchyfs:Base skeleton of Dragora GNU/Linux (AS):ON:_hierarchyfs-2.0 - Size 4.0K [C], 60K [U].
+acl:Access Control Lists:ON:acl-2.2.51 - Size 132K [C], 440K [U].
+attr:Extended attributes:ON:attr-2.4.46 - Size 76K [C], 250K [U].
+bash:Sh-compatible shell:ON:bash-4.2 - Size 1.1M [C], 5.0M [U].
+coreutils:The GNU core utilities:ON:coreutils-8.16 - Size 2.3M [C], 14M [U].
+dcron:Dillon's cron:ON:dcron-4.5 - Size 36K [C], 110K [U].
+dialog:Display dialog boxes in scripts:ON:dialog-1.1-20111020 - Size 164K [C], 500K [U].
+e2fsprogs:Ext2 filesystem utilities:ON:e2fsprogs-1.42.2 - Size 800K [C], 3.6M [U].
+etc:Configuration files of the system:ON:etc-2.6 - Size 8.0K [C], 40K [U].
+gcc_libs:C/C++ shared libraries:ON:gcc_libs-4.5.3 - Size 244K [C], 1020K [U].
+grub2:The GRand Unified Bootloader:ON:grub2-rev3964 - Size 4.6M [C], 17M [U].
+iana-etc:Provides /etc/services and /etc/protocols files:ON:iana-etc-2.30 - Size 184K [C], 810K [U].
+inetutils:Collection of common network programs:ON:inetutils-1.9 - Size 448K [C], 2.0M [U].
+kbd:Keyboard and console utilities for Linux:ON:kbd-1.15.3 - Size 1.1M [C], 3.6M [U].
+lilo:The Linux loader:ON:lilo-23.2 - Size 144K [C], 350K [U].
+logrotate:Rotates system logs:ON:logrotate-3.8.0 - Size 40K [C], 100K [U].
+lvm2:Logical Volume Management version 2:ON:lvm2-2.02.95 - Size 776K [C], 3.3M [U].
+man-pages:Various manual pages:ON:man-pages-3.39 - Size 2.2M [C], 4.0M [U].
+mdadm:A tool for managing software RAID:ON:mdadm-3.2.3 - Size 292K [C], 860K [U].
+module-init-tools:Utilities to handle Kernel modules:ON:module-init-tools-20111217 - Size 388K [C], 1.3M [U].
+pkgsystem:The package system of Dragora:ON:pkgsystem-2.6 - Size 24K [C], 100K [U].
+procps:The /proc file system utilities:ON:procps-3.2.8 - Size 196K [C], 540K [U].
+psmisc:Small utilities that use the /proc filesystem:ON:psmisc-22.13 - Size 108K [C], 550K [U].
+runit-2:A UNIX init scheme with service supervision:ON:runit-2.1.1 - Size 376K [C], 1.9M [U].
+runitscheme:Init scheme of Dragora GNU/Linux:ON:runitscheme-3.3 - Size 8.0K [C], 50K [U].
+shadow:The shadow tool suite:ON:shadow-4.1.5 - Size 1.4M [C], 5.0M [U].
+slocate:Secure version of GNU locate:ON:slocate-3.1 - Size 28K [C], 90K [U].
+sysfsutils:System utilities based on sysfs:ON:sysfsutils-2.1.0 - Size 44K [C], 210K [U].
+sysklogd:GNU/Linux system logging utilities:ON:sysklogd-20100910 - Size 64K [C], 160K [U].
+udev:Dynamic device management:ON:udev-175 - Size 300K [C], 1.7M [U].
+util-linux:The suite of essential utilities:ON:util-linux-2.19.1 - Size 1.5M [C], 7.2M [U].

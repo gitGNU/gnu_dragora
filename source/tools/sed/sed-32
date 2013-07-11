@@ -1,0 +1,87 @@
+#!/bin/bash
+#  Copyright (C) 2009  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=4.2.1
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-sed
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/sed-${V}
+tar xvf ${CWD}/sed-${V}.tar.lz -C $TMP
+
+cd ${TMP}/sed-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . -perm 777 | xargs chmod 755
+find . -perm 664 | xargs chmod 644
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --bindir=/bin \
+ --infodir=/usr/info \
+ --mandir=/usr/man \
+ --htmldir=/usr/doc/sed-${V} \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make html
+if [[ -n $CHECK ]]; then
+  make check;
+fi
+make install DESTDIR=$PKG
+
+strip -s ${PKG}/bin/sed
+
+# Compress GNU info documents:
+rm -f ${PKG}/usr/info/dir # Redundancy
+gzip -9N ${PKG}/usr/info/*
+
+# Compress sed man-page:
+gzip -9N ${PKG}/usr/man/man1/sed.1
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/sed-${V}
+cp -a \
+ ABOUT-NLS AUTHORS BUGS COPYING ChangeLog NEWS README* THANKS doc/sed.html \
+ ${PKG}/usr/doc/sed-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/sed-${V}-${ARCH}-${B}.tlz
+

@@ -1,0 +1,19 @@
+#(
+#  cd scripts
+#  zcat \
+#   ${currentWorkDir}/patches/files/xfce-utils/xinitrc.diff.gz | \
+#    patch -p0 --verbose
+#)
+
+zcat \
+ ${currentWorkDir}/patches/files/xfce-utils/bug8154.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfce-utils/rhbz760621.patch.gz | \
+  patch -p1 --verbose
+
+zcat \
+ ${currentWorkDir}/patches/files/xfce-utils/add-semicolon.patch.gz | \
+  patch -p1 --verbose
+

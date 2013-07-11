@@ -1,0 +1,9 @@
+binutils - Las utilidades binarias de GNU.
+
+Binutils es una colección de herramientas de programación para la
+manipulación de código de objeto en varios formatos de archivos
+objeto. Estas herramientas consisten en el enlazador de GNU (ld),
+el ensamblador GNU (as) y el analizador (gprof).  Hay también,
+una colección de otras herramientas binarias como el
+desensamblador (objdump).
+

@@ -1,0 +1,9 @@
+mtPaint - Programa de pintura de Mark Tyler.
+
+mtPaint es un programa de pintura basado en GTK+1/2 diseñado para
+la creación de iconos y obras de arte basada en pixel. Se puede
+editar la paleta indexada o imágenes de 24 bits RGB y ofrece
+herramientas de manipulación de la paleta y la pintura.
+
+La página principal de mtPaint en http://mtpaint.sf.net
+

@@ -1,0 +1,111 @@
+#!/bin/bash
+#  Copyright (C) 2010-2011  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=2.2.4
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+PKG=${TMP}/package-slang
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/slang-${V}
+tar -xvf ${CWD}/slang-${V}.tar.lz -C $TMP
+
+cd ${TMP}/slang-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --sysconfdir=/etc/slang \
+ --mandir=/usr/man \
+ --docdir=/usr/doc/slang-${V} \
+ --htmldir=/usr/doc/slang-${V}/html \
+ --localstatedir=/var \
+ --with-readline=gnu \
+ --build=${ARCH}-dragora-linux-gnu
+
+make
+make install DESTDIR=$PKG
+
+# Fix permissions:
+find ${PKG}/usr/lib64 -type f -name '*.so*' | xargs chmod -v 755
+
+# To handle config:
+mv ${PKG}/etc/slang/slsh.rc{,.new}
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress man page(s):
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/slang-${V}
+if [[ -d ${PKG}/usr/share/doc ]]; then
+  mv ${PKG}/usr/share/doc/* ${PKG}/usr/doc/slang-${V}
+  rmdir -p ${PKG}/usr/share/doc || true;
+fi
+cp -a \
+ COPYING NEWS README changes.txt \
+ ${PKG}/usr/doc/slang-${V}
+
+# Add the post install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/descriptions/jed/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/slang-${V}-${ARCH}-${B}.tlz
+

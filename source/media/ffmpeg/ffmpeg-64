@@ -1,0 +1,116 @@
+#!/bin/bash
+#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=0.8.10
+ARCH=${ARCH:-x86_64}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j7}
+
+PKG=${TMP}/package-ffmpeg
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/ffmpeg-${V}
+lzip -cd ${CWD}/ffmpeg-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/ffmpeg-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure --enable-gpl --enable-version3 \
+ --prefix=/usr \
+ --libdir=/usr/lib64 \
+ --disable-static \
+ --enable-shared \
+ --as=yasm \
+ --enable-pic \
+ --enable-pthreads \
+ --enable-postproc \
+ --enable-avfilter \
+ --enable-libmp3lame \
+ --enable-libspeex \
+ --enable-libtheora \
+ --enable-libvorbis \
+ --enable-libvpx \
+ --enable-libx264 \
+ --enable-libxvid \
+ --enable-zlib \
+ --disable-debug \
+ --disable-stripping
+
+# Changes the installation path of shared libraries:
+sed -i \
+ 's@SHLIBDIR=$(DESTDIR)${prefix}/lib@SHLIBDIR=$(DESTDIR)${prefix}/lib64@g' \
+ config.mak
+ 
+make $JOBS
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Copy the documentation:
+mkdir -p ${PKG}/usr/doc/ffmpeg-${V}/txt
+cp -a \
+ COPYING* CREDITS LICENSE MAINTAINERS README RELEASE VERSION \
+ ${PKG}/usr/doc/ffmpeg-${V}
+cp -a \
+ doc/*.txt doc/APIchanges doc/TODO \
+ ${PKG}/usr/doc/ffmpeg-${V}/txt
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/ffmpeg-${V}-${ARCH}-${B}.tlz
+

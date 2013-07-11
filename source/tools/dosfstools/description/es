@@ -1,0 +1,7 @@
+dosfstools - Herramientas del sistema de archivos DOS.
+
+El paquete dosfstools incluye las utilidades mkdosfs (alias mkfs.dos y
+mkfs.vfat) y dosfsck (alias fsck.msdos y fsck.vfat), que respectivamente
+hacen y comprueban los sistema de archivos FAT MS-DOS en discos duros o
+en disquetes.
+

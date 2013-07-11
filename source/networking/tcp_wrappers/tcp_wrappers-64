@@ -1,0 +1,121 @@
+#!/bin/bash
+#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=7.6
+ARCH=${ARCH:-x86_64}
+B=1
+
+PKG=${TMP}/package-tcp_wrappers
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/tcp_wrappers-${V}
+lzip -cd ${CWD}/tcp_wrappers_${V}.tar.lz | tar -xvf - -C $TMP
+
+cd $TMP
+mv tcp_wrappers_${V} tcp_wrappers-${V}
+cd tcp_wrappers-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Apply patches from Debian:
+for file in ${CWD}/patches/*.gz ; do
+  zcat $file | { patch -p1 --verbose || patch -p0 --verbose; }
+done
+
+make REAL_DAEMON_DIR=/usr/sbin STYLE=-DPROCESS_OPTIONS linux
+
+# Install manually.
+
+# The binaries:
+for file in safe_finger tcpd tcpdchk tcpdmatch try-from ; do
+  install -m 750 $file -D ${PKG}/usr/sbin/$file
+done
+
+# The libraries:
+install -m 644 libwrap.a -D ${PKG}/usr/lib64/libwrap.a
+cp -a shared/libwrap.so* ${PKG}/usr/lib64
+chmod 755 ${PKG}/usr/lib64/libwrap.so.0.${V}
+
+# The headers:
+install -m 644 tcpd.h -D ${PKG}/usr/include/tcpd.h
+
+# The manpages:
+mkdir -p ${PKG}/usr/man/man{3,5,8}
+gzip -9c < hosts_access.3 > ${PKG}/usr/man/man3/hosts_access.3.gz
+gzip -9c < hosts_access.5 > ${PKG}/usr/man/man5/hosts_access.5.gz
+gzip -9c < hosts_options.5 > ${PKG}/usr/man/man5/hosts_options.5.gz
+gzip -9c < safe_finger.8 > ${PKG}/usr/man/man8/safe_finger.8.gz
+gzip -9c < tcpd.8 > ${PKG}/usr/man/man8/tcpd.8.gz
+gzip -9c < tcpdchk.8 > ${PKG}/usr/man/man8/tcpdchk.8.gz
+gzip -9c < tcpdmatch.8 > ${PKG}/usr/man/man8/tcpdmatch.8.gz
+gzip -9c < try-from.8 > ${PKG}/usr/man/man8/try-from.8.gz
+
+# The documentation:
+mkdir -p ${PKG}/usr/doc/tcp_wrappers-${V}
+install -m 644 \
+ BLURB CHANGES DISCLAIMER README README.NIS \
+ ${PKG}/usr/doc/tcp_wrappers-${V}
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip -s 2> /dev/null
+)
+strip -g ${PKG}/usr/lib64/libwrap.a
+
+# Handle config files:
+mkdir -p ${PKG}/etc
+cat ${CWD}/hosts.allow > ${PKG}/etc/hosts.allow.new
+cat ${CWD}/hosts.deny > ${PKG}/etc/hosts.deny.new
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/tcp_wrappers-${V}-${ARCH}-${B}.tlz
+

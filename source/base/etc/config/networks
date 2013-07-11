@@ -1,0 +1,7 @@
+# /etc/networks:  Network name information for the TCP/IP subsystem.
+#                 This file is used when no nameservers are running.
+#
+# For more information, type "man 5 networks".
+
+loopback        127.0.0.0
+localnet        127.0.0.0

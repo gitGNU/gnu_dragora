@@ -1,0 +1,5 @@
+popt - Command-line option parsing library.
+
+The popt package contains the popt libraries which are used by some
+programs to parse command-line options.
+
