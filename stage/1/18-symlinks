@@ -7,8 +7,7 @@
 for file in bash cat echo file pwd perl ; do
   ln -sf /tools/bin/${file} ${ROOT}/bin
 done
-ln -sf /tools/bin/gcc ${ROOT}/bin/cc
-ln -sf /proc/mounts ${ROOT}/etc/mtab
+ln -sf /proc/self/mounts ${ROOT}/etc/mtab
 
 ln -sf /tools/lib/libstdc++.a ${ROOT}/lib
 sed 's/tools/usr/' /tools/lib/libstdc++.la \
