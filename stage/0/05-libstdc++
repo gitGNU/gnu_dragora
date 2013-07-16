@@ -22,9 +22,6 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
-CXX="${TARGET}-g++" \
-AR="${TARGET}-ar" \
-RANLIB="${TARGET}-ranlib" \
 ../gcc-${version}/libstdc++-v3/configure \
  --prefix=/tools \
  --libdir=/tools/lib \
