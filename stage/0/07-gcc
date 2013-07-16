@@ -36,6 +36,7 @@ for file in gcc/config/mips/linux64.h gcc/config/mips/linux.h ; do
   sed -i \
       -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
       -e 's@lib/ld.so.1@lib/ld-musl-mips.so.1@' \
+      -e 's@lib32/ld.so.1@lib/ld-musl-mips.so.1@' \
       -e 's@lib64/ld.so.1@lib/ld-musl-mips.so.1@' \
       -e 's@/usr@/tools@g' $file
   echo '
