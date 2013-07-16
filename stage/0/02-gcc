@@ -98,11 +98,10 @@ cd ../gcc-build
  --disable-libitm \
  --disable-libgomp \
  --disable-decimal-float \
- --enable-languages=c,c++ \
- --enable-build-with-cxx \
  --disable-libstdc++-v3 \
  --disable-libatomic \
  --disable-libsanitizer \
+ --enable-languages=c,c++ \
  --without-ppl \
  --without-cloog
 
