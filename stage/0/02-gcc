@@ -70,6 +70,12 @@ for src in ${SRCDIR}/gmp-* ${SRCDIR}/mpfr-* ${SRCDIR}/mpc-* ; do
   fi
 done
 
+# Avoid specific Glibc code
+( cd libstdc++-v3/config/os
+  rm -rf gnu-linux
+  ln -sf generic gnu-linux
+)
+
 # Do not build the .info files. They are not needed here
 sed -i 's/BUILD_INFO=info/BUILD_INFO=/' gcc/configure
 
