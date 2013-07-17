@@ -30,7 +30,6 @@ for file in \
  gcc/config/linux.h gcc/config/i386/linux.h gcc/config/i386/linux64.h gcc/config/i386/sysv4.h ; \
 do \
   sed -i \
-      -e 's@/usr@/@g' \
       -e 's@lib/ld-linux.so.2@lib/ld-musl-i386.so.1@' \
       -e 's@lib64/ld-linux-x86-64.so.2@lib/ld-musl-x86_64.so.1@' \
       $$file ; \
@@ -39,8 +38,8 @@ done
 # MIPS
 for file in gcc/config/mips/linux64.h gcc/config/mips/linux.h ; do \
   sed -i \
-      -e 's@/usr@/@g' \
       -e 's@lib/ld.so.1@lib/ld-musl-mips.so.1@' \
+      -e 's@lib32/ld.so.1@lib/ld-musl-mips.so.1@' \
       -e 's@lib64/ld.so.1@lib/ld-musl-mips.so.1@' \
       $$file ; \
 done
@@ -48,7 +47,6 @@ done
 # ARM
 for file in gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h ; do \
   sed -i \
-      -e 's@/usr@/@g' \
       -e 's@lib/ld-linux.so.2@lib/ld-musl-arm.so.1@' \
       -e 's@lib/ld-linux.so.3@lib/ld-musl-arm.so.1@' \
       $$file ; \
