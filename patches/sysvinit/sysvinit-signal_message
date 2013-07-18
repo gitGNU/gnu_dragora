@@ -1,0 +1,19 @@
+--- src/init.c.orig	2010-04-13 06:48:54.000000000 -0300
++++ src/init.c	2013-07-18 16:37:07.000000000 -0300
+@@ -1498,14 +1498,14 @@
+ 		case 0: /* Send TERM signal */
+ 			if (talk)
+ 				initlog(L_CO,
+-					"Sending processes the TERM signal");
++					"Sending processes configured via /etc/inittab the TERM signal");
+ 			kill(-(ch->pid), SIGTERM);
+ 			foundOne = 1;
+ 			break;
+ 		case 1: /* Send KILL signal and collect status */
+ 			if (talk)
+ 				initlog(L_CO,
+-					"Sending processes the KILL signal");
++					"Sending processes configured via /etc/inittab the KILL signal");
+ 			kill(-(ch->pid), SIGKILL);
+ 			break;
+ 	}

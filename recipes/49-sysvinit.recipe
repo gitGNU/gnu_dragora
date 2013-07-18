@@ -18,6 +18,11 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
+# Change the confused message "Sending processes the <SIGNAL> signal"
+# to "Sending processes configured via /etc/inittab the <SIGNAL> signal"
+# (Thanks to LFS)
+patch -Np0 -i ${patchdir}/sysvinit/sysvinit-signal_message
+
 patch -Np0 -i ${patchdir}/sysvinit/sysvinit-2.88dfs
 
 # To compile
