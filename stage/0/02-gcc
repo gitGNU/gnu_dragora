@@ -59,7 +59,7 @@ for file in gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h ; do
 #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
 done
 
-# GCC built-in prerequisites (if are available)
+# GCC built-in prerequisites (if available)
 for src in ${SRCDIR}/gmp-* ${SRCDIR}/mpfr-* ${SRCDIR}/mpc-* ; do
   if [ -f "$src" ]; then
     tar xf $src
