@@ -25,13 +25,10 @@ make
 make install DESTDIR=$destdir
 
 # Automatic installation setup
-DESTDIR=$destdir ./perp/perp-setup /etc/rc.d/services
+DESTDIR=$destdir ./perp/perp-setup /etc/perp
 
 # We don't include perp-setup
 rm -f ${destdir}/sbin/perp-setup ${destdir}/share/man/man8/perp-setup.8
-
-# Make symlink compatibility
-( cd ${destdir}/etc ; ln -s rc.d/services perp ; )
 
 # Compress and link manual pages (if needed)
 if [ -d ${destdir}/share/man ] ; then \
