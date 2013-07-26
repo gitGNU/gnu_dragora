@@ -132,10 +132,10 @@ fi
 )
 
 # Delete temporary build directory
-if [ -d ${tmpdir}/gcc-build ] ; then \
-  cd $tmpdir ; \
-  rm -rf gcc-build ; \
-fi
+#if [ -d ${tmpdir}/gcc-build ] ; then \
+#  cd $tmpdir ; \
+#  rm -rf gcc-build ; \
+#fi
 
 reclinker -rf /pkg/${program}-${version} /
 

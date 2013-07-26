@@ -94,10 +94,10 @@ fi
 )
 
 # Delete temporary build directory
-if [ -d ${tmpdir}/binutils-build ] ; then \
-  cd $tmpdir ; \
-  rm -rf binutils-build ; \
-fi
+#if [ -d ${tmpdir}/binutils-build ] ; then \
+#  cd $tmpdir ; \
+#  rm -rf binutils-build ; \
+#fi
 
 reclinker -rf /pkg/${program}-${version} /
 
