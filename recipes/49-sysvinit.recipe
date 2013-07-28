@@ -38,6 +38,7 @@ mkdir -p ${destdir}/bin \
          ${destdir}/share/man/man8 \
          ${destdir}${docdir}
 
+# Install and link the binaries
 install -m 755 mesg ${destdir}/bin/
 ( cd ${destdir}/bin ; \
   ln -sf ../sbin/killall5 pidof ; \
@@ -48,12 +49,14 @@ for file in bootlogd fstab-decode halt init \
 do \
   install -m 755 $$file ${destdir}/sbin/ ; \
 done
-ln -sf halt	${destdir}/sbin/poweroff
-ln -sf halt	${destdir}/sbin/reboot
-ln -sf init	${destdir}/sbin/telinit
+ln -sf halt ${destdir}/sbin/poweroff
+ln -sf halt ${destdir}/sbin/reboot
+ln -sf init ${destdir}/sbin/telinit
 
+# Install a header part of sysvinit
 install -m 644 initreq.h ${destdir}/include
 
+# Install and compress the manpages
 cd ../man
 gzip -9c < mesg.1 > ${destdir}/share/man/man1/mesg.1.gz
 for page in initscript.5 inittab.5 ; do \
