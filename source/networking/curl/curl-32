@@ -1,18 +1,18 @@
 #!/bin/bash
-#  Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
+# Copyright (C) 2013  Lucas Sköldqvist <frusen@dragora.org>
 #
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 set -e
 
@@ -21,7 +21,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=7.24.0
+V=7.31.0
 ARCH=${ARCH:-i486}
 B=1
 
@@ -110,4 +110,3 @@ cp ${CWD}/description/* ${PKG}/description
 
 cd $PKG
 makepkg -l ${OUT}/curl-${V}-${ARCH}-${B}.tlz
-
