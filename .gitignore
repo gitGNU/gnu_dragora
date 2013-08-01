@@ -1,4 +1,7 @@
 
+# Directories
+sources/
+
 # Extensions
 *.tlz
 *.tlz.sig
