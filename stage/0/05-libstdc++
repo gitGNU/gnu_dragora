@@ -27,6 +27,7 @@ cd ../gcc-build
  --libdir=/tools/lib \
  --libexecdir=/tools/lib \
  --host=$TARGET \
+ --enable-clocale=generic \
  --disable-multilib \
  --disable-nls \
  --disable-shared \
