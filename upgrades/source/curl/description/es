@@ -1,0 +1,9 @@
+curl - Herramienta para transferir archivos con sintaxis de URL.
+
+Curl es una herramienta para la transferencia de archivos con
+sintaxis de URL, soportando FTP, FTPS, HTTP, HTTPS, SCP,
+SFTP, TFTP, TELNET, DICT, LDAP, LDAPS, FILE y más.
+
+Visite el sitio web de Curl en:
+http://curl.haxx.se
+

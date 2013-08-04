@@ -1,0 +1,10 @@
+poppler - Biblioteca libre para ver documentos PDF.
+
+Poppler es una biblioteca de software libre para ver documentos PDF.
+Es mantenida por freedesktop.org.  Poppler se basa en el código
+base de Xpdf-3.0 y fue creado por dos razones indicadas: permitir
+una reutilización más fácil del motor de representación así se
+permite que se reduzca el trabajo redundante, e ir más allá de
+las metas de Xpdf e integrar más de cerca y reutilicar más la
+funcionalidad que proporciona el sistema operativo.
+
