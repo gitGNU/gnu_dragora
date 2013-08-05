@@ -19,7 +19,7 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-CFLAGS="$flags -D_GNU_SOURCE" \
+CFLAGS="$flags" \
 ../binutils-${version}/configure LDFLAGS="--static" \
  --prefix=/tools \
  --host=$BUILD \
