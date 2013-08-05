@@ -89,8 +89,8 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
-CC="${TARGET}-gcc" \
-CXX="${TARGET}-g++" \
+CC="${TARGET}-${CC}" \
+CXX="${TARGET}-${CXX}" \
 AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
 ../gcc-${version}/configure \

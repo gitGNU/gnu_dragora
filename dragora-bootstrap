@@ -36,6 +36,12 @@ usage() {
    "  -k, --keep                 keep temporary directory"                   \
    "  -f, --file                 build a specified file"                     \
    "  -j<n>                      parallel jobs for the compiler"             \
+   ""                                                                        \
+   "Some influential environment variables:"                                 \
+   ""                                                                        \
+   "  CC          C compiler command [gcc]"                                  \
+   "  CXX         C++ compiler command [g++]"                                \
+   "  flags       Compiler flags for C, C++"                                 \
    ""
 }
 
@@ -76,7 +82,10 @@ PATCHDIR=${CWD}/patches
 STAGEDIR=${CWD}/stage
 SRCDIR=${CWD}/sources
 KEEPDIR=KEEPDIR_NO
-TARGET="$(gcc -dumpmachine | sed -e 's/-[^-]*/-custom/')"
+CC=${CC:-gcc}
+CXX=${CXX:-g++}
+BUILD="$(${CC} -dumpmachine)"
+TARGET="$(printf $BUILD | sed -e 's/-[^-]*/-custom/')"
 jobs=-j1
 
 # Options
@@ -117,7 +126,7 @@ do
       exit
       ;;
     -V|--version)
-      echo "dragora-bootstrap 1.3"
+      echo "dragora-bootstrap 1.4"
       echo "Copyright (C) 2012-2013 Matias A. Fonzo."
       echo "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."

@@ -22,6 +22,8 @@ cd ../binutils-build
 CFLAGS="$flags -D_GNU_SOURCE" \
 ../binutils-${version}/configure LDFLAGS="--static" \
  --prefix=/tools \
+ --host=$BUILD \
+ --build=$BUILD \
  --target=$TARGET \
  --libdir=/tools/lib \
  --with-lib-path=/tools/lib \
