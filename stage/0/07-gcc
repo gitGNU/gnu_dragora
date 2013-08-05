@@ -93,6 +93,7 @@ CC="${TARGET}-${CC}" \
 CXX="${TARGET}-${CXX}" \
 AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
+CPPFLAGS="-I/tools/include" \
 ../gcc-${version}/configure \
  --prefix=/tools \
  --libdir=/tools/lib \

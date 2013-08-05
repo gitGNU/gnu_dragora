@@ -19,9 +19,10 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-CC="${TARGET}-${CC} -D_GNU_SOURCE -I/tools/include" \
+CC="${TARGET}-${CC} -D_GNU_SOURCE" \
 AR="${TARGET}-ar" \
 RANLIB="${TARGET}-ranlib" \
+CPPFLAGS="-I/tools/include" \
 ../binutils-${version}/configure LDFLAGS="--static" \
  --prefix=/tools \
  --libdir=/tools/lib \

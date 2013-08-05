@@ -22,6 +22,7 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
+CPPFLAGS="-I/tools/include" \
 ../gcc-${version}/libstdc++-v3/configure \
  --prefix=/tools \
  --libdir=/tools/lib \
