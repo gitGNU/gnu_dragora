@@ -19,7 +19,7 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-CFLAGS="$flags" \
+CFLAGS="$flags -D__uint64_t=u_int64_t" \
 LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
  --enable-symlink-install \
