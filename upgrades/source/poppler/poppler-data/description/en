@@ -1,7 +1,0 @@
-poppler-data - Data files for poppler.
-
-This package consists of encoding files for use with poppler.
-
-The encoding files are optional and poppler will
-automatically read them if they are present.
-

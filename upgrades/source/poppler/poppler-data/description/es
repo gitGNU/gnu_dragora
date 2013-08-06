@@ -1,7 +1,0 @@
-poppler-data - Archivos de datos para poppler.
-
-Este paquete consta de codificación de archivos para su uso con poppler.
-
-La codificación de archivos son opcionales y poppler automáticamente los
-leerá si están presentes.
-

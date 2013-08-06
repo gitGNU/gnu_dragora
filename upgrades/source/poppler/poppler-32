@@ -22,7 +22,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=0.24.0
+V=0.18.4
 ARCH=${ARCH:-i486}
 B=1
 
@@ -61,6 +61,9 @@ find . \
     -perm 440 -o \
     -perm 400    \
  \) -exec chmod 644 {} +
+
+patch -Np1 -i ${CWD}/patches/CVE-2013-1788.patch
+patch -Np1 -i ${CWD}/patches/CVE-2013-1790.patch
 
 CFLAGS="$DCFLAGS" \
 CXXFLAGS="$DCFLAGS" \

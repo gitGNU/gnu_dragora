@@ -22,20 +22,26 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=0.4.6
-ARCH=noarch
+V=0.18.4
+ARCH=${ARCH:-x86_64}
 B=1
 
-PKG=${TMP}/package-poppler-data
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j5}
+
+PKG=${TMP}/package-poppler
 
 rm -rf $PKG
 mkdir -p $PKG $OUT
 
 echo "Uncompressing the tarball..."
-rm -rf ${TMP}/poppler-data-${V}
-lzip -cd ${CWD}/poppler-data-${V}.tar.lz | tar -xvf - -C $TMP
+rm -rf ${TMP}/poppler-${V}
+lzip -cd ${CWD}/poppler-${V}.tar.lz | tar -xvf - -C $TMP
 
-cd ${TMP}/poppler-data-${V}
+cd ${TMP}/poppler-${V}
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
@@ -56,17 +62,46 @@ find . \
     -perm 400    \
  \) -exec chmod 644 {} +
 
-make datadir=/usr/share install DESTDIR=$PKG
+patch -Np1 -i ${CWD}/patches/CVE-2013-1788.patch
+patch -Np1 -i ${CWD}/patches/CVE-2013-1790.patch
 
-# Copy the documentation:
-mkdir -p ${PKG}/usr/doc/poppler-data-${V}
+CFLAGS="$DCFLAGS" \
+CXXFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --mandir=/usr/man \
+ --libdir=/usr/lib64 \
+ --localstatedir=/var \
+ --disable-static \
+ --disable-introspection \
+ --enable-zlib \
+ --enable-libcurl \
+ --enable-cairo-output \
+ --enable-poppler-glib \
+ --with-font-configuration=fontconfig \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress man page(s):
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/poppler-${V}
 cp -a \
- COPYING README \
- ${PKG}/usr/doc/poppler-data-${V}
+ AUTHORS COPYING ChangeLog NEWS README* TODO \
+ ${PKG}/usr/doc/poppler-${V}
 
 # Copy the description files:
 mkdir -p ${PKG}/description
 cp ${CWD}/description/* ${PKG}/description
 
 cd $PKG
-makepkg -l ${OUT}/poppler-data-${V}-${ARCH}-${B}.tlz
+makepkg -l ${OUT}/poppler-${V}-${ARCH}-${B}.tlz
