@@ -1,0 +1,20 @@
+
+# Files and directories from Dragora 2 to ignore
+#
+# If we have a tree mixed between (unrelated) versions.
+ANNOUNCEMENT2.2.TXT
+COPYRIGHT.TXT
+btmgr/
+busybox/
+clzip/
+isolinux/
+isolinux64/
+kernels/
+packages/
+packages64/
+plus/
+source/
+syslinux/
+testing/
+upgrades/
+
