@@ -7,6 +7,35 @@
                          --@--
 
 
+[ Tue 06 Aug 2013 @ 20:49:30 UTC ] : 194
+
+  U: upgrades/curl-7.31.0. Security release. It resolves the following
+     issues:
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-2174
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-1944
+
+     More information here: http://curl.haxx.se/changes.html
+
+  U: upgrades/poppler-0.18.4. Security release. it resolves the following
+     issues:
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-1788
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-1790
+
+     More information here: http://poppler.freedesktop.org/releases.html
+
+  U: upgrades/pidgin-2.10.7. Security release with some bug fixes.
+     It resolves the following issues:
+
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-0274
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-0273
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-0272
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-0271
+     * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-2318
+
+     More information here: https://developer.pidgin.im/wiki/ChangeLog
+
 [ Wed 14 Nov 2012 @ 21:06:10 UTC ] : 193
 
   U: upgrades/icedtea6-1.10.10. Since our last version of Icedtea6 1.10.6,
@@ -40,7 +69,7 @@
      denial of service (crash) and possibly execute arbitrary code
      via a crafted XML file that triggers a heap-based buffer
      overflow when adding a new namespace node, related to handling
-     of XPath expressions. 
+     of XPath expressions.
 
      * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-1944
 
@@ -129,7 +158,7 @@
      allows to remote attackers to execute arbitrary code via a crafted
      tile size in a TIFF file, which is not properly handled by the
      gtTileSeparate or gtStripSeparate function, leading to a heap-based
-     buffer overflow. 
+     buffer overflow.
 
      * http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2012-1173
 
@@ -457,7 +486,7 @@ Dragora 2.2.0 Release Candidate 1, has been released!
   R: tools/diffutils-3.2. Recompiled against libsigsegv-2.10, just in case.
 
   R: tools/gawk-4.0.0. Recompiled against libsigsegv-2.10, just in case.
- 
+
 [ Mon 27 Feb 2012 @ 15:02:32 UTC ] : 160
 
   U: x-libraries/libwnck-2.30.7.
@@ -3192,4 +3221,3 @@ packages need to be re-compiled against the new version of XCB.
 
 "The world is full of Kings and Queens
  Who blind your eyes and steal your dreams"
-
