@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = gettext
-version = 0.18.2.1
+version = 0.18.3
 release = 1
 
 tarname = ${program}-${version}.tar.lz
