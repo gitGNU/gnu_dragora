@@ -6,10 +6,10 @@
 # to copy, distribute and modify it.
 
 program = linux
-version = 3.4.51
+version = 3.10.5
 release = 1
 
-tarname = ${program}-libre-${version}-gnu1.tar.lz
+tarname = ${program}-libre-${version}-gnu.tar.lz
 
 destdir = /pkg/${program}-headers-${version}
 
@@ -19,7 +19,7 @@ cd $srcdir
 # Uncomment this line to patch a non-POSIX signal
 # used in the script vmlinux.sh (only valid in
 # some kernel versions)
-#patch -Np0 -i ${patchdir}/linux/linux-headers-vmlinux.sh
+patch -Np0 -i ${patchdir}/linux/linux-headers-vmlinux.sh
 
 make mrproper
 make headers_check
