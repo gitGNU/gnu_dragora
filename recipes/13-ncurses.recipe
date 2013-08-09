@@ -23,11 +23,10 @@ CFLAGS="$flags -D_GNU_SOURCE" \
 CXXFLAGS="$flags -D_GNU_SOURCE" \
 ./configure $configure_args \
  --without-debug \
- --without-shared \
  --without-ada \
  --with-normal \
- --enable-overwrite \
- --enable-symlinks \
+ --with-shared \
+ --enable-pc-files \
  --enable-widec
 
 make -j${jobs}
@@ -36,16 +35,40 @@ make install DESTDIR=$destdir
 # Many applications still expect the linker to be able
 # to find non-wide-character ncurses libraries
 for name in ncurses form panel menu ; do \
-    ln -sf lib$${name}w.a ${destdir}/lib/lib$${name}.a ; \
+  rm -f ${destdir}/lib/lib$${name}.so ; \
+  echo "INPUT(-l$${name}w)" > ${destdir}/lib/lib$${name}.so ; \
+  ln -sf lib$${name}w.a ${destdir}/lib/lib$${name}.a ; \
+  ln -sf $${name}w.pc   ${destdir}/lib/pkgconfig/$${name}.pc ; \
 done
-ln -sf libncurses++w.a ${destdir}/lib/libncurses++.a
+ln -sf libncurses++w.a  ${destdir}/lib/libncurses++.a
 
-# Make sure that old applications that look for -lcurses
-ln -sf libncursesw.a ${destdir}/lib/libcursesw.a
-ln -sf libncurses.a ${destdir}/lib/libcurses.a
+# Backward compatibility for old applications that look for -lcurses
+rm -f ${destdir}/lib/libcursesw.so
+( cd ${destdir}/lib ; \
+  echo "INPUT(-lncursesw)" > libcursesw.so ; \
+  ln -sf libncurses.so libcurses.so ; \
+  ln -sf libncursesw.a libcursesw.a ; \
+  ln -sf libncurses.a  libcurses.a ; \
+)
 
 # Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+mkdir -p ${destdir}${docdir}
+cp -a $docs ${destdir}${docdir}
+
+# Build the extra support for some required applications
+make distclean
+
+CFLAGS="$flags -D_GNU_SOURCE" \
+CXXFLAGS="$flags -D_GNU_SOURCE" \
+./configure $configure_args \
+ --with-shared \
+ --without-normal \
+ --without-debug \
+ --without-ada \
+ --without-cxx-binding
+
+make sources libs
+cp -p lib/lib*.so.5* ${destdir}/lib
 
 reclinker -rf /pkg/${program}-${version} /
 
