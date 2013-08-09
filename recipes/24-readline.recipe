@@ -34,9 +34,10 @@ CFLAGS="$flags" \
 ./configure $configure_args \
  --enable-static \
  --disable-shared \
- --with-curses
+ --with-curses \
+ --enable-multibyte
 
-make -j${jobs}
+make -j${jobs} static
 make install DESTDIR=$destdir
 
 install -m 644 -D ${archive}/readline/etc/inputrc ${destdir}/etc/inputrc
