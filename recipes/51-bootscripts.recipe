@@ -21,7 +21,8 @@ cd $srcdir
 make install prefix="" DESTDIR=$destdir
 
 # Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+mkdir -p ${destdir}${docdir}
+cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /package/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 
