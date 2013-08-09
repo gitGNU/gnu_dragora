@@ -5,7 +5,6 @@ these files are configuration files, headers, or substantial files
 that are not considered patches (differences). Each of them is located
 in their corresponding directories to reflect where they come from.
 
-  The exceptions are the files "_hierarchyfs.tar.gz" which composes
-the general structure of directories for the system, and the file
-"bootscripts.tar.gz", which contains the init scripts for Dragora.
+  The only exception is the file "_hierarchyfs.tar.gz" which composes
+the general structure of directories for the system.
 
