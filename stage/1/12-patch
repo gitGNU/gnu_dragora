@@ -14,7 +14,8 @@ cd ${TMPDIR}/patch-${version}
 
 LDFLAGS="-Wl,-static" \
 CPPFLAGS="-I/tools/include" \
-./configure --prefix=/tools
+./configure --prefix=/tools \
+ gl_cv_func_working_mktime=yes
 
 make $jobs
 make install
