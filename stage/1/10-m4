@@ -12,18 +12,14 @@ tar xf ${SRCDIR}/m4-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/m4-${version}
 
-# Fix a gnulib error in order to build against Musl
-for file in freadahead.c fseterr.c ; do
-  rm -f lib/$file
-  touch lib/$file
-done
-echo "void close_stdin(void) {}" > lib/closein.c
+patch -Np0 -i ${PATCHDIR}/m4/m4-1.4.16-gnulib_musl
 
 LDFLAGS="-Wl,-static" \
 CPPFLAGS="-I/tools/include" \
 ./configure \
  --prefix=/tools \
- --libdir=/tools/lib
+ --libdir=/tools/lib \
+ ac_cv_libsigsegv=no
 
 make $jobs
 make install

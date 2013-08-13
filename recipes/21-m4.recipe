@@ -19,15 +19,11 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-# Fix a gnulib error in order to build against Musl
-for file in freadahead.c fseterr.c ; do \
-  rm -f lib/$$file && \
-  touch lib/$$file ; \
-done
-echo "void close_stdin(void) {}" > lib/closein.c
+patch -Np0 -i ${patchdir}/m4/m4-1.4.16-gnulib_musl
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args
+./configure $configure_args \
+ ac_cv_libsigsegv=no
 
 make -j${jobs}
 make install DESTDIR=$destdir
