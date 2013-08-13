@@ -21,7 +21,8 @@ CPPFLAGS="-I/tools/include" \
  --disable-shared \
  --disable-nls \
  --without-libintl-prefix \
- --without-libsigsegv-prefix
+ --without-libsigsegv-prefix \
+ gl_cv_func_working_mktime=yes
 
 make $jobs
 make install
