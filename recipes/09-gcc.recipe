@@ -57,6 +57,10 @@ done
   mv gnu-linux gnu-linux.orig ; \
   cp -r generic gnu-linux ; \
 )
+( cd libitm/config && \
+  mv linux/x86 linux/x86_glibc ; \
+  cp -r generic linux/x86 ; \
+)
 
 rm -rf ../gcc-build
 mkdir ../gcc-build
