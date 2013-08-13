@@ -29,7 +29,8 @@ FORCE_UNSAFE_CONFIGURE=1 \
 ./configure $configure_args \
  --without-gmp \
  --enable-no-install-program=kill,uptime,stdbuf \
- --disable-nls
+ --disable-nls \
+ gl_cv_func_working_mktime=yes
 
 make -j${jobs} V=1
 make install DESTDIR=$destdir
