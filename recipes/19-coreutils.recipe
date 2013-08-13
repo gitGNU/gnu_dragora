@@ -20,10 +20,11 @@ docdir = /share/doc/${program}-${version}
 cd $srcdir
 
 patch -Np0 -i ${patchdir}/coreutils/coreutils-O_SEARCH
+patch -Np0 -i ${patchdir}/coreutils/coreutils-c-strtod.c
 
 # Note: stdbuf(1) refuses to compiled as static, due to libstdbuf.so.
 
-CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
+CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE -Werror=implicit-function-declaration" \
 LDFLAGS="-Wl,-static" \
 FORCE_UNSAFE_CONFIGURE=1 \
 ./configure $configure_args \
