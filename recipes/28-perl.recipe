@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = perl
-version = 5.18.0
+version = 5.18.1
 release = 1
 
 tarname = ${program}-${version}.tar.lz
