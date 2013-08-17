@@ -1,0 +1,99 @@
+#!/bin/bash
+#  Copyright (C) 2008, 2009, 2010  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Registro de cambios:
+# (#)1.2 Vie Ene  8 17:16:29 ART 2010  (Fonzo)
+# - Herramienta renombrada a "modtool".
+#
+# (#)1.1 Sáb Ene  3 01:41:13 ARST 2009 (Fonzo)
+# - Herramienta renombrada a "modlist".
+# - Ahora usamos "modprobe" en vez de "find" para scanear los
+#   módulos instalados.  Es mejor para el propósito de esta
+#   herramienta, e incluso un poco más rápido.
+# - Arreglado la ruta de búsqueda para /lib/modules/KVERSION/kernel,
+#   ahora también abarcamos /lib/modules/KVERSION/misc (por ejemplo).
+# - Si no se especifíca un argumento para la opción "-k" utiliza la
+#   versión actual del Kernel.
+
+if [[ $# -eq 0 || $1 = -h || $1 = --help ]]; then
+  cat << EOF
+Usage: modtool [OPTION] [KERNEL_VERSION]
+Generates a complete list of kernel modules.
+
+Options:
+
+  -h, --help               show this help and exit
+  -k, --kernel             Makes a list of kernel modules
+                           from the current version or a
+                           specific version
+
+modtool version 1.2.
+EOF
+  exit;
+fi
+
+TMP=/tmp
+
+if [[ $1 = -k || $1 = --kernel ]]; then
+  shift 1
+  if [[ -z $1 ]]; then
+    KVER=$(uname -r)
+  else
+    KVER=$1
+  fi
+  if [[ ! -d /lib/modules/$KVER ]]; then
+    echo "modtool: /lib/modules/$KVER: is not a valid directory."
+    exit 1
+  fi
+  ( cd /lib/modules/$KVER
+    echo "Scanning the contents of /lib/modules/$KVER..."
+    echo "#!/bin/sh" > $TMP/rc.modules-$KVER
+    echo -e "#\n# Uncomment the module(s) that you need:\n" >> $TMP/rc.modules-$KVER
+    modprobe -l --set-version $KVER | LC_ALL=C sort | while read line ; do
+      modname=${line##*/}
+      modname=${modname%.ko}
+      modinfo -k $KVER "$modname" | while read info ; do
+        echo "# $info" >> $TMP/rc.modules-$KVER
+      done
+      echo -e "#\n#/sbin/modprobe $modname\n" >> $TMP/rc.modules-$KVER
+    done
+  )
+  ( cd $TMP
+    fmt -s -u < rc.modules-$KVER | \
+     awk '!/^#/{printf "# "} { print }' > rc.modules-${KVER}.formatted
+    sed -i 's/^#.$//' rc.modules-${KVER}.formatted
+    mv rc.modules-${KVER}.formatted rc.modules-$KVER
+  )
+  if [[ -r $TMP/rc.modules-$KVER ]]; then
+    ( cd /etc/rc.d || exit 1
+      echo "Saving rc.modules-$KVER in /etc/rc.d directory..."
+      current=$(readlink -e rc.modules)
+      if [[ -n $current ]]; then
+        echo "Making backup of $current to ${current}.bak..."
+        mv -i $current ${current}.bak
+      fi
+      mv $TMP/rc.modules-$KVER .
+      rm -f rc.modules
+      ln -s rc.modules-$KVER rc.modules
+      chown root:root rc.modules-$KVER
+      chmod 755 rc.modules-$KVER
+    )
+  fi
+  unset KVER
+fi
+
+unset TMP
+
