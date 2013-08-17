@@ -1,5 +1,5 @@
 #!/bin/bash
-#  Copyright (C) 2007-2013  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2007-2012  Matias A. Fonzo, <selk@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,10 +40,10 @@ OUT=${OUT:-/tmp/packages}
 
 V=2.13_20110720
 ARCH=${ARCH:-i486}
-B=11
+B=10
 
 # Flags for the compiler:
-DCFLAGS=${DCFLAGS:=-O3 -march=i486 -mtune=generic}
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=generic}
 
 # Parallel jobs for the compiler:
 JOBS=${JOBS:=-j1}
@@ -85,11 +85,6 @@ zcat ${CWD}/patches/dont.build.timezone.diff.gz | patch -p0 --verbose
 
 # Apply a patch to not make the locale-archive:
 zcat ${CWD}/patches/no-archive.diff.gz | patch -p0 --verbose
-
-# Security fixes
-patch -Np1 --verbose -i ${CWD}/patches/CVE-2011-1658
-patch -Np1 --verbose -i ${CWD}/patches/CVE-2011-4609
-patch -Np1 --verbose -i ${CWD}/patches/CVE-2012-3480
 
 # The ldd shell script contains Bash-specific syntax, so:
 sed -i 's|@BASH@|/bin/bash|' elf/ldd.bash.in
