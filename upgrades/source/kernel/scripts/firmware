@@ -1,0 +1,21 @@
+BUILD=${BUILD:-1}
+
+PKG=${TMP}/linux/firmware
+
+rm -rf $PKG
+mkdir -pv $PKG $OUT
+
+echo "*** Building firmware ..."
+cd /usr/src/linux-${KVERSION}
+mkdir -p ${PKG}/lib/firmware
+make firmware_install INSTALL_FW_PATH=${PKG}/lib/firmware
+if [ -f /usr/src/linux-${KVERSION}/firmware/WHENCE ]; then
+  cp -a /usr/src/linux-${KVERSION}/firmware/WHENCE ${PKG}/lib/firmware
+fi
+
+# Build the package:
+cd $PKG
+mkdir -pv description
+cp -v ${CWD}/descriptions/firmware/* description/
+makepkg -l ${OUT}/kernel-firmware-${KVERSION}-${PKGARCH}-${BUILD}.tlz
+

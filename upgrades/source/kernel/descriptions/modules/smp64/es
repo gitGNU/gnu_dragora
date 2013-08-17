@@ -1,0 +1,6 @@
+kernel-modules - Módulos del Kernel de Linux con soporte SMP.
+
+Incluye todo el soporte esencial para los dispositivos y el hardware.
+
+Es la versión libre de los módulos del Kernel.
+

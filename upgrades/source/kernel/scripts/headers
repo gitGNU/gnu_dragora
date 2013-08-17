@@ -1,0 +1,21 @@
+BUILD=${BUILD:-1}
+
+PKG=${TMP}/linux/headers
+
+rm -rf $PKG
+mkdir -pv $PKG $OUT
+
+echo "*** Building headers ..."
+cd /usr/src/linux-${KVERSION}
+make mrproper
+make headers_check
+mkdir -p ${PKG}/usr
+make INSTALL_HDR_PATH=${PKG}/usr headers_install
+
+# Build the package:
+cd $PKG
+find . -type f \( -name '.install*' -o -name '..install.cmd' \) -delete -print
+mkdir -pv description
+cp -v ${CWD}/descriptions/headers/* description/
+makepkg -l ${OUT}/kernel-headers-${KVERSION}-${PKGARCH}-${BUILD}.tlz
+

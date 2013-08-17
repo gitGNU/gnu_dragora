@@ -1,0 +1,4 @@
+kernel-headers - The Linux Kernel headers.
+
+The Linux headers expose the kernel's API for use by Glibc.
+

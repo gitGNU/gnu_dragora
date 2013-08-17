@@ -1,0 +1,7 @@
+glibc - The GNU C library.
+
+The GNU C Library is the standard system C library for all
+GNU systems.  It provides the system API for all programs
+written in C and C-compatible languages such as C++ and
+Objective C.
+

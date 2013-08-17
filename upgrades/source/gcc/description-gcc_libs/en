@@ -1,0 +1,4 @@
+gcc_libs - C/C++ shared libraries.
+
+This package contains the C/C++ libraries required by many programs.
+

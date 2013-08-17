@@ -1,0 +1,112 @@
+#! /bin/bash
+
+#  Copyright (C) 2008, 2009  Matias A. Fonzo, Santiago del Estero, AR
+#  Copyright (C) 2011  Matias A. Fonzo, Santiago del Estero, Argentina
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Localization:
+TEXTDOMAINDIR=/usr/share/locale
+TEXTDOMAIN=tzconfig
+
+# Sanity check:
+mkdir -p /etc/sysconfig
+mkdir -p -m 1777 /tmp
+
+TempFile=/tmp/tzconfig-reply$$
+
+# A function for display messages:
+msg() { printf '%s\n' "$@"; }
+
+# A function to generate the config file:
+hwclock_cfg() {
+  msg \
+   "# /etc/sysconfig/hardwareclock:  Set up the system clock according to" \
+   "#                                the clock of the machine." \
+   "#" \
+   "# UTC / localtime:" \
+   "" \
+   "$1" \
+   "" \
+   > /etc/sysconfig/hardwareclock
+}
+
+dialog \
+ --backtitle $"Time zone configuration" \
+ --title $"SELECT YOUR TIME ZONE" \
+ --menu \
+$"The local time is the one shown in a clock hanging on \
+the wall.  While UTC is the time in Greenwich.\n\n\
+In what format do you want to save the time?:" 14 0 2 \
+ "Local" $"Local time" \
+ "UTC"   $"Coordinated Universal Time" \
+  2> $TempFile
+RETCODE=$?
+(( $RETCODE != 0 )) && {
+  rm -f $TempFile
+  exit $RETCODE;
+}
+
+if grep -qs ^Local $TempFile ; then
+  hwclock_cfg 'localtime'
+else
+  hwclock_cfg 'UTC'
+fi
+
+# Scan the zones in order to generate the menu options:
+( cd /usr/share/zoneinfo || exit 1;
+  rm -f timezone.data
+
+  export LC_ALL=C
+
+  find . -type f | xargs file | sed -n "/timezone data/p" | \
+   cut -f 1 -d : | cut -b3-   | sort | while read zone ; do
+    echo "\"${zone}\" \"\" \\" >> /usr/share/zoneinfo/timezone.data
+   done
+
+  msg \
+   " 2> /tmp/zoneinfo-reply"               \
+   "STATUS=\$?"                            \
+   "(( \$STATUS != 0 )) && exit \$STATUS;" \
+    >> /usr/share/zoneinfo/timezone.data
+)
+
+# Prepare for display the menu:
+if [[ -f /usr/share/zoneinfo/timezone.data ]]; then
+  printf "%s\n" H 1i \
+   "dialog \\" \
+   " --backtitle "$"'Time zone configuration'"" \\" \
+   " --title "$"'SELECT YOUR TIME ZONE'"" \\" \
+   " --menu \"\" 21 50 15 \\" . w | \
+    ed -s /usr/share/zoneinfo/timezone.data
+
+  . /usr/share/zoneinfo/timezone.data && RETCODE=$?;
+fi
+
+ZONE_INFO=$(cut -f1 -d ' ' /tmp/zoneinfo-reply 2>/dev/null)
+
+# Copy the time zone file as /etc/localtime:
+if [[ -n $ZONE_INFO ]]; then
+  ( cd /usr/share/zoneinfo
+    rm -f localtime
+    ln -s $ZONE_INFO localtime
+    cp -p --remove-destination \
+     /usr/share/zoneinfo/${ZONE_INFO} /etc/localtime
+  )
+fi
+
+rm -f /tmp/zoneinfo-reply $TempFile  ## Clean up.
+
+exit $RETCODE
+

@@ -1,0 +1,27 @@
+#: tzconfig:46
+msgid "Time zone configuration"
+msgstr "Configuración da zona horaria"
+
+#: tzconfig:47
+msgid "SELECT YOUR TIME ZONE"
+msgstr "SELECCIONE A ZONA HORARIA"
+
+#: tzconfig:49
+msgid "The local time is the one shown in a clock hanging on the wall.  While UTC is the time in Greenwich.\\n\\nIn what format do you want to save the time?:"
+msgstr "A hora local é a que se mostra nun reloxo colgado na parede.  Mentras que UTC é a hora en Greenwich.\\n\\n¿En qué formato desexa almacenar a hora?:"
+
+#: tzconfig:52
+msgid "Local time"
+msgstr "Hora local"
+
+#: tzconfig:53
+msgid "Coordinated Universal Time"
+msgstr "Tempo Universal Coordinado"
+
+#: tzconfig:89
+msgid "'Time zone configuration'"
+msgstr "'Configuración da zona horaria'"
+
+#: tzconfig:90
+msgid "'SELECT YOUR TIME ZONE'"
+msgstr "'SELECCIONE A ZONA HORARIA'"

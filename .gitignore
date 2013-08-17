@@ -9,6 +9,8 @@ sources/
 *.tar.lz.sig
 *.tar.bz2
 *.tar.bz2.sig
+*.jar
+*.jar.sig
 *.TXT
 *.TXT.asc
 *.bin
