@@ -1,0 +1,8 @@
+tzdatabase - Fuentes para los datos del tiempo.
+
+Contiene las fuentes para la zona horaria.
+
+Utilice la herramienta tzconfig para
+configurar la zona horaria, tipeando
+`tzconfig'.
+

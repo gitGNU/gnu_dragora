@@ -7,6 +7,13 @@
                          --@--
 
 
+[ Wed 21 Aug 2013 @ 12:52:07 UTC ] : 196
+
+  U: upgrades/shadow-4.1.5.1. This release resolves a bug in
+     userdel(8) when userdel removes the user's group.
+
+  U: upgrades/tzdatabase-2013d.
+
 [ Sat 17 Aug 2013 @ 16:07:26 UTC ] : 195
 
   U: upgrades/gcc-4.5.4. Bug fix release.

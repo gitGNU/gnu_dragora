@@ -1,0 +1,105 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2012, 2013  Matias A. Fonzo, <selk@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=${V:-2013d}
+ARCH=${ARCH:-i486}
+B=1
+
+TZCODE=${TZCODE:-tzcode2013d}
+TZDATA=${TZDATA:-tzdata2013d}
+
+PKG=${TMP}/package-tzdatabase
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+mkdir -p ${TMP}/tzdatabase-${V}
+cd ${TMP}/tzdatabase-${V}
+lzip -cd ${CWD}/$TZCODE.tar.lz | tar -xvf -
+lzip -cd ${CWD}/$TZDATA.tar.lz | tar -xvf -
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+patch -Np0 -i ${CWD}/Makefile.diff
+
+# Determine the suffix for the libraries:
+if [[ $ARCH = x86_64 ]]; then
+  sed -i 's#/lib$#/lib64#' Makefile
+  libSuffix=64
+fi
+
+make
+make install DESTDIR=$PKG
+
+strip -g $PKG/usr/lib${libSuffix}/libtz.a
+
+# This is provided by glibc, except the manpages:
+rm -rf ${PKG}/usr/sbin
+#rm -rf $PKG/usr/man/man8
+
+# I think this I should be organized, so:
+( cd ${PKG}/usr/share
+  mv zoneinfo-posix zoneinfo/posix
+  mv zoneinfo-leaps zoneinfo/right
+)
+rm ${PKG}/usr/share/zoneinfo/localtime
+
+# Compress the manpages:
+gzip -9N ${PKG}/usr/man/man?/*
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/tzdatabase-${V}
+cp -a \
+ README Theory \
+ ${PKG}/usr/doc/tzdatabase-${V}
+
+# Include the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/?? ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/tzdatabase-${V}-${ARCH}-${B}.tlz
+
