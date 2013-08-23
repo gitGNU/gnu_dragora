@@ -12,7 +12,7 @@ tar xf ${SRCDIR}/gcc-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/gcc-${version}
 
-patch -Np0 -i ${PATCHDIR}/gcc/gcc-4.7.2-tls
+#patch -Np0 -i ${PATCHDIR}/gcc/gcc-4.7.2-tls
 patch -Np0 -i ${PATCHDIR}/gcc/gcc-nofixincludes
 
 # x86
