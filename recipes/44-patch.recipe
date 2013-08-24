@@ -20,7 +20,7 @@ docdir = /share/doc/${program}-${version}
 cd $srcdir
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args
+./configure $configure_args gl_cv_func_working_mktime=yes
 
 make -j${jobs} V=1
 make install DESTDIR=$destdir
