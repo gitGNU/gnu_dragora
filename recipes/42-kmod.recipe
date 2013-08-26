@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = kmod
-version = 13
+version = 15
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -19,13 +19,15 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-CFLAGS="$flags" LDFLAGS="-Wl,-static" \
+patch -Np1 -i ${patchdir}/kmod/kmod.patch
+patch -Np1 -i ${patchdir}/kmod/kmod-test-stdout.patch
+patch -Np1 -i ${patchdir}/kmod/kmod-test-glibc-assumption.patch
+
+CFLAGS="$flags -D_GNU_SOURCE" \
 ./configure $configure_args \
- --enable-static \
- --disable-shared \
  --disable-manpages \
  --without-xz \
- --with-zlib
+ --without-zlib
 
 make -j${jobs}
 make install DESTDIR=$destdir
