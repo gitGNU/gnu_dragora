@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = toque
-version = 0.1-pre25
+version = 0.1-pre26
 release = 1
 
 tarname = ${program}-${version}.tar.lz
