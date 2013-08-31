@@ -6,12 +6,12 @@
 # to copy, distribute and modify it.
 
 program = bootscripts
-version = 1.0
+version = 1.0.1
 release = 1
 
 tarname = ${program}-${version}.tar.lz
 
-docs = README
+docs = README ChangeLog
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
