@@ -41,8 +41,7 @@ LDFLAGS="-Wl,-static" \
  --disable-eject \
  --disable-use-tty-group \
  --enable-reset \
- --enable-write \
- ac_have_cpu_set_t=no
+ --enable-write
 
 make -j${jobs} V=1
 make install usrbin_execdir=/bin \
