@@ -6,8 +6,10 @@
 # to copy, distribute and modify it.
 
 program = musl
-version = 6d861ac
+version = 0.9.13
 release = 1
+
+nostrip = yes
 
 tarname = ${program}-${version}.tar.lz
 jobs = 1
@@ -15,7 +17,10 @@ jobs = 1
 [build]
 cd $srcdir
 
-./configure $configure_args --syslibdir=/lib
+./configure $configure_args \
+ --syslibdir=/lib \
+ --enable-optimize=size \
+ --enable-debug
 
 make -j${jobs}
 make install
