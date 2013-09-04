@@ -1,0 +1,126 @@
+#!/bin/bash
+#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2013  Lucas Sköldqvist <frusen@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources-python}-$(mcookie)
+OUT=${OUT:-/tmp/packages}
+
+V=2.6.7
+ARCH=${ARCH:-x86_64}
+B=2
+
+SHORT_VER=2.6
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-mtune=generic}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j5}
+
+PKG=${TMP}/package-python
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/Python-${V}
+lzip -cd ${CWD}/Python-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/Python-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+patch -Np1 -i ${CWD}/CVE-2013-4073_py26.patch
+
+CXX=g++ \
+OPT="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --mandir=/usr/man \
+ --enable-shared \
+ --enable-ipv6 \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Make python soft link:
+( cd ${PKG}/usr/bin
+  mv python python${SHORT_VER}
+  ln -s python${SHORT_VER} python
+)
+
+# Strip commentaries and notes:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --remove-section=.comment --remove-section=.note 2> /dev/null
+)
+
+# Includes the Python tools under site-packages:
+( cd Tools
+  # No overwrite the README file in site-packages directory:
+  if [[ -r README ]]; then
+    mv README README.Tools
+  fi
+  cp -rPp * ${PKG}/usr/lib/python${SHORT_VER}/site-packages
+)
+
+# Make some symlinks (just in case):
+TOOL_DIR=/usr/lib/python${SHORT_VER}/site-packages
+( cd ${PKG}/usr/bin
+  ln -sf ${TOOL_DIR}/i18n/msgfmt.py msgfmt.py
+  ln -sf ${TOOL_DIR}/i18n/pygettext.py pygettext.py 
+  ln -sf ${TOOL_DIR}/modulator/modulator.py modulator
+  ln -sf ${TOOL_DIR}/pynche/pynche pynche
+)
+
+# Compress man-pages:
+gzip -9N ${PKG}/usr/man/man1/python.1
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/python-${V}
+cp -a \
+ LICENSE README Demo/ \
+ ${PKG}/usr/doc/python-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/python-${V}-${ARCH}-${B}.tlz
+
