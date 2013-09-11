@@ -126,7 +126,7 @@ do
       exit
       ;;
     -V|--version)
-      echo "dragora-bootstrap 1.4"
+      echo "dragora-bootstrap 1.5"
       echo "Copyright (C) 2012-2013 Matias A. Fonzo."
       echo "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
@@ -162,7 +162,7 @@ if [ "$STAGE" = "0" ] || [ "$STAGE" = "1" ]; then
   echo "Making symlink: /tools -> ${ROOT}/tools ..."
   ln -sf ${ROOT}/tools /
 
-  PATH=/tools/bin:/bin:/usr/bin
+  PATH=/tools/bin:/bin:/usr/bin:/usr/local/bin
   export PATH
 
   if [ "$FILE" = "" ]; then
