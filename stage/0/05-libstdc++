@@ -14,8 +14,9 @@ cd ${TMPDIR}/gcc-${version}
 
 # Avoid specific Glibc code
 ( cd libstdc++-v3/config/os
-  rm -rf gnu-linux
-  ln -sf generic gnu-linux
+  mv gnu-linux gnu-linux.orig
+  cp -r generic gnu-linux
+  cp gnu-linux.orig/arm-eabi-extra.ver gnu-linux
 )
 
 rm -rf ../gcc-build

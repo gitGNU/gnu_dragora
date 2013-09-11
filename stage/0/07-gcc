@@ -72,8 +72,9 @@ done
 
 # Avoid specific Glibc code
 ( cd libstdc++-v3/config/os
-  rm -rf gnu-linux
-  ln -sf generic gnu-linux
+  mv gnu-linux gnu-linux.orig
+  cp -r generic gnu-linux
+  cp gnu-linux.orig/arm-eabi-extra.ver gnu-linux
 )
 
 cat gcc/limitx.h gcc/glimits.h gcc/limity.h \
