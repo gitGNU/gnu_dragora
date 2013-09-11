@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = zlib
-version = 1.2.7
+version = 1.2.8
 release = 1
 
 tarname = ${program}-${version}.tar.lz
