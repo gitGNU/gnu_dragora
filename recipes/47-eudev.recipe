@@ -6,31 +6,29 @@
 # to copy, distribute and modify it.
 
 program = eudev
-version = 20130410
+version = 1.3
 release = 1
 
 tarname = ${program}-${version}.tar.lz
 jobs = 1
 
-#docs = 
+docs = COPYING README
 destdir = /pkg/${program}-${version}
-#docdir = /share/doc/${program}-${version}
+docdir = /share/doc/${program}-${version}
 
 [build]
 cd $srcdir
 
-autoreconf -f -i
-
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
+ --enable-rule-generator \
  --enable-static \
- --enable-libkmod \
  --disable-shared \
  --disable-gudev \
  --disable-introspection \
  --disable-selinux
 
-make -j${jobs}
+make -j${jobs} V=1
 make install DESTDIR=$destdir
 
 # Compress info documents (if needed)
@@ -51,7 +49,7 @@ if [ -d ${destdir}/share/man ] ; then \
 fi
 
 # Copy the documentation
-#mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-#reclinker -rf /pkg/${program}-${version} /
+reclinker -rf /pkg/${program}-${version} /
 
