@@ -19,8 +19,6 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-#patch -Np0 -i ${patchdir}/m4/m4-1.4.16-gnulib_musl
-
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
 ./configure $configure_args \
  ac_cv_libsigsegv=no

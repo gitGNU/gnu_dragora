@@ -12,8 +12,6 @@ tar xf ${SRCDIR}/m4-${version}.tar.?z* -C $TMPDIR
 # Build
 cd ${TMPDIR}/m4-${version}
 
-#patch -Np0 -i ${PATCHDIR}/m4/m4-1.4.16-gnulib_musl
-
 LDFLAGS="-Wl,-static" \
 CPPFLAGS="-I/tools/include" \
 ./configure \
