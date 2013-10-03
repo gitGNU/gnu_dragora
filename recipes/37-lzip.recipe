@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = lzip
-version = 1.14
+version = 1.15
 release = 1
 
 tarname = ${program}-${version}.tar.gz
