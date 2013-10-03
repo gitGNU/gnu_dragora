@@ -14,9 +14,8 @@ the 3.x release series of Dragora offers a new scheme in the
 world of GNU/Linux distributions: an init system with service
 supervision; a simplified structure of directories compatible
 with the Standard FHS (http://www.pathname.com/fhs); the new
-source builder and package manager called "chef"; portable
-packages (statically linked) distributed using the POSIX
-extension; lightweight alternative software..
+source builder and package manager called "toque"; portable
+packages (statically linked); lightweight alternative software..
 and much more!
 
 For installation instructions, read the INSTALL file.
