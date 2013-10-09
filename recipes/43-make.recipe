@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = make
-version = 3.82
+version = 4.0
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -20,7 +20,7 @@ docdir = /share/doc/${program}-${version}
 cd $srcdir
 
 CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args --disable-nls
+./configure $configure_args --disable-nls --without-guile
 
 make -j${jobs}
 make install DESTDIR=$destdir
