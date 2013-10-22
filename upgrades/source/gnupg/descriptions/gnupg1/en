@@ -1,0 +1,7 @@
+gnupg1 - The GNU Privacy Guard.
+
+The GnuPG package contains a public/private key encryptor.
+This is becoming useful for signing files or emails as
+proof of identity and preventing tampering with the
+contents of the file or email.
+

@@ -1,0 +1,258 @@
+#!/bin/sh
+#  Copyright (C) 2010-2011  Matias A. Fonzo, Santiago del Estero, Argentina
+#                2013 Lucas Sköldqvist <frusen@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Usage:
+#
+# If you want to build all, type:
+#   ./gnupg-builder
+#
+# If you want to build a specific source, type:
+#   ./gnupg-builder gnupg1
+
+# Variables #
+
+# Iniciales:
+currentWorkDir=$(pwd)                 # Directorio actual de trabajo.
+
+tempDir=${tempDir:-/tmp}              # Directorio temporal base.
+outDir=${outDir:-/tmp/packages/gnupg}  # Directorio de salida de los paquetes.
+
+buildDir=${tempDir}/gnupg-buildir      # Directorio temporal de construcción.
+
+case "$(uname -m)" in
+        i?86)   export ARCH=i486
+                BANDERAS="-march=i486 -mtune=i686"
+		SUFARQ=""
+        ;;
+        x86_64) export ARCH=x86_64
+                BANDERAS="-mtune=generic"
+                SUFARQ="64"
+        ;;
+        *) export ARCH=$(uname -m)
+esac
+
+# Variables de entorno:
+DCFLAGS=${DCFLAGS:=-O2 $BANDERAS}
+
+libSuffix=${libSuffix:-$SUFARQ}            # Sufijo exportado usualmente para x86_64.
+
+buildNum=${buildNum:-2}               # Número de construcción.
+
+JOBS=${JOBS=-j$(expr `nproc` + 1)}               # Trabajos para el compilador.
+
+# Funciones #
+
+# Una función para crear directorios limpios:
+CreateDirs()
+{
+    local X Y
+    X="$1"
+    Y="$2"
+    rm -rf $X
+    mkdir -p $X $Y
+}
+
+## Cuerpo de la receta ##
+
+set -e  # Sale ante cualquier error.
+
+# Exportamos las variables de entorno:
+export DCFLAGS libSuffix
+
+LIST="$(cat ${currentWorkDir}/SOURCE-LIST)"
+
+cd sources
+
+for Source in $LIST ; do
+  # Comprueba el primer argumento:
+  if [ -n "$1" ]; then
+    if [ "$1" != $Source ]; then
+      continue;
+    fi
+  fi
+
+  # Variable del directorio del paquete (de toda una sección):
+  packageDir=${buildDir}/package-${Source}
+
+  # Crea el directorio del paquete y el de salida:
+  CreateDirs "$packageDir" "$outDir"
+
+  for Tarball in ${Source}*.tar.lz ; do
+    sourceName="$(basename $Tarball .tar.lz)"
+    sourceVersion="${sourceName##*-}"
+    sourceName="${sourceName%-*}"
+
+    # Verifica la lista de las fuentes que poseen una arquitectura independiente:
+    archPackage=$ARCH  # Resetea la variable.
+    if [ -r ${currentWorkDir}/NOARCHLIST ]; then
+      if grep -q "^${sourceName}" ${currentWorkDir}/NOARCHLIST ; then
+        archPackage=noarch
+      fi
+    fi
+
+    cd $buildDir  # Hora de construir la fuente.
+
+    # Descomprime una fuente:
+    rm -rf ${sourceName}-${sourceVersion}
+    lzip -cd ${currentWorkDir}/sources/$Tarball | tar -xvf -
+
+    # Determina el número de construcción para el paquete. Según,
+    # indicaciones en un archivo o de la variable ya establecida:
+    buildNum=$buildNum  # Resetea la variable.
+    if [ -f ${currentWorkDir}/buildnum/$sourceName ]; then
+      buildNum=$(cut -f 1 -d ' ' ${currentWorkDir}/buildnum/${sourceName})
+    fi
+
+    # Ingresamos al directorio de la fuente:
+    (
+      cd ${sourceName}-${sourceVersion}
+
+      # Corregimos los permisos y el propiertario (si es necesario):
+      chown -R 0:0 .
+      find . \
+       \( -perm 2777 -o \
+          -perm 777  -o \
+          -perm 775  -o \
+          -perm 711  -o \
+          -perm 555  -o \
+          -perm 511     \
+       \) -exec chmod 755 {} + \
+        -o \
+       \( -perm 666 -o \
+          -perm 664 -o \
+          -perm 600 -o \
+          -perm 444 -o \
+          -perm 440 -o \
+          -perm 400    \
+       \) -exec chmod 644 {} +
+
+      # Determina el tipo de sistema donde se construye.
+      if [ "$archPackage" != "noarch" ]; then
+        BUILD_SYSTEM="--build=${ARCH}-dragora-linux-gnu"
+      fi
+
+      if [ ${sourceName} == "gnupg1" ]; then
+	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2012-6085.patch
+	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2013-4242.patch
+	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2013-4402.patch
+	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2013-4351.patch
+      fi
+
+      if [ ${sourceName} == "gnupg2" ]; then
+	  patch -Np1 -i ${currentWorkDir}/patches/01-gnupg2-rename.diff
+	  patch -Np1 -i ${currentWorkDir}/patches/02-cve-2012-6085.diff
+	  patch -Np1 -i ${currentWorkDir}/patches/03-cve-2013-4402_p1.diff
+	  patch -Np1 -i ${currentWorkDir}/patches/04-cve-2013-4402_p2.diff
+	  patch -Np1 -i ${currentWorkDir}/patches/05-cve-2013-4351.diff
+	  sleep 5
+      fi
+
+      # Si es necesario usamos un `configure' personalizado:
+      if [ -f ${currentWorkDir}/configure/${sourceName} ]; then
+        . ${currentWorkDir}/configure/${sourceName}
+      else  # Usa el `configure' por defecto:
+        . ${currentWorkDir}/configure/default
+      fi
+
+      # Tiempo de construir:
+      make $JOBS || make
+      make install DESTDIR=$packageDir
+
+      # Purgamos los binarios y las librerías para una buena medida:
+      ( cd $packageDir
+        find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+         cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true;
+      )
+
+      # Si es necesario recurrimos a pasos adicionales:
+      if [ -x "${currentWorkDir}/postmake/${sourceName}" ]; then
+        . "${currentWorkDir}/postmake/${sourceName}"
+      fi
+
+      # Comprimimos, enlazamos y copiamos para el resto de nuestro paquete:
+      cd $packageDir
+
+      # Arregla la ruta del directorio de documentación (si es necesario):
+      #
+      # Movemos los directorios de documentación puesto que
+      # no queremos dichos directorios bajo usr/share:
+      for Directory in man info doc ; do
+        if [ -d usr/share/${Directory} ]; then
+          mv usr/share/${Directory} usr/${Directory}
+        fi
+      done
+      rmdir usr/share 2> /dev/null || true;
+
+      # Comprime las páginas de información (si hay alguna):
+      if [ -d usr/info ]; then
+        rm -f usr/info/dir  # Redundancia.
+        gzip -9Nf usr/info/*
+      fi
+
+      # Comprime y enlaza las páginas de manual (si hay alguna):
+      if [ -d usr/man ]; then
+        ( cd usr/man
+          find . -type f -exec gzip -9Nf '{}' +
+          find . -type l | while read File ; do
+            ln -sf $(readlink $File).gz ${File}.gz
+            rm $File
+          done
+        )
+      fi
+
+      # Crea el directorio de documentación y busca para copiar los archivos:
+      mkdir -p usr/doc/${sourceName}-${sourceVersion}
+      for File in \
+       AUTHORS COPYING* LICENSE* ChangeLog NEWS README THANKS CREDITS TODO HACKING VERSION
+      do
+        if [ -f "${buildDir}/${sourceName}-${sourceVersion}/$File" ]; then
+          cp -pP \
+           ${buildDir}/${sourceName}-${sourceVersion}/$File \
+           usr/doc/${sourceName}-${sourceVersion}
+        fi
+      done
+      # Algunas fuentes instalan el directorio de documentación con sólo el
+      # nombre de la fuente.  Cuando nosotros, lo que queremos, es tener el
+      # directorio de documentación bajo <nombre_programa>-<versión>:
+      if [ -d ${packageDir}/usr/doc/${sourceName} ]; then
+        mv ${packageDir}/usr/doc/${sourceName}/* usr/doc/${sourceName}-${sourceVersion}
+        rmdir ${packageDir}/usr/doc/${sourceName} 2> /dev/null || true;
+      fi
+
+      # Introducimos los archivos de descripción:
+      if [ -d ${currentWorkDir}/descriptions/$sourceName ]; then
+        mkdir -p description/
+        cp ${currentWorkDir}/descriptions/${sourceName}/?? ${packageDir}/description/
+      else  # Reportar descripción perdida:
+        echo "$sourceName" >> ${currentWorkDir}/missing.descriptions
+      fi
+
+      # Hacemos el paquete:
+      if [ -x ${currentWorkDir}/makepkg/$sourceName ]; then
+        . ${currentWorkDir}/makepkg/$sourceName
+      else
+        makepkg -l \
+         ${outDir}/${sourceName}-${sourceVersion}-${archPackage}-${buildNum}.tlz
+      fi
+    )
+    cd - > /dev/null
+    break;
+  done
+  if [ "$INS" != "" ]; then
+    /sbin/pkg add ${outDir}/${sourceName}-${sourceVersion}-${archPackage}-${buildNum}.tlz
+  fi
+done

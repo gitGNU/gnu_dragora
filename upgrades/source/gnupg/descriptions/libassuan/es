@@ -1,0 +1,5 @@
+libassuan - Librería de IPC usada por GnuPG.
+
+Libassuan es la librería IPC utilizada por algunos
+programas relacionados con GnuPG.
+
