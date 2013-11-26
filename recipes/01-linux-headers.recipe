@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = linux
-version = 3.10.5
+version = 3.10.20
 release = 1
 
 tarname = ${program}-libre-${version}-gnu.tar.lz
