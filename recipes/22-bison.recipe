@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = bison
-version = 2.7.1
+version = 3.0.1
 release = 1
 
 tarname = ${program}-${version}.tar.lz
