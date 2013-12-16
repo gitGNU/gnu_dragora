@@ -22,26 +22,40 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
+P=curl
 V=7.31.0
-ARCH=${ARCH:-i486}
-B=1
+B=2
+
+case "$(uname -m)" in
+        i?86)   export ARCH=i486
+                BANDERAS="-march=i486 -mtune=i686"
+        ;;
+        x86_64) export ARCH=x86_64
+                BANDERAS="-mtune=generic"
+                SUFARQ=64
+        ;;
+        *) export ARCH=$(uname -m)
+esac
 
 # Flags for the compiler:
-DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+DCFLAGS=${DCFLAGS:=-O2 ${BANDERAS}}
 
 # Parallel jobs for the compiler:
-JOBS=${JOBS:=-j4}
+JOBS=${JOBS:=-j2}
 
-PKG=${TMP}/package-curl
+PKG=${TMP}/package-${P}
 
 rm -rf $PKG
 mkdir -p $PKG $OUT
 
 echo "Uncompressing the tarball..."
-rm -rf ${TMP}/curl-${V}
-lzip -cd ${CWD}/curl-${V}.tar.lz | tar -xvf - -C $TMP
+rm -rf ${TMP}/${P}-${V}
+lzip -cd ${CWD}/${P}-${V}.tar.lz | tar -xvf - -C $TMP
 
-cd ${TMP}/curl-${V}
+cd ${TMP}/${P}-${V}
+
+# Apply patch(es):
+patch -p1 -i ${CWD}/CVE-2013-4545.patch
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
@@ -61,6 +75,7 @@ find . \
     -perm 440 -o \
     -perm 400    \
  \) -exec chmod 644 {} +
+
 
 CFLAGS="$DCFLAGS" \
 ./configure \
@@ -93,16 +108,16 @@ make install DESTDIR=$PKG
 )
 
 # Add the documentation:
-mkdir -p ${PKG}/usr/doc/curl-${V}/docs
+mkdir -p ${PKG}/usr/doc/${P}-${V}/docs
 cp -a \
  CHANGES COPYING README RELEASE-NOTES \
- ${PKG}/usr/doc/curl-${V}
+ ${PKG}/usr/doc/${P}-${V}
 ( cd docs
   cp -a \
    BINDINGS BUGS CONTRIBUTE FAQ FEATURES HISTORY \
    INTERNALS KNOWN_BUGS LICENSE-MIXING MANUAL \
    RESOURCES SSLCERTS THANKS TODO VERSIONS \
-   ${PKG}/usr/doc/curl-${V}/docs
+   ${PKG}/usr/doc/${P}-${V}/docs
 )
 
 # Copy the description files:
@@ -110,4 +125,4 @@ mkdir -p ${PKG}/description
 cp ${CWD}/description/* ${PKG}/description
 
 cd $PKG
-makepkg -l ${OUT}/curl-${V}-${ARCH}-${B}.tlz
+makepkg -l ${OUT}/${P}-${V}-${ARCH}-${B}.tlz
