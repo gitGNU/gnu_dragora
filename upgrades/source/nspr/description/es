@@ -1,0 +1,5 @@
+nspr - API de nivel de sistema y funciones como libc.
+
+Netscape Portable Runtime (NSPR) proporciona una plataforma neutral para
+la API de nivel de sistema y funciones como libc.
+
