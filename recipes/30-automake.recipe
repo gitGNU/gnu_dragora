@@ -1,13 +1,13 @@
 # Build recipe for automake.
 #
-# Copyright (C) 2012-2013 Matias A. Fonzo.
+# Copyright (C) 2012-2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
 program = automake
-version = 1.13.4
-short_ver = 1.13
+version = 1.14.1
+short_ver = 1.14
 release = 1
 
 tarname = ${program}-${version}.tar.lz
