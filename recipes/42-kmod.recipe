@@ -1,12 +1,12 @@
 # Build recipe for kmod.
 #
-# Copyright (C) 2013 Matias A. Fonzo.
+# Copyright (C) 2013-2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
 program = kmod
-version = 15
+version = 16
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -20,7 +20,6 @@ docdir = /share/doc/${program}-${version}
 cd $srcdir
 
 patch -Np1 -i ${patchdir}/kmod/kmod.patch
-patch -Np1 -i ${patchdir}/kmod/kmod-test-stdout.patch
 patch -Np1 -i ${patchdir}/kmod/kmod-test-glibc-assumption.patch
 
 CFLAGS="$flags -D_GNU_SOURCE" \
