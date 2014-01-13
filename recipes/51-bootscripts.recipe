@@ -7,6 +7,7 @@
 
 program = bootscripts
 version = 1.0.4
+arch = noarch
 release = 1
 
 tarname = ${program}-${version}.tar.lz
