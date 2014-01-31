@@ -24,7 +24,7 @@ OUT=${OUT:-/tmp/packages}
 
 V=7.31.0
 ARCH=${ARCH:-x86_64}
-B=2
+B=3
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
@@ -43,8 +43,9 @@ lzip -cd ${CWD}/curl-${V}.tar.lz | tar -xvf - -C $TMP
 
 cd ${TMP}/curl-${V}
 
-# Apply patch:
+# Apply patches:
 patch -p1 -i ${CWD}/CVE-2013-4545.patch
+patch -p1 -i ${CWD}/CVE-2014-0015.patch
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
@@ -115,4 +116,3 @@ cp ${CWD}/description/* ${PKG}/description
 
 cd $PKG
 makepkg -l ${OUT}/curl-${V}-${ARCH}-${B}.tlz
-
