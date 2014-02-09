@@ -1,6 +1,6 @@
 #!/bin/bash
 # Copyright (C) 2010-2012  Matias A. Fonzo, <selk@dragora.org>
-# Copyright (C) 2013  Lucas Sköldqvist <frusen@dragora.org>
+# Copyright (C) 2013-2014  Lucas Sköldqvist <frusen@dragora.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
 P=pidgin
-V=${V:-2.10.7}
+V=${V:-2.10.9}
 ARCH=${ARCH:-i486}
 B=${B:-1}
 
