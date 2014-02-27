@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = grep
-version = 2.16
+version = 2.18
 release = 1
 
 tarname = ${program}-${version}.tar.lz
