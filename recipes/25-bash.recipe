@@ -1,12 +1,12 @@
 # Build recipe for bash.
 #
-# Copyright (C) 2012-2013 Matias A. Fonzo.
+# Copyright (C) 2012-2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
 program = bash
-version = 4.2
+version = 4.3
 release = 1
 
 tarname = ${program}-${version}.tar.lz
@@ -19,12 +19,12 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
-# Apply patches from the upstream
-for file in ${patchdir}/bash/* ; do \
-  if [ -f $$file ]; then \
-    patch -p0 < $$file ; \
-  fi ; \
-done
+# Apply patches from the upstream (if any)
+#for file in ${patchdir}/bash/* ; do \
+#  if [ -f $$file ]; then \
+#    patch -p0 < $$file ; \
+#  fi ; \
+#done
 
 CFLAGS="$flags" \
 LDFLAGS="--static" \
@@ -37,7 +37,7 @@ LDFLAGS="--static" \
 make -j${jobs}
 make install DESTDIR=$destdir
 
-# Make symlink compatibility:
+# Make symlink compatibility
 ( cd ${destdir}/bin && ln -sf bash sh )
 
 # Compress info documents (if needed)
