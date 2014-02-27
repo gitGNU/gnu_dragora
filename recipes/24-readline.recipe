@@ -20,11 +20,11 @@ docdir = /share/doc/${program}-${version}
 cd $srcdir
 
 # Apply patches from the upstream (if any)
-#for file in ${patchdir}/readline/* ; do \
-#  if [ -f $$file ]; then \
-#    patch -p0 < $$file ; \
-#  fi ; \
-#done
+for file in ${patchdir}/readline/* ; do \
+  if [ -f $$file ]; then \
+    patch -p0 < $$file ; \
+  fi ; \
+done
 
 CFLAGS="$flags" \
 ./configure $configure_args \
