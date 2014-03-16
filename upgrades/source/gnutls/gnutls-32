@@ -1,5 +1,6 @@
 #!/bin/bash
 #  Copyright (C) 2012  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2014  Lucas Sköldqvist <frusen@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@ OUT=${OUT:-/tmp/packages}
 P=gnutls
 V=${V:-2.12.20}
 ARCH=${ARCH:-i486}
-B=${B:-2}
+B=${B:-3}
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
@@ -43,8 +44,9 @@ tar -xvf ${CWD}/${P}-${V}.tar.lz -C $TMP
 
 cd ${TMP}/${P}-${V}
 
-# Apply patch:
-patch -Np1 -i ${CWD}/CVE-2014-1959.diff
+# Apply patches:
+patch -Np1 -i ${CWD}/patches/CVE-2014-1959.diff
+patch -Np1 -i ${CWD}/patches/CVE-2014-0092.patch
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
