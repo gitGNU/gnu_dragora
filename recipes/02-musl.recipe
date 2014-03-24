@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = musl
-version = 0.9.15
+version = 1.0.0
 release = 1
 
 nostrip = yes
@@ -19,8 +19,7 @@ cd $srcdir
 
 ./configure $configure_args \
  --syslibdir=/lib \
- --enable-optimize=size \
- --enable-debug
+ --enable-optimize=size
 
 make -j${jobs}
 make install
