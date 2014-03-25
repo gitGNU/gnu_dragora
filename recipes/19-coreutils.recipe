@@ -19,6 +19,8 @@ docdir = /share/doc/${program}-${version}
 [build]
 cd $srcdir
 
+patch -Np0 -i ${patchdir}/coreutils/coreutils-O_SEARCH
+
 # Note: stdbuf(1) refuses to compiled as static, due to libstdbuf.so.
 
 CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
