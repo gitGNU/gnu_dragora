@@ -16,15 +16,16 @@ docs = COPYING CREDITS NEWS README VERSION
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-make
-mkdir -p ${destdir}/etc
-cp protocols services ${destdir}/etc
+  make
+  mkdir -p ${destdir}/etc
+  cp protocols services ${destdir}/etc
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

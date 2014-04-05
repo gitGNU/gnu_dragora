@@ -15,64 +15,65 @@ tarname = ${program}-${version}.tar.lz
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# Change the confused message "Sending processes the <SIGNAL> signal"
-# to "Sending processes configured via /etc/inittab the <SIGNAL> signal"
-# (Thanks to LFS)
-patch -Np0 -i ${patchdir}/sysvinit/sysvinit-signal_message
+  # Change the confused message "Sending processes the <SIGNAL> signal"
+  # to "Sending processes configured via /etc/inittab the <SIGNAL> signal"
+  # (Thanks to LFS)
+  patch -Np0 -i ${patchdir}/sysvinit/sysvinit-signal_message
 
-patch -Np0 -i ${patchdir}/sysvinit/sysvinit-2.88dfs
+  patch -Np0 -i ${patchdir}/sysvinit/sysvinit-2.88dfs
 
-# To compile
-make -C src
-cd src
+  # To compile
+  make -C src
+  cd src
 
-# To place the files
-mkdir -p ${destdir}/bin \
-         ${destdir}/sbin \
-         ${destdir}/include \
-         ${destdir}/share/man/man1 \
-         ${destdir}/share/man/man5 \
-         ${destdir}/share/man/man8 \
-         ${destdir}${docdir}
+  # To place the files
+  mkdir -p ${destdir}/bin \
+           ${destdir}/sbin \
+           ${destdir}/include \
+           ${destdir}/share/man/man1 \
+           ${destdir}/share/man/man5 \
+           ${destdir}/share/man/man8 \
+           ${destdir}${docdir}
 
-# Install and link the binaries
-install -m 755 mesg ${destdir}/bin/
-( cd ${destdir}/bin ; \
-  ln -sf ../sbin/killall5 pidof ; \
-)
+  # Install and link the binaries
+  install -m 755 mesg ${destdir}/bin/
+  ( cd ${destdir}/bin ; \
+    ln -sf ../sbin/killall5 pidof ; \
+  )
 
-for file in bootlogd fstab-decode halt init \
-            killall5 runlevel shutdown sulogin ; \
-do \
-  install -m 755 $$file ${destdir}/sbin/ ; \
-done
-ln -sf halt ${destdir}/sbin/poweroff
-ln -sf halt ${destdir}/sbin/reboot
-ln -sf init ${destdir}/sbin/telinit
+  for file in bootlogd fstab-decode halt init \
+              killall5 runlevel shutdown sulogin ; \
+  do \
+    install -m 755 $$file ${destdir}/sbin/ ; \
+  done
+  ln -sf halt ${destdir}/sbin/poweroff
+  ln -sf halt ${destdir}/sbin/reboot
+  ln -sf init ${destdir}/sbin/telinit
 
-# Install a header part of sysvinit
-install -m 644 initreq.h ${destdir}/include
+  # Install a header part of sysvinit
+  install -m 644 initreq.h ${destdir}/include
 
-# Install and compress the manpages
-cd ../man
-gzip -9c < mesg.1 > ${destdir}/share/man/man1/mesg.1.gz
-for page in initscript.5 inittab.5 ; do \
-  gzip -9c < $$page > ${destdir}/share/man/man5/$${page}.gz ; \
-done
-for page in halt.8 init.8 killall5.8 pidof.8 poweroff.8 \
-            reboot.8 runlevel.8 shutdown.8 telinit.8 fstab-decode.8 ; \
-do \
-  gzip -9c < $$page > ${destdir}/share/man/man8/$${page}.gz ; \
-done
+  # Install and compress the manpages
+  cd ../man
+  gzip -9c < mesg.1 > ${destdir}/share/man/man1/mesg.1.gz
+  for page in initscript.5 inittab.5 ; do \
+    gzip -9c < $$page > ${destdir}/share/man/man5/$${page}.gz ; \
+  done
+  for page in halt.8 init.8 killall5.8 pidof.8 poweroff.8 \
+              reboot.8 runlevel.8 shutdown.8 telinit.8 fstab-decode.8 ; \
+  do \
+    gzip -9c < $$page > ${destdir}/share/man/man8/$${page}.gz ; \
+  done
 
-# Copy the documentation
-cd ../doc
-cp -a Changelog bootlogd.README sysvinit-2.86.lsm \
-      ../COPYING ../COPYRIGHT ../README \
-      ${destdir}${docdir}
+  # Copy the documentation
+  cd ../doc
+  cp -a Changelog bootlogd.README sysvinit-2.86.lsm \
+        ../COPYING ../COPYRIGHT ../README \
+        ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

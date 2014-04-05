@@ -17,41 +17,42 @@ docs = AUTHORS COPYING ChangeLog NEWS README THANKS
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-./configure $configure_args --docdir=$docdir
+  ./configure $configure_args --docdir=$docdir
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-# Replace hard links with soft links
-( cd ${destdir}/bin && \
-  mv aclocal aclocal-${short_ver} && \
-  ln -sf aclocal-${short_ver} aclocal ; \
-  mv automake automake-${short_ver} && \
-  ln -sf automake-${short_ver} automake ; \
-)
+  # Replace hard links with soft links
+  ( cd ${destdir}/bin && \
+    mv aclocal aclocal-${short_ver} && \
+    ln -sf aclocal-${short_ver} aclocal ; \
+    mv automake automake-${short_ver} && \
+    ln -sf automake-${short_ver} automake ; \
+  )
 
-# Compress info documents (if needed)
-if [ -d ${destdir}/share/info ] ; then \
-  rm -f ${destdir}/share/info/dir && \
-  gzip -9 ${destdir}/share/info/* ; \
-fi
+  # Compress info documents (if needed)
+  if [ -d ${destdir}/share/info ] ; then \
+    rm -f ${destdir}/share/info/dir && \
+    gzip -9 ${destdir}/share/info/* ; \
+  fi
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

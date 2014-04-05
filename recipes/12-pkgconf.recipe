@@ -16,20 +16,21 @@ docs = AUTHORS COPYING README*
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args --with-pkg-config-dir=/lib/pkgconfig
+  CFLAGS="$flags" LDFLAGS="-Wl,-static" \
+  ./configure $configure_args --with-pkg-config-dir=/lib/pkgconfig
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-# Make symlink compatibility
-ln -sf pkgconf ${destdir}/bin/pkg-config
+  # Make symlink compatibility
+  ln -sf pkgconf ${destdir}/bin/pkg-config
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

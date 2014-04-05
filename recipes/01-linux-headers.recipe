@@ -13,21 +13,22 @@ tarname = ${program}-libre-${version}-gnu.tar.lz
 
 destdir = /pkg/${program}-headers-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# Uncomment this line to patch a non-POSIX signal
-# used in the script vmlinux.sh (only valid in
-# some kernel versions)
-patch -Np0 -i ${patchdir}/linux/linux-headers-vmlinux.sh
+  # Uncomment this line to patch a non-POSIX signal
+  # used in the script vmlinux.sh (only valid in
+  # some kernel versions)
+  patch -Np0 -i ${patchdir}/linux/linux-headers-vmlinux.sh
 
-make mrproper
-make headers_check
-make INSTALL_HDR_PATH=$destdir headers_install
+  make mrproper
+  make headers_check
+  make INSTALL_HDR_PATH=$destdir headers_install
 
-# Remove cruft
-find ${destdir}/include \
- -type f \( -name .install -o -name ..install.cmd \) -exec rm -f {} +
+  # Remove cruft
+  find ${destdir}/include \
+   -type f \( -name .install -o -name ..install.cmd \) -exec rm -f {} +
 
-reclinker -rf /pkg/${program}-headers-${version} /
+  reclinker -rf /pkg/${program}-headers-${version} /
+}
 

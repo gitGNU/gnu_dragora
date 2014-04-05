@@ -18,86 +18,87 @@ docdir = /share/doc/${program}-${version}
 
 machine_type = $$(gcc -dumpmachine)
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# Do not fail if "makeinfo" is not available
-patch -Np1 -i ${patchdir}/binutils/binutils-makeinfo_nofails
+  # Do not fail if "makeinfo" is not available
+  patch -Np1 -i ${patchdir}/binutils/binutils-makeinfo_nofails
 
-# Suppress the installation of the outdated standards.info file,
-# the newer one is provided by autoconf
-rm -f etc/standards.info
-sed -i '/^INFO/s/standards.info //' etc/Makefile.in
+  # Suppress the installation of the outdated standards.info file,
+  # the newer one is provided by autoconf
+  rm -f etc/standards.info
+  sed -i '/^INFO/s/standards.info //' etc/Makefile.in
 
-rm -rf ../binutils-build
-mkdir ../binutils-build
-cd ../binutils-build
+  rm -rf ../binutils-build
+  mkdir ../binutils-build
+  cd ../binutils-build
 
-CFLAGS="$flags -D_GNU_SOURCE" \
-../${program}-${version}/configure LDFLAGS="--static" $configure_args \
- --with-docdir=$docdir \
- --with-lib-path=/lib \
- --disable-shared \
- --disable-multilib \
- --disable-werror \
- --disable-nls
+  CFLAGS="$flags -D_GNU_SOURCE" \
+  ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
+   --with-docdir=$docdir \
+   --with-lib-path=/lib \
+   --disable-shared \
+   --disable-multilib \
+   --disable-werror \
+   --disable-nls
 
-make -j${jobs} tooldir=/${machine_type}
-make -k check
-make tooldir=/${machine_type} install DESTDIR=$destdir
+  make -j${jobs} tooldir=/${machine_type}
+  make -k check
+  make tooldir=/${machine_type} install DESTDIR=$destdir
 
-if [ -d ${destdir}/lib64 ]; then \
-  ( cd $destdir ; \
-    mkdir -p lib ; \
-    mv lib64/* lib/ ; \
-    rmdir lib64 || : ; \
-  ) ; \
-fi
+  if [ -d ${destdir}/lib64 ]; then \
+    ( cd $destdir ; \
+      mkdir -p lib ; \
+      mv lib64/* lib/ ; \
+      rmdir lib64 || : ; \
+    ) ; \
+  fi
 
-# Include the libiberty header
-mkdir -p ${destdir}/include && \
-cp -p ../binutils-${version}/include/libiberty.h ${destdir}/include
+  # Include the libiberty header
+  mkdir -p ${destdir}/include && \
+  cp -p ../binutils-${version}/include/libiberty.h ${destdir}/include
 
-# Replace hard-links
-( cd ${destdir}/bin && \
-  rm -f ld ; ln -sf ld.bfd ld ; \
-)
-( cd ${destdir}/${machine_type}/bin && \
-  for file in * ; do \
-    if [ -x ../../bin/$$file ]; then \
-      rm -f $$file && ln -s ../../bin/$$file . ; \
-    fi ; \
-  done ; \
-)
-
-# Compress info documents (if needed)
-if [ -d ${destdir}/share/info ] ; then \
-  rm -f ${destdir}/share/info/dir && \
-  gzip -9 ${destdir}/share/info/* ; \
-fi
-
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
+  # Replace hard-links
+  ( cd ${destdir}/bin && \
+    rm -f ld ; ln -sf ld.bfd ld ; \
+  )
+  ( cd ${destdir}/${machine_type}/bin && \
+    for file in * ; do \
+      if [ -x ../../bin/$$file ]; then \
+        rm -f $$file && ln -s ../../bin/$$file . ; \
+      fi ; \
     done ; \
-  ) ; \
-fi
+  )
 
-# Copy the documentation
-( mkdir -p ${destdir}${docdir} ; \
-  cd ${tmpdir}/${program}-${version} && \
-  cp -a $docs ${destdir}${docdir} ; \
-)
+  # Compress info documents (if needed)
+  if [ -d ${destdir}/share/info ] ; then \
+    rm -f ${destdir}/share/info/dir && \
+    gzip -9 ${destdir}/share/info/* ; \
+  fi
 
-# Delete temporary build directory
-cd $srcdir
-if [ -d ../binutils-build ] ; then \
-  rm -rf ../binutils-build ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-reclinker -rf /pkg/${program}-${version} /
+  # Copy the documentation
+  ( mkdir -p ${destdir}${docdir} ; \
+    cd ${tmpdir}/${program}-${version} && \
+    cp -a $docs ${destdir}${docdir} ; \
+  )
+
+  # Delete temporary build directory
+  cd $srcdir
+  if [ -d ../binutils-build ] ; then \
+    rm -rf ../binutils-build ; \
+  fi
+
+  reclinker -rf /pkg/${program}-${version} /
+}
 

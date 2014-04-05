@@ -16,21 +16,22 @@ docs = AUTHORS BUGS COPYING ChangeLog NEWS README THANKS
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args --disable-nls --disable-i18n
+  CFLAGS="$flags" LDFLAGS="-Wl,-static" \
+  ./configure $configure_args --disable-nls --disable-i18n
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-rm -f ${destdir}/share/info/dir ;		# Redundancy
-gzip -9 ${destdir}/share/info/* ;		# Compress .info documents
-gzip -9 ${destdir}/share/man/man1/sed.1 ;	# Compress manual page
+  rm -f ${destdir}/share/info/dir ;		# Redundancy
+  gzip -9 ${destdir}/share/info/* ;		# Compress .info documents
+  gzip -9 ${destdir}/share/man/man1/sed.1 ;	# Compress manual page
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

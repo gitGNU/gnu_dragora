@@ -16,33 +16,34 @@ docs = ChangeLog FAQ README doc/*.txt
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-CFLAGS="$flags" \
-./configure \
- --prefix='' \
- --libdir=/lib \
- --includedir=/include \
- --static
+  CFLAGS="$flags" \
+  ./configure \
+   --prefix='' \
+   --libdir=/lib \
+   --includedir=/include \
+   --static
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir}
-cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir}
+  cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

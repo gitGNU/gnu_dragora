@@ -15,39 +15,40 @@ jobs = 1
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args \
- --docdir=$docdir \
- --disable-nls
+  CFLAGS="$flags" LDFLAGS="-Wl,-static" \
+  ./configure $configure_args \
+   --docdir=$docdir \
+   --disable-nls
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-# To compatibility with flex's predecessor, lex
-if [ -f ${archive}/flex/bin/lex ]; then \
-  install -m 755 ${archive}/flex/bin/lex ${destdir}/bin && \
-  ln -s libfl.a ${destdir}/lib/libl.a ; \
-fi
+  # To compatibility with flex's predecessor, lex
+  if [ -f ${archive}/flex/bin/lex ]; then \
+    install -m 755 ${archive}/flex/bin/lex ${destdir}/bin && \
+    ln -s libfl.a ${destdir}/lib/libl.a ; \
+  fi
 
-# Compress info documents (if needed)
-if [ -d ${destdir}/share/info ] ; then \
-  rm -f ${destdir}/share/info/dir && \
-  gzip -9 ${destdir}/share/info/* ; \
-fi
+  # Compress info documents (if needed)
+  if [ -d ${destdir}/share/info ] ; then \
+    rm -f ${destdir}/share/info/dir && \
+    gzip -9 ${destdir}/share/info/* ; \
+  fi
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

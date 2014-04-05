@@ -16,44 +16,45 @@ docs = AUTHORS COPYING ChangeLog NEWS README THANKS THANKS-to-translators TODO
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-patch -Np0 -i ${patchdir}/coreutils/coreutils-O_SEARCH
+  patch -Np0 -i ${patchdir}/coreutils/coreutils-O_SEARCH
 
-# Note: stdbuf(1) refuses to compiled as static, due to libstdbuf.so.
+  # Note: stdbuf(1) refuses to compiled as static, due to libstdbuf.so.
 
-CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
-LDFLAGS="-Wl,-static" \
-FORCE_UNSAFE_CONFIGURE=1 \
-./configure $configure_args \
- --without-gmp \
- --enable-no-install-program=kill,uptime,stdbuf \
- --disable-nls \
- gl_cv_func_working_mktime=yes
+  CFLAGS="$flags -D_GNU_SOURCE -D_BSD_SOURCE" \
+  LDFLAGS="-Wl,-static" \
+  FORCE_UNSAFE_CONFIGURE=1 \
+  ./configure $configure_args \
+   --without-gmp \
+   --enable-no-install-program=kill,uptime,stdbuf \
+   --disable-nls \
+   gl_cv_func_working_mktime=yes
 
-make -j${jobs} V=1
-make install DESTDIR=$destdir
+  make -j${jobs} V=1
+  make install DESTDIR=$destdir
 
-# Compress info documents (if needed)
-if [ -d ${destdir}/share/info ] ; then \
-  rm -f ${destdir}/share/info/dir && \
-  gzip -9 ${destdir}/share/info/* ; \
-fi
+  # Compress info documents (if needed)
+  if [ -d ${destdir}/share/info ] ; then \
+    rm -f ${destdir}/share/info/dir && \
+    gzip -9 ${destdir}/share/info/* ; \
+  fi
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

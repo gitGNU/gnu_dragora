@@ -9,26 +9,27 @@ program = musl
 version = 1.0.0
 release = 1
 
-nostrip = yes
-
 tarname = ${program}-${version}.tar.lz
+
 jobs = 1
+strip = sections
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-./configure $configure_args \
- --syslibdir=/lib \
- --enable-optimize=size
+  ./configure $configure_args \
+   --syslibdir=/lib \
+   --enable-optimize=size
 
-make -j${jobs}
-make install
+  make -j${jobs}
+  make install
 
-# To print shared library dependencies
-ln -sf /lib/libc.so /bin/ldd
+  # To print shared library dependencies
+  ln -sf /lib/libc.so /bin/ldd
 
-# Adjust the toolchain (if necessary)
-if [ -x /tools/bin/adjust-toolchain ]; then \
-  /tools/bin/adjust-toolchain ; \
-fi
+  # Adjust the toolchain (if necessary)
+  if [ -x /tools/bin/adjust-toolchain ]; then \
+    /tools/bin/adjust-toolchain ; \
+  fi
+}
 

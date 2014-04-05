@@ -16,58 +16,59 @@ docs = COPYING ChangeLog NEWS README TODO
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# Add our custom definitions
-patch -Np0 -i ${patchdir}/shadow/shadow-login.defs
+  # Add our custom definitions
+  patch -Np0 -i ${patchdir}/shadow/shadow-login.defs
 
-# ruserok(3) is missing from Musl
-patch -Np0 -i ${patchdir}/shadow/shadow-no_rlogin
+  # ruserok(3) is missing from Musl
+  patch -Np0 -i ${patchdir}/shadow/shadow-no_rlogin
 
-# Add missing headers in utmp.c
-patch -Np0 -i ${patchdir}/shadow/shadow-utmp.c
+  # Add missing headers in utmp.c
+  patch -Np0 -i ${patchdir}/shadow/shadow-utmp.c
 
-# Disable the installation of the groups program and its man pages,
-# as Coreutils provides a better version (thanks to LFS)
-sed -i 's/groups$$(EXEEXT) //' src/Makefile.in
-find man/ -type f -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
+  # Disable the installation of the groups program and its man pages,
+  # as Coreutils provides better versions (thanks to LFS)
+  sed -i 's/groups$$(EXEEXT) //' src/Makefile.in
+  find man/ -type f -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
 
-CFLAGS="$flags" \
-LDFLAGS="-Wl,-static" \
-./configure $configure_args \
- --enable-static \
- --disable-shared \
- --disable-nls \
- --without-nscd \
- ac_cv_member_struct_utmp_ut_addr_v6=no \
- ac_cv_member_struct_utmpx_ut_addr_v6=no
+  CFLAGS="$flags" \
+  LDFLAGS="-Wl,-static" \
+  ./configure $configure_args \
+   --enable-static \
+   --disable-shared \
+   --disable-nls \
+   --without-nscd \
+   ac_cv_member_struct_utmp_ut_addr_v6=no \
+   ac_cv_member_struct_utmpx_ut_addr_v6=no
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-# We do not need this
-rm -rf ${destdir}/etc/default
+  # We do not need this
+  rm -rf ${destdir}/etc/default
 
-# Compress info documents (if needed)
-if [ -d ${destdir}/share/info ] ; then \
-  rm -f ${destdir}/share/info/dir && \
-  gzip -9 ${destdir}/share/info/* ; \
-fi
+  # Compress info documents (if needed)
+  if [ -d ${destdir}/share/info ] ; then \
+    rm -f ${destdir}/share/info/dir && \
+    gzip -9 ${destdir}/share/info/* ; \
+  fi
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

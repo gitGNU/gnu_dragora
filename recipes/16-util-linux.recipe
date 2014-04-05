@@ -16,54 +16,55 @@ docs = AUTHORS COPYING ChangeLog NEWS README*
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# A set of patches in order to compile against Musl
-patch -Np1 -i ${patchdir}/util-linux/util-linux.patch
+  # A set of patches in order to compile against Musl
+  patch -Np1 -i ${patchdir}/util-linux/util-linux.patch
 
-CFLAGS="$flags -D_GNU_SOURCE" \
-LDFLAGS="-Wl,-static" \
-./configure $configure_args \
- --enable-fs-paths-default=/bin \
- --enable-libuuid \
- --enable-libblkid \
- --enable-libmount \
- --enable-static \
- --disable-shared \
- --disable-su \
- --disable-sulogin \
- --disable-login \
- --disable-schedutils \
- --disable-utmpdump \
- --disable-mesg \
- --disable-kill \
- --disable-eject \
- --disable-use-tty-group \
- --enable-reset \
- --enable-write
+  CFLAGS="$flags -D_GNU_SOURCE" \
+  LDFLAGS="-Wl,-static" \
+  ./configure $configure_args \
+   --enable-fs-paths-default=/bin \
+   --enable-libuuid \
+   --enable-libblkid \
+   --enable-libmount \
+   --enable-static \
+   --disable-shared \
+   --disable-su \
+   --disable-sulogin \
+   --disable-login \
+   --disable-schedutils \
+   --disable-utmpdump \
+   --disable-mesg \
+   --disable-kill \
+   --disable-eject \
+   --disable-use-tty-group \
+   --enable-reset \
+   --enable-write
 
-make -j${jobs} V=1
-make install usrbin_execdir=/bin \
-             usrsbin_execdir=/sbin \
-             DESTDIR=$destdir
+  make -j${jobs} V=1
+  make install usrbin_execdir=/bin \
+               usrsbin_execdir=/sbin \
+               DESTDIR=$destdir
 
-# Create empty directory for uuidd
-mkdir -p ${destdir}/var/uuidd
+  # Create empty directory for uuidd
+  mkdir -p ${destdir}/var/uuidd
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

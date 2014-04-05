@@ -16,21 +16,22 @@ docs = AUTHORS COPYING NEWS README
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-./configure $configure_args \
- --disable-harden-flags \
- --disable-nls
+  CFLAGS="$flags" LDFLAGS="-Wl,-static" \
+  ./configure $configure_args \
+   --disable-harden-flags \
+   --disable-nls
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-gzip -9 ${destdir}/share/man/man1/* ;	# Compress manual pages
+  gzip -9 ${destdir}/share/man/man1/* ;	# Compress manual pages
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

@@ -15,34 +15,35 @@ docs = CHANGES LICENSE README THANKS examples/
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# Use custom flags and dir locations
-patch -Np0 -i ${patchdir}/perp/perp-conf.mk
+  # Use custom flags and dir locations
+  patch -Np0 -i ${patchdir}/perp/perp-conf.mk
 
-make
-make install DESTDIR=$destdir
+  make
+  make install DESTDIR=$destdir
 
-# Automatic installation setup
-DESTDIR=$destdir ./perp/perp-setup /etc/perp
+  # Automatic installation setup
+  DESTDIR=$destdir ./perp/perp-setup /etc/perp
 
-# We don't include perp-setup
-rm -f ${destdir}/sbin/perp-setup ${destdir}/share/man/man8/perp-setup.8
+  # We don't include perp-setup
+  rm -f ${destdir}/sbin/perp-setup ${destdir}/share/man/man8/perp-setup.8
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -exec gzip -9 {} \; && \
-    find . -type l | while read file ; do \
-      ln -sf $$(readlink $$file).gz $${file}.gz && \
-      rm $$file ; \
-    done ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -exec gzip -9 {} \; && \
+      find . -type l | while read file ; do \
+        ln -sf $$(readlink $$file).gz $${file}.gz && \
+        rm $$file ; \
+      done ; \
+    ) ; \
+  fi
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 

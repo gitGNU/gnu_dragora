@@ -16,71 +16,72 @@ docs = AUTHORS Artistic Changes Copying README README.linux
 destdir = /pkg/${program}-${version}
 docdir = /share/doc/${program}-${version}
 
-[build]
-cd $srcdir
+build {
+  cd $srcdir
 
-# Look for the static libc
-patch -Np0 -i ${patchdir}/perl/perl-linux-static.sh
+  # Look for the static libc
+  patch -Np0 -i ${patchdir}/perl/perl-linux-static.sh
 
-# Don't use -fstack-protector
-patch -Np0 -i ${patchdir}/perl/perl-fnostack-protector
+  # Don't use -fstack-protector
+  patch -Np0 -i ${patchdir}/perl/perl-fnostack-protector
 
-# less of busybox doesn't support the '-R' option
-patch -Np0 -i ${patchdir}/perl/perl-less_nooption
+  # less of busybox doesn't support the '-R' option
+  patch -Np0 -i ${patchdir}/perl/perl-less_nooption
 
-# Don't use the internal copy of the zlib
-sed -i \
- -e "s|BUILD_ZLIB\s*= True|BUILD_ZLIB = False|" \
- -e "s|INCLUDE\s*= ./zlib-src|INCLUDE    = /include|" \
- -e "s|LIB\s*= ./zlib-src|LIB        = /lib|" \
- cpan/Compress-Raw-Zlib/config.in
+  # Don't use the internal copy of zlib
+  sed -i \
+   -e "s|BUILD_ZLIB\s*= True|BUILD_ZLIB = False|" \
+   -e "s|INCLUDE\s*= ./zlib-src|INCLUDE    = /include|" \
+   -e "s|LIB\s*= ./zlib-src|LIB        = /lib|" \
+   cpan/Compress-Raw-Zlib/config.in
 
-./Configure -des \
- -Uuseshrplib \
- -Uusedl \
- -Uinstallusrbinperl \
- -Uusevendorprefix \
- -Duselargefiles \
- -Dusemymalloc=n \
- -A ccflags="-D_GNU_SOURCE -D_BSD_SOURCE -DNO_PERL_MALLOC_ENV -DNDEBUG" \
- -A ldflags="-Wl,-static" \
- -Doptimize="$flags" \
- -Dprefix='' \
- -Dbin=/bin \
- -Dprivlib=/lib/perl5 \
- -Darchlib=/lib/perl5 \
- -Dsitelib=/lib/perl5/site_perl \
- -Dsitearch=/lib/perl5/site_perl \
- -Dman1dir=/share/man/man1 \
- -Dman3dir=/share/man/man3 \
- -Dpager=/bin/less
+  ./Configure -des \
+   -Uuseshrplib \
+   -Uusedl \
+   -Uinstallusrbinperl \
+   -Uusevendorprefix \
+   -Duselargefiles \
+   -Dusemymalloc=n \
+   -A ccflags="-D_GNU_SOURCE -D_BSD_SOURCE -DNO_PERL_MALLOC_ENV -DNDEBUG" \
+   -A ldflags="-Wl,-static" \
+   -Doptimize="$flags" \
+   -Dprefix='' \
+   -Dbin=/bin \
+   -Dprivlib=/lib/perl5 \
+   -Darchlib=/lib/perl5 \
+   -Dsitelib=/lib/perl5/site_perl \
+   -Dsitearch=/lib/perl5/site_perl \
+   -Dman1dir=/share/man/man1 \
+   -Dman3dir=/share/man/man3 \
+   -Dpager=/bin/less
 
-make -j${jobs}
-make install DESTDIR=$destdir
+  make -j${jobs}
+  make install DESTDIR=$destdir
 
-# Replace hard links
-( cd ${destdir}/bin && \
-  mv perl perl${version} && \
-  ln -sf perl${version} perl ; \
-  ln -sf c2ph pstruct ; \
-  ln -sf s2p psed ; \
-)
+  # Replace hard links
+  ( cd ${destdir}/bin && \
+    mv perl perl${version} && \
+    ln -sf perl${version} perl ; \
+    ln -sf c2ph pstruct ; \
+    ln -sf s2p psed ; \
+  )
 
-# Compress and link manual pages (if needed)
-if [ -d ${destdir}/share/man ] ; then \
-  ( cd ${destdir}/share/man && \
-    find . -type f -name '*.?' -exec gzip -9 {} \; ; \
-  ) ; \
-fi
+  # Compress and link manual pages (if needed)
+  if [ -d ${destdir}/share/man ] ; then \
+    ( cd ${destdir}/share/man && \
+      find . -type f -name '*.?' -exec gzip -9 {} \; ; \
+    ) ; \
+  fi
 
-# Replace hard links on manual pages
-( cd ${destdir}/share/man/man1 && \
-  ln -sf c2ph.1.gz pstruct.1.gz ; \
-  ln -sf s2p.1.gz psed.1.gz ; \
-)
+  # Replace hard links on manual pages
+  ( cd ${destdir}/share/man/man1 && \
+    ln -sf c2ph.1.gz pstruct.1.gz ; \
+    ln -sf s2p.1.gz psed.1.gz ; \
+  )
 
-# Copy the documentation
-mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
+  # Copy the documentation
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
-reclinker -rf /pkg/${program}-${version} /
+  reclinker -rf /pkg/${program}-${version} /
+}
 
