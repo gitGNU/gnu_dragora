@@ -47,3 +47,13 @@ build {
   reclinker -rf /pkg/${program}-${version} /
 }
 
+# Declare conflicts belonging to gzip package
+conflicts {
+  bin/zcat
+  bin/zcmp
+  bin/zdiff
+  bin/zegrep
+  bin/zfgrep
+  bin/zgrep
+}
+
