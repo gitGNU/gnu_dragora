@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = kmod
-version = 16
+version = 17
 release = 1
 
 tarname = ${program}-${version}.tar.lz
