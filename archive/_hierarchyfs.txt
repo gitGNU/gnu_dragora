@@ -1,5 +1,5 @@
 .
-|-- bin/
+|-- bin -> usr/bin/
 |-- boot/
 |-- dev/
 |   |-- console
@@ -7,100 +7,93 @@
 |   |-- pts/
 |   `-- shm/
 |-- etc/
-|   |-- group
-|   `-- passwd
+|   |-- X11/
+|   |-- opt/
+|   |-- skel/
+|   `-- xdg/
 |-- home/
-|-- include/
-|-- lib/
-|   `-- pkgconfig/
-|-- local/
+|-- lib -> usr/lib/
+|-- lost+found/
+|-- media/
 |   |-- README
+|   |-- cdrecorder/
+|   |-- cdrom/
+|   |-- floppy/
+|   `-- zip/
+|-- mnt/
+|   `-- README
+|-- opt/
+|-- proc/
+|-- root/
+|-- run/
+|   `-- lock/
+|-- sbin -> usr/sbin/
+|-- srv/
+|-- sys/
+|-- tmp/
+|-- usr/
 |   |-- bin/
 |   |-- doc -> share/doc/
-|   |-- etc/
-|   |-- games/
 |   |-- include/
 |   |-- info -> share/info/
 |   |-- lib/
+|   |   `-- pkgconfig/
+|   |-- libexec/
+|   |-- local/
+|   |   |-- bin/
+|   |   |-- doc -> share/doc/
+|   |   |-- etc/
+|   |   |-- include/
+|   |   |-- info -> share/info/
+|   |   |-- lib/
+|   |   |-- libexec/
+|   |   |-- man -> share/man/
+|   |   |-- sbin/
+|   |   |-- share/
+|   |   |   |-- doc/
+|   |   |   |-- info/
+|   |   |   `-- man/
+|   |   |       |-- man1/
+|   |   |       |-- man2/
+|   |   |       |-- man3/
+|   |   |       |-- man4/
+|   |   |       |-- man5/
+|   |   |       |-- man6/
+|   |   |       |-- man7/
+|   |   |       `-- man8/
+|   |   `-- src/
 |   |-- man -> share/man/
 |   |-- sbin/
 |   |-- share/
 |   |   |-- doc/
 |   |   |-- info/
-|   |   `-- man/
-|   |       |-- man1/
-|   |       |-- man2/
-|   |       |-- man3/
-|   |       |-- man4/
-|   |       |-- man5/
-|   |       |-- man6/
-|   |       |-- man7/
-|   |       `-- man8/
+|   |   |-- man/
+|   |   |   |-- man1/
+|   |   |   |-- man2/
+|   |   |   |-- man3/
+|   |   |   |-- man4/
+|   |   |   |-- man5/
+|   |   |   |-- man6/
+|   |   |   |-- man7/
+|   |   |   `-- man8/
+|   |   `-- pkgconfig -> ../lib/pkgconfig/
 |   `-- src/
-|-- lost+found/
-|-- media/
-|   |-- README
-|   |-- cdrecorder -> cdrecorder0/
-|   |-- cdrecorder0/
-|   |-- cdrecorder1/
-|   |-- cdrom -> cdrom0/
-|   |-- cdrom0/
-|   |-- cdrom1/
-|   |-- dvd -> dvd0/
-|   |-- dvd0/
-|   |-- dvd1/
-|   |-- floppy -> floppy0/
-|   |-- floppy0/
-|   |-- floppy1/
-|   |-- hd -> hd0/
-|   |-- hd0/
-|   |-- hd1/
-|   |-- memory -> memory0/
-|   |-- memory0/
-|   |-- memory1/
-|   |-- tmp -> tmp0/
-|   |-- tmp0/
-|   |-- tmp1/
-|   |-- zip -> zip0/
-|   |-- zip0/
-|   `-- zip1/
-|-- mnt -> media/tmp/
-|-- pkg/
-|-- proc/
-|-- root/
-|-- run/
-|   `-- lock/
-|-- sbin/
-|-- share/
-|   |-- doc/
-|   |-- info/
-|   |-- man/
-|   |   |-- man1/
-|   |   |-- man2/
-|   |   |-- man3/
-|   |   |-- man4/
-|   |   |-- man5/
-|   |   |-- man6/
-|   |   |-- man7/
-|   |   `-- man8/
-|   `-- pkgconfig -> ../lib/pkgconfig/
-|-- src/
-|   `-- dragora/
-|       |-- archive/
-|       |-- patches/
-|       |-- recipes/
-|       `-- sources/
-|-- sys/
-|-- tmp/
-|-- usr -> ./
+|       `-- dragora/
+|           |-- archive/
+|           |-- patches/
+|           |-- recipes/
+|           `-- sources/
 `-- var/
     |-- cache/
+    |   `-- man/
     |-- lib/
+    |-- local/
     |-- lock -> ../run/lock/
-    |-- log/
-    |-- mail/
+    |-- mail -> spool/mail/
+    |-- opt/
     |-- run -> ../run/
     |-- spool/
-    `-- tmp -> ../tmp/
+    |   `-- mail/
+    `-- tmp/
 
-97 directories, 6 files
+92 directories, 4 files

@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog MAINT NEWS README
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -29,8 +29,8 @@ build {
   make install DESTDIR=$destdir
 
   # Compress and link manual pages (if needed)
-  if [ -d ${destdir}/share/man ] ; then \
-    ( cd ${destdir}/share/man && \
+  if [ -d ${destdir}/usr/share/man ] ; then \
+    ( cd ${destdir}/usr/share/man && \
       find . -type f -exec gzip -9 {} \; && \
       find . -type l | while read file ; do \
         ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -40,8 +40,7 @@ build {
   fi
 
   # Copy the documentation
-  mkdir -p ${destdir}${docdir}
-  cp -a $docs ${destdir}${docdir}
+  mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}
 
   reclinker -rf /pkg/${program}-${version} /
 }

@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2013 Matias A. Fonzo.
+# Copyright (C) 2012-2014 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -7,21 +7,21 @@
 cat << "EOF" > /tools/bin/adjust-toolchain
 #! /bin/sh
 
-if [ -z "$MACHTYPE" ]; then
+if [ -z "$MACHTYPE" ] ; then
   MACHTYPE=$(gcc -dumpmachine)
 fi
 
 mv /tools/bin/ld /tools/bin/ld-old
 mv /tools/${MACHTYPE}/bin/ld /tools/${MACHTYPE}/bin/ld-old
 mv /tools/bin/ld-new /tools/bin/ld
-ln -sf /tools/bin/ld /tools/${MACHTYPE}/bin/ld
+ln -s -f /tools/bin/ld /tools/${MACHTYPE}/bin/ld
 
 gcc -dumpspecs | sed \
  -e 's@/tools@@g' \
- -e '/\*startfile_prefix_spec:/{n;s@.*@/lib/ @}' \
- -e '/\*cpp:/{n;s@$@ -isystem /include@}' \
+ -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' \
+ -e '/\*cpp:/{n;s@$@ -isystem /usr/include@}' \
   > $(dirname $(gcc --print-libgcc-file-name))/specs   
 
 EOF
-chmod +x /tools/bin/adjust-toolchain
+chmod 0750 /tools/bin/adjust-toolchain
 

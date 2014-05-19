@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS README THANKS TODO
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -37,14 +37,14 @@ build {
   make install DESTDIR=$destdir
 
   # Compress info documents (if needed)
-  if [ -d ${destdir}/share/info ] ; then \
-    rm -f ${destdir}/share/info/dir && \
-    gzip -9 ${destdir}/share/info/* ; \
+  if [ -d ${destdir}/usr/share/info ] ; then \
+    rm -f ${destdir}/usr/share/info/dir && \
+    gzip -9 ${destdir}/usr/share/info/* ; \
   fi
 
   # Compress and link manual pages (if needed)
-  if [ -d ${destdir}/share/man ] ; then \
-    ( cd ${destdir}/share/man && \
+  if [ -d ${destdir}/usr/share/man ] ; then \
+    ( cd ${destdir}/usr/share/man && \
       find . -type f -exec gzip -9 {} \; && \
       find . -type l | while read file ; do \
         ln -sf $$(readlink $$file).gz $${file}.gz && \

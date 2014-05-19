@@ -1,6 +1,6 @@
 # Build recipe for bzip2.
 #
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012, 2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -13,37 +13,39 @@ tarname = ${program}-${version}.tar.lz
 
 docs = CHANGES LICENSE README manual.html
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
 
-  patch -Np0 -i ${patchdir}/bzip2/bzip2-mandir
+  # Install the man pages into the correct location
+  sed -i -e "s|(PREFIX)/man|(PREFIX)/share/man|g" Makefile
 
-  make LDFLAGS="-Wl,-static"
-  make install PREFIX=$destdir
+  make LDFLAGS="-Wl,-static" \
+       CFLAGS="$flags -Wall -Winline -D_FILE_OFFSET_BITS=64"
 
-  install -D -m 755 bzip2 ${destdir}/bin/bzip2
+  make install PREFIX=${destdir}/usr
 
-  # Replace hard links
-  ( cd ${destdir}/bin && \
+  # Replace hard-links with soft-links
+  ( cd ${destdir}/usr/bin || exit 1 ; \
     rm -f bunzip2 bzcat ; \
     ln -s bzip2 bunzip2 ; \
     ln -s bzip2 bzcat ; \
+    ln -sf bzdiff bzcmp ; \
+    ln -sf bzgrep bzegrep ; \
+    ln -sf bzgrep bzfgrep ; \
+    ln -sf bzmore bzless ; \
   )
 
   # Compress and link manual pages
-  gzip -9 ${destdir}/share/man/man?/*
-  ( cd ${destdir}/share/man/man1 && \
+  gzip -9 ${destdir}/usr/share/man/man?/*
+  ( cd ${destdir}/usr/share/man/man1 || exit 1 ; \
     ln -sf bzip2.1.gz bzcat.1.gz ; \
     ln -sf bzip2.1.gz bzip2recover.1.gz ; \
-  )
-  # Replace hard links
-  ( cd ${destdir}/share/man/man1 && \
-    ln -sf bzmore.1.gz bzless.1.gz ; \
+    ln -sf bzdiff.1.gz bzcmp.1.gz ; \
     ln -sf bzgrep.1.gz bzegrep.1.gz ; \
     ln -sf bzgrep.1.gz bzfgrep.1.gz ; \
-    ln -sf bzdiff.1.gz bzcmp.1.gz ; \
+    ln -sf bzmore.1.gz bzless.1.gz ; \
   )
 
   # Copy the documentation

@@ -14,9 +14,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-LC_ALL=C
-export LC_ALL
-
 # Autodetermine the path of /tools
 if [ ! -L /tools ]; then
   echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
@@ -43,10 +40,10 @@ _umount() {
 }
 
 echo "Mounting directories ..."
-mount -o bind "$(pwd)/archive" ${ROOT}/src/dragora/archive
-mount -o bind "$(pwd)/patches" ${ROOT}/src/dragora/patches
-mount -o bind "$(pwd)/recipes" ${ROOT}/src/dragora/recipes
-mount -o bind "$(pwd)/sources" ${ROOT}/src/dragora/sources
+mount -o bind "$(pwd)/archive" ${ROOT}/usr/src/dragora/archive
+mount -o bind "$(pwd)/patches" ${ROOT}/usr/src/dragora/patches
+mount -o bind "$(pwd)/recipes" ${ROOT}/usr/src/dragora/recipes
+mount -o bind "$(pwd)/sources" ${ROOT}/usr/src/dragora/sources
 
 echo "Mounting virtual file systems ..."
 mount -o bind /dev ${ROOT}/dev
@@ -57,17 +54,17 @@ mount -t sysfs sysfs ${ROOT}/sys
 
 echo "Entering chroot (${ROOT}) ..."
 chroot $ROOT /tools/bin/env -i \
- PATH=/bin:/sbin:/tools/bin:/tools/sbin \
+ PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin:/tools/sbin \
  SHELL=/bin/sh \
  TERM="$TERM" \
  PS1='\u:\w\$ ' \
  HOME=/root \
  /bin/sh --login
 
-_umount ${ROOT}/src/dragora/archive
-_umount ${ROOT}/src/dragora/patches
-_umount ${ROOT}/src/dragora/recipes
-_umount ${ROOT}/src/dragora/sources
+_umount ${ROOT}/usr/src/dragora/archive
+_umount ${ROOT}/usr/src/dragora/patches
+_umount ${ROOT}/usr/src/dragora/recipes
+_umount ${ROOT}/usr/src/dragora/sources
 _umount ${ROOT}/sys
 _umount ${ROOT}/proc
 _umount ${ROOT}/dev/shm

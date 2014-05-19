@@ -1,6 +1,6 @@
 # Build recipe for ncurses.
 #
-# Copyright (C) 2012 Matias A. Fonzo.
+# Copyright (C) 2012, 2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -14,7 +14,7 @@ jobs = 1
 
 docs = ANNOUNCE AUTHORS NEWS README TO-DO
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -34,17 +34,17 @@ build {
 
   # Many applications still expect the linker to be able
   # to find non-wide-character ncurses libraries
-  for name in ncurses form panel menu ; do \
-    rm -f ${destdir}/lib/lib$${name}.so ; \
-    echo "INPUT(-l$${name}w)" > ${destdir}/lib/lib$${name}.so ; \
-    ln -sf lib$${name}w.a ${destdir}/lib/lib$${name}.a ; \
-    ln -sf $${name}w.pc   ${destdir}/lib/pkgconfig/$${name}.pc ; \
+  for libname in ncurses form panel menu ; do \
+    rm -f ${destdir}/usr/lib/lib$${libname}.so ; \
+    echo "INPUT(-l$${libname}w)" > ${destdir}/usr/lib/lib$${libname}.so ; \
+    ln -sf lib$${libname}w.a ${destdir}/usr/lib/lib$${libname}.a ; \
+    ln -sf $${libname}w.pc   ${destdir}/usr/lib/pkgconfig/$${libname}.pc ; \
   done
-  ln -sf libncurses++w.a  ${destdir}/lib/libncurses++.a
+  ln -sf libncurses++w.a ${destdir}/usr/lib/libncurses++.a
 
   # Backward compatibility for old applications that look for -lcurses
-  rm -f ${destdir}/lib/libcursesw.so
-  ( cd ${destdir}/lib ; \
+  rm -f ${destdir}/usr/lib/libcursesw.so
+  ( cd ${destdir}/usr/lib || exit 1 ; \
     echo "INPUT(-lncursesw)" > libcursesw.so ; \
     ln -sf libncurses.so libcurses.so ; \
     ln -sf libncursesw.a libcursesw.a ; \
@@ -68,7 +68,7 @@ build {
    --without-cxx-binding
 
   make sources libs
-  cp -p lib/lib*.so.5* ${destdir}/lib
+  cp -p lib/lib*.so.5* ${destdir}/usr/lib
 
   reclinker -rf /pkg/${program}-${version} /
 }

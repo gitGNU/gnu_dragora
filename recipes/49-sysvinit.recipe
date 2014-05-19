@@ -1,6 +1,6 @@
 # Build recipe for sysvinit.
 #
-# Copyright (C) 2013 Matias A. Fonzo.
+# Copyright (C) 2013-2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -13,7 +13,7 @@ tarname = ${program}-${version}.tar.lz
 
 #docs = COPYING ChangeLog NEWS README TODO
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -30,42 +30,42 @@ build {
   cd src
 
   # To place the files
-  mkdir -p ${destdir}/bin \
-           ${destdir}/sbin \
-           ${destdir}/include \
-           ${destdir}/share/man/man1 \
-           ${destdir}/share/man/man5 \
-           ${destdir}/share/man/man8 \
+  mkdir -p ${destdir}/usr/bin \
+           ${destdir}/usr/sbin \
+           ${destdir}/usr/include \
+           ${destdir}/usr/share/man/man1 \
+           ${destdir}/usr/share/man/man5 \
+           ${destdir}/usr/share/man/man8 \
            ${destdir}${docdir}
 
   # Install and link the binaries
-  install -m 755 mesg ${destdir}/bin/
-  ( cd ${destdir}/bin ; \
+  install -m 755 mesg ${destdir}/usr/bin/
+  ( cd ${destdir}/usr/bin ; \
     ln -sf ../sbin/killall5 pidof ; \
   )
 
   for file in bootlogd fstab-decode halt init \
               killall5 runlevel shutdown sulogin ; \
   do \
-    install -m 755 $$file ${destdir}/sbin/ ; \
+    install -m 755 $$file ${destdir}/usr/sbin/ ; \
   done
-  ln -sf halt ${destdir}/sbin/poweroff
-  ln -sf halt ${destdir}/sbin/reboot
-  ln -sf init ${destdir}/sbin/telinit
+  ln -sf halt ${destdir}/usr/sbin/poweroff
+  ln -sf halt ${destdir}/usr/sbin/reboot
+  ln -sf init ${destdir}/usr/sbin/telinit
 
   # Install a header part of sysvinit
-  install -m 644 initreq.h ${destdir}/include
+  install -m 644 initreq.h ${destdir}/usr/include
 
   # Install and compress the manpages
   cd ../man
-  gzip -9c < mesg.1 > ${destdir}/share/man/man1/mesg.1.gz
+  gzip -9c < mesg.1 > ${destdir}/usr/share/man/man1/mesg.1.gz
   for page in initscript.5 inittab.5 ; do \
-    gzip -9c < $$page > ${destdir}/share/man/man5/$${page}.gz ; \
+    gzip -9c < $$page > ${destdir}/usr/share/man/man5/$${page}.gz ; \
   done
   for page in halt.8 init.8 killall5.8 pidof.8 poweroff.8 \
               reboot.8 runlevel.8 shutdown.8 telinit.8 fstab-decode.8 ; \
   do \
-    gzip -9c < $$page > ${destdir}/share/man/man8/$${page}.gz ; \
+    gzip -9c < $$page > ${destdir}/usr/share/man/man8/$${page}.gz ; \
   done
 
   # Copy the documentation

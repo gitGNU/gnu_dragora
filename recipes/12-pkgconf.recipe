@@ -14,19 +14,19 @@ jobs = 1
 
 docs = AUTHORS COPYING README*
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
 
   CFLAGS="$flags" LDFLAGS="-Wl,-static" \
-  ./configure $configure_args --with-pkg-config-dir=/lib/pkgconfig
+  ./configure $configure_args --with-pkg-config-dir=/usr/lib/pkgconfig
 
   make -j${jobs}
   make install DESTDIR=$destdir
 
   # Make symlink compatibility
-  ln -sf pkgconf ${destdir}/bin/pkg-config
+  ln -sf pkgconf ${destdir}/usr/bin/pkg-config
 
   # Copy the documentation
   mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}

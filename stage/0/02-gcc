@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2013 Matias A. Fonzo.
+# Copyright (C) 2012-2014 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -13,6 +13,7 @@ tar xf ${SRCDIR}/gcc-${version}.tar.?z* -C $TMPDIR
 cd ${TMPDIR}/gcc-${version}
 
 patch -Np0 -i ${PATCHDIR}/gcc/gcc-nofixincludes
+patch -Np0 -i ${PATCHDIR}/gcc/gcc-libiberty
 
 # x86
 for file in \
@@ -59,9 +60,12 @@ for file in gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h ; do
 #define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
 done
 
+# No multilib
+sed -i -e '/MULTILIB_OSDIRNAMES/d' $(find gcc/config -type f -name t-linux64) || :
+
 # GCC built-in prerequisites (if available)
 for src in ${SRCDIR}/gmp-* ${SRCDIR}/mpfr-* ${SRCDIR}/mpc-* ; do
-  if [ -f "$src" ]; then
+  if [ -f "$src" ] ; then
     tar xf $src
     name_ver=${src##*/}
     name_ver=${name_ver%.tar*}

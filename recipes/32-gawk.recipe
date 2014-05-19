@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS POSIX.STD README
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -32,20 +32,20 @@ build {
   make install DESTDIR=$destdir
 
   # Replace hard link with soft link
-  ( cd ${destdir}/bin && \
+  ( cd ${destdir}/usr/bin && \
     mv gawk gawk-${version} && \
     ln -sf gawk-${version} gawk ; \
   )
 
   # Compress info documents (if needed)
-  if [ -d ${destdir}/share/info ] ; then \
-    rm -f ${destdir}/share/info/dir && \
-    gzip -9 ${destdir}/share/info/* ; \
+  if [ -d ${destdir}/usr/share/info ] ; then \
+    rm -f ${destdir}/usr/share/info/dir && \
+    gzip -9 ${destdir}/usr/share/info/* ; \
   fi
 
   # Compress and link manual pages (if needed)
-  if [ -d ${destdir}/share/man ] ; then \
-    ( cd ${destdir}/share/man && \
+  if [ -d ${destdir}/usr/share/man ] ; then \
+    ( cd ${destdir}/usr/share/man && \
       find . -type f -exec gzip -9 {} \; && \
       find . -type l | while read file ; do \
         ln -sf $$(readlink $$file).gz $${file}.gz && \
@@ -55,7 +55,7 @@ build {
   fi
 
   # To compatibility
-  ln -sf gawk.1.gz ${destdir}/share/man/man1/awk.1.gz
+  ln -sf gawk.1.gz ${destdir}/usr/share/man/man1/awk.1.gz
 
   # Copy the documentation
   mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}

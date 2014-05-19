@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING NEWS README
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -27,7 +27,7 @@ build {
   make -j${jobs}
   make install DESTDIR=$destdir
 
-  gzip -9 ${destdir}/share/man/man1/* ;	# Compress manual pages
+  gzip -9 ${destdir}/usr/share/man/man1/* ;	# Compress manual pages
 
   # Copy the documentation
   mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}

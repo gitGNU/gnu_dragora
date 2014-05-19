@@ -1,6 +1,6 @@
 # Build recipe for perl.
 #
-# Copyright (C) 2012-2013 Matias A. Fonzo.
+# Copyright (C) 2012-2014 Matias A. Fonzo.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS Artistic Changes Copying README README.linux
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -25,41 +25,39 @@ build {
   # Don't use -fstack-protector
   patch -Np0 -i ${patchdir}/perl/perl-fnostack-protector
 
-  # less of busybox doesn't support the '-R' option
+  # less of busybox does not support the '-R' option
   patch -Np0 -i ${patchdir}/perl/perl-less_nooption
 
   # Don't use the internal copy of zlib
   sed -i \
    -e "s|BUILD_ZLIB\s*= True|BUILD_ZLIB = False|" \
-   -e "s|INCLUDE\s*= ./zlib-src|INCLUDE    = /include|" \
-   -e "s|LIB\s*= ./zlib-src|LIB        = /lib|" \
+   -e "s|INCLUDE\s*= ./zlib-src|INCLUDE    = /usr/include|" \
+   -e "s|LIB\s*= ./zlib-src|LIB        = /usr/lib|" \
    cpan/Compress-Raw-Zlib/config.in
 
   ./Configure -des \
    -Uuseshrplib \
    -Uusedl \
-   -Uinstallusrbinperl \
    -Uusevendorprefix \
    -Duselargefiles \
    -Dusemymalloc=n \
    -A ccflags="-D_GNU_SOURCE -D_BSD_SOURCE -DNO_PERL_MALLOC_ENV -DNDEBUG" \
    -A ldflags="-Wl,-static" \
    -Doptimize="$flags" \
-   -Dprefix='' \
-   -Dbin=/bin \
-   -Dprivlib=/lib/perl5 \
-   -Darchlib=/lib/perl5 \
-   -Dsitelib=/lib/perl5/site_perl \
-   -Dsitearch=/lib/perl5/site_perl \
-   -Dman1dir=/share/man/man1 \
-   -Dman3dir=/share/man/man3 \
-   -Dpager=/bin/less
+   -Dprefix=/usr \
+   -Dprivlib=/usr/lib/perl5 \
+   -Darchlib=/usr/lib/perl5 \
+   -Dsitelib=/usr/lib/perl5/site_perl \
+   -Dsitearch=/usr/lib/perl5/site_perl \
+   -Dman1dir=/usr/share/man/man1 \
+   -Dman3dir=/usr/share/man/man3 \
+   -Dpager=/usr/bin/less
 
   make -j${jobs}
   make install DESTDIR=$destdir
 
   # Replace hard links
-  ( cd ${destdir}/bin && \
+  ( cd ${destdir}/usr/bin && \
     mv perl perl${version} && \
     ln -sf perl${version} perl ; \
     ln -sf c2ph pstruct ; \
@@ -67,14 +65,14 @@ build {
   )
 
   # Compress and link manual pages (if needed)
-  if [ -d ${destdir}/share/man ] ; then \
-    ( cd ${destdir}/share/man && \
+  if [ -d ${destdir}/usr/share/man ] ; then \
+    ( cd ${destdir}/usr/share/man && \
       find . -type f -name '*.?' -exec gzip -9 {} \; ; \
     ) ; \
   fi
 
   # Replace hard links on manual pages
-  ( cd ${destdir}/share/man/man1 && \
+  ( cd ${destdir}/usr/share/man/man1 && \
     ln -sf c2ph.1.gz pstruct.1.gz ; \
     ln -sf s2p.1.gz psed.1.gz ; \
   )

@@ -14,7 +14,7 @@ jobs = 1
 
 docs = AUTHORS COPYING ChangeLog NEWS README
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
@@ -27,10 +27,10 @@ build {
   # Add our custom config
   install -D -m 644 ${archive}/toque/etc/toquerc ${destdir}/etc/toquerc
 
-  rm -f ${destdir}/share/info/dir ;		# Redundancy
-  gzip -9 ${destdir}/share/info/toque.info ;	# Compress .info documents
-  gzip -9 ${destdir}/share/info/toque_es.info ;
-  gzip -9 ${destdir}/share/man/man1/toque.1 ;	# Compress manual page
+  rm -f ${destdir}/usr/share/info/dir ;		# Redundancy
+  gzip -9 ${destdir}/usr/share/info/toque.info ;	# Compress .info documents
+  gzip -9 ${destdir}/usr/share/info/toque_es.info ;
+  gzip -9 ${destdir}/usr/share/man/man1/toque.1 ;	# Compress manual page
 
   # Copy the documentation
   mkdir -p ${destdir}${docdir} && cp -a $docs ${destdir}${docdir}

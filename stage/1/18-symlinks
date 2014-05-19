@@ -1,17 +1,19 @@
-# Copyright (C) 2012-2013 Matias A. Fonzo.
+# Copyright (C) 2012-2014 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
 # Essential symlinks for $ROOT
-for file in bash cat echo file pwd perl ; do
+for file in bash cat echo file pwd stty ; do
   ln -sf /tools/bin/${file} ${ROOT}/bin
 done
+ln -sf /tools/bin/perl ${ROOT}/usr/bin
+
 ln -sf /proc/self/mounts ${ROOT}/etc/mtab
 
-ln -sf /tools/lib/libstdc++.a ${ROOT}/lib
-sed 's/tools/usr/' /tools/lib/libstdc++.la \
- > ${ROOT}/lib/libstdc++.la
+ln -sf /tools/lib/libstdc++.a ${ROOT}/usr/lib
+sed -e \
+ 's/tools/usr/' /tools/lib/libstdc++.la > ${ROOT}/usr/lib/libstdc++.la
 
 ln -sf bash ${ROOT}/bin/sh
 

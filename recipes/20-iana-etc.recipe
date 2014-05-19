@@ -14,7 +14,7 @@ tarname = ${program}-${version}.tar.lz
 
 docs = COPYING CREDITS NEWS README VERSION
 destdir = /pkg/${program}-${version}
-docdir = /share/doc/${program}-${version}
+docdir = /usr/share/doc/${program}-${version}
 
 build {
   cd $srcdir
