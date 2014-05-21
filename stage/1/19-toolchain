@@ -7,14 +7,12 @@
 cat << "EOF" > /tools/bin/adjust-toolchain
 #! /bin/sh
 
-if [ -z "$MACHTYPE" ] ; then
-  MACHTYPE=$(gcc -dumpmachine)
-fi
+machine_type=$(gcc -dumpmachine)
 
 mv /tools/bin/ld /tools/bin/ld-old
-mv /tools/${MACHTYPE}/bin/ld /tools/${MACHTYPE}/bin/ld-old
+mv /tools/${machine_type}/bin/ld /tools/${machine_type}/bin/ld-old
 mv /tools/bin/ld-new /tools/bin/ld
-ln -s -f /tools/bin/ld /tools/${MACHTYPE}/bin/ld
+ln -s -f /tools/bin/ld /tools/${machine_type}/bin/ld
 
 gcc -dumpspecs | sed \
  -e 's@/tools@@g' \
