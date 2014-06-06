@@ -17,10 +17,11 @@ sources/
 *.img
 *.dsk
 
-# Backups / patches
+# Backups / patches / logs
 *~
 *.orig
 *.rej
+*.log
 
 # Files
 kernels/32b/**/System.map
