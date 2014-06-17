@@ -21,7 +21,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=1.0.0l
+V=1.0.0m
 ARCH=${ARCH:-x86_64}
 B=1
 
@@ -54,8 +54,6 @@ find . \
     -perm 440 -o \
     -perm 400    \
  \) -exec chmod 644 {} +
-
-zcat ${CWD}/openssl-1.0.0d-fix_manpages-1.patch.gz | patch -p1 --verbose
 
 ./config \
  --prefix=/usr \
