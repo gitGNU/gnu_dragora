@@ -15,9 +15,9 @@ print_help() {
    "./${MYNAME} <keyword> <version> <architecture> [suffix]" \
    ""                                                        \
    "Examples:"                                               \
-   "./${MYNAME} headers 3.2.15 x86"                          \
-   "./${MYNAME} image   3.2.15 i486   -gen"                  \
-   "./${MYNAME} image   3.2.15 x86_64 -smp64"                \
+   "./${MYNAME} headers 3.2.60 x86"                          \
+   "./${MYNAME} image   3.2.60 i486   -gen"                  \
+   "./${MYNAME} image   3.2.60 x86_64 -smp64"                \
    ""                                                        \
    "Valid keywords:"                                         \
    "headers, image, firmware, modules"                       \

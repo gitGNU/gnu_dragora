@@ -1,5 +1,5 @@
 #!/bin/bash
-#  Copyright (C) 2010-2013  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2010-2014  Matias A. Fonzo, <selk@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ OUT=${OUT:-/tmp/packages}
 
 V=2.13_20110720
 ARCH=${ARCH:-x86_64}
-B=11
+B=12
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O3 -mtune=generic}
