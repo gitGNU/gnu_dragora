@@ -1,6 +1,5 @@
 #!/bin/bash
-#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
-#  Copyright (C) 2012, 2013  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2014  Matias A. Fonzo, <selk@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,12 +21,12 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=${V:-2013d}
+V=${V:-2014e}
 ARCH=${ARCH:-i486}
 B=1
 
-TZCODE=${TZCODE:-tzcode2013d}
-TZDATA=${TZDATA:-tzdata2013d}
+TZCODE=${TZCODE:-tzcode2014e}
+TZDATA=${TZDATA:-tzdata2014e}
 
 PKG=${TMP}/package-tzdatabase
 
@@ -35,6 +34,7 @@ rm -rf $PKG
 mkdir -p $PKG $OUT
 
 echo "Uncompressing the tarball..."
+rm -rf ${TMP}/tzdatabase-${V}
 mkdir -p ${TMP}/tzdatabase-${V}
 cd ${TMP}/tzdatabase-${V}
 lzip -cd ${CWD}/$TZCODE.tar.lz | tar -xvf -
@@ -59,16 +59,13 @@ find . \
     -perm 400    \
  \) -exec chmod 644 {} +
 
-patch -Np0 -i ${CWD}/Makefile.diff
-
 # Determine the suffix for the libraries:
 if [[ $ARCH = x86_64 ]]; then
   sed -i 's#/lib$#/lib64#' Makefile
   libSuffix=64
 fi
 
-make
-make install DESTDIR=$PKG
+make install TOPDIR=/usr TZDIR=/usr/share/zoneinfo DESTDIR=$PKG
 
 strip -g $PKG/usr/lib${libSuffix}/libtz.a
 
