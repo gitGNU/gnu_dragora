@@ -1,6 +1,7 @@
 
 # Directories
 sources/
+upgrades/packages/
 
 # Extensions
 *.tlz
@@ -33,5 +34,8 @@ kernels/64b/**/vmlinuz
 btmgr/rawrite/rawrite2.exe
 btmgr/rawrite/source/rawrite2.c
 btmgr/rawrite/source/rawrite2.c.sig
+upgrades/source/SHA1SUMS
+upgrades/source/SHA1SUMS.asc
 
 !.gitignore
+
