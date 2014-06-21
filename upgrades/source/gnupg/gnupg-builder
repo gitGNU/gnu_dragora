@@ -50,7 +50,7 @@ DCFLAGS=${DCFLAGS:=-O2 $BANDERAS}
 
 libSuffix=${libSuffix:-$SUFARQ}            # Sufijo exportado usualmente para x86_64.
 
-buildNum=${buildNum:-2}               # Número de construcción.
+buildNum=${buildNum:-1}               # Número de construcción.
 
 JOBS=${JOBS=-j$(expr `nproc` + 1)}               # Trabajos para el compilador.
 
@@ -143,22 +143,6 @@ for Source in $LIST ; do
       # Determina el tipo de sistema donde se construye.
       if [ "$archPackage" != "noarch" ]; then
         BUILD_SYSTEM="--build=${ARCH}-dragora-linux-gnu"
-      fi
-
-      if [ ${sourceName} == "gnupg1" ]; then
-	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2012-6085.patch
-	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2013-4242.patch
-	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2013-4402.patch
-	  patch -Np1 -i ${currentWorkDir}/patches/CVE-2013-4351.patch
-      fi
-
-      if [ ${sourceName} == "gnupg2" ]; then
-	  patch -Np1 -i ${currentWorkDir}/patches/01-gnupg2-rename.diff
-	  patch -Np1 -i ${currentWorkDir}/patches/02-cve-2012-6085.diff
-	  patch -Np1 -i ${currentWorkDir}/patches/03-cve-2013-4402_p1.diff
-	  patch -Np1 -i ${currentWorkDir}/patches/04-cve-2013-4402_p2.diff
-	  patch -Np1 -i ${currentWorkDir}/patches/05-cve-2013-4351.diff
-	  sleep 5
       fi
 
       # Si es necesario usamos un `configure' personalizado:

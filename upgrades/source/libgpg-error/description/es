@@ -1,0 +1,5 @@
+libgpg-error - Pequeña librería con códigos de error.
+
+Este paquete contiene las descripciones y códigos de error compartido por
+la mayoría de los programas relacionados con GnuPG.
+
