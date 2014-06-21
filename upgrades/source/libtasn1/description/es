@@ -1,0 +1,6 @@
+libtasn1 - Librería ASN.1
+
+Esta es la librería libtasn1 desarrollada para la gestión de las estructuras
+ASN.1 (Abstract Syntax Notation One) y de las funciones de codificación
+DER (Distinguished Encoding Rules).
+
