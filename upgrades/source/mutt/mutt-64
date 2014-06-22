@@ -1,6 +1,6 @@
 #!/bin/bash
-#  Copyright (C) 2010  Matías A. Fonzo, <selk@dragora.org>
-#  Copyright (C) 2014  Lucas Sköldqvist <frusen@dragora.org>
+#  Copyright (C) 2010, 2014  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2014  Lucas Skoldqvist <frusen@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=1.5.21
+V=1.5.23
 ARCH=${ARCH:-x86_64}
-B=2
+B=1
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O2 -mtune=generic}
@@ -42,9 +42,6 @@ rm -rf ${TMP}/mutt-${V}
 lzip -cd ${CWD}/mutt-${V}.tar.lz | tar -xvf - -C $TMP
 
 cd ${TMP}/mutt-${V}
-
-# Apply patch:
-patch -Np1 -i ${CWD}/patches/CVE-2014-0467.patch
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
