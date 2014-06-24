@@ -1,5 +1,5 @@
 #!/bin/bash
-#  Copyright (C) 2010, 2011  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2010, 2011, 2014  Matias A. Fonzo, <selk@dragora.org>
 #  Copyright (C) 2013  Lucas Sköldqvist <frusen@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources-python}-$(mcookie)
 OUT=${OUT:-/tmp/packages}
 
-V=2.6.7
+V=2.6.9
 ARCH=${ARCH:-i486}
-B=2
+B=1
 
 SHORT_VER=2.6
 
@@ -63,8 +63,6 @@ find . \
     -perm 440 -o \
     -perm 400    \
  \) -exec chmod 644 {} +
-
-patch -Np1 -i ${CWD}/CVE-2013-4073_py26.patch
 
 CXX=g++ \
 OPT="$DCFLAGS" \
