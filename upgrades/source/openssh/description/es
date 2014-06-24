@@ -1,0 +1,8 @@
+openssh - La suite OpenSSH.
+
+El paquete openssh contiene clientes ssh y el demonio sshd.  Esto es
+útil para encriptar la autenticación y el subsecuente tráfico que se
+envía a la red.
+
+Para más información, visite:  http://www.openssh.org
+
