@@ -120,6 +120,9 @@ cd ../gcc-build
 make $jobs BOOT_LDFLAGS="-static" LDFLAGS="-static"
 make install
 
+cat ../gcc-${version}/gcc/limitx.h ../gcc-${version}/gcc/glimits.h ../gcc-${version}/gcc/limity.h \
+ > $(dirname $(${TARGET}-gcc -print-libgcc-file-name))/include-fixed/limits.h
+
 # Just in case
 ln -sf libgcc.a $(${TARGET}-gcc -print-libgcc-file-name | sed 's/libgcc/&_eh/')
 
