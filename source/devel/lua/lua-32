@@ -21,7 +21,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=5.2.0
+V=5.2.3
 ARCH=${ARCH:-i486}
 B=1
 
