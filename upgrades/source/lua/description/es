@@ -1,0 +1,12 @@
+lua - El lenguaje de programación lua.
+
+Lua es un poderoso, rápido, ligero, integrable lenguaje de scripting.
+
+Lua combina sintaxis procedural simple con poderosas descripción de
+datos basados en la construcción de arreglos asociativos y semántica
+extensible.  Lua es de tipado dinámico, corre interpretando el
+bytecode para una máquina virtual basada en registros, y tiene
+manejo de memoria con un colector de basura incremental. Haciendo
+de esto, un ideal para la configuración, el scripting, y creación de
+prototipos rápidos. 
+
