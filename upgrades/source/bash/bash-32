@@ -25,7 +25,7 @@ OUT=${OUT:-/tmp/packages}
 
 V=4.2
 ARCH=${ARCH:-i486}
-B=9
+B=10
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
