@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program = bootscripts
-version = 1.0.7
+version = 1.0.8
 arch = noarch
 release = 1
 
