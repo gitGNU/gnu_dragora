@@ -1,5 +1,6 @@
 #!/bin/bash
 #  Copyright (C) 2009-2012  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2014  Matias A. Fonzo, <selk@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=1.0.0n
+V=1.0.0o
 ARCH=${ARCH:-i486}
 B=1
 
