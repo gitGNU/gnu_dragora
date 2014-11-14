@@ -1,0 +1,293 @@
+#! /bin/sh
+#  Build a custom GNU/Linux distribution from scratch
+#
+#  Copyright (C) 2014  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Get the current working directory: printing the absolute pathname
+# or just prints the current directory in case of fails
+CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
+
+# Functions
+usage() {
+  printf '%s\n' \
+   "Usage: bootstrap [options] [variables] <buildscript>"                    \
+   "  'variables' are definitions in the form 'name=value'."                 \
+   ""                                                                        \
+   "Options:"                                                                \
+   "  -h, --help             display this help and exit"                     \
+   "  -V, --version          output version information and exit"            \
+   "  -k, --keep             keep (don't delete) source directory (tmpdir)"  \
+   "  -s, --stage=<n>        set the stage number for bootstrap [0]"         \
+   ""
+}
+
+# A simple function to get variable's values from ${CWD}/bootstrap.conf
+getValue() {
+  local CODE variable
+
+  while IFS='=' read -r variable value ; do
+    case "$variable" in
+      \#*|"")           # Ignore commentary or blank lines.
+        CODE=1
+        continue;
+        ;;
+    esac
+
+    if [ "$variable" != "$1" ] ; then
+      CODE=1
+      continue;
+    fi
+    if [ "$value" = "" ] ; then
+      echo "${CWD}/bootstrap.conf: WARNING: Empty value for the variable '${variable}'" 1>&2
+      CODE=1
+      break;
+    fi
+
+    export value
+    CODE=0
+    break;
+  done < "${CWD}"/bootstrap.conf
+
+  return $CODE
+}
+
+_checkArgument() {
+  if [ "$1" = "" ] ; then       # Report empty argument.
+    echo "bootstrap: '${2}' requires an argument. See 'bootstrap --help'" 1>&2
+    exit 1
+  fi
+}
+
+_checkJobs() {
+  if ! printf %s "$jobs" | grep -q -E '^[-+]?([0-9]+\.?|[0-9]*\.[0-9]+)$' ; then
+    echo "bootstrap: '$jobs' need to be a valid number for 'jobs='." 1>&2
+    exit 1
+  fi
+}
+
+_validateDir() {
+  local directory
+  directory="$1"
+
+  # Sanity check
+  if [ -e "$directory" ] && [ ! -d "$directory" ] ; then
+    echo "bootstrap: ${2}: '${directory}' exist, but this is not a directory." 1>&2
+    exit 1
+  fi
+
+  # Create the directory if does not exist
+  if [ ! -d "$directory" ] ; then
+    echo "bootstrap: Creating required directory \"${2}=$directory\" ..."
+    mkdir -p "$directory" || exit 1
+  fi
+}
+
+# Variable's values by default
+rootdir=/tmp/dragora/root
+crossdir=/tmp/dragora/cross
+tmpdir=/tmp/dragora/sources
+jobs=1
+archivedir="${CWD}/archive"
+patchdir="${CWD}/patches"
+builddir="${CWD}/bootstrap.d"
+_envdir="${builddir}/env.d"
+tardir="${CWD}/sources"
+keepdir=nokeepdir
+stage=0
+
+# Get values from the config file
+if [ -f "${CWD}/bootstrap.conf" ] && [ -s "${CWD}/bootstrap.conf" ] ; then
+  echo "[-] Reading config file ${CWD}/bootstrap.conf ..."
+  getValue rootdir        && rootdir="$value"
+  getValue crossdir       && crossdir="$value"
+  getValue tmpdir         && tmpdir="$value"
+  getValue jobs           && { jobs="$value"  ; _checkJobs  ; }
+  getValue archivedir     && archivedir="$value"
+  getValue patchdir       && patchdir="$value"
+  getValue builddir       && builddir="$value"
+  getValue tardir         && tardir="$value"
+else
+  echo "WARNING: ${CWD}/bootstrap.conf: File empty or not regular." 1>&2
+fi
+
+# Handle options / variables
+while [ "$1" ] ; do
+  case "$1" in
+    -k|-keep)
+      keepdir=keepdir
+      shift 1
+      ;;
+    -s)
+      stage="$2"
+      _checkArgument "$stage" '-s'
+      shift 2
+      ;;
+    -s?)
+      stage="${1#*s}"
+      shift 1
+      ;;
+    --stage=*)
+      stage="${1#*=}"
+      _checkArgument "$stage" '--stage='
+      shift 1
+      ;;
+    -h|--help)
+      usage
+      exit
+      ;;
+    -V|--version)
+      echo "bootstrap 1.0"
+      echo "Copyright (C) 2014  Matias A. Fonzo."
+      echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>"
+      echo "This is free software: you are free to change and redistribute it."
+      echo "There is NO WARRANTY, to the extent permitted by law."
+      exit
+      ;;
+    -*)
+      echo "Unknown option: $1" 1>&2
+      usage 1>&2
+      exit 1
+      ;;
+    rootdir=*)
+      rootdir="${1#*=}"
+      _checkArgument "$rootdir" 'rootdir='
+      shift 1
+      ;;
+    crossdir=*)
+      crossdir="${1#*=}"
+      _checkArgument "$crossdir" 'crossdir='
+      shift 1
+      ;;
+    tmpdir=*)
+      tmpdir="${1#*=}"
+      _checkArgument "$tmpdir" 'tmpdir='
+      shift 1
+      ;;
+    jobs=*)
+      jobs="${1#*=}"
+      _checkArgument "$jobs" 'jobs='
+      _checkJobs
+      shift 1
+      ;;
+    archivedir=*)
+      archivedir="${1#*=}"
+      _checkArgument "$archivedir" 'archivedir='
+      shift 1
+      ;;
+    patchdir=*)
+      patchdir="${1#*=}"
+      _checkArgument "$patchdir" 'patchdir='
+      shift 1
+      ;;
+    builddir=*)
+      builddir="${1#*=}"
+      _checkArgument "$builddir" 'builddir='
+      shift 1
+      ;;
+    tardir=*)
+      tardir="${1#*=}"
+      _checkArgument "$tardir" 'tardir='
+      shift 1
+      ;;
+    *[=]*)
+      echo "Unknown variable name: $1" 1>&2
+      usage 1>&2
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# Validate directories if they do not exist
+_validateDir "$rootdir"     'rootdir'
+_validateDir "$crossdir"    'crossdir'
+_validateDir "$tmpdir"      'tmpdir'
+_validateDir "$archivedir"  'archivedir'
+_validateDir "$patchdir"    'patchdir'
+_validateDir "$builddir"    'builddir'
+_validateDir "$tardir"      'tardir'
+
+# Unload from memory unnecessary variables and internal functions
+unset value usage getValue _checkArgument _checkJobs _validateDir
+
+# Set default architecture, host and target-triplet if not specified
+ARCH="${ARCH:-$(uname -m)}"
+HOST="$(cc -dumpmachine | sed 's/-[^-]*/-cross/')"
+TARGET="${TARGET:-${ARCH}-dragora-linux-musl}"
+
+# Auto-detect the target triplet based on ARCH
+case "$ARCH" in
+  i686)
+    ARCH=i386
+  ;;
+esac
+
+# Default path
+PATH="${crossdir}/bin:${PATH}"
+
+# Override locale settings
+LC_ALL=POSIX
+
+export PATH LC_ALL ARCH HOST TARGET
+
+# Default mask
+umask 022
+
+# Main loop
+for buildscript in "${builddir}"/${stage}/${@:-??-*} ; do
+  buildscript="${buildscript##*/}"
+
+  if [ ! -f "${builddir}/${stage}/$buildscript" ] ; then
+    echo "bootstrap: File '${builddir}/${stage}/$buildscript' not found or not regular" 1>&2
+    CODE=127
+    break;
+  fi
+
+  set -o errexit;	# Exit immediately on any error
+
+  # Create the sysroot directory if needed
+  if [ "$stage" = "0" ] && [ ! -e "${crossdir}/${TARGET}/usr" ] ; then
+    mkdir -p "${crossdir}"/$TARGET
+    ln -sf . "${crossdir}"/${TARGET}/usr
+  fi
+
+  # Create symlink for constructing the temporary system (stage 1)
+  if [ "$stage" = "1" ] && [ ! -e /tools ] ; then
+    mkdir -p "${rootdir}"/tools
+    ln -s -f "${rootdir}"/tools /
+  fi
+
+  echo "==> Loading \"${builddir}/${stage}/$buildscript\" ..."
+  . "${builddir}/${stage}/$buildscript"
+
+  # Clean up source directories
+  if [ "$keepdir" != "keepdir" ] ; then
+    name="${buildscript#*-}"
+
+    cd "$tmpdir"
+    for source in ${name}* ; do
+      if [ -d "$source" ] ; then
+        echo "Cleaning up temporary directory: \`${source}' ..."
+        rm -rf "$source"
+      fi
+    done
+  fi
+done
+
+exit $CODE
+

@@ -1,0 +1,90 @@
+# Build script for gcc (static)
+#
+# Copyright (C) 2014 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=4.9.2
+
+echo "Unpacking gcc-${version} ..."
+rm -rf "${tmpdir}"/gcc-${version}
+tar xf "${tardir}"/gcc-${version}.tar.?z* -C "$tmpdir"
+
+# Build instructions
+cd "${tmpdir}"/gcc-${version}
+
+patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes
+patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.0-musl.diff
+
+# Build GCC built-in prerequisites
+for file in "${tardir}"/gmp-* "${tardir}"/mpfr-* "${tardir}"/mpc-* ; do
+  if [ ! -e "$file" ] ; then
+    echo "The built-in prerequisite \`${file}' for GCC is required." 1>&2
+    exit 1
+  fi  
+
+  # Unpack prerequisite
+  tar xf "$file"
+
+  # Basename
+  file="${file##*/}"
+  file="${file%.tar*}"
+
+  # To extract name and version
+  name="${file%-*}"
+  vern="${file#*-}"
+
+  # Remove any words from the version number
+  vern="$(printf %s "$vern" | tr -d '[:lower:]')"
+
+  # Move the source as the expected directory name
+  mv "${name}-${vern}" "$name"
+done
+unset file name vern
+
+# Force stack protection activation
+sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
+
+# Build in a separate directory
+rm -rf ../gcc-build
+mkdir ../gcc-build
+cd ../gcc-build
+
+../gcc-${version}/configure \
+ --prefix="$crossdir" \
+ --enable-languages=c \
+ --enable-checking=release \
+ --build=$HOST \
+ --host=$HOST \
+ --target=$TARGET \
+ --with-sysroot="${crossdir}"/$TARGET \
+ --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
+ --with-mpfr-lib="${PWD}"/mpfr/src/.libs \
+ --with-newlib \
+ --without-headers \
+ --disable-nls \
+ --disable-multilib \
+ --disable-shared \
+ --disable-threads \
+ --disable-libmudflap \
+ --disable-libsanitizer \
+ --disable-decimal-float \
+ --disable-libquadmath \
+ --disable-libssp \
+ --disable-libitm \
+ --disable-libatomic \
+ --disable-libgomp \
+ --without-ppl \
+ --without-cloog
+
+make -j${jobs} all-gcc all-target-libgcc
+make install-gcc install-target-libgcc
+
+cd ../gcc-${version}
+cat gcc/limitx.h gcc/glimits.h gcc/limity.h \
+ > "$(dirname -- "$(${TARGET}-gcc -print-libgcc-file-name)")"/include-fixed/limits.h
+
+# Remove unneeded documentation
+rm -rf "${crossdir}"/share/info "${crossdir}"/share/man
+

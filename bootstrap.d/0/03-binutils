@@ -1,0 +1,38 @@
+# Build script for binutils
+#
+# Copyright (C) 2014 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=2.24.51.0.3
+
+echo "Unpacking binutils-${version} ..."
+rm -rf "${tmpdir}"/binutils-${version}
+tar xf "${tardir}"/binutils-${version}.tar.?z* -C "$tmpdir"
+
+# Build instructions
+cd "${tmpdir}"/binutils-${version}
+
+# Build in a separate directory
+rm -rf ../binutils-build
+mkdir ../binutils-build
+cd ../binutils-build
+
+../binutils-${version}/configure \
+ --prefix="$crossdir" \
+ --target=$TARGET \
+ --with-sysroot="${crossdir}"/$TARGET \
+ --disable-nls \
+ --disable-multilib \
+ --disable-werror \
+ --disable-ppl-version-check \
+ --disable-cloog-version-check
+
+make configure-host
+make -j${jobs}
+make install
+
+# Remove unneeded documentation
+rm -rf "${crossdir}"/share/info "${crossdir}"/share/man
+
