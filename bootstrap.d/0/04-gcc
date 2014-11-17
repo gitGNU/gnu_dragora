@@ -43,6 +43,13 @@ for file in "${tardir}"/gmp-* "${tardir}"/mpfr-* "${tardir}"/mpc-* ; do
 done
 unset file name vern
 
+# Provide an (official) updated version of the config.sub file
+# in order to match correctly the target triplet for a musl OS.
+# This is until new versions could provide the updated file.
+cp -f "${patchdir}"/common/config.sub gmp/configfsf.sub
+cp -f "${patchdir}"/common/config.sub mpfr/config.sub
+cp -f "${patchdir}"/common/config.sub mpc/config.sub
+
 # Force stack protection activation
 sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
 
