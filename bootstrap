@@ -1,5 +1,5 @@
 #! /bin/sh
-#  Build a custom GNU/Linux distribution from scratch
+#  Build a cross compiler or a custom GNU/Linux distribution from scratch
 #
 #  Copyright (C) 2014  Matias A. Fonzo
 #
@@ -23,14 +23,25 @@ CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
 # Functions
 usage() {
   printf '%s\n' \
-   "Usage: bootstrap [options] [variables] <buildscript>"                    \
-   "  'variables' are definitions in the form 'name=value'."                 \
-   ""                                                                        \
-   "Options:"                                                                \
-   "  -h, --help             display this help and exit"                     \
-   "  -V, --version          output version information and exit"            \
-   "  -k, --keep             keep (don't delete) source directory (tmpdir)"  \
-   "  -s, --stage=<n>        set the stage number for bootstrap [0]"         \
+   "Usage: bootstrap [options] [variables] [buildscript]..."                       \
+   "  'variables' are definitions in the form 'name=value'."                       \
+   ""                                                                              \
+   "Options:"                                                                      \
+   "  -h, --help             display this help and exit"                           \
+   "  -V, --version          output version information and exit"                  \
+   "  -k, --keep             keep (don't delete) source directory (tmpdir)"        \
+   "  -s, --stage=<n>        set the stage number for bootstrap [0]"               \
+   ""                                                                              \
+   "Variables:"                                                                    \
+   "  rootdir     output directory for the root system [/tmp/dragora/root]"        \
+   "  crossdir    output directory for the cross compiler [/tmp/dragora/cross]"    \
+   "  tmpdir      temporary directory for compilation [/tmp/dragora/sources]"      \
+   "  jobs        parallel jobs for the compiler [1]"                              \
+   "  archivedir  where to find the provided files [./archive]"                    \
+   "  patchdir    directory where to look for the patches [./patches]"             \
+   "  builddir    building directory containing the stage number [./bootstrap.d]"  \
+   "  recipedir   directory where the recipes reside [./recipes]"                  \
+   "  tardir      specifies the directory including the sources [./sources]"       \
    ""
 }
 
@@ -149,7 +160,7 @@ while [ "$1" ] ; do
       exit
       ;;
     -V|--version)
-      echo "bootstrap 1.0"
+      echo "bootstrap 1.1"
       echo "Copyright (C) 2014  Matias A. Fonzo."
       echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
@@ -275,12 +286,18 @@ for buildscript in "${builddir}"/${stage}/${@:-??-*} ; do
   echo "==> Loading \"${builddir}/${stage}/$buildscript\" ..."
   . "${builddir}/${stage}/$buildscript"
 
+  # Back to the current working directory
+  if ! cd "$CWD" 2> /dev/null ; then
+    echo "bootstrap: Unable to return to the current working directory (${CWD})." 1>&2
+    CODE=2
+    break;
+  fi
+
   # Clean up source directories
   if [ "$keepdir" != "keepdir" ] ; then
     name="${buildscript#*-}"
 
-    cd "$tmpdir"
-    for source in ${name}* ; do
+    for source in "${tmpdir}"/$name* ; do
       if [ -d "$source" ] ; then
         echo "Cleaning up temporary directory: \`${source}' ..."
         rm -rf "$source"
