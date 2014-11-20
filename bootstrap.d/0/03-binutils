@@ -19,8 +19,10 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
+AR="ar" \
 ../binutils-${version}/configure \
  --prefix="$crossdir" \
+ --host=$HOST \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
  --disable-nls \
