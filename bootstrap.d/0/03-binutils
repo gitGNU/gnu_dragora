@@ -25,7 +25,6 @@ cd ../binutils-build
  --with-sysroot="${crossdir}"/$TARGET \
  --disable-nls \
  --disable-multilib \
- --disable-werror \
  --disable-ppl-version-check \
  --disable-cloog-version-check
 

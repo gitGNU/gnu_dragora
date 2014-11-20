@@ -88,10 +88,6 @@ cd ../gcc-build
 make -j${jobs} all-gcc all-target-libgcc
 make install-gcc install-target-libgcc
 
-cd ../gcc-${version}
-cat gcc/limitx.h gcc/glimits.h gcc/limity.h \
- > "$(dirname -- "$(${TARGET}-gcc -print-libgcc-file-name)")"/include-fixed/limits.h
-
 # Remove unneeded documentation
 rm -rf "${crossdir}"/share/info "${crossdir}"/share/man
 
