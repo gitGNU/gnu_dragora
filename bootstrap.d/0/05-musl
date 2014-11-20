@@ -16,7 +16,8 @@ cd "${tmpdir}"/musl-${version}
 
 CROSS_COMPILE="${TARGET}-" \
 ./configure \
- --prefix=/ \
+ --prefix=/usr \
+ --syslibdir=/lib \
  --enable-debug
 
 make -j${jobs}
