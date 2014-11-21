@@ -31,8 +31,8 @@ AR="ar" \
  --disable-cloog-version-check
 
 make configure-host
-make -j${jobs}
-make install
+make -j${jobs} MAKEINFO="true"
+make MAKEINFO="true" install
 
 # Remove unneeded documentation
 rm -rf "${crossdir}"/share/info "${crossdir}"/share/man
