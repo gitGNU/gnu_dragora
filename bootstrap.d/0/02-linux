@@ -22,3 +22,7 @@ make headers_install ARCH="$ARCH" INSTALL_HDR_PATH=dest
 mkdir -p "${crossdir}"/${TARGET}/include
 cp -r dest/include/* "${crossdir}"/${TARGET}/include/
 
+# Remove cruft
+find "${crossdir}"/${TARGET}/include \
+ -type f \( -name .install -o -name ..install.cmd \) -exec rm -f {} +
+
