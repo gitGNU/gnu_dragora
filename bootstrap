@@ -31,6 +31,7 @@ usage() {
    "  -V, --version          output version information and exit"                  \
    "  -k, --keep             keep (don't delete) source directory (tmpdir)"        \
    "  -s, --stage=<n>        set the stage number for bootstrap [0]"               \
+   "      --strip            allow extra script to remove objects from files"      \
    ""                                                                              \
    "Variables:"                                                                    \
    "  rootdir     output directory for the root system [/tmp/dragora/root]"        \
@@ -40,7 +41,6 @@ usage() {
    "  archivedir  where to find the provided files [./archive]"                    \
    "  patchdir    directory where to look for the patches [./patches]"             \
    "  builddir    building directory containing the stage number [./bootstrap.d]"  \
-   "  recipedir   directory where the recipes reside [./recipes]"                  \
    "  tardir      specifies the directory including the sources [./sources]"       \
    ""
 }
@@ -118,6 +118,7 @@ _envdir="${builddir}/env.d"
 tardir="${CWD}/sources"
 keepdir=nokeepdir
 stage=0
+strip=nostrip
 
 # Get values from the config file
 if [ -f "${CWD}/bootstrap.conf" ] && [ -s "${CWD}/bootstrap.conf" ] ; then
@@ -155,12 +156,16 @@ while [ "$1" ] ; do
       _checkArgument "$stage" '--stage='
       shift 1
       ;;
+    --strip)
+      strip=strip
+      shift 1
+      ;;
     -h|--help)
       usage
       exit
       ;;
     -V|--version)
-      echo "bootstrap 1.1"
+      echo "bootstrap 1.2"
       echo "Copyright (C) 2014  Matias A. Fonzo."
       echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
