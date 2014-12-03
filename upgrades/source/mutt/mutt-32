@@ -24,7 +24,7 @@ OUT=${OUT:-/tmp/packages}
 
 V=1.5.23
 ARCH=${ARCH:-i486}
-B=1
+B=2
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
@@ -42,6 +42,9 @@ rm -rf ${TMP}/mutt-${V}
 lzip -cd ${CWD}/mutt-${V}.tar.lz | tar -xvf - -C $TMP
 
 cd ${TMP}/mutt-${V}
+
+# Apply patch:
+patch -p1 -i ${CWD}/CVE-2014-9116.patch
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
