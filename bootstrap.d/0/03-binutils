@@ -22,13 +22,13 @@ cd ../binutils-build
 AR="ar" \
 ../binutils-${version}/configure \
  --prefix="$crossdir" \
- --host=$HOST \
- --target=$TARGET \
- --with-sysroot="${crossdir}"/$TARGET \
+ --host=$host \
+ --target=$target \
+ --with-sysroot="${crossdir}"/$target \
  --disable-nls \
- --disable-multilib \
  --disable-ppl-version-check \
- --disable-cloog-version-check
+ --disable-cloog-version-check \
+ $multilib
 
 make configure-host
 make -j${jobs} MAKEINFO="true"

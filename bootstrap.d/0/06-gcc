@@ -62,19 +62,20 @@ cd ../gcc-build
  --enable-threads=posix \
  --enable-__cxa_atexit \
  --enable-checking=release \
- --build=$HOST \
- --host=$HOST \
- --target=$TARGET \
- --with-sysroot="${crossdir}"/$TARGET \
+ --build=$host \
+ --host=$host \
+ --target=$target \
+ --with-sysroot="${crossdir}"/$target \
  --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
  --with-mpfr-lib="${PWD}"/mpfr/src/.libs \
  --disable-nls \
- --disable-multilib \
  --disable-libmudflap \
  --disable-libsanitizer \
  --disable-libstdcxx-pch \
  --without-ppl \
- --without-cloog
+ --without-cloog \
+ $gcc \
+ $multilib
 
 make -j${jobs}
 make install
