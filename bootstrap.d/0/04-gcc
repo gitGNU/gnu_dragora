@@ -62,16 +62,15 @@ cd ../gcc-build
  --prefix="$crossdir" \
  --enable-languages=c \
  --enable-checking=release \
- --build=$HOST \
- --host=$HOST \
- --target=$TARGET \
- --with-sysroot="${crossdir}"/$TARGET \
+ --build=$host \
+ --host=$host \
+ --target=$target \
+ --with-sysroot="${crossdir}"/$target \
  --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
  --with-mpfr-lib="${PWD}"/mpfr/src/.libs \
  --with-newlib \
  --without-headers \
  --disable-nls \
- --disable-multilib \
  --disable-shared \
  --disable-threads \
  --disable-libmudflap \
@@ -85,13 +84,15 @@ cd ../gcc-build
  --disable-libatomic \
  --disable-libgomp \
  --without-ppl \
- --without-cloog
+ --without-cloog \
+ $gcc \
+ $multilib
 
 make -j${jobs} all-gcc all-target-libgcc
 make install-gcc install-target-libgcc
 
 # To prevent broken toolchains from pulling in lgcc_s
-ln -sf libgcc.a "$("${TARGET}-gcc" -print-libgcc-file-name | sed 's/libgcc/&_eh/')"
+ln -sf libgcc.a "$("${target}-gcc" -print-libgcc-file-name | sed 's/libgcc/&_eh/')"
 
 # Remove unneeded documentation
 rm -rf "${crossdir}"/share/info "${crossdir}"/share/man

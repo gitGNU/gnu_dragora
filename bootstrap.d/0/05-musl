@@ -14,12 +14,14 @@ tar xf "${tardir}"/musl-${version}.tar.?z* -C "$tmpdir"
 # Build instructions
 cd "${tmpdir}"/musl-${version}
 
-CROSS_COMPILE="${TARGET}-" \
+CC="${target}-gcc" \
+CROSS_COMPILE="${target}-" \
 ./configure \
  --prefix=/usr \
  --syslibdir=/lib \
- --enable-debug
+ --enable-debug \
+ --enable-optimize
 
 make -j${jobs}
-make install DESTDIR="${crossdir}"/$TARGET
+make install DESTDIR="${crossdir}"/$target
 

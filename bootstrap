@@ -23,25 +23,34 @@ CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
 # Functions
 usage() {
   printf '%s\n' \
-   "Usage: bootstrap [options] [variables] [buildscript]..."                       \
-   "  'variables' are definitions in the form 'name=value'."                       \
-   ""                                                                              \
-   "Options:"                                                                      \
-   "  -h, --help             display this help and exit"                           \
-   "  -V, --version          output version information and exit"                  \
-   "  -k, --keep             keep (don't delete) source directory (tmpdir)"        \
-   "  -s, --stage=<n>        set the stage number for bootstrap [0]"               \
-   "      --strip            allow extra script to remove objects from files"      \
-   ""                                                                              \
-   "Variables:"                                                                    \
-   "  rootdir     output directory for the root system [/tmp/dragora/root]"        \
-   "  crossdir    output directory for the cross compiler [/tmp/dragora/cross]"    \
-   "  tmpdir      temporary directory for compilation [/tmp/dragora/sources]"      \
-   "  jobs        parallel jobs for the compiler [1]"                              \
-   "  archivedir  where to find the provided files [./archive]"                    \
-   "  patchdir    directory where to look for the patches [./patches]"             \
-   "  builddir    building directory containing the stage number [./bootstrap.d]"  \
-   "  tardir      specifies the directory including the sources [./sources]"       \
+   "Usage: bootstrap [options] [variables] [buildscript]..."                     \
+   "  'variables' are definitions in the form 'name=value'."                     \
+   ""                                                                            \
+   "Defaults values are specified in brackets."                                  \
+   ""                                                                            \
+   "Options:"                                                                    \
+   "  -h, --help             display this help and exit"                         \
+   "  -V, --version          output version information and exit"                \
+   "  -k, --keep             keep (don't delete) source directory (tmpdir)"      \
+   "  -s, --stage=<n>        set the stage number for bootstrap [0]"             \
+   "      --strip            allow extra script to remove objects from files"    \
+   ""                                                                            \
+   "Directory variables:"                                                        \
+   "  rootdir     output directory for the root system [${rootdir}]"             \
+   "  crossdir    output directory for the cross compiler [${crossdir}]"         \
+   "  tmpdir      temporary directory for compilation [${tmpdir}]"               \
+   "  archivedir  where to find the provided files [${archivedir}]"              \
+   "  patchdir    directory where to look for the patches [${patchdir}]"         \
+   "  builddir    building directory containing the stage number [${builddir}]"  \
+   "  tardir      specifies the directory including the sources [${tardir}]"     \
+   ""                                                                            \
+   "Cross compiler variables:"                                                   \
+   "  vendor      set the default vendor to reflect on the target [${vendor}]"   \
+   "  arch        architecture to use [autodetected: ${arch}]"                   \
+   "  target      set the target triplet (platform) on which code runs"          \
+   "  jobs        parallel jobs for the compiler [${jobs}]"                      \
+   "  gcc         gcc flags, options for configure"                              \
+   "  multilib    multilib flags, options for configure"                         \
    ""
 }
 
@@ -99,7 +108,7 @@ _validateDir() {
     exit 1
   fi
 
-  # Create the directory if does not exist
+  # Create the directory if doesn't exist
   if [ ! -d "$directory" ] ; then
     echo "bootstrap: Creating required directory \"${2}=$directory\" ..."
     mkdir -p "$directory" || exit 1
@@ -110,7 +119,6 @@ _validateDir() {
 rootdir=/tmp/dragora/root
 crossdir=/tmp/dragora/cross
 tmpdir=/tmp/dragora/sources
-jobs=1
 archivedir="${CWD}/archive"
 patchdir="${CWD}/patches"
 builddir="${CWD}/bootstrap.d"
@@ -119,6 +127,12 @@ tardir="${CWD}/sources"
 keepdir=nokeepdir
 stage=0
 strip=nostrip
+vendor=dragora
+arch="$(uname -m)"
+target=""
+jobs=1
+gcc=""
+multilib="--disable-multilib --with-multilib-list="
 
 # Get values from the config file
 if [ -f "${CWD}/bootstrap.conf" ] && [ -s "${CWD}/bootstrap.conf" ] ; then
@@ -126,11 +140,16 @@ if [ -f "${CWD}/bootstrap.conf" ] && [ -s "${CWD}/bootstrap.conf" ] ; then
   getValue rootdir        && rootdir="$value"
   getValue crossdir       && crossdir="$value"
   getValue tmpdir         && tmpdir="$value"
-  getValue jobs           && { jobs="$value"  ; _checkJobs  ; }
   getValue archivedir     && archivedir="$value"
   getValue patchdir       && patchdir="$value"
   getValue builddir       && builddir="$value"
   getValue tardir         && tardir="$value"
+  getValue vendor         && vendor="$value"
+  getValue arch           && arch="$value"
+  getValue target         && target="$value"
+  getValue jobs           && { jobs="$value"  ; _checkJobs  ; }
+  getValue gcc            && gcc="$value"
+  getValue multilib       && multilib="$value"
 else
   echo "WARNING: ${CWD}/bootstrap.conf: File empty or not regular." 1>&2
 fi
@@ -138,7 +157,7 @@ fi
 # Handle options / variables
 while [ "$1" ] ; do
   case "$1" in
-    -k|-keep)
+    -k|--keep)
       keepdir=keepdir
       shift 1
       ;;
@@ -192,12 +211,6 @@ while [ "$1" ] ; do
       _checkArgument "$tmpdir" 'tmpdir='
       shift 1
       ;;
-    jobs=*)
-      jobs="${1#*=}"
-      _checkArgument "$jobs" 'jobs='
-      _checkJobs
-      shift 1
-      ;;
     archivedir=*)
       archivedir="${1#*=}"
       _checkArgument "$archivedir" 'archivedir='
@@ -216,6 +229,37 @@ while [ "$1" ] ; do
     tardir=*)
       tardir="${1#*=}"
       _checkArgument "$tardir" 'tardir='
+      shift 1
+      ;;
+    vendor=*)
+      vendor="${1#*=}"
+      _checkArgument "$vendor" 'vendor='
+      shift 1
+      ;;
+    arch=*)
+      arch="${1#*=}"
+      _checkArgument "$arch" 'arch='
+      shift 1
+      ;;
+    target=*)
+      target="${1#*=}"
+      _checkArgument "$target" 'target='
+      shift 1
+      ;;
+    jobs=*)
+      jobs="${1#*=}"
+      _checkArgument "$jobs" 'jobs='
+      _checkJobs
+      shift 1
+      ;;
+    gcc=*)
+      gcc="${1#*=}"
+      _checkArgument "$gcc" 'gcc='
+      shift 1
+      ;;
+    multilib=*)
+      multilib="${1#*=}"
+      _checkArgument "$multilib" 'multilib='
       shift 1
       ;;
     *[=]*)
@@ -241,16 +285,95 @@ _validateDir "$tardir"      'tardir'
 # Unload from memory unnecessary variables and internal functions
 unset value usage getValue _checkArgument _checkJobs _validateDir
 
-# Set default architecture, host and target-triplet if not specified
-ARCH="${ARCH:-$(uname -m)}"
-HOST="$(cc -dumpmachine | sed 's/-[^-]*/-cross/')"
-TARGET="${TARGET:-${ARCH}-dragora-linux-musl}"
+# Prepare settings
 
-# Auto-detect the target triplet based on ARCH
-case "$ARCH" in
-  i686)
-    ARCH=i386
-  ;;
+printf %s "Checking a valid (local) C compiler command: "
+for compiler in cc gcc clang ; do
+  if command -v "$compiler" > /dev/null ; then
+    echo "\`${compiler}'"	# We found one
+
+    # Compose the host using "cross" as its name
+    host="$(${compiler} -dumpmachine | sed 's/-[^-]*/-cross/')"
+
+    export host
+    CODE=0
+    break;
+  else
+    echo "bootstrap: The (local) C compiler command \`${compiler}' not found in the PATH." 1>&2
+    CODE=127
+    continue;
+  fi
+done
+if [ $CODE -ne 0 ] ; then
+  echo "bootstrap: I can't continue without a valid C compiler command.  Check your PATH." 1>&2
+  exit $CODE
+fi
+unset compiler CODE
+
+# Establish appropriate settings for each supported architecture
+case "$arch" in
+  i?86)
+    MUSL_ARCH=i386
+    LINUX_ARCH=x86
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    gcc="${gcc:=--with-arch="$arch"}"
+    ;;
+  x86_64)
+    MUSL_ARCH=x86_64
+    LINUX_ARCH=x86_64
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    gcc="${gcc:=--with-arch="x86-64" --with-tune="generic" --enable-long-long}"
+    ;;
+  x32)
+    MUSL_ARCH=x32
+    LINUX_ARCH=x86_64
+    target="${target:=x86_64-x32-${vendor}-linux-musl}"
+    multilib="${multilib:=--enable-multilib --with-multilib-list=mx32}"
+    ;;
+  armhf)
+    MUSL_ARCH=arm
+    LINUX_ARCH=arm
+    target="${target:=${arch}-${vendor}-linux-musleabihf}"
+    ;;
+  arm*)
+    MUSL_ARCH=arm
+    LINUX_ARCH=arm
+    target="${target:=${arch}-${vendor}-linux-musleabi}"
+    ;;
+  aarch64*)
+    MUSL_ARCH=arm
+    LINUX_ARCH=arm64
+    target="${target:=aarch64-${vendor}-linux-musl}"
+    ;;
+  mips*)
+    MUSL_ARCH=mips
+    LINUX_ARCH=mips
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    ;;
+  powerpc*|ppc*)
+    MUSL_ARCH=powerpc
+    LINUX_ARCH=powerpc
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    gcc="${gcc:=--with-long-double-64 --enable-secureplt}"
+    ;;
+  or1k*)
+    MUSL_ARCH=or1k
+    LINUX_ARCH=openrisc
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    ;;
+  sh*)
+    MUSL_ARCH=sh
+    LINUX_ARCH=sh
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    ;;
+  microblaze)
+    MUSL_ARCH=microblaze
+    LINUX_ARCH=microblaze
+    target="${target:=${arch}-${vendor}-linux-musl}"
+    ;;
+  *)
+    echo "bootstrap: Unrecognized architecture '$arch'." 1>&2
+    exit 1;
 esac
 
 # Default path
@@ -259,7 +382,10 @@ PATH="${crossdir}/bin:${PATH}"
 # Override locale settings
 LC_ALL=POSIX
 
-export PATH LC_ALL ARCH HOST TARGET
+export PATH LC_ALL target
+
+# To use default values when building
+unset CFLAGS CXXFLAGS
 
 # Default mask
 umask 022
@@ -277,9 +403,9 @@ for buildscript in "${builddir}"/${stage}/${@:-??-*} ; do
   set -o errexit;	# Exit immediately on any error
 
   # Create the sysroot directory if needed
-  if [ "$stage" = "0" ] && [ ! -e "${crossdir}/${TARGET}/usr" ] ; then
-    mkdir -p "${crossdir}"/$TARGET
-    ln -sf . "${crossdir}"/${TARGET}/usr
+  if [ "$stage" = "0" ] && [ ! -e "${crossdir}/${target}/usr" ] ; then
+    mkdir -p "${crossdir}"/$target
+    ln -sf . "${crossdir}"/${target}/usr
   fi
 
   # Create symlink for constructing the temporary system (stage 1)

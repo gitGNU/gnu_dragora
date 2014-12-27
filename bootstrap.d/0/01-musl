@@ -14,9 +14,6 @@ tar xf "${tardir}"/musl-${version}.tar.?z* -C "$tmpdir"
 # Build instructions
 cd "${tmpdir}"/musl-${version}
 
-./configure \
- --prefix="${crossdir}"/$TARGET \
- $ARCH
-
-make install-headers
+make prefix="${crossdir}"/$target ARCH=$MUSL_ARCH \
+ install-headers
 
