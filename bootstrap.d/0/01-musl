@@ -1,6 +1,6 @@
 # Build script for musl (headers)
 #
-# Copyright (C) 2014 Matias A. Fonzo.
+# Copyright (C) 2014, 2015 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -9,7 +9,7 @@ version=1.1.5
 
 echo "Unpacking musl-${version} ..."
 rm -rf "${tmpdir}"/musl-${version}
-tar xf "${tardir}"/musl-${version}.tar.?z* -C "$tmpdir"
+tar xf "${tardir}"/musl-${version}.tar.lz -C "$tmpdir"
 
 # Build instructions
 cd "${tmpdir}"/musl-${version}
