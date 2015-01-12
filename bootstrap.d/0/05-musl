@@ -17,11 +17,11 @@ cd "${tmpdir}"/musl-${version}
 CC="${target}-gcc" \
 CROSS_COMPILE="${target}-" \
 ./configure \
- --prefix=/usr \
+ --prefix="${crossdir}"/$target \
  --syslibdir=/lib \
  --enable-debug \
  --enable-optimize
 
 make -j${jobs}
-make install DESTDIR="${crossdir}"/$target
+make install
 
