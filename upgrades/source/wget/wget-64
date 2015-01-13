@@ -43,7 +43,7 @@ tar xvf ${CWD}/wget-${V}.tar.lz -C $TMP
 cd ${TMP}/wget-${V}
 
 # Apply patch:$
-patch -p1 -i ${CWD}/patches/CVE-2014-4877.patch$
+patch -p1 -i ${CWD}/patches/CVE-2014-4877.patch
 
 # Set sane ownerships and permissions:
 chown -R 0:0 .
