@@ -1,9 +1,9 @@
 #! /bin/sh
-#  Copyright (C) 2012, 2013, 2014  Matias A. Fonzo
+#  Copyright (C) 2014-2015  Matias A. Fonzo
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
+#  the Free Software Foundation, either version 2 of the License, or
 #  (at your option) any later version.
 #
 #  This program is distributed in the hope that it will be useful,
@@ -14,62 +14,118 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Autodetermine the path of /tools
-if [ ! -L /tools ]; then
-  echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
-  exit 1
-fi
-if [ -L /tools ] && [ ! -e /tools ]; then
-  echo "/tools is a dangling symlink."
-  exit 1
-fi
-# Reads the link of /tools without including the last string "/tools"
-ROOT=$(readlink /tools | sed -e 's/\/tools//')
+# Get the current working directory: printing the absolute pathname
+# or just prints the current directory in case of fails
+CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
 
 # Functions
+
+# A simple function to get variable's values from ${CWD}/bootstrap.conf
+getValue() {
+  local CODE variable
+
+  while IFS='=' read -r variable value ; do
+    case "$variable" in
+      \#*|"")           # Ignore commentary or blank lines.
+        CODE=1
+        continue;
+        ;;
+    esac
+
+    if [ "$variable" != "$1" ] ; then
+      CODE=1
+      continue;
+    fi
+    if [ "$value" = "" ] ; then
+      echo "${CWD}/bootstrap.conf: WARNING: Empty value for the variable '${variable}'" 1>&2
+      CODE=1
+      break;
+    fi
+
+    export value
+    CODE=0
+    break;
+  done < "${CWD}"/bootstrap.conf
+
+  return $CODE
+}
+
 _umount() {
-  NODE="$1"
-  if mount | grep -q "$NODE" ; then
-    echo "Unmounting $NODE ..."
-    umount $NODE
-    if [ $? -ne 0 ]; then
+  local node
+  node="$1"
+
+  if mount | grep -q "$node" ; then
+    echo "Unmounting $node ..."
+    umount "$node"
+    if [ $? -ne 0 ] ; then
       echo "Forcing ..."
-      umount -f $NODE
+      umount -f "$node"
     fi
   fi
 }
 
+# Variable's values by default
+rootdir=/tmp/dragora/root
+archivedir="${CWD}/archive"
+patchdir="${CWD}/patches"
+recipedir="${CWD}/recipes"
+tardir="${CWD}/sources"
+
+# Get values from the config file
+if [ -f "${CWD}/bootstrap.conf" ] && [ -s "${CWD}/bootstrap.conf" ] ; then
+  echo "[-] Reading config file ${CWD}/bootstrap.conf ..."
+  getValue rootdir        && rootdir="$value"
+  getValue archivedir     && archivedir="$value"
+  getValue patchdir       && patchdir="$value"
+  getValue recipedir      && recipedir="$value"
+  getValue tardir         && tardir="$value"
+else
+  echo "WARNING: ${CWD}/bootstrap.conf: File empty or not regular." 1>&2
+fi
+unset value getValue
+
+set -o errexit;		# Exit immediately on any error
+
+# Make sure that the directories are unmounted before mounting
+_umount "${rootdir}"/usr/src/dragora/archive
+_umount "${rootdir}"/usr/src/dragora/patches
+_umount "${rootdir}"/usr/src/dragora/recipes
+_umount "${rootdir}"/usr/src/dragora/sources
+_umount "${rootdir}"/sys
+_umount "${rootdir}"/proc
+_umount "${rootdir}"/dev/shm
+_umount "${rootdir}"/dev/pts
+_umount "${rootdir}"/dev
+
 echo "Mounting directories ..."
-mount -o bind "$(pwd)/archive" ${ROOT}/usr/src/dragora/archive
-mount -o bind "$(pwd)/patches" ${ROOT}/usr/src/dragora/patches
-mount -o bind "$(pwd)/recipes" ${ROOT}/usr/src/dragora/recipes
-mount -o bind "$(pwd)/sources" ${ROOT}/usr/src/dragora/sources
+mount -o bind "$archivedir"  "${rootdir}"/usr/src/dragora/archive
+mount -o bind "$patchdir"    "${rootdir}"/usr/src/dragora/patches
+mount -o bind "$recipedir"   "${rootdir}"/usr/src/dragora/recipes
+mount -o bind "$tardir"      "${rootdir}"/usr/src/dragora/sources
 
 echo "Mounting virtual file systems ..."
-mount -o bind /dev ${ROOT}/dev
-mount -t devpts devpts ${ROOT}/dev/pts
-mount -t tmpfs shm ${ROOT}/dev/shm
-mount -t proc proc ${ROOT}/proc
-mount -t sysfs sysfs ${ROOT}/sys
+mount -o bind /dev      "${rootdir}"/dev
+mount -t devpts devpts  "${rootdir}"/dev/pts
+mount -t tmpfs shm      "${rootdir}"/dev/shm
+mount -t proc proc      "${rootdir}"/proc
+mount -t sysfs sysfs    "${rootdir}"/sys
 
-echo "Entering chroot (${ROOT}) ..."
-chroot $ROOT /tools/bin/env -i \
- PATH=/usr/bin:/tools/bin:/usr/sbin:/tools/sbin \
- SHELL=/bin/sh \
- TERM="$TERM" \
- PS1='\u:\w\$ ' \
- HOME=/root \
- /bin/sh --login
+echo "Entering chroot (${rootdir}) ..."
+chroot "$rootdir" /tools/bin/env -i \
+  PATH=/usr/bin:/usr/sbin:/tools/bin \
+  SHELL=/bin/sh \
+  TERM="$TERM" \
+  PS1='\u:\w\$ ' \
+  HOME=/root \
+ /tools/bin/sh --login
 
-_umount ${ROOT}/usr/src/dragora/archive
-_umount ${ROOT}/usr/src/dragora/patches
-_umount ${ROOT}/usr/src/dragora/recipes
-_umount ${ROOT}/usr/src/dragora/sources
-_umount ${ROOT}/sys
-_umount ${ROOT}/proc
-_umount ${ROOT}/dev/shm
-_umount ${ROOT}/dev/pts
-_umount ${ROOT}/dev
-
-echo;  ## A new line for the prompt
+_umount "${rootdir}"/usr/src/dragora/archive
+_umount "${rootdir}"/usr/src/dragora/patches
+_umount "${rootdir}"/usr/src/dragora/recipes
+_umount "${rootdir}"/usr/src/dragora/sources
+_umount "${rootdir}"/sys
+_umount "${rootdir}"/proc
+_umount "${rootdir}"/dev/shm
+_umount "${rootdir}"/dev/pts
+_umount "${rootdir}"/dev
 
