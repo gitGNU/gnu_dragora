@@ -1,0 +1,28 @@
+# Build script for linux-libre (headers)
+#
+# Copyright (C) 2014-2015 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=3.4.105
+
+echo "Unpacking linux-${version} ..."
+rm -rf "${tmpdir}"/linux-${version}
+tar xf "${tardir}"/linux-libre-${version}-gnu1.tar.lz -C "$tmpdir"
+
+# Build instructions
+cd "${tmpdir}"/linux-${version}
+
+make mrproper
+make headers_check ARCH="$LINUX_ARCH"
+make headers_install ARCH="$LINUX_ARCH" INSTALL_HDR_PATH=dest
+
+# Copy headers
+mkdir -p "${rootdir}"/tools/include
+cp -r dest/include/* "${rootdir}"/tools/include/
+
+# Remove cruft
+find "${rootdir}"/tools/include \
+ -type f \( -name .install -o -name ..install.cmd \) -exec rm -f {} +
+

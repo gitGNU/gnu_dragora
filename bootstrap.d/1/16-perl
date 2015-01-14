@@ -1,0 +1,34 @@
+# Build script for perl and perl-cross
+#
+# Perl cross url: http://arsv.github.io/perl-cross/index.html
+#
+# Copyright (C) 2014-2015 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=5.20.1
+cross_ver=0.9.4
+
+echo "Unpacking perl-${version} ..."
+rm -rf "${tmpdir}"/perl-${version}
+tar xf "${tardir}"/perl-${version}.tar.lz -C "$tmpdir"
+
+echo "Unpacking perl-${version}-cross-${cross_ver} ..."
+tar xf "${tardir}"/perl-${version}-cross-${cross_ver}.tar.lz -C "$tmpdir"
+
+# Build instructions
+cd "${tmpdir}"/perl-${version}
+
+./configure \
+ --prefix=/tools \
+ --target=$target \
+ -Dprivlib=/tools/lib/perl5 \
+ -Dsitelib=/tools/lib/perl5/site_perl
+
+make
+
+cp perl cpan/podlators/pod2man "${rootdir}"/tools/bin
+mkdir -p "${rootdir}"/tools/lib/perl5
+cp -R lib/* "${rootdir}"/tools/lib/perl5
+

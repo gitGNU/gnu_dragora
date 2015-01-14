@@ -1,0 +1,15 @@
+#
+# Environment variables for the stage 1
+#
+
+CC="${target}-gcc"
+CXX="${target}-g++"
+AR="${target}-ar"
+AS="${target}-as"
+LD="${target}-ld"
+RANLIB="${target}-ranlib"
+READELF="${target}-readelf"
+STRIP="${target}-strip"
+
+export CC CXX AR AS LD RANLIB READELF STRIP
+
