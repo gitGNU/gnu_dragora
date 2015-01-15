@@ -28,6 +28,7 @@ cd ../binutils-build
  --host=$target \
  --target=$target \
  --with-lib-path=/tools/lib \
+ --disable-shared \
  --disable-nls \
  --disable-werror \
  --disable-ppl-version-check \
