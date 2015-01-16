@@ -24,3 +24,6 @@ make install
 
 cat "${archivedir}"/toque/etc/toquerc > /tools/etc/toquerc
 
+# Unset imported variables from file
+unset CC CXX AR AS LD RANLIB READELF STRIP
+

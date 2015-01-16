@@ -44,3 +44,6 @@ make clean
 make
 make install
 
+# Unset imported variables from file
+unset CC CXX AR AS LD RANLIB READELF STRIP
+

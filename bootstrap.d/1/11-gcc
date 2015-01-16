@@ -108,3 +108,6 @@ ln -s gcc /tools/bin/cc
 rm -rf "${rootdir}"/tools/share/info \
        "${rootdir}"/tools/share/man
 
+# Unset imported variables from file
+unset CC CXX AR AS LD RANLIB READELF STRIP
+
