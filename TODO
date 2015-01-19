@@ -1,0 +1,36 @@
+
+Current TODO:
+
+- Add support for ARM, MIPS, SuperH, x32, Microblaze, PowerPC, or1k in the cross-compiler (priority). DONE
+  - Test pre-built versions with QEMU. PENDING
+
+- Add support for stripping binaries and libraries in a safe manner for the cross-compiler (priority). DONE.
+
+- Write `qi-install' and send it to Antonio for translation to C++ in toque (priority). DONE
+
+- Post or upload the new stage 1 for the temporary system. DONE
+
+- End up the recipes for the final system (needs `qi-install'). IN PROGRESS
+
+- Make the final system bootable.
+
+- Integrate sysvinit and the services with perp.
+
+- Port useful scripts and tools from Dragora 2.2 (/bin/bash) to /bin/sh for Dragora 3.
+
+- Continue development of the packaging system for the remaining parts.
+
+- Create a mini-dragora (stage 2), bootable system for easy testing.
+
+- Try to publish the mini-dragora with the package manager before the new year.
+
+- Post massive security updates for Dragora 2.2.
+
+- Installer with graphical support.
+
+Website:
+
+- Prepare the entire website for the release 3.
+
+- Reorganize the content, wiki.
+
