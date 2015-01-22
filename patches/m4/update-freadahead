@@ -1,0 +1,105 @@
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/devel/m4/patches/patch-update_freadahead	Mon Jul 29 23:39:07 2013 -0400
+@@ -0,0 +1,102 @@
++diff -r d1c9a158c955 lib/freadahead.c
++--- lib/freadahead.c	Wed Mar 13 20:55:32 2013 +0000
+++++ lib/freadahead.c	Wed Mar 13 20:56:08 2013 +0000
++@@ -1,5 +1,5 @@
++ /* Retrieve information about a FILE stream.
++-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+++   Copyright (C) 2007-2013 Free Software Foundation, Inc.
++ 
++    This program is free software: you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++@@ -22,6 +22,7 @@
++ #include <stdlib.h>
++ #include "stdio-impl.h"
++ 
+++#ifndef HAVE___FREADAHEAD
++ size_t
++ freadahead (FILE *fp)
++ {
++@@ -31,7 +32,7 @@
++   return (fp->_IO_read_end - fp->_IO_read_ptr)
++          + (fp->_flags & _IO_IN_BACKUP ? fp->_IO_save_end - fp->_IO_save_base :
++             0);
++-#elif defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, MacOS X, Cygwin */
+++#elif defined __sferror || defined __DragonFly__ /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin */
++   if ((fp_->_flags & __SWR) != 0 || fp_->_r < 0)
++     return 0;
++ # if defined __DragonFly__
++@@ -48,6 +49,10 @@
++   /* equivalent to
++      (fp->_ungetc_count == 0 ? fp->_rcount : fp->_ungetc_count - fp->_rcount) */
++   return (fp->_rcount > 0 ? fp->_rcount : fp->_ungetc_count - fp->_rcount);
+++#elif defined __minix               /* Minix */
+++  if ((fp_->_flags & _IOWRITING) != 0)
+++    return 0;
+++  return fp_->_count;
++ #elif defined _IOERR                /* AIX, HP-UX, IRIX, OSF/1, Solaris, OpenServer, mingw, NonStop Kernel */
++   if ((fp_->_flag & _IOWRT) != 0)
++     return 0;
++@@ -76,6 +81,10 @@
++   return (fp->__pushed_back
++           ? fp->__get_limit - fp->__pushback_bufp + 1
++           : fp->__get_limit - fp->__bufp);
+++#elif defined EPLAN9                /* Plan9 */
+++  if (fp->state == 4 /* WR */ || fp->rp >= fp->wp)
+++    return 0;
+++  return fp->wp - fp->rp;
++ #elif defined SLOW_BUT_NO_HACKS     /* users can define this */
++   abort ();
++   return 0;
++@@ -83,3 +92,4 @@
++  #error "Please port gnulib freadahead.c to your platform! Look at the definition of fflush, fread, ungetc on your system, then report this to bug-gnulib."
++ #endif
++ }
+++#endif
++diff -r d1c9a158c955 lib/freadahead.h
++--- lib/freadahead.h	Wed Mar 13 20:55:32 2013 +0000
+++++ lib/freadahead.h	Wed Mar 13 20:56:08 2013 +0000
++@@ -1,5 +1,5 @@
++ /* Retrieve information about a FILE stream.
++-   Copyright (C) 2007-2011 Free Software Foundation, Inc.
+++   Copyright (C) 2007-2013 Free Software Foundation, Inc.
++ 
++    This program is free software: you can redistribute it and/or modify
++    it under the terms of the GNU General Public License as published by
++@@ -17,10 +17,6 @@
++ #include <stddef.h>
++ #include <stdio.h>
++ 
++-#ifdef __cplusplus
++-extern "C" {
++-#endif
++-
++ /* Assuming the stream STREAM is open for reading:
++    Return the number of bytes waiting in the input buffer of STREAM.
++    This includes both the bytes that have been read from the underlying input
++@@ -31,8 +27,24 @@
++ 
++    STREAM must not be wide-character oriented.  */
++ 
++-extern size_t freadahead (FILE *stream);
+++#if HAVE___FREADAHEAD || (defined(__linux__) && !defined(__GLIBC__) && !defined(__UCLIBC__)) /* musl libc */
+++#ifndef HAVE___FREADAHEAD
+++#define HAVE___FREADAHEAD 1
+++#endif
++ 
++-#ifdef __cplusplus
+++# include <stdio_ext.h>
+++# define freadahead(stream) __freadahead (stream)
+++
+++#else
+++
+++# ifdef __cplusplus
+++extern "C" {
+++# endif
+++
+++extern size_t freadahead (FILE *stream) _GL_ATTRIBUTE_PURE;
+++
+++# ifdef __cplusplus
++ }
+++# endif
+++
++ #endif
