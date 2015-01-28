@@ -27,5 +27,7 @@ find "$strip_dir" -type f | xargs file | grep 'current ar archive' | \
  cut -f 1 -d : | xargs strip -p --strip-debug 2> /dev/null
 
 unset strip_dir
-keepdir=keepdir;	# Avoid directory detection in `bootstrap'
+
+# Avoid directory detection in `bootstrap'
+keepdir=keepdir
 

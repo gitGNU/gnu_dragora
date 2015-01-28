@@ -19,3 +19,6 @@ EOF
 
 chmod 750 /tools/bin/adjust-toolchain
 
+# Avoid directory detection in `bootstrap'
+keepdir=keepdir
+

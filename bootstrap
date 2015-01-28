@@ -1,7 +1,7 @@
 #! /bin/sh
 #  Build a cross compiler or a custom GNU/Linux distribution from scratch
 #
-#  Copyright (C) 2014  Matias A. Fonzo
+#  Copyright (C) 2014, 2015  Matias A. Fonzo
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -184,8 +184,8 @@ while [ "$1" ] ; do
       exit
       ;;
     -V|--version)
-      echo "bootstrap 1.3"
-      echo "Copyright (C) 2014  Matias A. Fonzo."
+      echo "bootstrap 1.4"
+      echo "Copyright (C) 2014, 2015  Matias A. Fonzo."
       echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
       echo "There is NO WARRANTY, to the extent permitted by law."
@@ -435,6 +435,9 @@ for buildscript in "${builddir}"/${stage}/${@:-??-*} ; do
       fi
     done
   fi
+
+  # Reset to default value
+  keepdir=nokeepdir
 done
 
 exit $CODE

@@ -21,3 +21,6 @@ sed \
  -e 's/tools/usr/' /tools/lib/libstdc++.la \
   > "${rootdir}"/usr/lib/libstdc++.la
 
+# Avoid directory detection in `bootstrap'
+keepdir=keepdir
+
