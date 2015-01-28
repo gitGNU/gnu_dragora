@@ -17,3 +17,6 @@ tar tf "${archivedir}"/_hierarchyfs.tar.gz > /dev/null || exit $?
 
 cd "$rootdir" && tar xpf "${archivedir}"/_hierarchyfs.tar.gz
 
+# Avoid directory detection in `bootstrap'
+keepdir=keepdir
+
