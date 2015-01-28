@@ -26,8 +26,8 @@ make oldconfig
 CROSS_COMPILE="${target}-"
 export CROSS_COMPILE
 
-make -j${jobs} busybox V=1 hostCFLAGS="-D_GNU_SOURCE"
-make install CONFIG_PREFIX=/tools hostCFLAGS="-D_GNU_SOURCE"
+make -j${jobs} busybox V=1 HOSTCFLAGS="-D_GNU_SOURCE"
+make install CONFIG_PREFIX=/tools HOSTCFLAGS="-D_GNU_SOURCE"
 
 unset CROSS_COMPILE
 
