@@ -91,6 +91,7 @@ cd ../gcc-build
  --disable-libmudflap \
  --disable-libsanitizer \
  --disable-libstdcxx-pch \
+ --disable-libstdcxx-verbose \
  --without-ppl \
  --without-cloog \
  $multilib \
