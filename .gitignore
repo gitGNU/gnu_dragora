@@ -5,7 +5,7 @@
 ANNOUNCEMENT2.2.TXT
 COPYRIGHT.TXT
 btmgr/
-busybox/
+./busybox/
 clzip/
 isolinux/
 isolinux64/
