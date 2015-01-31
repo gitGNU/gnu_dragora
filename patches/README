@@ -1,4 +1,5 @@
 
-  Besides patches (differences), the "patches" directory contains
-configuration files, also known as .config, used by the recipes.
+  The "patches" directory contains specific differences for programs
+used in the build process. Each subdirectory is represented with the
+name of the program.
 

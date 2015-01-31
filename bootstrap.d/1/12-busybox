@@ -20,7 +20,7 @@ patch -Np1 -i "${patchdir}"/busybox/busybox-1.20.2_lzip-1
 
 make mrproper
 
-cat "${patchdir}"/busybox/busybox-config_stage1 > .config
+cat "${archivedir}"/busybox/busybox-config_stage1 > .config
 make oldconfig
 
 CROSS_COMPILE="${target}-"
