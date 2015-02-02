@@ -15,7 +15,7 @@ tar xf "${tardir}"/gcc-${version}.tar.lz -C "$tmpdir"
 cd "${tmpdir}"/gcc-${version}
 
 patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes
-patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.0-musl.diff
+patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.2-musl.diff
 
 # Build GCC built-in prerequisites
 for file in "${tardir}"/gmp-*.tar.lz "${tardir}"/mpfr-*.tar.lz "${tardir}"/mpc-*.tar.lz ; do

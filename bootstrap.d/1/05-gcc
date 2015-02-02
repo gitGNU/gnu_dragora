@@ -15,7 +15,7 @@ tar xf "${tardir}"/gcc-${version}.tar.lz -C "$tmpdir"
 cd "${tmpdir}"/gcc-${version}
 
 patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes
-patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.0-musl.diff
+patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.2-musl.diff
 
 for file in \
  gcc/config/linux.h gcc/config/i386/linux.h gcc/config/i386/linux64.h \
