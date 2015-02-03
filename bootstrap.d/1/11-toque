@@ -24,6 +24,12 @@ make install
 
 cat "${archivedir}"/toque/etc/toquerc > /tools/etc/toquerc
 
+# Add internal options of multilib for toquerc
+cat << EOF >> /tools/etc/toquerc
+multilib = $multilib
+
+EOF
+
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP
 
