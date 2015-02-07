@@ -17,7 +17,7 @@ cd "${tmpdir}"/m4-${version}
 patch -Np1 -i "${patchdir}"/m4/update-freadahead
 
 # Import and export toolchain variables
-. "${_envdir}"/s1-env
+. "${_envdir}"/cross-env
 
 ./configure \
  --prefix=/tools \

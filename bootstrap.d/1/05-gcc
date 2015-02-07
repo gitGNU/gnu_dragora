@@ -69,7 +69,7 @@ mkdir ../gcc-build
 cd ../gcc-build
 
 # Import and export toolchain variables
-. "${_envdir}"/s1-env
+. "${_envdir}"/cross-env
 
 ../gcc-${version}/configure \
  --prefix=/tools \
