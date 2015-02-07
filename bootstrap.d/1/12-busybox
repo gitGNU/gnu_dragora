@@ -15,6 +15,9 @@ tar xf "${tardir}"/busybox-${version}.tar.lz -C "$tmpdir"
 cd "${tmpdir}"
 cd busybox-${version} || cd busybox
 
+# Import and export toolchain variables
+. "${_envdir}"/s1-env
+
 # Patch including lzip support
 patch -Np1 -i "${patchdir}"/busybox/busybox-1.20.2_lzip-1
 
@@ -23,11 +26,16 @@ make mrproper
 cat "${archivedir}"/busybox/busybox-config_stage1 > .config
 make oldconfig
 
-CROSS_COMPILE="${target}-"
-export CROSS_COMPILE
+make -j${jobs} busybox V=1 \
+  ARCH="$LINUX_ARCH" \
+  CROSS_COMPILE="${target}-" \
+  HOSTCFLAGS="-D_GNU_SOURCE"
 
-make -j${jobs} busybox V=1 HOSTCFLAGS="-D_GNU_SOURCE"
-make install CONFIG_PREFIX=/tools HOSTCFLAGS="-D_GNU_SOURCE"
+make install CONFIG_PREFIX=/tools \
+  ARCH="$LINUX_ARCH" \
+  CROSS_COMPILE="${target}-" \
+  HOSTCFLAGS="-D_GNU_SOURCE"
 
-unset CROSS_COMPILE
+# Unset imported variables from file
+unset CC CXX AR AS LD RANLIB READELF STRIP
 
