@@ -184,7 +184,7 @@ while [ "$1" ] ; do
       exit
       ;;
     -V|--version)
-      echo "bootstrap 1.4"
+      echo "bootstrap 1.5"
       echo "Copyright (C) 2014, 2015  Matias A. Fonzo."
       echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
@@ -398,6 +398,11 @@ for buildscript in "${builddir}"/${stage}/${@:-??-*} ; do
     echo "bootstrap: File '${builddir}/${stage}/$buildscript' not found or not regular" 1>&2
     CODE=127
     break;
+  fi
+  if [ ! -x "${builddir}/${stage}/$buildscript" ] ; then
+    echo "bootstrap: I won't build '${builddir}/${stage}/$buildscript' file not executable." 1>&2
+    CODE=1
+    continue;
   fi
 
   set -o errexit;	# Exit immediately on any error
