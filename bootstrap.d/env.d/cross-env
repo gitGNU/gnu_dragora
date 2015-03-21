@@ -1,5 +1,5 @@
 #
-# Environment variables for the stage 1
+# Cross toolchain variables for the environment
 #
 
 CC="${target}-gcc"
