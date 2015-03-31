@@ -184,7 +184,7 @@ while [ "$1" ] ; do
       exit
       ;;
     -V|--version)
-      echo "bootstrap 1.7"
+      echo "bootstrap 1.8"
       echo "Copyright (C) 2014, 2015  Matias A. Fonzo."
       echo "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>"
       echo "This is free software: you are free to change and redistribute it."
@@ -413,7 +413,9 @@ for buildscript in "${builddir}"/${stage}/${@:-??-*} ; do
     if [ ! -d "${crossdir}"/$target ] ; then
       mkdir "${crossdir}"/$target
     fi
-    ln -sf . "${crossdir}"/${target}/usr
+    if [ ! -e "${crossdir}/${target}/usr" ] ; then
+      ln -sf . "${crossdir}"/${target}/usr
+    fi
   fi
 
   # Create tools directory if needed, recreating symlink for the stage 1
