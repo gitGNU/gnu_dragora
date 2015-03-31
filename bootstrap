@@ -111,7 +111,7 @@ _validateDir() {
   # Create the directory if doesn't exist
   if [ ! -d "$directory" ] ; then
     echo "bootstrap: Creating required directory \"${2}=$directory\" ..."
-    mkdir "$directory" || exit 1
+    mkdir -p "$directory" || exit 1
   fi
 }
 
