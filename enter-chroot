@@ -14,6 +14,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# Override locale settings
+LC_ALL=POSIX
+LANGUAGE=POSIX
+
+export LC_ALL LANGUAGE
+
 # Get the current working directory: printing the absolute pathname
 # or just prints the current directory in case of fails
 CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
@@ -55,13 +61,24 @@ _umount() {
   node="$1"
 
   if mount | grep -q "$node" ; then
-    echo "Unmounting $node ..."
-    umount "$node"
-    if [ $? -ne 0 ] ; then
-      echo "Forcing ..."
-      umount -f "$node"
+    echo "Unmounting \`${node}' ..."
+    if ! umount "$node" ; then
+      echo "Doing a lazy unmount for \`${node}' ..."
+      umount -l "$node" && echo Successful.
     fi
   fi
+}
+
+unmountSeries() {
+  _umount "${rootdir}"/usr/src/dragora/archive
+  _umount "${rootdir}"/usr/src/dragora/patches
+  _umount "${rootdir}"/usr/src/dragora/recipes
+  _umount "${rootdir}"/usr/src/dragora/sources
+  _umount "${rootdir}"/sys
+  _umount "${rootdir}"/proc
+  _umount "${rootdir}"/dev/shm
+  _umount "${rootdir}"/dev/pts
+  _umount "${rootdir}"/dev
 }
 
 # Variable's values by default
@@ -84,18 +101,10 @@ else
 fi
 unset value getValue
 
-set -o errexit;		# Exit immediately on any error
+set -o errexit;		# Exit immediately on any error.
 
-# Make sure that the directories are unmounted before mounting
-_umount "${rootdir}"/usr/src/dragora/archive
-_umount "${rootdir}"/usr/src/dragora/patches
-_umount "${rootdir}"/usr/src/dragora/recipes
-_umount "${rootdir}"/usr/src/dragora/sources
-_umount "${rootdir}"/sys
-_umount "${rootdir}"/proc
-_umount "${rootdir}"/dev/shm
-_umount "${rootdir}"/dev/pts
-_umount "${rootdir}"/dev
+# Unmount directories and file systems before the next mounting
+unmountSeries
 
 echo "Mounting directories ..."
 mount -o bind "$archivedir"  "${rootdir}"/usr/src/dragora/archive
@@ -110,22 +119,17 @@ mount -t tmpfs shm      "${rootdir}"/dev/shm
 mount -t proc proc      "${rootdir}"/proc
 mount -t sysfs sysfs    "${rootdir}"/sys
 
+# Add trap for unmount the series, signalled or not
+trap 'unmountSeries' EXIT
+
 echo "Entering chroot (${rootdir}) ..."
 chroot "$rootdir" /tools/bin/env -i \
   PATH=/usr/bin:/usr/sbin:/tools/bin \
   SHELL=/bin/sh \
-  TERM="$TERM" \
-  PS1='\u:\w\$ ' \
   HOME=/root \
+  TERM="${TERM:-linux}" \
+  PS1='\u:\w\$ ' \
  /tools/bin/sh --login
 
-_umount "${rootdir}"/usr/src/dragora/archive
-_umount "${rootdir}"/usr/src/dragora/patches
-_umount "${rootdir}"/usr/src/dragora/recipes
-_umount "${rootdir}"/usr/src/dragora/sources
-_umount "${rootdir}"/sys
-_umount "${rootdir}"/proc
-_umount "${rootdir}"/dev/shm
-_umount "${rootdir}"/dev/pts
-_umount "${rootdir}"/dev
+echo;	# A new line for the prompt.
 
