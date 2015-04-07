@@ -89,6 +89,7 @@
     |-- lib/
     |-- local/
     |-- lock -> ../run/lock/
+    |-- log/
     |-- mail -> spool/mail/
     |-- opt/
     |-- run -> ../run/
@@ -96,4 +97,4 @@
     |   `-- mail/
     `-- tmp/
 
-92 directories, 4 files
+93 directories, 4 files
