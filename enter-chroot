@@ -56,29 +56,25 @@ getValue() {
   return $CODE
 }
 
-_umount() {
-  local node
-  node="$1"
-
-  if mount | grep -q "$node" ; then
-    echo "Unmounting \`${node}' ..."
-    if ! umount "$node" ; then
-      echo "Doing a lazy unmount for \`${node}' ..."
-      umount -l "$node" && echo Successful.
-    fi
-  fi
-}
-
 unmountSeries() {
-  _umount "${rootdir}"/usr/src/dragora/archive
-  _umount "${rootdir}"/usr/src/dragora/patches
-  _umount "${rootdir}"/usr/src/dragora/recipes
-  _umount "${rootdir}"/usr/src/dragora/sources
-  _umount "${rootdir}"/sys
-  _umount "${rootdir}"/proc
-  _umount "${rootdir}"/dev/shm
-  _umount "${rootdir}"/dev/pts
-  _umount "${rootdir}"/dev
+  for node in "${rootdir}"/usr/src/dragora/archive \
+              "${rootdir}"/usr/src/dragora/patches \
+              "${rootdir}"/usr/src/dragora/recipes \
+              "${rootdir}"/usr/src/dragora/sources \
+              "${rootdir}"/sys \
+              "${rootdir}"/proc \
+              "${rootdir}"/dev/shm \
+              "${rootdir}"/dev/pts \
+              "${rootdir}"/dev ; \
+  do
+    if mount | grep -q "$node" ; then
+      echo "==> Unmounting \`${node}' ..."
+      if ! umount "$node" ; then
+        echo "==> Doing a lazy unmount for \`${node}' ..."
+        umount -l "$node" && echo Successful.
+      fi
+    fi
+  done
 }
 
 # Variable's values by default
@@ -106,13 +102,13 @@ set -o errexit;		# Exit immediately on any error.
 # Unmount directories and file systems before the next mounting
 unmountSeries
 
-echo "Mounting directories ..."
+echo "==> Mounting directories ..."
 mount -o bind "$archivedir"  "${rootdir}"/usr/src/dragora/archive
 mount -o bind "$patchdir"    "${rootdir}"/usr/src/dragora/patches
 mount -o bind "$recipedir"   "${rootdir}"/usr/src/dragora/recipes
 mount -o bind "$tardir"      "${rootdir}"/usr/src/dragora/sources
 
-echo "Mounting virtual file systems ..."
+echo "==> Mounting virtual file systems ..."
 mount -o bind /dev      "${rootdir}"/dev
 mount -t devpts devpts  "${rootdir}"/dev/pts
 mount -t tmpfs shm      "${rootdir}"/dev/shm
@@ -120,9 +116,9 @@ mount -t proc proc      "${rootdir}"/proc
 mount -t sysfs sysfs    "${rootdir}"/sys
 
 # Add trap for unmount the series, signalled or not
-trap 'unmountSeries' EXIT
+trap 'echo ; unmountSeries' EXIT
 
-echo "Entering chroot (${rootdir}) ..."
+echo "==> Entering chroot (${rootdir}) ..."
 chroot "$rootdir" /tools/bin/env -i \
   PATH=/usr/bin:/usr/sbin:/tools/bin \
   SHELL=/bin/sh \
@@ -130,6 +126,4 @@ chroot "$rootdir" /tools/bin/env -i \
   TERM="${TERM:-linux}" \
   PS1='\u:\w\$ ' \
  /tools/bin/sh --login
-
-echo;	# A new line for the prompt.
 
