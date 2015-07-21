@@ -5,7 +5,7 @@
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
-version=4.9.2
+version=4.9.3
 
 echo "Unpacking gcc-${version} ..."
 rm -rf "${tmpdir}"/gcc-${version}
@@ -45,10 +45,10 @@ unset file name vern
 
 # Provide an (official) updated version of the config.sub file
 # in order to match correctly the target triplet for a musl OS.
+#
 # This is until new versions could provide the updated file.
+#
 cp -f "${patchdir}"/common/config.sub gmp/configfsf.sub
-cp -f "${patchdir}"/common/config.sub mpfr/config.sub
-cp -f "${patchdir}"/common/config.sub mpc/config.sub
 
 # Force stack protection activation
 sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
