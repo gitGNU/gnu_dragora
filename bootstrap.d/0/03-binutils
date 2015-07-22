@@ -5,7 +5,7 @@
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
-version=2.25
+version=2.25.1
 
 echo "Unpacking binutils-${version} ..."
 rm -rf "${tmpdir}"/binutils-${version}
@@ -13,9 +13,6 @@ tar xf "${tardir}"/binutils-${version}.tar.lz -C "$tmpdir"
 
 # Build instructions
 cd "${tmpdir}"/binutils-${version}
-
-# Patch to build if makeinfo(1) is not available
-patch -Np1 -i "${patchdir}"/binutils/binutils-gdb.git-bba33ab1e0f7d2ebd8f8435f92ed12e2a3c558a4.patch
 
 # Build in a separate directory
 rm -rf ../binutils-build
