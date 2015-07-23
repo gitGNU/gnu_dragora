@@ -19,7 +19,6 @@ CROSS_COMPILE="${target}-" \
 ./configure \
  --prefix=/usr \
  --syslibdir=/lib \
- --enable-debug \
  --enable-optimize
 
 make -j${jobs}
