@@ -8,14 +8,14 @@
 version=4.9.3
 
 echo "Unpacking gcc-${version} ..."
-rm -rf "${tmpdir}"/gcc-${version}
-tar xf "${tardir}"/gcc-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/gcc-${version}
+tar xf "${worktree}"/sources/gcc-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/gcc-${version}
+cd "${tmpdir}"/sources/gcc-${version}
 
-patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes
-patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.2-musl.diff
+patch -Np0 -i "${worktree}"/patches/gcc/gcc-nofixincludes
+patch -Np1 -i "${worktree}"/patches/gcc/gcc-4.9.2-musl.diff
 
 for file in \
  gcc/config/linux.h gcc/config/i386/linux.h gcc/config/i386/linux64.h \
@@ -34,7 +34,7 @@ do \
 done
 
 # Build GCC built-in prerequisites
-for file in "${tardir}"/gmp-*.tar.lz "${tardir}"/mpfr-*.tar.lz "${tardir}"/mpc-*.tar.lz ; do
+for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.lz "${worktree}"/sources/mpc-*.tar.lz ; do
   if [ ! -e "$file" ] ; then
     echo "The built-in prerequisite \`${file##*/}' for GCC is required." 1>&2
     exit 1
@@ -64,7 +64,7 @@ unset file name vern
 #
 # This is until new versions could provide the updated file.
 #
-cp -f "${patchdir}"/common/config.sub gmp/configfsf.sub
+cp -f "${worktree}"/patches/common/config.sub gmp/configfsf.sub
 
 # Build in a separate directory
 rm -rf ../gcc-build
@@ -72,7 +72,7 @@ mkdir ../gcc-build
 cd ../gcc-build
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 ../gcc-${version}/configure \
  --prefix=/tools \
@@ -82,8 +82,8 @@ cd ../gcc-build
  --enable-__cxa_atexit \
  --enable-checking=release \
  --build=$host \
- --host=$target \
- --target=$target \
+ --host=$TARGET \
+ --target=$TARGET \
  --with-local-prefix=/tools \
  --with-native-system-header-dir=/tools/include \
  --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
@@ -97,8 +97,7 @@ cd ../gcc-build
  --disable-libstdcxx-verbose \
  --without-ppl \
  --without-cloog \
- $multilib \
- $gcc
+ $GCC_OPTS $MULTILIB
 
 sed -i.orig "/^host_\(GMP\|ISL\|CLOOG\)\(LIBS\|INC\)/s:/tools:$crossdir:g" Makefile
 
@@ -107,10 +106,6 @@ make install
 
 # Symlink for compatibility
 ln -s gcc /tools/bin/cc
-
-# Clean up the documentation
-rm -rf "${rootdir}"/tools/share/info \
-       "${rootdir}"/tools/share/man
 
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP

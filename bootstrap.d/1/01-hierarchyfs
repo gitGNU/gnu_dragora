@@ -7,16 +7,13 @@
 
 echo "Uncompressing structure of directories ..."
 
-if [ ! -f "${archivedir}"/_hierarchyfs.tar.gz ] ; then
-  echo "${archivedir}/_hierarchyfs.tar.gz is not a regular file"
+if [ ! -f "${worktree}"/archive/_hierarchyfs.tar.gz ] ; then
+  echo "${worktree}/archive/_hierarchyfs.tar.gz is not a regular file"
   exit 1
 fi
 
 # To check the integrity before the decompression
-tar tf "${archivedir}"/_hierarchyfs.tar.gz > /dev/null || exit $?
+tar tf "${worktree}"/archive/_hierarchyfs.tar.gz > /dev/null || exit $?
 
-cd "$rootdir" && tar xpf "${archivedir}"/_hierarchyfs.tar.gz
-
-# Avoid directory detection in `bootstrap'
-keepdir=keepdir
+cd "$rootdir" && tar xpf "${worktree}"/archive/_hierarchyfs.tar.gz
 

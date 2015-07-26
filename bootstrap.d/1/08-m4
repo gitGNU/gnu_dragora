@@ -8,29 +8,25 @@
 version=1.4.17
 
 echo "Unpacking m4-${version} ..."
-rm -rf "${tmpdir}"/m4-${version}
-tar xf "${tardir}"/m4-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/m4-${version}
+tar xf "${worktree}"/sources/m4-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/m4-${version}
+cd "${tmpdir}"/sources/m4-${version}
 
-patch -Np1 -i "${patchdir}"/m4/update-freadahead
+patch -Np1 -i "${worktree}"/patches/m4/update-freadahead
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 ./configure \
  --prefix=/tools \
  --build=$host \
- --host=$target \
+ --host=$TARGET \
  ac_cv_libsigsegv=no
 
 make -j${jobs}
 make install
-
-# Clean up the documentation
-rm -rf "${rootdir}"/tools/share/info \
-       "${rootdir}"/tools/share/man
 
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP

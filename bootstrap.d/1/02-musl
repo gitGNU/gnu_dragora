@@ -8,20 +8,20 @@
 version=1.1.10
 
 echo "Unpacking musl-${version} ..."
-rm -rf "${tmpdir}"/musl-${version}
-tar xf "${tardir}"/musl-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/musl-${version}
+tar xf "${worktree}"/sources/musl-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/musl-${version}
+cd "${tmpdir}"/sources/musl-${version}
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
-CROSS_COMPILE="${target}-" \
+CROSS_COMPILE="${TARGET}-" \
 ./configure \
  --prefix=/tools \
  --syslibdir=/lib \
- --host=$target \
+ --host=$TARGET \
  --enable-debug \
  --enable-optimize
 

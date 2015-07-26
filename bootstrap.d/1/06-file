@@ -8,13 +8,13 @@
 version=5.22
 
 echo "Unpacking file-${version} ..."
-rm -rf "${tmpdir}"/file-${version}
-tar xf "${tardir}"/file-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/file-${version}
+tar xf "${worktree}"/sources/file-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/file-${version}
+cd "${tmpdir}"/sources/file-${version}
 
-cp -f "${patchdir}"/common/config.sub config.sub
+cp -f "${worktree}"/patches/common/config.sub config.sub
 
 # A local installation of "file" is needed in order
 # to cross-compile "file" matching the same version
@@ -31,12 +31,12 @@ make install
 make clean
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 ./configure \
  --prefix=/tools \
  --build=$host \
- --host=$target \
+ --host=$TARGET \
  --disable-fsect-man5 \
  --disable-shared \
  --enable-static

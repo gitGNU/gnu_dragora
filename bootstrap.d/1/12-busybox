@@ -8,32 +8,32 @@
 version=1.23.2
 
 echo "Unpacking busybox-${version} ..."
-rm -rf "${tmpdir}"/busybox-${version}
-tar xf "${tardir}"/busybox-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/busybox-${version}
+tar xf "${worktree}"/sources/busybox-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"
+cd "${tmpdir}"/sources
 cd busybox-${version} || cd busybox
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 # Patch including lzip support
-patch -Np1 -i "${patchdir}"/busybox/busybox-1.23.1_lzip-1.patch
+patch -Np1 -i "${worktree}"/patches/busybox/busybox-1.23.1_lzip-1.patch
 
 make mrproper
 
-cat "${archivedir}"/busybox/busybox-config_stage1 > .config
+cat "${worktree}"/archive/busybox/busybox-config_stage1 > .config
 make oldconfig
 
 make -j${jobs} busybox V=1 \
   ARCH="$LINUX_ARCH" \
-  CROSS_COMPILE="${target}-" \
+  CROSS_COMPILE="${TARGET}-" \
   HOSTCFLAGS="-D_GNU_SOURCE"
 
 make install CONFIG_PREFIX=/tools \
   ARCH="$LINUX_ARCH" \
-  CROSS_COMPILE="${target}-" \
+  CROSS_COMPILE="${TARGET}-" \
   HOSTCFLAGS="-D_GNU_SOURCE"
 
 # Unset imported variables from file

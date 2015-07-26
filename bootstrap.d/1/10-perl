@@ -11,18 +11,19 @@ version=5.20.2
 cross_ver=0.9.6
 
 echo "Unpacking perl-${version} ..."
-rm -rf "${tmpdir}"/perl-${version}
-tar xf "${tardir}"/perl-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/perl-${version}
+tar xf "${worktree}"/sources/perl-${version}.tar.lz -C "${tmpdir}"/sources
 
 echo "Unpacking perl-${version}-cross-${cross_ver} ..."
-tar xf "${tardir}"/perl-${version}-cross-${cross_ver}.tar.lz -C "$tmpdir"
+cd "${tmpdir}"/sources && \
+tar xf "${worktree}"/sources/perl-${version}-cross-${cross_ver}.tar.lz
 
 # Build instructions
-cd "${tmpdir}"/perl-${version}
+cd perl-${version}
 
 ./configure \
  --prefix=/tools \
- --target=$target \
+ --target=$TARGET \
  -Dprivlib=/tools/lib/perl5 \
  -Dsitelib=/tools/lib/perl5/site_perl
 

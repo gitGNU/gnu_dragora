@@ -8,19 +8,19 @@
 version=4.1.1
 
 echo "Unpacking gawk-${version} ..."
-rm -rf "${tmpdir}"/gawk-${version}
-tar xf "${tardir}"/gawk-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/gawk-${version}
+tar xf "${worktree}"/sources/gawk-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/gawk-${version}
+cd "${tmpdir}"/sources/gawk-${version}
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 ./configure \
  --prefix=/tools \
  --build=$host \
- --host=$target \
+ --host=$TARGET \
  --disable-nls \
  --without-libintl-prefix \
  --without-libsigsegv-prefix \
@@ -28,10 +28,6 @@ cd "${tmpdir}"/gawk-${version}
 
 make -j${jobs}
 make install
-
-# Clean up the documentation
-rm -rf "${rootdir}"/tools/share/info \
-       "${rootdir}"/tools/share/man
 
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP

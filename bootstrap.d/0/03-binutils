@@ -8,11 +8,11 @@
 version=2.25.1
 
 echo "Unpacking binutils-${version} ..."
-rm -rf "${tmpdir}"/binutils-${version}
-tar xf "${tardir}"/binutils-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/binutils-${version}
+tar xf "${worktree}"/sources/binutils-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/binutils-${version}
+cd "${tmpdir}"/sources/binutils-${version}
 
 # Build in a separate directory
 rm -rf ../binutils-build
@@ -23,17 +23,14 @@ AR="ar" \
 ../binutils-${version}/configure \
  --prefix="$crossdir" \
  --host=$host \
- --target=$target \
- --with-sysroot="${crossdir}"/$target \
+ --target=$TARGET \
+ --with-sysroot="${crossdir}"/$TARGET \
  --disable-nls \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
- $multilib
+ $MULTILIB
 
 make configure-host
 make -j${jobs} MAKEINFO="true"
 make MAKEINFO="true" install
-
-# Remove unneeded documentation
-rm -rf "${crossdir}"/share/info "${crossdir}"/share/man
 

@@ -8,11 +8,11 @@
 version=2.25.1
 
 echo "Unpacking binutils-${version} ..."
-rm -rf "${tmpdir}"/binutils-${version}
-tar xf "${tardir}"/binutils-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/binutils-${version}
+tar xf "${worktree}"/sources/binutils-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/binutils-${version}
+cd "${tmpdir}"/sources/binutils-${version}
 
 # Build in a separate directory
 rm -rf ../binutils-build
@@ -20,27 +20,23 @@ mkdir ../binutils-build
 cd ../binutils-build
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 ../binutils-${version}/configure \
  --prefix=/tools \
  --build=$host \
- --host=$target \
- --target=$target \
+ --host=$TARGET \
+ --target=$TARGET \
  --with-lib-path=/tools/lib \
  --disable-shared \
  --disable-nls \
  --disable-werror \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
- $multilib
+ $MULTILIB
 
 make -j${jobs}
 make install
-
-# Clean up the documentation
-rm -rf "${rootdir}"/tools/share/info \
-       "${rootdir}"/tools/share/man
 
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP

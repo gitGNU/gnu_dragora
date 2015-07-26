@@ -8,11 +8,11 @@
 version=3.14.48
 
 echo "Unpacking linux-${version} ..."
-rm -rf "${tmpdir}"/linux-${version}
-tar xf "${tardir}"/linux-libre-${version}-gnu*.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/linux-${version}
+tar xf "${worktree}"/sources/linux-libre-${version}-gnu*.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/linux-${version}
+cd "${tmpdir}"/sources/linux-${version}
 
 make mrproper
 make headers_check ARCH="$LINUX_ARCH"

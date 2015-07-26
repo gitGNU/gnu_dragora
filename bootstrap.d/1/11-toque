@@ -8,25 +8,25 @@
 version=0.1-pre34
 
 echo "Unpacking toque-${version} ..."
-rm -rf "${tmpdir}"/toque-${version}
-tar xf "${tardir}"/toque-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/toque-${version}
+tar xf "${worktree}"/sources/toque-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/toque-${version}
+cd "${tmpdir}"/sources/toque-${version}
 
 # Import and export toolchain variables
-. "${_envdir}"/cross-env
+. "${worktree}"/bootstrap.d/env.d/cross-env
 
 ./configure CXX="$CXX" CXXFLAGS="-static" LDFLAGS="-Wl,-static" --prefix=/tools --sbindir=/tools/bin
 
 make -j${jobs}
 make install
 
-cat "${archivedir}"/toque/etc/toquerc > /tools/etc/toquerc
+cat "${worktree}"/archive/toque/etc/toquerc > /tools/etc/toquerc
 
 # Add internal options of multilib for toquerc
 cat << EOF >> /tools/etc/toquerc
-multilib = $multilib
+multilib = $MULTILIB
 
 EOF
 

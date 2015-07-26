@@ -8,17 +8,17 @@
 version=4.9.3
 
 echo "Unpacking gcc-${version} ..."
-rm -rf "${tmpdir}"/gcc-${version}
-tar xf "${tardir}"/gcc-${version}.tar.lz -C "$tmpdir"
+rm -rf "${tmpdir}"/sources/gcc-${version}
+tar xf "${worktree}"/sources/gcc-${version}.tar.lz -C "${tmpdir}"/sources
 
 # Build instructions
-cd "${tmpdir}"/gcc-${version}
+cd "${tmpdir}"/sources/gcc-${version}
 
-patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes
-patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.2-musl.diff
+patch -Np0 -i "${worktree}"/patches/gcc/gcc-nofixincludes
+patch -Np1 -i "${worktree}"/patches/gcc/gcc-4.9.2-musl.diff
 
 # Build GCC built-in prerequisites
-for file in "${tardir}"/gmp-*.tar.lz "${tardir}"/mpfr-*.tar.lz "${tardir}"/mpc-*.tar.lz ; do
+for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.lz "${worktree}"/sources/mpc-*.tar.lz ; do
   if [ ! -e "$file" ] ; then
     echo "The built-in prerequisite \`${file##*/}' for GCC is required." 1>&2
     exit 1
@@ -48,7 +48,7 @@ unset file name vern
 #
 # This is until new versions could provide the updated file.
 #
-cp -f "${patchdir}"/common/config.sub gmp/configfsf.sub
+cp -f "${worktree}"/patches/common/config.sub gmp/configfsf.sub
 
 # Force stack protection activation
 sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
@@ -64,8 +64,8 @@ cd ../gcc-build
  --enable-checking=release \
  --build=$host \
  --host=$host \
- --target=$target \
- --with-sysroot="${crossdir}"/$target \
+ --target=$TARGET \
+ --with-sysroot="${crossdir}"/$TARGET \
  --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
  --with-mpfr-lib="${PWD}"/mpfr/src/.libs \
  --with-newlib \
@@ -85,15 +85,11 @@ cd ../gcc-build
  --disable-libgomp \
  --without-ppl \
  --without-cloog \
- $gcc \
- $multilib
+ $GCC_OPTS $MULTILIB
 
 make -j${jobs} all-gcc all-target-libgcc
 make install-gcc install-target-libgcc
 
 # To prevent broken toolchains from pulling in lgcc_s
-ln -sf libgcc.a "$("${target}-gcc" -print-libgcc-file-name | sed 's/libgcc/&_eh/')"
-
-# Remove unneeded documentation
-rm -rf "${crossdir}"/share/info "${crossdir}"/share/man
+ln -sf libgcc.a "$("${TARGET}-gcc" -print-libgcc-file-name | sed 's/libgcc/&_eh/')"
 
