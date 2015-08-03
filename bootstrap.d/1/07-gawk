@@ -5,7 +5,7 @@
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
-version=4.1.1
+version=4.1.3
 
 echo "Unpacking gawk-${version} ..."
 rm -rf "${tmpdir}"/sources/gawk-${version}
