@@ -1,6 +1,6 @@
 # Build script for perl and perl-cross
 #
-# Perl cross url: http://arsv.github.io/perl-cross/index.html
+# Perl-cross url: http://arsv.github.io/perl-cross/index.html
 #
 # Copyright (C) 2014-2015 Matias A. Fonzo.
 #
@@ -8,7 +8,7 @@
 # to copy, distribute and modify it.
 
 version=5.20.2
-cross_ver=0.9.6
+cross_ver=0.9.7
 
 echo "Unpacking perl-${version} ..."
 rm -rf "${tmpdir}"/sources/perl-${version}
