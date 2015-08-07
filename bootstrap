@@ -151,7 +151,7 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.0" \
+       "bootstrap 2.1" \
        "Copyright (C) 2014, 2015  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
@@ -273,12 +273,17 @@ mkdirIfNot "${tmpdir}/sources" "$crossdir" "$rootdir"
 
 # Process the files from stage number
 for file in ""${CWD}/bootstrap.d/${stage}/${@:-??-*}"" ; do
-  if [ ! -f "$file" ] ; then
-    echo "bootstrap: File '${file}' not found or not regular." 1>&2
+
+  # Get the basename
+  file="${file##*/}"
+
+  if [ ! -f "${CWD}/bootstrap.d/${stage}/$file" ] ; then
+    echo "bootstrap: File '${CWD}/bootstrap.d/${stage}/$file' not found or not regular." 1>&2
     exit 1
   fi
-  if [ ! -x "$file" ] ; then
-    echo "bootstrap: I won't build '${file}'.  File not executable." 1>&2
+
+  if [ ! -x "${CWD}/bootstrap.d/${stage}/$file" ] ; then
+    echo "bootstrap: I won't build '${stage}/$file'.  File not executable." 1>&2
     continue;
   fi
 
@@ -300,19 +305,7 @@ for file in ""${CWD}/bootstrap.d/${stage}/${@:-??-*}"" ; do
 
   # Load script
   echo "==> File \"${file##*/}\" from stage $stage in process ..."
-  . "$file"
-
-  # Subsequent steps
-  case "$stage" in
-    0)
-      rmIfDir "${crossdir}/share/info" "${crossdir}/share/man"
-      stripFiles "$crossdir"
-      ;;
-    1)
-      rmIfDir "${rootdir}/tools/share/info" "${rootdir}/tools/share/man"
-      stripFiles "${rootdir}/tools"
-      ;;
-  esac
+  . "${CWD}/bootstrap.d/${stage}/$file"
 
   # Back to the current working directory
   if ! cd "$CWD" 2> /dev/null ; then
@@ -323,9 +316,21 @@ for file in ""${CWD}/bootstrap.d/${stage}/${@:-??-*}"" ; do
   # Clean up source directories
   if [ "$keepdir" = "nokeepdir" ] ; then
     echo "==> Cleaning up source directories ..."
-    name="${file##*/}" ; name="${name#*-}"
+    name="${file#*-}"
     rmIfDir ""${tmpdir}/sources/$name*""
     unset name
   fi
 done
+
+# Final steps
+case "$stage" in
+  0)
+    rmIfDir "${crossdir}/share/info" "${crossdir}/share/man"
+    stripFiles "$crossdir"
+    ;;
+  1)
+    rmIfDir "${rootdir}/tools/share/info" "${rootdir}/tools/share/man"
+    stripFiles "${rootdir}/tools"
+    ;;
+esac
 
