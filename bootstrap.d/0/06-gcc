@@ -61,6 +61,7 @@ cd ../gcc-build
  --enable-clocale=generic \
  --enable-threads=posix \
  --enable-__cxa_atexit \
+ --enable-libstdcxx-time \
  --enable-checking=release \
  --build=$host \
  --host=$host \
