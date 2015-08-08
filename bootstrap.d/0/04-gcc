@@ -15,7 +15,7 @@ tar xf "${worktree}"/sources/gcc-${version}.tar.lz -C "${tmpdir}"/sources
 cd "${tmpdir}"/sources/gcc-${version}
 
 patch -Np0 -i "${worktree}"/patches/gcc/gcc-nofixincludes
-patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.2.0-musl.diff
+patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.2.0-combined.diff
 
 # Build GCC built-in prerequisites
 for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.lz "${worktree}"/sources/mpc-*.tar.lz ; do
