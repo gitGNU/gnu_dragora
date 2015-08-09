@@ -15,47 +15,17 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Override locale settings
-LC_ALL=POSIX
-LANGUAGE=POSIX
+LC_ALL=C
+export LC_ALL
 
-export LC_ALL LANGUAGE
+# Exit immediately on any error
+set -o errexit
 
 # Get the current working directory: printing the absolute pathname
 # or just prints the current directory in case of fails
 CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
 
 # Functions
-
-# A simple function to get variable's values from ${CWD}/bootstrap.conf
-getValue() {
-  local CODE variable
-
-  while IFS='=' read -r variable value ; do
-    case "$variable" in
-      \#*|"")           # Ignore commentary or blank lines.
-        CODE=1
-        continue;
-        ;;
-    esac
-
-    if [ "$variable" != "$1" ] ; then
-      CODE=1
-      continue;
-    fi
-    if [ "$value" = "" ] ; then
-      echo "${CWD}/bootstrap.conf: WARNING: Empty value for the variable '${variable}'" 1>&2
-      CODE=1
-      break;
-    fi
-
-    export value
-    CODE=0
-    break;
-  done < "${CWD}"/bootstrap.conf
-
-  return $CODE
-}
-
 unmountSeries() {
   for node in "${rootdir}"/usr/src/dragora/archive \
               "${rootdir}"/usr/src/dragora/patches \
@@ -77,36 +47,27 @@ unmountSeries() {
   done
 }
 
-# Variable's values by default
-rootdir=/tmp/dragora/root
-archivedir="${CWD}/archive"
-patchdir="${CWD}/patches"
-recipedir="${CWD}/recipes"
-tardir="${CWD}/sources"
-
-# Get values from the config file
-if [ -f "${CWD}/bootstrap.conf" ] && [ -s "${CWD}/bootstrap.conf" ] ; then
-  echo "[-] Reading config file ${CWD}/bootstrap.conf ..."
-  getValue rootdir        && rootdir="$value"
-  getValue archivedir     && archivedir="$value"
-  getValue patchdir       && patchdir="$value"
-  getValue recipedir      && recipedir="$value"
-  getValue tardir         && tardir="$value"
-else
-  echo "WARNING: ${CWD}/bootstrap.conf: File empty or not regular." 1>&2
+# Autodetermine the path of /tools
+if [ ! -L /tools ]; then
+  echo "Cannot determine \$ROOT. The symlink \"/tools\" doesn't exists."
+  exit 1
 fi
-unset value getValue
+if [ -L /tools ] && [ ! -e /tools ]; then
+  echo "/tools is a dangling symlink."
+  exit 1
+fi
 
-set -o errexit;		# Exit immediately on any error.
+# Set 'rootdir' getting the canonical directory name
+rootdir="$(readlink /tools | sed -e 's/\/tools//')"
 
 # Unmount directories and file systems before the next mounting
 unmountSeries
 
-echo "==> Mounting directories ..."
-mount -o bind "$archivedir"  "${rootdir}"/usr/src/dragora/archive
-mount -o bind "$patchdir"    "${rootdir}"/usr/src/dragora/patches
-mount -o bind "$recipedir"   "${rootdir}"/usr/src/dragora/recipes
-mount -o bind "$tardir"      "${rootdir}"/usr/src/dragora/sources
+echo "==> Mounting working directory ..."
+mount -o bind "${CWD}"/archive  "${rootdir}"/usr/src/dragora/archive
+mount -o bind "${CWD}"/patches  "${rootdir}"/usr/src/dragora/patches
+mount -o bind "${CWD}"/recipes  "${rootdir}"/usr/src/dragora/recipes
+mount -o bind "${CWD}"/sources  "${rootdir}"/usr/src/dragora/sources
 
 echo "==> Mounting virtual file systems ..."
 mount -o bind /dev      "${rootdir}"/dev
@@ -124,6 +85,7 @@ chroot "$rootdir" /tools/bin/env -i \
   SHELL=/bin/sh \
   HOME=/root \
   TERM="${TERM:-linux}" \
+  LC_ALL=$LC_ALL \
   PS1='\u:\w\$ ' \
  /tools/bin/sh --login
 
