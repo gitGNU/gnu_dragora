@@ -1,0 +1,26 @@
+# Build script for graft
+#
+# Copyright (C) 2015 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=2.6
+
+echo "Unpacking make-${version} ..."
+rm -rf "${tmpdir}"/sources/graft-${version}
+tar xf "${worktree}"/sources/graft-${version}.tar.lz -C "${tmpdir}"/sources
+
+# Build instructions
+cd "${tmpdir}"/sources/graft-${version}
+
+make -f Makefile.dist || true;
+
+# Add our custom paths to the Makefile generated
+patch -Np0 -i "${worktree}"/patches/graft/graft-Makefile-stage1.diff
+
+make
+
+cat graft > /tools/bin/graft
+chmod 755 /tools/bin/graft
+
