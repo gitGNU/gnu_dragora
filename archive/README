@@ -1,10 +1,10 @@
+The "archive" directory contains specific files included by the
+packages.  Each subdirectory is represented with the name of the
+program.  Usually these files are configuration files, headers, or
+substantial files that are not considered patches (differences).  Each
+of them is located in their corresponding directories to reflect where
+they come from.
 
-  The "archive" directory contains specific files included by the packages.
-Each subdirectory is represented with the name of the program. Usually
-these files are configuration files, headers, or substantial files
-that are not considered patches (differences). Each of them is located
-in their corresponding directories to reflect where they come from.
-
-  The only exception is the file "_hierarchyfs.tar.gz" which composes
-the general structure of directories for the system.
+   The only exception is the file "hierarchyfs-dragora.tar.gz" which
+composes the general (dragora) structure of directories for the system.
 

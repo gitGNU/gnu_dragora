@@ -1,4 +1,4 @@
-# Build script for the filesystem layout
+# Build script for the filesystem layout (dragora)
 #
 # Copyright (C) 2014-2015 Matias A. Fonzo.
 #
@@ -7,13 +7,13 @@
 
 echo "Uncompressing structure of directories ..."
 
-if [ ! -f "${worktree}"/archive/_hierarchyfs.tar.gz ] ; then
-  echo "${worktree}/archive/_hierarchyfs.tar.gz is not a regular file"
+if [ ! -f "${worktree}"/archive/hierarchyfs-dragora.tar.gz ] ; then
+  echo "${worktree}/archive/hierarchyfs-dragora.tar.gz is not a regular file"
   exit 1
 fi
 
 # To check the integrity before the decompression
-tar tf "${worktree}"/archive/_hierarchyfs.tar.gz > /dev/null || exit $?
+tar tf "${worktree}"/archive/hierarchyfs-dragora.tar.gz > /dev/null || exit $?
 
-cd "$rootdir" && tar xpf "${worktree}"/archive/_hierarchyfs.tar.gz
+cd "$rootdir" && tar xpf "${worktree}"/archive/hierarchyfs-dragora.tar.gz
 

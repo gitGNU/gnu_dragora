@@ -63,6 +63,7 @@
 |   |   |       `-- man8/
 |   |   `-- src/
 |   |-- man -> share/man/
+|   |-- packages/
 |   |-- sbin/
 |   |-- share/
 |   |   |-- doc/
@@ -97,4 +98,4 @@
     |   `-- mail/
     `-- tmp/
 
-93 directories, 4 files
+94 directories, 4 files
