@@ -1,0 +1,1168 @@
+This is qi.info, produced by makeinfo version 4.13 from qi.texi.
+
+This manual is for Qi (version 1.0-pre1, 14 Ago 2015), which is a
+simple source builder and package manager.
+
+   Copyright (C) 2015 Matias A. Fonzo
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.3 or any later version published by the Free Software
+     Foundation; with no Invariant Sections, with no Front-Cover Texts,
+     and with no Back-Cover Texts.  A copy of the license is included
+     in the section entitled "GNU Free Documentation License".
+
+INFO-DIR-SECTION Texinfo documentation system
+START-INFO-DIR-ENTRY
+* Qi: (qi).                     Source builder and package manager.
+END-INFO-DIR-ENTRY
+
+
+File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
+
+Qi Manual
+*********
+
+This manual is for Qi (version 1.0-pre1, 14 Ago 2015).
+
+* Menu:
+
+* Introduction::                    Purpose, description
+* Invocation::                      Command-line interface
+* The qirc file::                   The configuration file
+* Packages::                        Installation, removal
+* Examine packages::                Debugging purposes
+* The .order files::                Handling the build order
+* Exit status::                     Exit codes, conditions
+* GNU Free Documentation License::
+* Index::
+
+
+   The Qi home page can be found at `http://www.dragora.org'.
+Send bug reports or suggestions to <dragora-bug@nongnu.org>.
+
+
+File: qi.info,  Node: Introduction,  Next: Invocation,  Prev: Top,  Up: Top
+
+1 Introduction
+**************
+
+Qi is a source builder and a package manager:
+
+   It contains a set of tools where the main command is `qi', a wrapping
+guide for the rest of the commands.  It follows the philosophy of the
+simplicity but without adding too many features, such as those that can
+be found in popular package managers.  Basically it does two things:
+builds packages and manages them.
+
+   The building part can get or retrieve source code from remote sites
+without the intervention of the developer or package maintainer.  It
+downloads the source, reads the checksum, and annotates the same one in
+the recipe.  This is done by the `build' command, checking the
+integrity of the source and creating the checksum or updating it
+without losing focus.
+
+   Qi constructs the sources using recipe names, files that contain
+specific instructions to build every source.  As result, a binary
+package is obtained which can be installed, removed, upgraded, or
+inspected in the system.  The software packages produced by Qi have the
+.tlz extension, using tar(1) for packaging and lzip(1) as the only
+compression format in the package redistribution.
+
+   The packages are managed thanks to an external tool called graft(1),
+which provides a mechanism for managing multiple packages under a
+single directory hierarchy, it was inspired by both Depot (Carnegie
+Mellon University) and Stow (Bob Glickstein).  In this aspect, Qi acts
+as a complement of Graft: it can work with packages, check them, solve
+conflicts, and more...
+
+
+File: qi.info,  Node: Invocation,  Next: The qirc file,  Prev: Introduction,  Up: Top
+
+2 Invocation
+************
+
+The synopsis to invoke Qi is:
+
+     qi <command> [options] [package|recipe|order] ...
+
+The following commands are supported by `qi':
+
+`install'
+     Install packages to the system (.tlz).
+
+`remove'
+     Remove packages of the system.
+
+`erupt'
+     Examine packages for debugging purposes.
+
+`order'
+     Resolves the build order through .order files.
+
+`build'
+     Build packages using recipe files.
+
+
+     There are global or common options for the commands, as well as
+     specific to each one.
+
+
+     *Global options:*
+
+`-h'
+     Show options for the given command and exit.
+
+`-N'
+     Don't read runtime configuration file `qirc'.
+
+
+     *Options for command `install':*
+
+`-P'
+     Package installation tree.
+
+     This option sets `${packagedir}'.
+
+     The default value for *packagedir* is /usr/packages.
+
+`-T'
+     Target directory for linking.
+
+     This option sets `${targetdir}'.
+
+     The default value for *targetdir* is /usr.
+
+`-p'
+     Prune conflicts.
+
+`-v'
+     graft(1) verbosity (use -V instead for more verbosity).
+
+`-w'
+     Warn about the files that will be linked.
+
+
+     *Options for command `remove':*
+
+`-P'
+     Package (de)installation tree.
+
+     This option sets `${packagedir}'.
+
+     The default value for *packagedir* is /usr/packages.
+
+`-T'
+     Target directory for unlinking.
+
+     This option sets `${targetdir}'.
+
+     The default value for *targetdir* is /usr.
+
+`-k'
+     Keep (don't delete) the package directory.
+
+`-p'
+     Prune conflicts.
+
+`-v'
+     graft(1) verbosity (use -V instead for more verbosity).
+
+
+     *Options for command `build':*
+
+`-S'
+     Don't strip unneeded or debugging symbols from files.
+
+     This option sets `${strip}'.
+
+     The default value for *strip* is strip.
+
+`-k'
+     Keep (don't delete) `${srcdir}' and `${destdir}' after the build.
+
+`-n'
+     Don't create a .tlz package.
+
+`-o'
+     Where the produced packages are written.
+
+     This option sets `${outdir}'.
+
+     The default value for *outdir* is /var/cache/qi/packages.
+
+`-t'
+     Temporary directory for compilation.
+
+     This option sets `${tmpdir}'.
+
+     The default value for *tmpdir* is /tmp/sources.
+
+`-w'
+     Working directory tree for archive, patches, recipes.
+
+     This option sets `${worktree}'.
+
+     The default value for *worktree* is /usr/src/qi.
+
+`-z'
+     Where to find the compressed sources.
+
+     This option sets `${tardir}'.
+
+     The default value for *tardir* is /usr/src/qi/sources.
+
+`-a'
+     Architecture to use.
+
+     This option sets `${arch}'.
+
+     The default value is obtained via `uname -m'.
+
+`-i'
+     Increment release number when a package is produced.
+
+`-j'
+     Parallel jobs for the compiler
+
+     This option sets `${jobs}'.
+
+     The default value for *jobs* is 1.
+
+
+     *Options for command `erupt':*
+
+`-d'
+     Decompression directory.
+
+     If not specified, the default value is the Current Working
+     Directory.
+
+
+   * All the options can be mixed.
+
+Note: the options specified in the command-line have priority over the
+config file (`qirc').  If there are no options, and if `qirc' is not
+present: default (internal) values will be used instead.
+
+2.1 Help Actions
+================
+
+There are several levels of help in which the help is showed.  If `qi'
+is invoked without arguments, then the general help appears.  Which is
+also equivalent to `qi help'.
+
+   Type `qi help <command>' for more information on a specific command.
+
+If the help does not appear when a command is invoked without
+arguments, please use `qi <command> -h'.
+
+
+File: qi.info,  Node: The qirc file,  Next: Packages,  Prev: Invocation,  Up: Top
+
+3 The qirc file
+***************
+
+`qirc' is the configuration file for Qi used at runtime during the
+installation, removal of a package, or when a recipe is built.  This
+file is optional, and it can be useful to define variables and
+configure external tools (such as a download manager) for default use.
+
+   * The variables are declared as `name=value'.
+
+The options specified in the command-line can override the values
+specified in the configuration file.  For more information, *note
+Invocation::.
+
+The order in which Qi looks for this file is:
+
+  1. `${HOME}/.qirc'  Effective user.
+
+  2. `${sysconfdir}/qirc'  System-wide.
+
+   If you pretend to run Qi for a specific user, you should copy the
+file `${sysconfdir}/qirc' to `${HOME}/.qirc' setting `${packagedir}'
+and `${targetdir}' for `$HOME'.
+
+
+File: qi.info,  Node: Packages,  Next: Examine packages,  Prev: The qirc file,  Up: Top
+
+4 Packages
+**********
+
+A package is a suite of programs usually distributed in binary form
+which may also contain manual pages, documentation, or any other file
+associated to a specific software.
+
+   The Qi package format is a simple redistributable tar(1) archive
+compressed with lzip(1).  The package extension ends in ".tlz".
+
+Both package installation and package deinstallation are managed using
+`${packagedir}' and `${targetdir}':
+
+   `${packagedir}' is a common directory tree where the package contents
+is decompressed (resides).  By default the tree is located at
+*/usr/packages*.
+
+   `${targetdir}' is a target directory where the links will be made
+taking `${packagedir}/package_name' into account.
+
+   Packages are installed in self-contained directory trees and symbolic
+links from a common area are made to the package files.  This allows
+multiple versions of the same package to co-exist on the one system.
+
+Note: all the links to install or to remove a package is handled using
+graft(1).  Since multiple packages can be installed or removed at the
+same time, certain conflicts may arise between the packages.  According
+to the User's Guide of Graft, a conflict is defined as one of the
+following conditions:
+
+   * If the package object is a directory and the target object exists
+     but is not a directory.
+
+   * If the package object is not a directory and the target object
+     exists and is not a symbolic link.
+
+   * If the package object is not a directory and the target object
+     exists and is a symbolic link to something other than the package
+     object.
+
+The Qi's default behavior is to not proceed with the installation when
+a conflict occurs.  But when a package that is going to be removed is
+in conflict with another package, graft(1) removes those parts that are
+not in conflict, leaving the links belonging to the original package.
+This behavior can be changed if the option -p is specified (see the
+examples below).
+
+   *For more information, check the documentation for graft.*
+
+4.1 Package Installation
+========================
+
+This sort order is particularly useful just before the actual package
+installation, because it helps you to understand how the package
+installation works:
+
+  1. The integrity of a package is checked.
+
+  2. A subdirectory will try to be created if
+     `${packagedir}/package_name' does not exist.
+
+  3. `${targetdir}' and `${packagedir}/package_name' are verified if
+     they are writable directories.
+
+  4. The package is decompressed in `${packagedir}' using its name for
+     the subdirectory.
+
+  5. graft(1) is used to install symbolic links from the package
+     installation directory to the target directory.
+
+  6. If the file of description exists, and if it's not empty, the
+     package description will be displayed.
+
+
+*Examples:*
+
+_Usage:_ qi install [-hNpvVw] [-P <dir>] [-T <dir>] package(s).tlz
+
+   To install a single package, simply type:
+
+     qi install coreutils-8.24-x86_64+1.tlz
+
+   This shows:
+
+     Processing '/etc/qirc' ...
+     ==> Checking integrity of 'coreutils-8.24-x86_64+1.tlz' ...
+     ==> Installing package 'coreutils-8.24-x86_64+1' in `/usr/packages' ...
+     coreutils - The GNU core utilities.
+
+     The GNU core utilities are the basic file, shell and text manipulation
+     utilities of the GNU operating system.  These are the core utilities
+     which are expected to exist on every operating system.
+
+   Multiple packages can be passed in a single invocation of `qi
+install':
+
+     qi install gcc-4.9.3-x86_64+1.tlz rafaela-2.2-i486+1.tlz ...
+
+   Warn about the files that will be linked:
+
+     qi install -w gcc-4.9.3-x86_64+1.tlz
+
+   * This is a useful option to verify the content of a package before
+     installing it.
+
+   Seeing what happens when a package is installed (verbose mode):
+
+     qi install -v mariana-3.0-x86_64+1.tlz
+
+   * For a more detailed (long) output, you can use the -V option.
+
+   Installing in a different directory tree and target:
+
+     qi install -P /tmp/pkgdir -T /tmp/targetdir lzip-1.17-i486+1.tlz
+
+   Forcing the package installation removing objects (files, links or
+directories) from the target directory that are in conflict with the
+package directory:
+
+     qi install -p zutils-1.4-x86_64+1.tlz
+
+   * It is useful to combine -p with -v or with -V.
+
+4.2 Package Removal
+===================
+
+This sort order is particularly useful just before the actual package
+deinstallation, because it helps you to understand how the package
+deinstallation works:
+
+  1. The packages are searched by name in `${packagedir}'.  Complete
+     package names like "program-version-arch+release.tlz" or short
+     names divided by segments "-" are accepted.
+
+  2. If the specified name cannot be found at `${packagedir}', _remove_
+     will try to find it expanding it, completing the name of the
+     package.  If more than one package name matches, a menu of
+     selection is generated to choose the packages.
+
+  3. `${packagedir}/package_name' and `${targetdir}' are verified if
+     they are readable directories.
+
+  4. graft(1) is used to remove symbolic links from the package
+     installation directory to the target directory.  By default, if
+     there are a conflict with another package, it will remove those
+     links that are not in conflict.  It's possible to prune all the
+     conflicts using the -p option.
+
+  5. Finally, the package directory is deleted if the option -k is not
+     specified.
+
+
+*Examples:*
+
+_Usage:_ qi remove [-hNkpvV] [-P <dir>] [-T <dir>] package(s)
+
+Where <package(s)>, partial names or complete package names can be
+specified:
+
+   - program-version-arch+1.tlz
+
+   - program-version-arch+1
+
+   - program-version-arch
+
+   - program-version
+
+   - program
+
+   To remove a package, just execute the command:
+
+     qi remove xz
+
+   This will show:
+
+     Processing '/etc/qirc' ...
+     ==> Removing links of 'xz-5.2.1-x86_64+1' ...
+     Uninstalling links from /usr to /usr/packages/xz-5.2.1-x86_64+1
+     Processing   /usr/packages/xz-5.2.1-x86_64+1
+     Processing   /usr/packages/xz-5.2.1-x86_64+1/usr
+     Processing   /usr/packages/xz-5.2.1-x86_64+1/usr/bin
+     UNLINK       /usr/bin/lzcat
+     UNLINK       /usr/bin/lzmainfo
+     UNLINK       /usr/bin/xzfgrep
+     UNLINK       /usr/bin/xzdec
+     UNLINK       /usr/bin/lzdiff
+     UNLINK       /usr/bin/xzdiff
+     UNLINK       /usr/bin/unlzma
+     UNLINK       /usr/bin/xzegrep
+     UNLINK       /usr/bin/xzless
+     UNLINK       /usr/bin/xzcat
+     UNLINK       /usr/bin/xz
+     ...
+     <== Removing package directory `/usr/packages/xz-5.2.1-x86_64+1' ...
+     Deleting /usr/packages/xz-5.2.1-x86_64+1 ...
+     1 package(s) removed = xz-5.2.1-x86_64+1
+
+   If two or more versions of the same package are found, you can
+choose the packages through the selection menu:
+
+     qi remove xz
+     Processing '/etc/qirc' ...
+
+     The following package names were found according to your input:
+
+     1) xz-5.0.8-i486+1
+     2) xz-5.2.1-x86_64+1
+     3) xz-5.2.0-x86_64+2
+     4) All
+     Pick a number, press <ENTER> to continue, or 'c' to confirm:
+
+   If you pick a number followed by <ENTER>, you can continue selecting
+individual packages (let's say 1 and 3).  Once you are ready, press 'c'
+to confirm.  The last option selects all the packages.
+
+   * Press <CTRL>+C to bail out.
+
+If a conflict exist with another package, `remove' will try to delete
+those links that are not in conflict.  It's possible to prune all the
+conflicts using the -p option.
+
+4.3 Final notes
+===============
+
+Some signals like SIGINT or SIGHUP are ignored in the package
+installation, deinstallation.  The purpose of this is to ignore the
+cancellation while a package is installed or removed (e.g. Ctrl+C,
+terminal window closed).  Since installation or removal of a package
+can be crucial for the proper functioning of the system.
+
+
+File: qi.info,  Node: Examine packages,  Next: The .order files,  Prev: Packages,  Up: Top
+
+5 Examine packages
+******************
+
+*erupt* is a special command to examine packages for debugging purposes:
+
+_Usage:_ qi install [-h] [-d <dir>] package.tlz
+
+   * This is equivalent to the shell instruction:
+
+     `( umask 000 ; cd directory && tar -xvf package.tlz )'
+
+     The permissions are set to "u=rwx,g=rwx,o=rwx" and the package
+     content is decompressed inside a directory.
+
+   * The specified package must be a regular file.
+
+   * Only one package can be passed per-invocation.
+
+   * A pre-existing directory is required to operate.
+
+   * If you don't provide a different directory name using the -d
+     option, the package is decompressed in the current working
+     directory.  The root directory (/) cannot be used for these
+     purposes.
+
+If you make some changes to the directory where the package is
+decompressed, and has in mind to repackage.  We suggest increase the
+build number of the package.
+
+
+File: qi.info,  Node: The .order files,  Next: Exit status,  Prev: Examine packages,  Up: Top
+
+6 The .order files
+******************
+
+TO DO,  The .order files.
+
+
+File: qi.info,  Node: Exit status,  Next: GNU Free Documentation License,  Prev: The .order files,  Up: Top
+
+7 Exit Status
+*************
+
+All the conditions of exit codes are described in this chapter:
+
+`0'
+     *Successful completion (no errors)*
+
+`1'
+     *Minor common errors*
+
+        - Illegal option.
+
+        - Option requires an argument.
+
+        - Internal function to load not found.
+
+        - Program (prerequisite) is not available.
+
+`2'
+     *Command execution error*
+
+     An external command to execute is evaluated, and if it fails:
+     returns 2.
+
+`3'
+     *Integrity check error for compressed files*
+
+     Compressed files means:
+
+        - All the tarballs supported by tar(1).
+
+        - Zip files supported by unzip(1).
+
+`4'
+     *File empty, not regular, or expected*
+
+     It is expected:
+
+        - A binary package (.tlz).
+
+        - An installed package to remove.
+
+        - A recipe file.
+
+        - A file of order (.order).
+
+`5'
+     *Empty or not defined variable*
+
+     This exit code is used for reporting about empty or undefined
+     variables.  Usually, variables of the recipe and assigned arrays
+     that are tested.
+
+`6'
+     *Insufficient permissions of writing (installation)*
+
+     No enough permissions to write in `${targetdir}' or
+     `${packagedir}/${name}'.
+
+        * Where `${name}' is the name of the directory where the
+          package is installed.
+
+`7'
+     *Insufficient permissions of reading (removal)*
+
+     No enough permissions to read in `${packagedir}/${name}' or
+     `${targetdir}'.
+
+        * Where `${name}' is the package directory to remove.
+
+`10'
+     *Network manager error*
+
+     Exit status from the execution of the network manager tool and its
+     arguments.
+
+
+Error messages are reported on standard error.
+
+
+File: qi.info,  Node: GNU Free Documentation License,  Next: Index,  Prev: Exit status,  Up: Top
+
+Appendix A GNU Free Documentation License
+*****************************************
+
+                     Version 1.3, 3 November 2008
+
+     Copyright (C) 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc.
+     `http://fsf.org/'
+
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+  0. PREAMBLE
+
+     The purpose of this License is to make a manual, textbook, or other
+     functional and useful document "free" in the sense of freedom: to
+     assure everyone the effective freedom to copy and redistribute it,
+     with or without modifying it, either commercially or
+     noncommercially.  Secondarily, this License preserves for the
+     author and publisher a way to get credit for their work, while not
+     being considered responsible for modifications made by others.
+
+     This License is a kind of "copyleft", which means that derivative
+     works of the document must themselves be free in the same sense.
+     It complements the GNU General Public License, which is a copyleft
+     license designed for free software.
+
+     We have designed this License in order to use it for manuals for
+     free software, because free software needs free documentation: a
+     free program should come with manuals providing the same freedoms
+     that the software does.  But this License is not limited to
+     software manuals; it can be used for any textual work, regardless
+     of subject matter or whether it is published as a printed book.
+     We recommend this License principally for works whose purpose is
+     instruction or reference.
+
+  1. APPLICABILITY AND DEFINITIONS
+
+     This License applies to any manual or other work, in any medium,
+     that contains a notice placed by the copyright holder saying it
+     can be distributed under the terms of this License.  Such a notice
+     grants a world-wide, royalty-free license, unlimited in duration,
+     to use that work under the conditions stated herein.  The
+     "Document", below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as "you".  You
+     accept the license if you copy, modify or distribute the work in a
+     way requiring permission under copyright law.
+
+     A "Modified Version" of the Document means any work containing the
+     Document or a portion of it, either copied verbatim, or with
+     modifications and/or translated into another language.
+
+     A "Secondary Section" is a named appendix or a front-matter section
+     of the Document that deals exclusively with the relationship of the
+     publishers or authors of the Document to the Document's overall
+     subject (or to related matters) and contains nothing that could
+     fall directly within that overall subject.  (Thus, if the Document
+     is in part a textbook of mathematics, a Secondary Section may not
+     explain any mathematics.)  The relationship could be a matter of
+     historical connection with the subject or with related matters, or
+     of legal, commercial, philosophical, ethical or political position
+     regarding them.
+
+     The "Invariant Sections" are certain Secondary Sections whose
+     titles are designated, as being those of Invariant Sections, in
+     the notice that says that the Document is released under this
+     License.  If a section does not fit the above definition of
+     Secondary then it is not allowed to be designated as Invariant.
+     The Document may contain zero Invariant Sections.  If the Document
+     does not identify any Invariant Sections then there are none.
+
+     The "Cover Texts" are certain short passages of text that are
+     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
+     that says that the Document is released under this License.  A
+     Front-Cover Text may be at most 5 words, and a Back-Cover Text may
+     be at most 25 words.
+
+     A "Transparent" copy of the Document means a machine-readable copy,
+     represented in a format whose specification is available to the
+     general public, that is suitable for revising the document
+     straightforwardly with generic text editors or (for images
+     composed of pixels) generic paint programs or (for drawings) some
+     widely available drawing editor, and that is suitable for input to
+     text formatters or for automatic translation to a variety of
+     formats suitable for input to text formatters.  A copy made in an
+     otherwise Transparent file format whose markup, or absence of
+     markup, has been arranged to thwart or discourage subsequent
+     modification by readers is not Transparent.  An image format is
+     not Transparent if used for any substantial amount of text.  A
+     copy that is not "Transparent" is called "Opaque".
+
+     Examples of suitable formats for Transparent copies include plain
+     ASCII without markup, Texinfo input format, LaTeX input format,
+     SGML or XML using a publicly available DTD, and
+     standard-conforming simple HTML, PostScript or PDF designed for
+     human modification.  Examples of transparent image formats include
+     PNG, XCF and JPG.  Opaque formats include proprietary formats that
+     can be read and edited only by proprietary word processors, SGML or
+     XML for which the DTD and/or processing tools are not generally
+     available, and the machine-generated HTML, PostScript or PDF
+     produced by some word processors for output purposes only.
+
+     The "Title Page" means, for a printed book, the title page itself,
+     plus such following pages as are needed to hold, legibly, the
+     material this License requires to appear in the title page.  For
+     works in formats which do not have any title page as such, "Title
+     Page" means the text near the most prominent appearance of the
+     work's title, preceding the beginning of the body of the text.
+
+     The "publisher" means any person or entity that distributes copies
+     of the Document to the public.
+
+     A section "Entitled XYZ" means a named subunit of the Document
+     whose title either is precisely XYZ or contains XYZ in parentheses
+     following text that translates XYZ in another language.  (Here XYZ
+     stands for a specific section name mentioned below, such as
+     "Acknowledgements", "Dedications", "Endorsements", or "History".)
+     To "Preserve the Title" of such a section when you modify the
+     Document means that it remains a section "Entitled XYZ" according
+     to this definition.
+
+     The Document may include Warranty Disclaimers next to the notice
+     which states that this License applies to the Document.  These
+     Warranty Disclaimers are considered to be included by reference in
+     this License, but only as regards disclaiming warranties: any other
+     implication that these Warranty Disclaimers may have is void and
+     has no effect on the meaning of this License.
+
+  2. VERBATIM COPYING
+
+     You may copy and distribute the Document in any medium, either
+     commercially or noncommercially, provided that this License, the
+     copyright notices, and the license notice saying this License
+     applies to the Document are reproduced in all copies, and that you
+     add no other conditions whatsoever to those of this License.  You
+     may not use technical measures to obstruct or control the reading
+     or further copying of the copies you make or distribute.  However,
+     you may accept compensation in exchange for copies.  If you
+     distribute a large enough number of copies you must also follow
+     the conditions in section 3.
+
+     You may also lend copies, under the same conditions stated above,
+     and you may publicly display copies.
+
+  3. COPYING IN QUANTITY
+
+     If you publish printed copies (or copies in media that commonly
+     have printed covers) of the Document, numbering more than 100, and
+     the Document's license notice requires Cover Texts, you must
+     enclose the copies in covers that carry, clearly and legibly, all
+     these Cover Texts: Front-Cover Texts on the front cover, and
+     Back-Cover Texts on the back cover.  Both covers must also clearly
+     and legibly identify you as the publisher of these copies.  The
+     front cover must present the full title with all words of the
+     title equally prominent and visible.  You may add other material
+     on the covers in addition.  Copying with changes limited to the
+     covers, as long as they preserve the title of the Document and
+     satisfy these conditions, can be treated as verbatim copying in
+     other respects.
+
+     If the required texts for either cover are too voluminous to fit
+     legibly, you should put the first ones listed (as many as fit
+     reasonably) on the actual cover, and continue the rest onto
+     adjacent pages.
+
+     If you publish or distribute Opaque copies of the Document
+     numbering more than 100, you must either include a
+     machine-readable Transparent copy along with each Opaque copy, or
+     state in or with each Opaque copy a computer-network location from
+     which the general network-using public has access to download
+     using public-standard network protocols a complete Transparent
+     copy of the Document, free of added material.  If you use the
+     latter option, you must take reasonably prudent steps, when you
+     begin distribution of Opaque copies in quantity, to ensure that
+     this Transparent copy will remain thus accessible at the stated
+     location until at least one year after the last time you
+     distribute an Opaque copy (directly or through your agents or
+     retailers) of that edition to the public.
+
+     It is requested, but not required, that you contact the authors of
+     the Document well before redistributing any large number of
+     copies, to give them a chance to provide you with an updated
+     version of the Document.
+
+  4. MODIFICATIONS
+
+     You may copy and distribute a Modified Version of the Document
+     under the conditions of sections 2 and 3 above, provided that you
+     release the Modified Version under precisely this License, with
+     the Modified Version filling the role of the Document, thus
+     licensing distribution and modification of the Modified Version to
+     whoever possesses a copy of it.  In addition, you must do these
+     things in the Modified Version:
+
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has fewer than five), unless they release you
+          from this requirement.
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section Entitled "History", Preserve its Title,
+          and add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section Entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. For any section Entitled "Acknowledgements" or "Dedications",
+          Preserve the Title of the section, and preserve in the
+          section all the substance and tone of each of the contributor
+          acknowledgements and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section Entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section to be Entitled
+          "Endorsements" or to conflict in title with any Invariant
+          Section.
+
+       O. Preserve any Warranty Disclaimers.
+
+     If the Modified Version includes new front-matter sections or
+     appendices that qualify as Secondary Sections and contain no
+     material copied from the Document, you may at your option
+     designate some or all of these sections as invariant.  To do this,
+     add their titles to the list of Invariant Sections in the Modified
+     Version's license notice.  These titles must be distinct from any
+     other section titles.
+
+     You may add a section Entitled "Endorsements", provided it contains
+     nothing but endorsements of your Modified Version by various
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
+
+     You may add a passage of up to five words as a Front-Cover Text,
+     and a passage of up to 25 words as a Back-Cover Text, to the end
+     of the list of Cover Texts in the Modified Version.  Only one
+     passage of Front-Cover Text and one of Back-Cover Text may be
+     added by (or through arrangements made by) any one entity.  If the
+     Document already includes a cover text for the same cover,
+     previously added by you or by arrangement made by the same entity
+     you are acting on behalf of, you may not add another; but you may
+     replace the old one, on explicit permission from the previous
+     publisher that added the old one.
+
+     The author(s) and publisher(s) of the Document do not by this
+     License give permission to use their names for publicity for or to
+     assert or imply endorsement of any Modified Version.
+
+  5. COMBINING DOCUMENTS
+
+     You may combine the Document with other documents released under
+     this License, under the terms defined in section 4 above for
+     modified versions, provided that you include in the combination
+     all of the Invariant Sections of all of the original documents,
+     unmodified, and list them all as Invariant Sections of your
+     combined work in its license notice, and that you preserve all
+     their Warranty Disclaimers.
+
+     The combined work need only contain one copy of this License, and
+     multiple identical Invariant Sections may be replaced with a single
+     copy.  If there are multiple Invariant Sections with the same name
+     but different contents, make the title of each such section unique
+     by adding at the end of it, in parentheses, the name of the
+     original author or publisher of that section if known, or else a
+     unique number.  Make the same adjustment to the section titles in
+     the list of Invariant Sections in the license notice of the
+     combined work.
+
+     In the combination, you must combine any sections Entitled
+     "History" in the various original documents, forming one section
+     Entitled "History"; likewise combine any sections Entitled
+     "Acknowledgements", and any sections Entitled "Dedications".  You
+     must delete all sections Entitled "Endorsements."
+
+  6. COLLECTIONS OF DOCUMENTS
+
+     You may make a collection consisting of the Document and other
+     documents released under this License, and replace the individual
+     copies of this License in the various documents with a single copy
+     that is included in the collection, provided that you follow the
+     rules of this License for verbatim copying of each of the
+     documents in all other respects.
+
+     You may extract a single document from such a collection, and
+     distribute it individually under this License, provided you insert
+     a copy of this License into the extracted document, and follow
+     this License in all other respects regarding verbatim copying of
+     that document.
+
+  7. AGGREGATION WITH INDEPENDENT WORKS
+
+     A compilation of the Document or its derivatives with other
+     separate and independent documents or works, in or on a volume of
+     a storage or distribution medium, is called an "aggregate" if the
+     copyright resulting from the compilation is not used to limit the
+     legal rights of the compilation's users beyond what the individual
+     works permit.  When the Document is included in an aggregate, this
+     License does not apply to the other works in the aggregate which
+     are not themselves derivative works of the Document.
+
+     If the Cover Text requirement of section 3 is applicable to these
+     copies of the Document, then if the Document is less than one half
+     of the entire aggregate, the Document's Cover Texts may be placed
+     on covers that bracket the Document within the aggregate, or the
+     electronic equivalent of covers if the Document is in electronic
+     form.  Otherwise they must appear on printed covers that bracket
+     the whole aggregate.
+
+  8. TRANSLATION
+
+     Translation is considered a kind of modification, so you may
+     distribute translations of the Document under the terms of section
+     4.  Replacing Invariant Sections with translations requires special
+     permission from their copyright holders, but you may include
+     translations of some or all Invariant Sections in addition to the
+     original versions of these Invariant Sections.  You may include a
+     translation of this License, and all the license notices in the
+     Document, and any Warranty Disclaimers, provided that you also
+     include the original English version of this License and the
+     original versions of those notices and disclaimers.  In case of a
+     disagreement between the translation and the original version of
+     this License or a notice or disclaimer, the original version will
+     prevail.
+
+     If a section in the Document is Entitled "Acknowledgements",
+     "Dedications", or "History", the requirement (section 4) to
+     Preserve its Title (section 1) will typically require changing the
+     actual title.
+
+  9. TERMINATION
+
+     You may not copy, modify, sublicense, or distribute the Document
+     except as expressly provided under this License.  Any attempt
+     otherwise to copy, modify, sublicense, or distribute it is void,
+     and will automatically terminate your rights under this License.
+
+     However, if you cease all violation of this License, then your
+     license from a particular copyright holder is reinstated (a)
+     provisionally, unless and until the copyright holder explicitly
+     and finally terminates your license, and (b) permanently, if the
+     copyright holder fails to notify you of the violation by some
+     reasonable means prior to 60 days after the cessation.
+
+     Moreover, your license from a particular copyright holder is
+     reinstated permanently if the copyright holder notifies you of the
+     violation by some reasonable means, this is the first time you have
+     received notice of violation of this License (for any work) from
+     that copyright holder, and you cure the violation prior to 30 days
+     after your receipt of the notice.
+
+     Termination of your rights under this section does not terminate
+     the licenses of parties who have received copies or rights from
+     you under this License.  If your rights have been terminated and
+     not permanently reinstated, receipt of a copy of some or all of
+     the same material does not give you any rights to use it.
+
+ 10. FUTURE REVISIONS OF THIS LICENSE
+
+     The Free Software Foundation may publish new, revised versions of
+     the GNU Free Documentation License from time to time.  Such new
+     versions will be similar in spirit to the present version, but may
+     differ in detail to address new problems or concerns.  See
+     `http://www.gnu.org/copyleft/'.
+
+     Each version of the License is given a distinguishing version
+     number.  If the Document specifies that a particular numbered
+     version of this License "or any later version" applies to it, you
+     have the option of following the terms and conditions either of
+     that specified version or of any later version that has been
+     published (not as a draft) by the Free Software Foundation.  If
+     the Document does not specify a version number of this License,
+     you may choose any version ever published (not as a draft) by the
+     Free Software Foundation.  If the Document specifies that a proxy
+     can decide which future versions of this License can be used, that
+     proxy's public statement of acceptance of a version permanently
+     authorizes you to choose that version for the Document.
+
+ 11. RELICENSING
+
+     "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
+     World Wide Web server that publishes copyrightable works and also
+     provides prominent facilities for anybody to edit those works.  A
+     public wiki that anybody can edit is an example of such a server.
+     A "Massive Multiauthor Collaboration" (or "MMC") contained in the
+     site means any set of copyrightable works thus published on the MMC
+     site.
+
+     "CC-BY-SA" means the Creative Commons Attribution-Share Alike 3.0
+     license published by Creative Commons Corporation, a not-for-profit
+     corporation with a principal place of business in San Francisco,
+     California, as well as future copyleft versions of that license
+     published by that same organization.
+
+     "Incorporate" means to publish or republish a Document, in whole or
+     in part, as part of another Document.
+
+     An MMC is "eligible for relicensing" if it is licensed under this
+     License, and if all works that were first published under this
+     License somewhere other than this MMC, and subsequently
+     incorporated in whole or in part into the MMC, (1) had no cover
+     texts or invariant sections, and (2) were thus incorporated prior
+     to November 1, 2008.
+
+     The operator of an MMC Site may republish an MMC contained in the
+     site under CC-BY-SA on the same site at any time before August 1,
+     2009, provided the MMC is eligible for relicensing.
+
+
+ADDENDUM: How to use this License for your documents
+====================================================
+
+To use this License in a document you have written, include a copy of
+the License in the document and put the following copyright and license
+notices just after the title page:
+
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.3
+       or any later version published by the Free Software Foundation;
+       with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+       Texts.  A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
+
+   If you have Invariant Sections, Front-Cover Texts and Back-Cover
+Texts, replace the "with...Texts." line with this:
+
+         with the Invariant Sections being LIST THEIR TITLES, with
+         the Front-Cover Texts being LIST, and with the Back-Cover Texts
+         being LIST.
+
+   If you have Invariant Sections without Cover Texts, or some other
+combination of the three, merge those two alternatives to suit the
+situation.
+
+   If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License, to
+permit their use in free software.
+
+
+File: qi.info,  Node: Index,  Prev: GNU Free Documentation License,  Up: Top
+
+Index
+*****
+
+ [index ]
+* Menu:
+
+* examine packages:                      Examine packages.    (line   6)
+* exit codes:                            Exit status.         (line   6)
+* help actions:                          Invocation.          (line 172)
+* introduction:                          Introduction.        (line   6)
+* invocation:                            Invocation.          (line   6)
+* package installation:                  Packages.            (line  55)
+* package removal:                       Packages.            (line 129)
+* packages:                              Packages.            (line   6)
+* the .order files:                      The .order files.    (line   6)
+* the qirc file:                         The qirc file.       (line   6)
+
+
+
+Tag Table:
+Node: Top780
+Node: Introduction1507
+Node: Invocation3108
+Node: The qirc file6743
+Node: Packages7627
+Node: Examine packages15559
+Node: The .order files16578
+Node: Exit status16741
+Node: GNU Free Documentation License18534
+Node: Index43695
+
+End Tag Table
+
+
+Local Variables:
+coding: iso-8859-1
+End:

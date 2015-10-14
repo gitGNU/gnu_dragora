@@ -1,0 +1,127 @@
+#! /bin/bash
+#  This program is part of the Qi package manager
+#
+#  Copyright (C) 2014, 2015  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# EXIT STATUS
+# 0   = Successful completion
+# 1   = Minor common errors (e.g: help usage, support not available)
+# 4   = File empty, not regular, or expected
+# 5   = Empty or not defined variable
+
+# Override locale settings
+export LC_ALL=C
+
+# Functions
+show_help() {
+  printf '%s\n' \
+   "Usage: qi order [options] .order(s)"             \
+   "Resolves the build order through .order files."  \
+   ""                                                \
+   "Order command Options:"                          \
+   "  -h          display this help and exit"        \
+   "  -d          show dependencies of each recipe"  \
+   ""
+}
+
+# Handle command-line options
+while getopts ":hd" option ; do
+  case "$option" in
+    (d)
+      show_depends=show_depends
+      ;;
+    (h)
+      show_help
+      exit 0
+      ;;
+    \?)
+      printf '%s\n' \
+       "qi: order: illegal option -- '-${OPTARG}'" \
+       "Usage: qi order [-hd] [order ...]" 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
+# If there are no arguments, one order is required
+if (( $# == 0 )) ; then
+  printf '%s\n' \
+   "qi: order: You must specify at least one order file." \
+   "Try 'qi order -h' for more information." 1>&2
+  exit 4
+fi
+
+# Main loop
+for file in "$@" ; do
+  if [[ ! -f $file ]] ; then
+    echo "qi: order: File '${file}' not found or not regular." 1>&2
+    CODE=4
+    break;
+  fi
+
+  # Check file extension
+  if [[ ${file##*.} != order ]] ; then
+    echo "qi: order: File '${file}' does not end in .order" 1>&2
+    CODE=4
+    break;
+  fi
+
+  # Get a clean list of the file while prints its content in reverse order,
+  # lines containing: colons, comments, parentheses, end of line, and blank
+  # lines, are removed.  The parentheses are used to insert a reference.
+  # The last `awk' in the pipe, removes nonconsecutive lines, duplicate.
+  names=(
+    $(awk '{ gsub( /:|^#(.*)$|\([^)]*)|^$/,"" );
+       for( i=NF; i > 0; i-- ) print $i }' "$file" | awk '!s[$0]++')
+  )
+
+  # Test to validate the content
+  if (( ${#names[@]} == 0 )) ; then
+    echo "qi: order: No items to order (empty).  I can't continue." 1>&2
+    CODE=5
+    break 2;		# Break the two loops.
+  fi
+
+  # Prevent pathname expansion
+  set -o noglob ; unset IFS
+
+  if [[ $show_depends = show_depends ]] ; then
+    for recipe in "${names[@]}" ; do
+      if [[ ! -f $recipe ]] ; then
+        echo "qi: order: Recipe '${recipe}' not found or not regular." 1>&2
+        CODE=4
+        break 2;	# Break the two loops.
+      fi
+      source "$recipe"
+
+      if (( ${#depends[@]} > 0 )) ; then
+        printf '%s\n' "${depends[@]}"
+      fi
+      printf '%s\n' "$recipe"
+    done
+    unset recipe depends
+
+    CODE=0
+    continue;
+  fi
+
+  # Print ordered list
+  printf '%s\n' "${names[@]}"
+done
+
+exit $CODE
+

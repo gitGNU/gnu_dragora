@@ -1,0 +1,25 @@
+
+program=clzip
+version=1.7
+release=1
+
+tarname=${program}-${version}.tar.gz
+
+# Parallel jobs for the compiler
+jobs=1
+
+fetch=(
+  http://download.savannah.gnu.org/releases/lzip/clzip/$tarname
+)
+
+build() {
+  set -o errexit;	# Exit immediately on any error.
+
+  cd "$srcdir"
+
+  ./configure CFLAGS="$CFLAGS"
+
+  make -j${jobs}
+  make -j${jobs} install DESTDIR="$destdir"
+}
+

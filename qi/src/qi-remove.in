@@ -1,0 +1,258 @@
+#! /bin/bash
+#  This program is part of the Qi package manager
+#
+#  Copyright (C) 2015  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# EXIT STATUS
+# 0   = Successful completion
+# 1   = Minor common errors (e.g: help usage, support not available)
+# 2   = Command execution error
+# 4   = File empty, not regular, or expected
+# 7   = Insufficient permissions of reading
+
+# Override locale settings
+export LC_ALL=C
+
+# Functions
+show_help() {
+  printf '%s\n' \
+   "Usage: qi remove [options] package(s)"                                 \
+   "Removes packages of the system."                                       \
+   ""                                                                      \
+   "Remove command options:"                                               \
+   "  -h          display this help and exit"                              \
+   "  -N          don't read runtime configuration file"                   \
+   "  -P          package installation tree"                               \
+   "  -T          target directory to unlink"                              \
+   "  -k          keep (don't delete) the package directory"               \
+   "  -p          prune conflicts"                                         \
+   "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
+   ""
+}
+
+# A function to reflect the base name
+_basename() { local name="${1##*/}" ; printf %s "${name%$2}"; }
+
+# Ignore some signals during the removal
+isignal() {
+  trap "" HUP INT
+  eval_cmd "$@"
+  trap - HUP INT
+}
+
+# Directory of functions
+readonly fndir="${LIBEXECDIR}/functions"
+
+# Load (externally) internal functions
+source "${fndir}"/config   || exit 1
+source "${fndir}"/helpers  || exit 1
+
+# Default variable values
+rcfile=rcfile
+packagedir=/tmp/pruebas/usr/packages
+targetdir=/tmp/pruebas
+keepdir=nokeepdir
+prune_conflicts=no_prune_conflicts
+verbose=-v
+
+# Handle command-line options.
+#
+# An indexed array is created when an option is set.  It helps to the
+# command line in order to take precedence over the config file
+
+while getopts ":hNkpvV P:T:" option ; do
+  case "$option" in
+    (N)
+      rcfile=no_rcfile
+      ;;
+    (P)
+      packagedir="$OPTARG"
+      cmdLineSets+=( packagedir )
+      ;;
+    (T)
+      targetdir="$OPTARG"
+      cmdLineSets+=( targetdir )
+      ;;
+    (k)
+      keepdir=keepdir
+      ;;
+    (p)
+      prune_conflicts=prune_conflicts
+      ;;
+    (v)
+      verbose=-v
+      ;;
+    (V)
+      verbose=-V
+      ;;
+    (h)
+      show_help
+      exit 0
+      ;;
+     :)
+      quit 1 \
+       "The option '-${OPTARG}' requires an argument" \
+       "Usage: qi remove [-hNkpvV] [-P <dir>] [-T <dir>] package(s)"
+      ;;
+    \?)
+      quit 1 \
+       "qi: remove: illegal option -- '-${OPTARG}'" \
+       "Usage: qi remove [-hNkpvV] [-P <dir>] [-T <dir>] package(s)"
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
+# If there are no arguments, one package name is required
+if (( $# == 0 )) ; then
+  quit 4 \
+   "\nqi: remove: You must specify at least one package name." \
+   "Try 'qi remove -h' for more information."
+fi
+
+# Sanity check: graft's availability
+if ! type -P graft > /dev/null ; then
+  quit 1 "\"qi remove\" cannot operate without graft(1).  Please check your PATH."
+fi
+
+# Read configuration file
+if [[ $rcfile = rcfile ]] ; then
+  # To mark some variables, redefinitions is not allowed in the config
+  readonly keepdir prune_conflicts verbose
+
+  # Check existence, from where to read
+  if [[ -e ~/.qirc ]] ; then
+    configFrom="~/.qirc"		# $HOME.
+  elif [[ -e @SYSCONFDIR@/qirc ]] ; then
+    configFrom="@SYSCONFDIR@/qirc"	# System-wide.
+  fi
+
+  # Check file integrity, content
+  if [[ -f $configFrom && -s $configFrom ]] ; then
+    echo "Processing '${configFrom}' ..."
+    readConfig < "$configFrom"
+  else
+    warn "WARNING: ${configFrom}: File empty or not regular."
+  fi
+fi
+
+# Unset from memory unnecessary variables, arrays, functions
+unset rcfile configFrom cmdLineSets readConfig
+
+# Set default mask
+umask 022
+
+# Set default graft options for the user or for the super-user
+graft_options="-u -D -l ${packagedir}/graft-log"
+if (( $UID == 0 )) ; then
+  graft_options="-l ${packagedir}/graft-log"
+fi
+
+# Save the arguments in an array, getting the base name
+# and stripping package extension
+pkgList=( $(_basename "$@" .tlz) )
+
+# The purpose here is to iterate over the package names
+# in order to check its availability.  If the given name
+# does not exist, we will try to look by its long name,
+# expanding it.  Offering the possibility to choose which
+# package to remove.
+for name in "${pkgList[@]}" ; do
+
+  # Check the availability of the package looking for a match in the
+  # database.  Trying to find the package for its long name, like
+  # "name-version-arch+build"
+  if [[ ! -e ${packagedir}/$name ]] ; then
+    for package in ""${packagedir}/${name}*"" ; do
+      [[ -d $package ]] || continue;
+      package="${package##*/}"
+      if printf %s "$package" | grep -qwo "$name" ; then
+        fullList+=( $package )
+      fi
+    done
+    unset package
+
+    # No packages to select, use the last one
+    if (( ${#fullList[@]} == 1 )) ; then
+      pkgList=( ${fullList[*]} )
+      break;
+    fi
+
+    # If more than one, give the possibility to choose the package(s)
+    if (( ${#fullList[@]} > 1 )) ; then
+      printf '%s\n' "" \
+       "The following package names were found according to your input:" \
+       ""
+      PS3="Pick a number, press <ENTER> to continue, or 'c' to confirm: "
+      select item in "${fullList[@]}" All ; do
+        if [[ $item ]] ; then
+          if [[ $item = All ]] ; then
+            pkgList=( ${fullList[*]} )
+            break 2;	# Break the two loops.
+          fi
+          newList+=( $item )
+          printf '%s\n' "Your selection: ${newList[*]}"
+        elif [[ $REPLY =~ [cC] ]] ; then
+          break;
+        else
+          printf '%s\n' "Invalid selection."
+        fi
+      done
+
+      # Assign selected packages to the package list
+      if (( ${#newList[@]} )) ; then
+        pkgList=( ${newList[*]} )
+      else
+        quit 1 "qi: remove: 0 packages have been selected."
+      fi
+    fi
+  fi
+done
+unset name fullList item PS3 newList
+
+# Iterate over pkgList to remove the packages
+for name in "${pkgList[@]}" ; do
+  if [[ ! -e ${packagedir}/$name ]] ; then
+    quit 4 "qi: remove: No such package \`${packagedir}/${name}'."
+  fi
+  if [[ ! -r ${packagedir}/$name ]] ; then
+    quit 7 \
+     "\nqi: remove: You ('${USER}') don't have enough permissions to read \`${packagedir}/${name}'." \
+     "The package cannot be removed."
+  fi
+  if [[ ! -r $targetdir ]] ; then
+    quit 7 \
+     "\nqi: remove: You ('${USER}') don't have enough permissions to read \`${targetdir}'." \
+     "The package cannot be removed."
+  fi
+
+  # Remove symlinks and possible conflicts
+  echo "==> Removing links of '${name}' ..."
+  if [[ $prune_conflicts = prune_conflicts ]] ; then
+    isignal "graft -p -D $graft_options $verbose -t "$targetdir" "${packagedir}/$name""
+  fi
+
+  isignal "graft -d $graft_options $verbose -t "$targetdir" "${packagedir}/$name""
+
+  # Delete package directory
+  if [[ $keepdir != keepdir ]] ; then
+    echo "<== Deleting package directory \`${packagedir}/${name}' ..."
+    rmIfDir "${packagedir}/$name"
+  fi
+done
+
+echo "${#pkgList[@]} package(s) removed = ${pkgList[*]}"
+

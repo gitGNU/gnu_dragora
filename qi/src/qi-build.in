@@ -1,0 +1,461 @@
+#! /bin/bash
+#  This program is part of the Qi package manager
+#
+#  Copyright (C) 2015  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# EXIT STATUS
+# 0   = Successful completion
+# 1   = Minor common errors (e.g: help usage, support not available)
+# 2   = Command execution error
+# 3   = Integrity check error for compressed files
+# 4   = File empty, not regular, or expected
+# 5   = Empty or not defined variable
+# 10  = Network manager error
+
+# Override locale settings
+export LC_ALL=C
+
+# Functions
+show_help() {
+  printf '%s\n' \
+   "Usage: qi build [options] recipe(s)"                                 \
+   "Build packages using recipe files."                                  \
+   ""                                                                    \
+   "When recipe is -, read standard input."                              \
+   ""                                                                    \
+   "Build command options:"                                              \
+   "  -h          display this help and exit"                            \
+   "  -N          don't read runtime configuration file"                 \
+   "  -S          don't strip unneeded or debugging symbols from files"  \
+   "  -k          keep (don't delete) srcdir and destdir"                \
+   "  -n          don't create a .tlz package"                           \
+   "  -o          where the produced packages are written"               \
+   "  -t          temporary directory for compilation"                   \
+   "  -w          working directory tree for archive, patches, recipes"  \
+   "  -z          where to find the compressed sources"                  \
+   "  -a          architecture to use"                                   \
+   "  -i          increment release number when a package is produced"   \
+   "  -j          parallel jobs for the compiler"                        \
+   ""
+}
+
+# Directory of functions
+readonly fndir="${LIBEXECDIR}/functions"
+
+# Load (externally) internal functions
+source "${fndir}"/config   || exit 1
+source "${fndir}"/helpers  || exit 1
+
+unpack() {
+  local file tool_verify tool_extract
+
+  for file in "${tardir}/${@##*/}" ; do
+    if [[ ! -f $file ]] ; then
+      quit 2 "qi: build: Cannot unpack '${file}': File not found or not regular."
+    fi
+
+    # Assign an appropriate tool for options according to the file extension
+    case "$file" in
+      *.tar.*|*.tar)
+        tool_verify="tar -tf"
+        tool_extract="tar -xf"
+        ;;
+      *.zip|*.ZIP)
+        tool_verify="unzip -t"
+        tool_extract=unzip
+        ;;
+      *)
+        quit 1 "qi: build: ${file}: Unsupported file format, extension '${file#*.}'.";
+    esac
+
+    echo "==> Checking SHA1 sum ..."
+    if [[ -f ${file}.sha1sum ]] ; then
+      eval_cmd "( cd "$tardir" && sha1sum -c "${file}.sha1sum" )"
+    fi
+
+    echo "==> Checking integrity of '${file}' ..."
+    eval_cmd "$tool_verify "$file" > /dev/null" 3
+
+    # Generate a check sum or update it according to the timestamp of the source
+    if [[ ! -e "${file}.sha1sum" || $file -nt ${file}.sha1sum ]] ; then
+      echo "==> SHA1: Creating or updating '${file}.sha1sum' ..."
+      eval_cmd "( cd "$tardir" && sha1sum "$file" > "${file}.sha1sum" )"
+    fi
+
+    echo "==> Unpacking source '${file}' ..."
+    eval_cmd "$tool_extract "$file"" 3
+  done
+}
+
+# Default variable values
+rcfile=rcfile
+strip=strip
+keepdir=nokeepdir
+nopkg=no_nopkg
+outdir=/var/cache/qi/packages
+tmpdir=/tmp/sources
+worktree=/usr/src/qi
+tardir=${worktree}/sources
+arch="$(uname -m)"
+increment_release=noincrement_release
+jobs=1
+netget="wget --continue --wait=1 --tries=3 --no-check-certificate --passive-ftp"
+rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-changes"
+
+# Handle command-line options.
+#
+# An indexed array is created when an option is set.  It helps to the
+# command line in order to take precedence over the config file
+
+while getopts ":hNSkni o:t:w:z:a:j:" option ; do
+  case "$option" in
+    (k)
+      keepdir=keepdir
+      ;;
+    (N)
+      rcfile=no_rcfile
+      ;;
+    (S)
+      strip=nostrip
+      cmdLineSets+=( strip )
+      ;;
+    (n)
+      nopkg=nopkg
+      ;;
+    (o)
+      outdir="$OPTARG"
+      cmdLineSets+=( outdir )
+      ;;
+    (t)
+      tmpdir="$OPTARG"
+      cmdLineSets+=( tmpdir )
+      ;;
+    (w)
+      worktree="$OPTARG"
+      cmdLineSets+=( worktree )
+      ;;
+    (z)
+      tardir="$OPTARG"
+      cmdLineSets+=( tardir )
+      ;;
+    (a)
+      arch="$OPTARG"
+      cmdLineSets+=( arch )
+      ;;
+    (i)
+      increment_release=increment_release
+      ;;
+    (j)
+      jobs="$OPTARG"
+      cmdLineSets+=( jobs )
+      ;;
+    (h)
+      show_help
+      exit 0
+      ;;
+     :)
+      quit 1 \
+       "The option '-${OPTARG}' requires an argument" \
+       "Usage: qi build [-hNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+      ;;
+    \?)
+      quit 1 \
+       "qi: build: illegal option -- '-${OPTARG}'" \
+       "Usage: qi build [-hNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
+# If there are no arguments, one recipe is required
+if (( $# == 0 )) ; then
+  quit 4 \
+   "\nqi: build: You must specify at least one recipe file." \
+   "Try 'qi build -h' for more information."
+fi
+
+# To mark some variables, redefinitions
+# is not allowed in the config, recipes
+readonly nopkg keepdir increment_release
+
+# Read configuration file
+if [[ $rcfile = rcfile ]] ; then
+  # Check existence, from where to read
+  if [[ -e ~/.qirc ]] ; then
+    configFrom="~/.qirc"		# $HOME.
+  elif [[ -e @SYSCONFDIR@/qirc ]] ; then
+    configFrom="@SYSCONFDIR@/qirc"	# System-wide.
+  fi
+
+  # Check file integrity, content
+  if [[ -f $configFrom && -s $configFrom ]] ; then
+    echo "Processing '${configFrom}' ..."
+    readConfig < "$configFrom"
+  else
+    warn "WARNING: ${configFrom}: File empty or not regular."
+  fi
+fi
+
+# Unset from memory unnecessary variables, arrays, functions
+unset rcfile configFrom cmdLineSets readConfig
+
+# Set default mask
+umask 022
+
+# Create required directories (if needed)
+mkdirIfNot "${worktree}"/archive \
+           "${worktree}"/patches \
+           "${worktree}"/recipes \
+           "$tardir"
+
+# Read from the standard input if '-' was given
+if [[ $1 = - ]] ; then
+  set --	# Unset positional parameters, setting '#' to zero.
+  while IFS="" read -r filename ; do
+    set -- "$@" "$filename"
+  done
+fi
+
+# We prepare to export specific variables that will serve to restore
+# their values when one stops processing a recipe and place is given
+# to the following one
+export arch jobs strip
+
+# Create a Private Randomized Directory
+PRD="qi-build-${USER}-$RANDOM$$"
+
+eval_cmd "mkdir -p -m 700 "${tmpdir}"/$PRD"
+
+# To remove directory when it leaves
+trap 'eval_cmd "rm -rf "${tmpdir}"/$PRD"' EXIT
+
+# Save all exported variables
+export -p > "${tmpdir}"/${PRD}/default_env$$
+
+# Mark some variables as read only.
+#
+# This allows the use without modification on the recipes
+readonly outdir tmpdir worktree tardir netget rsync PRD
+
+# Main loop
+for recipe ; do
+  if [[ ! -f $recipe ]] ; then
+    quit 4 "qi: build: File '${recipe}' not found or not regular."
+  fi
+
+  # Save the current working directory.  We will go back here later.
+  CWD="$PWD"
+
+  echo "==> Loading \"${recipe}\" from \`${CWD}' ..."
+
+  # Mark all the variables for export
+  set -o allexport
+
+  # Include recipe
+  source "$recipe"
+
+  # Sanity check: checking required variables
+  if [[ -z $program ]] ; then
+    quit 5 "qi: build: 'program' is not defined."
+  fi
+  if [[ -z $version ]] ; then
+    quit 5 "qi: build: 'version' is not defined."
+  fi
+  if [[ -z $release ]] ; then
+    quit 5 "qi: build: 'release' is not defined."
+  fi
+  if [[ $increment_release = increment_release ]] ; then
+    release="$((release + 1))"
+  fi
+  if [[ -z $tardir ]] ; then
+    quit 5 "qi: build: 'tardir' is not defined."
+  fi
+  # Allow the dot as the current working directory
+  if [[ $tardir = . ]] ; then
+    tardir="$CWD"
+  fi
+  if [[ -z $tarname ]] ; then
+    quit 5 "qi: build: 'tarname' is not defined."
+  fi
+
+  shopt -s extglob
+  if [[ $jobs != +([0-9]) ]] ; then
+    quit 5 "qi: build: '$jobs' needs to be a valid number."
+  fi
+  shopt -u extglob	# Deactivate shell option.
+
+  # Check if build() is present
+  if [[ $(command -v build) != build ]] ; then
+    quit 1 "qi: build: The main function build() is not present."
+  fi
+
+  # Use or assign default values for variables
+  srcdir="${srcdir:-$program-$version}"
+  destdir="${destdir:-${tmpdir}/package-$program}"
+  arch="${arch:=$(uname -m)}"
+  case "$arch" in
+    x86_64)
+      export libSuffix=64
+      ;;
+  esac
+  pkgname=${pkgname:-$program-$version-$arch+$release}
+  full_tarname="${tardir}/$tarname"
+
+  echo "==> Preparing temporary directories ..."
+  rmIfDir "${tmpdir}/${srcdir}" "$destdir"
+
+  echo "==> Creating required directories for the package ..."
+  mkdirIfNot "$outdir" "${destdir}/var/lib/qi/recipes"
+
+  # Fetch remote sources
+  echo "==> Fetching remote source(s) if they do not exist locally ..."
+  if (( ${#fetch[@]} > 0 )) ; then
+    for address in "${fetch[@]}" ; do
+      file_name="${address##*/}"
+
+      if [[ ! -r ${tardir}/$file_name ]] ; then
+        warn "Source file '${file_name}' not found in \`${tardir}'."
+        echo "==> Obtaining source from ${address%/*} ..."
+        case "$address" in
+          rsync://*)
+            eval_cmd "cd "$tardir""
+            eval_cmd "$rsync "$address"" 10
+            ;;
+          *://*)
+            eval_cmd "cd "$tardir""
+            eval_cmd "$netget "$address"" 10
+            ;;
+          *)
+            quit 1 "qi: build: Source file '${file_name}' cannot be obtained, protocol not supported.";
+        esac
+
+        # Update timestamp and SHA1 sum
+        eval_cmd \
+         "touch "$file_name" && sha1sum "$file_name" > "${file_name}.sha1sum""
+      fi
+    done
+    unset address file_name fetch
+  else
+    warn "qi: build: WARNING: Array 'fetch' empty.  No source(s) will be downloaded."
+  fi
+
+  # Decompress main source in tmpdir
+  eval_cmd "cd "$tmpdir" && unpack "$full_tarname""
+
+  # Set sane ownerships
+  if (( $UID == 0 )) ; then
+    eval_cmd "chown -R 0:0 "${tmpdir}/${srcdir}""
+  fi
+  # Set sane permissions
+  eval_cmd "chmod -R u+w,go-w,a+rX-s "${tmpdir}/${srcdir}""
+
+  # Run the build function
+  echo "==> Running build() ..."
+  build
+
+  # If has been declared, deactivate the errexit flag for these recipes
+  set +o errexit
+
+  # If for some reason destdir is empty, the package won't be created
+  if rmdir "$destdir" 2> /dev/null ; then
+    warn "qi: build: WARNING: ${pkgname}.tlz: Won't be created, 'destdir' is empty."
+    nopkg=nopkg
+    strip=nostrip
+  fi
+
+  # Strip binaries and libraries
+  if [[ $strip != nostrip && $arch != noarch ]] ; then
+    echo "==> Stripping binaries and libraries ..."
+
+    shopt -s globstar	# To find all the files recursively
+    for element in "${destdir}"/** ; do
+      if [[ ! -e $element ]] ; then
+        continue;
+      fi
+      if [[ -f $element && -s $element ]] ; then
+        fileList+=( $element )
+      fi
+    done
+
+    # Iterate over the fileList
+    if (( ${#fileList[@]} > 0 )) ; then
+      for element in "${fileList[@]}" ; do
+        string="$(file -- "$element")"
+        if [[ $string =~ ELF && $string =~ executable|'shared object'|relocatable ]] ; then
+          strip --strip-unneeded "$element"
+        fi
+        if [[ $string =~ 'current ar archive' ]] ; then
+          strip --strip-debug "$element"
+        fi
+      done
+    else
+      warn "qi: build: WARNING: No elements or symbols found to strip."
+    fi
+    shopt -u globstar	# Deactivate shell option.
+    unset element string fileList
+  fi
+
+  # Package creation
+  if [[ $nopkg != nopkg ]] ; then
+    echo "==> Creating package '${pkgname}.tlz' in \`${outdir}' ..."
+
+    # Recipe edition when release is incremented
+    if [[ $increment_release = increment_release ]] ; then
+      eval_cmd "ed -s "$recipe"" <<< ",s/^\(release\)=.*/\1=${release}/"$'\nw'
+    fi
+
+    # To add recipe to the database
+    eval_cmd "( cd "$CWD" && cp -p "$recipe" "${destdir}/var/lib/qi/recipes/" )"
+
+    # Make the package
+    eval_cmd \
+     "cd "$destdir" && tar -c ./* | lzip -9v > "${outdir}/${pkgname}.tlz""
+
+    # Create the package list
+    echo "==> Saving full package name as /var/tmp/pkglist ..."
+    eval_cmd "echo \"${outdir}/${pkgname}.tlz\" > /var/tmp/pkglist"
+  fi
+
+  # Save variables of the current recipe and possible exported functions
+  eval_cmd "cd "${tmpdir}"/$PRD && export -p > recipe_env$$"
+
+  # Prints the lines only in recipe_env but not in default_env, extracting
+  # the name of the variable and function for easy deactivation
+  eval_cmd \
+   "awk 'NR==FNR { r[\$0]; next } !(\$0 in r) { v=\$3; sub(/=.*/, \"\", v); print v }' default_env$$ recipe_env$$ > vars$$"
+
+  # Deactivate exportation
+  set +o allexport
+
+  # Back to the current working directory
+  eval_cmd "cd "$CWD""
+
+  # Clean temporary directories
+  if [[ $keepdir != keepdir ]] ; then
+    echo "==> Cleaning up temporary directories ..."
+    rmIfDir "${tmpdir}/${srcdir}" "$destdir"
+  fi
+
+  # Restore default variables for the following recipe
+  while read -r name ; do
+    unset $name
+  done < "${tmpdir}"/${PRD}/vars$$
+
+  source "${tmpdir}/${PRD}/default_env$$"
+
+  echo "<== Done [ ${CWD}/$recipe ]"
+done
+

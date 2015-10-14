@@ -1,0 +1,34 @@
+# Functions related with the config file.
+
+# Function: readConfig
+# Function to read and export variables in a secure way.
+#
+readConfig() {
+  local IFS='=' variable value array
+
+  while read -r variable value ; do
+    case "$variable" in
+      \#*|"")	# Ignore commentary or blank lines.
+        ;;
+      *)
+        # Iterate over the cmdLineSets array to see if the options
+        # set on the command line are defined in the configuration
+        # file, if so, the value of the configuration file is
+        # ignored (the command-line has priority)
+        if (( ${#cmdLineSets[@]} > 0 )) ; then
+          for array in "${cmdLineSets[@]}" ; do
+            if [[ $array = $variable ]] ; then
+              continue 2;	# Continue from the beginning.
+            fi
+          done
+        fi
+
+        # Evaluate arguments.
+        #
+        # Export variable escaping its value avoiding code execution
+        eval "export "$variable=\$value"" 2> /dev/null
+        ;;
+    esac
+  done
+}
+

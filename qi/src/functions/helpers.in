@@ -1,0 +1,79 @@
+# Functions as helpers for the internal programs or to use in the recipes.
+
+# Function: warn
+# Print warning messages to stderr, allows escape sequences.
+#
+# Usage: warn [message ...]
+#
+warn() {
+  printf '%b\n' "$@" 1>&2
+}
+
+# Function: quit
+# Quit (die) with either the exit status of a command, or a given exit code.
+#
+# Usage: quit [exit code] [message ...]
+#
+quit() {
+  local status="$?"
+  case "$1" in
+    [0-9])
+      status="$1"
+      shift 1
+      ;;
+  esac
+  warn "$@"
+  exit "$status"
+}
+
+# Function: eval_cmd
+# Evaluates the execution of a command, returns 2 or a given exit code.
+#
+# Usage: eval_cmd <arguments> [exit code]
+#
+eval_cmd() {
+  local command="$1"
+  shift 1
+
+  eval "$command" || {
+    printf '%s\n' "" \
+     "Error executing '$command'." \
+     "Return status = $?" 1>&2
+    exit "${1:-2}"
+  }
+}
+# Function: rmIfDir
+# Deletes directories if they exist before
+#
+# Usage: rmIfDir [directory_name ...]
+#
+rmIfDir() {
+  local directory
+
+  for directory in "$@" ; do
+    if [[ -d $directory ]] ; then
+      echo "Deleting $directory ..."
+      eval_cmd "rm -rf "$directory""
+    fi
+  done
+}
+
+# Function: mkdirIfNot
+# Creates directories i
+#
+# Usage: mkdirIfNot [directory_name ...]
+#
+mkdirIfNot() {
+  local directory
+
+  for directory in "$@" ; do
+    if [[ ! -d $directory ]] ; then
+      echo "Creating $directory ..."
+      eval_cmd "mkdir -p "$directory""
+    fi
+  done
+}
+
+# Mark functions as read-only (unmodifiable)
+readonly -f warn quit eval_cmd rmIfDir mkdirIfNot
+

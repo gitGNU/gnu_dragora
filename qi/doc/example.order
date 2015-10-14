@@ -1,0 +1,31 @@
+# HOW TO READ THIS FILE:
+#
+# This file is used by qi(1) to know the build order in
+# which the dependencies are listed.
+#
+# If 'a' depends on 'b' and 'c', and 'c' depends on 'b' as well,
+# the file might look like:
+#
+#   a: c b
+#   b:
+#   c: b
+#
+# Each letter represents a recipe name, complete dependencies for
+# the first recipe name are listed in descending order, which is
+# printed from right to left, and removed from left to right:
+#
+#   b
+#   c
+#   a
+#
+# Commented lines starting with a '#' are allowed.  Blank lines,
+# colons, parentheses, and end of line are removed.
+#
+# For more information, type: info qi 'order file'
+#
+
+# This is a commentary line
+a: c b
+b:
+c: b
+
