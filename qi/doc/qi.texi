@@ -8,7 +8,7 @@
 @comment %**end of header
 
 @set VERSION 1.0-pre1
-@set UPDATED 14 Ago 2015
+@set UPDATED 24 October 2015
 
 @copying
 This manual is for Qi (version @value{VERSION},
@@ -66,7 +66,7 @@ This manual is for Qi (version @value{VERSION},
 
 @sp 1
 The Qi home page can be found at @uref{http://www.dragora.org}.
-@w{Send bug reports or suggestions to @email{dragora-bug@@nongnu.org}.}
+@w{Send bug reports or suggestions to @email{dragora-devel@@nongnu.org}.}
 
 
 @node Introduction
@@ -77,7 +77,7 @@ Qi is a source builder and a package manager:
 
 It contains a set of tools where the main command is @command{qi}, a wrapping
 guide for the rest of the commands.  It follows the philosophy of the
-simplicity but without adding too many features, such as those that can be
+simplicity without adding too many features, such as those that can be
 found in popular package managers.  Basically it does two things:
 builds packages and manages them.
 
@@ -92,8 +92,8 @@ without losing focus.
 specific instructions to build every source.  As result, a binary
 package is obtained which can be installed, removed, upgraded, or
 inspected in the system.  The software packages produced by Qi have the
-.tlz extension, using tar(1) for packaging and lzip(1) as the only
-compression format in the package redistribution.
+.tlz extension; where, tar(1) is used for packaging, and lzip(1) is used
+as the only compression format in the package redistribution.
 
 The packages are managed thanks to an external tool called graft(1),
 which provides a mechanism for managing multiple packages under a
@@ -134,7 +134,6 @@ Resolves the build order through .order files.
 Build packages using recipe files.
 
 @sp 1
-@noindent
 There are global or common options for the commands, as well as specific to each one.
 
 @sp 1
@@ -255,7 +254,7 @@ Architecture to use.
 
 This option sets @samp{$@{arch@}}.
 
-The default value is obtained via @samp{uname -m}.
+The default value is obtained via uname(1): @samp{uname -m}.
 
 @item -i
 Increment release number when a package is produced.
@@ -287,8 +286,8 @@ If not specified, the default value is the Current Working Directory.
 
 @noindent
 Note: the options specified in the command-line have priority over the
-config file (@file{qirc}).  If there are no options, and if @file{qirc}
-is not present: default (internal) values will be used instead.
+config file: @file{qirc}.  If there are no options, and if @file{qirc}
+is not present, default (internal) values will be used instead.
 
 @section Help Actions
 @cindex help actions
@@ -309,7 +308,7 @@ arguments, please use @samp{qi <command> -h}.
 @cindex the qirc file
 
 @file{qirc} is the configuration file for Qi used at runtime during the
-installation, removal of a package, or when a recipe is built.  This
+installation, removal of a package or when a recipe is built.  This
 file is optional, and it can be useful to define variables and
 configure external tools (such as a download manager) for default use.
 
@@ -629,7 +628,7 @@ purposes:
 @itemize @bullet
 @item This is equivalent to the shell instruction:
 
-@code{( umask 000 ; cd directory && tar -xvf package.tlz )}
+@code{( umask 000 ; cd directory/ && tar -xvf package.tlz )}
 
 The permissions are set to "u=rwx,g=rwx,o=rwx" and the package content
 is decompressed inside a directory.
@@ -644,7 +643,7 @@ is decompressed inside a directory.
 @item A pre-existing directory is required to operate.
 
 @item If you don't provide a different directory name using the -d
-option, the package is decompressed in the current working directory.
+option, the package is decompressed in the Current Working Directory.
 The root directory (/) cannot be used for these purposes.
 @end itemize
 
@@ -735,7 +734,7 @@ installed.
 @end itemize
 
 @item 7
-@strong{Insufficient permissions of reading (removal)}
+@strong{Insufficient permissions of reading (deinstallation)}
 
 No enough permissions to read in @samp{$@{packagedir@}/$@{name@}} or
 @samp{$@{targetdir@}}.

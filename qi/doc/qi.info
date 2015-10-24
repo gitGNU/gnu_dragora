@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre1, 14 Ago 2015), which is a
+This manual is for Qi (version 1.0-pre1, 24 October 2015), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015 Matias A. Fonzo
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre1, 14 Ago 2015).
+This manual is for Qi (version 1.0-pre1, 24 October 2015).
 
 * Menu:
 
@@ -39,7 +39,7 @@ This manual is for Qi (version 1.0-pre1, 14 Ago 2015).
 
 
    The Qi home page can be found at `http://www.dragora.org'.
-Send bug reports or suggestions to <dragora-bug@nongnu.org>.
+Send bug reports or suggestions to <dragora-devel@nongnu.org>.
 
 
 File: qi.info,  Node: Introduction,  Next: Invocation,  Prev: Top,  Up: Top
@@ -51,8 +51,8 @@ Qi is a source builder and a package manager:
 
    It contains a set of tools where the main command is `qi', a wrapping
 guide for the rest of the commands.  It follows the philosophy of the
-simplicity but without adding too many features, such as those that can
-be found in popular package managers.  Basically it does two things:
+simplicity without adding too many features, such as those that can be
+found in popular package managers.  Basically it does two things:
 builds packages and manages them.
 
    The building part can get or retrieve source code from remote sites
@@ -66,8 +66,8 @@ without losing focus.
 specific instructions to build every source.  As result, a binary
 package is obtained which can be installed, removed, upgraded, or
 inspected in the system.  The software packages produced by Qi have the
-.tlz extension, using tar(1) for packaging and lzip(1) as the only
-compression format in the package redistribution.
+.tlz extension; where, tar(1) is used for packaging, and lzip(1) is used
+as the only compression format in the package redistribution.
 
    The packages are managed thanks to an external tool called graft(1),
 which provides a mechanism for managing multiple packages under a
@@ -217,7 +217,7 @@ The following commands are supported by `qi':
 
      This option sets `${arch}'.
 
-     The default value is obtained via `uname -m'.
+     The default value is obtained via uname(1): `uname -m'.
 
 `-i'
      Increment release number when a package is produced.
@@ -242,8 +242,8 @@ The following commands are supported by `qi':
    * All the options can be mixed.
 
 Note: the options specified in the command-line have priority over the
-config file (`qirc').  If there are no options, and if `qirc' is not
-present: default (internal) values will be used instead.
+config file: `qirc'.  If there are no options, and if `qirc' is not
+present, default (internal) values will be used instead.
 
 2.1 Help Actions
 ================
@@ -264,7 +264,7 @@ File: qi.info,  Node: The qirc file,  Next: Packages,  Prev: Invocation,  Up: To
 ***************
 
 `qirc' is the configuration file for Qi used at runtime during the
-installation, removal of a package, or when a recipe is built.  This
+installation, removal of a package or when a recipe is built.  This
 file is optional, and it can be useful to define variables and
 configure external tools (such as a download manager) for default use.
 
@@ -529,7 +529,7 @@ _Usage:_ qi install [-h] [-d <dir>] package.tlz
 
    * This is equivalent to the shell instruction:
 
-     `( umask 000 ; cd directory && tar -xvf package.tlz )'
+     `( umask 000 ; cd directory/ && tar -xvf package.tlz )'
 
      The permissions are set to "u=rwx,g=rwx,o=rwx" and the package
      content is decompressed inside a directory.
@@ -541,8 +541,8 @@ _Usage:_ qi install [-h] [-d <dir>] package.tlz
    * A pre-existing directory is required to operate.
 
    * If you don't provide a different directory name using the -d
-     option, the package is decompressed in the current working
-     directory.  The root directory (/) cannot be used for these
+     option, the package is decompressed in the Current Working
+     Directory.  The root directory (/) cannot be used for these
      purposes.
 
 If you make some changes to the directory where the package is
@@ -624,7 +624,7 @@ All the conditions of exit codes are described in this chapter:
           package is installed.
 
 `7'
-     *Insufficient permissions of reading (removal)*
+     *Insufficient permissions of reading (deinstallation)*
 
      No enough permissions to read in `${packagedir}/${name}' or
      `${targetdir}'.
@@ -1149,16 +1149,16 @@ Index
 
 
 Tag Table:
-Node: Top780
-Node: Introduction1507
-Node: Invocation3108
-Node: The qirc file6743
-Node: Packages7627
-Node: Examine packages15559
-Node: The .order files16578
-Node: Exit status16741
-Node: GNU Free Documentation License18534
-Node: Index43695
+Node: Top784
+Node: Introduction1517
+Node: Invocation3132
+Node: The qirc file6776
+Node: Packages7659
+Node: Examine packages15591
+Node: The .order files16611
+Node: Exit status16774
+Node: GNU Free Documentation License18574
+Node: Index43735
 
 End Tag Table
 

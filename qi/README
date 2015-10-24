@@ -14,8 +14,8 @@ Qi is a source builder and a package manager:
 
    It contains a set of tools where the main command is `qi', a wrapping
 guide for the rest of the commands.  It follows the philosophy of the
-simplicity but without adding too many features, such as those that can
-be found in popular package managers.  Basically it does two things:
+simplicity without adding too many features, such as those that can be
+found in popular package managers.  Basically it does two things:
 builds packages and manages them.
 
    The building part can get or retrieve source code from remote sites
@@ -29,15 +29,15 @@ without losing focus.
 specific instructions to build every source.  As result, a binary
 package is obtained which can be installed, removed, upgraded, or
 inspected in the system.  The software packages produced by Qi have the
-.tlz extension - using tar(1) for packaging, and lzip(1) as the only
-compression format in the package redistribution.
+.tlz extension; where, tar(1) is used for packaging, and lzip(1) is used
+as the only compression format in the package redistribution.
 
    The packages are managed thanks to an external tool called graft(1),
 which provides a mechanism for managing multiple packages under a
 single directory hierarchy, it was inspired by both Depot (Carnegie
 Mellon University) and Stow (Bob Glickstein).  In this aspect, Qi acts
-as a complement of Graft: it can decompress packages, check them, solve
-conflicts or offer a suitable menu for uninstall them.
+as a complement of Graft: it can work with packages, check them, solve
+conflicts, and more...
 
   2. Installation.
 
@@ -61,5 +61,5 @@ is useful for package distributors:
   3. Contact.
 
   The Qi home page can be found at `http://www.dragora.org'.
-Send bug reports or suggestions to <dragora-bug@nongnu.org>.
+Send bug reports or suggestions to <dragora-devel@nongnu.org>.
 
