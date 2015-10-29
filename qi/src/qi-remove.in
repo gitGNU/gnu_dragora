@@ -63,7 +63,7 @@ source "${fndir}"/helpers  || exit 1
 # Default variable values
 rcfile=rcfile
 packagedir=/usr/packages
-targetdir=/usr
+targetdir=/
 keepdir=nokeepdir
 prune_conflicts=no_prune_conflicts
 verbose=-v

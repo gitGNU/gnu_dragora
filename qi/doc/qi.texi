@@ -8,7 +8,7 @@
 @comment %**end of header
 
 @set VERSION 1.0-pre1
-@set UPDATED 24 October 2015
+@set UPDATED 29 October 2015
 
 @copying
 This manual is for Qi (version @value{VERSION},
@@ -163,7 +163,7 @@ Target directory for linking.
 
 This option sets @samp{$@{targetdir@}}.
 @sp 1
-The default value for @strong{targetdir} is /usr.
+The default value for @strong{targetdir} is /.
 
 @item -p
 Prune conflicts.
@@ -191,7 +191,7 @@ Target directory for unlinking.
 
 This option sets @samp{$@{targetdir@}}.
 @sp 1
-The default value for @strong{targetdir} is /usr.
+The default value for @strong{targetdir} is /.
 
 @item -k
 Keep (don't delete) the package directory.
@@ -554,7 +554,7 @@ This will show:
 @example
 Processing '/etc/qirc' ...
 ==> Removing links of 'xz-5.2.1-x86_64+1' ...
-Uninstalling links from /usr to /usr/packages/xz-5.2.1-x86_64+1
+Uninstalling links from / to /usr/packages/xz-5.2.1-x86_64+1
 Processing   /usr/packages/xz-5.2.1-x86_64+1
 Processing   /usr/packages/xz-5.2.1-x86_64+1/usr
 Processing   /usr/packages/xz-5.2.1-x86_64+1/usr/bin

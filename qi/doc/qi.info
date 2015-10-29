@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre1, 24 October 2015), which is a
+This manual is for Qi (version 1.0-pre1, 29 October 2015), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015 Matias A. Fonzo
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre1, 24 October 2015).
+This manual is for Qi (version 1.0-pre1, 29 October 2015).
 
 * Menu:
 
@@ -131,7 +131,7 @@ The following commands are supported by `qi':
 
      This option sets `${targetdir}'.
 
-     The default value for *targetdir* is /usr.
+     The default value for *targetdir* is /.
 
 `-p'
      Prune conflicts.
@@ -157,7 +157,7 @@ The following commands are supported by `qi':
 
      This option sets `${targetdir}'.
 
-     The default value for *targetdir* is /usr.
+     The default value for *targetdir* is /.
 
 `-k'
      Keep (don't delete) the package directory.
@@ -464,7 +464,7 @@ specified:
 
      Processing '/etc/qirc' ...
      ==> Removing links of 'xz-5.2.1-x86_64+1' ...
-     Uninstalling links from /usr to /usr/packages/xz-5.2.1-x86_64+1
+     Uninstalling links from / to /usr/packages/xz-5.2.1-x86_64+1
      Processing   /usr/packages/xz-5.2.1-x86_64+1
      Processing   /usr/packages/xz-5.2.1-x86_64+1/usr
      Processing   /usr/packages/xz-5.2.1-x86_64+1/usr/bin
@@ -1152,13 +1152,13 @@ Tag Table:
 Node: Top784
 Node: Introduction1517
 Node: Invocation3132
-Node: The qirc file6776
-Node: Packages7659
-Node: Examine packages15591
-Node: The .order files16611
-Node: Exit status16774
-Node: GNU Free Documentation License18574
-Node: Index43735
+Node: The qirc file6770
+Node: Packages7653
+Node: Examine packages15582
+Node: The .order files16602
+Node: Exit status16765
+Node: GNU Free Documentation License18565
+Node: Index43726
 
 End Tag Table
 
