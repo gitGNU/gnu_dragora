@@ -14,11 +14,10 @@ tar xf "${worktree}"/sources/graft-${version}.tar.lz -C "${tmpdir}"/sources
 # Build instructions
 cd "${tmpdir}"/sources/graft-${version}
 
+# Adjust PACKAGEDIR and TARGETDIR
+patch -Np0 -i "${worktree}"/patches/graft/Makefile.dist-stage1.diff
+
 make -f Makefile.dist || true;
-
-# Add our custom paths to the Makefile generated
-patch -Np0 -i "${worktree}"/patches/graft/graft-Makefile-stage1.diff
-
 make
 
 cat graft > /tools/bin/graft

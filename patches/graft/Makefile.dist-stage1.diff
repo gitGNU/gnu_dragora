@@ -1,5 +1,5 @@
---- Makefile.orig	2015-08-14 19:29:26.000000000 -0300
-+++ Makefile	2015-08-14 21:32:39.000000000 -0300
+--- Makefile.dist.orig	2015-07-11 13:06:16.000000000 -0300
++++ Makefile.dist	2015-10-29 17:18:13.000000000 -0300
 @@ -30,8 +30,8 @@
  # number of ways. See the man page and the documentation in
  # doc/graft.{html,pdf,ps,txt}.
@@ -7,7 +7,7 @@
 -PACKAGEDIR	= /pkgs
 -TARGETDIR	= /pkgs
 +PACKAGEDIR	= /usr/packages
-+TARGETDIR	= /usr
++TARGETDIR	= /
  
  # You should only need to change the value of TOP to reflect the
  # installation directory for graft if it is different from your default
