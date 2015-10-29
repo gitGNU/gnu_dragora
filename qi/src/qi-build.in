@@ -318,7 +318,7 @@ for recipe ; do
   rmIfDir "${tmpdir}/${srcdir}" "$destdir"
 
   echo "==> Creating required directories for the package ..."
-  mkdirIfNot "$outdir" "${destdir}/var/lib/qi/recipes"
+  mkdirIfNot "$outdir" "${destdir}/var/lib/qi/{recipes,descriptions}"
 
   # Fetch remote sources
   echo "==> Fetching remote source(s) if they do not exist locally ..."
@@ -419,6 +419,14 @@ for recipe ; do
 
     # To add recipe to the database
     eval_cmd "( cd "$CWD" && cp -p "$recipe" "${destdir}/var/lib/qi/recipes/" )"
+
+    # Include description file (if available)
+    if [[ -f ${CWD}/${program}.description ]] && [[ -s ${CWD}/${program}.description ]] ; then
+      eval_cmd "cp -p "${CWD}/${program}.description" "${destdir}/var/lib/qi/descriptions/""
+    else
+      warn "\n\tWARNING: The description is empty or is not available." \
+       "\tCheck \`${CWD}/${program}.description if exists or provide a valid one."
+    fi
 
     # Make the package
     eval_cmd \

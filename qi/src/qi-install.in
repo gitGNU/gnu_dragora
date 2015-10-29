@@ -221,9 +221,7 @@ for package in "$@" ; do
      "Possibly the file system is in read-only mode."
   fi
 
-  # Show the description file:
-  # The description will appear formatted only if fmt(1) is available,
-  # otherwise cat(1) will be used as fallback.
+  # Show the description file using fold(1).
   #
   # Get the name of the package removing the last two segments "-"
   pkgname="${name%-*-*}"	# Removes -version-arch+build.
@@ -231,10 +229,10 @@ for package in "$@" ; do
   if [[ -f ${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description ]] && \
      [[ -s ${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description ]]
   then
-    fmt -w 72 "${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description" 2> /dev/null || \
-     cat "${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description" 2> /dev/null
+    fold -w 72 \
+     "${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description" 2> /dev/null
   else
-    warn "\n\tWARNING: The description file is empty or not available.\n"
+    warn "\n\tWARNING: The description file is empty or is not available.\n"
   fi
   unset name pkgname
 done
