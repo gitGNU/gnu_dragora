@@ -12,7 +12,7 @@
 #packagedir=/usr/packages
 
 # Target directory for links
-#targetdir=/usr
+#targetdir=/
 
 # SECOND SECTION:  Build Settings.
 #
