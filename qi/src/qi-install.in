@@ -157,7 +157,7 @@ unset rcfile configFrom cmdLineSets readConfig
 umask 022
 
 # Create required directories (if needed)
-mkdirIfNot "$packagedir" "$targetdir"
+eval_cmd "mkdir -p "$packagedir" "$targetdir""
 
 # Set default graft options for the user or for the super-user
 graft_options="-u -l ${packagedir}/graft-log"
@@ -194,8 +194,8 @@ for package in "$@" ; do
   isignal "tar -tf "$package" > /dev/null" 3
 
   # To install the package
-  echo "==> Installing package '${name}' in \`${packagedir}' ..."
-  mkdirIfNot "${packagedir}/$name"
+  echo "==> Installing package \"${name}\" in \`${packagedir}' ..."
+  eval_cmd "mkdir -p "${packagedir}/$name""
 
   if [[ -w $targetdir ]] ; then
     if [[ ! -w ${packagedir}/$name ]] ; then

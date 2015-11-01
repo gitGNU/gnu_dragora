@@ -216,10 +216,7 @@ unset rcfile configFrom cmdLineSets readConfig
 umask 022
 
 # Create required directories (if needed)
-mkdirIfNot "${worktree}"/archive \
-           "${worktree}"/patches \
-           "${worktree}"/recipes \
-           "$tardir"
+eval_cmd "mkdir -p "${worktree}"/{archive,patches,recipes} "$tardir""
 
 # Read from the standard input if '-' was given
 if [[ $1 = - ]] ; then
@@ -318,7 +315,7 @@ for recipe ; do
   rmIfDir "${tmpdir}/${srcdir}" "$destdir"
 
   echo "==> Creating required directories for the package ..."
-  mkdirIfNot "$outdir" "${destdir}/var/lib/qi/{recipes,descriptions}"
+  eval_cmd "mkdir -p "$outdir" "${destdir}"/var/lib/qi/recipes "${destdir}"/var/lib/qi/descriptions"
 
   # Fetch remote sources
   echo "==> Fetching remote source(s) if they do not exist locally ..."
@@ -410,7 +407,7 @@ for recipe ; do
 
   # Package creation
   if [[ $nopkg != nopkg ]] ; then
-    echo "==> Creating package '${pkgname}.tlz' in \`${outdir}' ..."
+    echo "==> Creating package \"${pkgname}.tlz\" in \`${outdir}' ..."
 
     # Recipe edition when release is incremented
     if [[ $increment_release = increment_release ]] ; then
@@ -425,7 +422,7 @@ for recipe ; do
       eval_cmd "cp -p "${CWD}/${program}.description" "${destdir}/var/lib/qi/descriptions/""
     else
       warn "\n\tWARNING: The description is empty or is not available." \
-       "\tCheck \`${CWD}/${program}.description if exists or provide a valid one."
+       "\tPlease check \`${CWD}/${program}.description'\n"
     fi
 
     # Make the package
@@ -433,7 +430,7 @@ for recipe ; do
      "cd "$destdir" && tar -c ./* | lzip -9v > "${outdir}/${pkgname}.tlz""
 
     # Create the package list
-    echo "==> Saving full package name as /var/tmp/pkglist ..."
+    echo "==> Saving full package name path in /var/tmp/pkglist ..."
     eval_cmd "echo \"${outdir}/${pkgname}.tlz\" > /var/tmp/pkglist"
   fi
 
