@@ -414,7 +414,7 @@ for recipe ; do
       eval_cmd "ed -s "$recipe"" <<< ",s/^\(release\)=.*/\1=${release}/"$'\nw'
     fi
 
-    # To add recipe to the database
+    # Add recipe to the (package) database
     eval_cmd "( cd "$CWD" && cp -p "$recipe" "${destdir}/var/lib/qi/recipes/" )"
 
     # Include description file (if available)
@@ -440,7 +440,7 @@ for recipe ; do
   # Prints the lines only in recipe_env but not in default_env, extracting
   # the name of the variable and function for easy deactivation
   eval_cmd \
-   "awk 'NR==FNR { r[\$0]; next } !(\$0 in r) { v=\$3; sub(/=.*/, \"\", v); print v }' default_env$$ recipe_env$$ > vars$$"
+   "grep -F -xvf default_env$$ recipe_env$$ | sed '/^declare -x/!d ; s/^declare -x \([^=]*\).*/unset \1/' > substraction$$"
 
   # Deactivate exportation
   set +o allexport
@@ -454,11 +454,10 @@ for recipe ; do
     rmIfDir "${tmpdir}/${srcdir}" "$destdir"
   fi
 
-  # Restore default variables for the following recipe
-  while read -r name ; do
-    unset $name
-  done < "${tmpdir}"/${PRD}/vars$$
+  # Deactivate variables used in the recipe
+  source "${tmpdir}"/${PRD}/substraction$$
 
+  # Restore default environment for the next recipe
   source "${tmpdir}/${PRD}/default_env$$"
 
   echo "<== Done [ ${CWD}/$recipe ]"
