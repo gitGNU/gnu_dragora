@@ -90,7 +90,7 @@ _exec() {
 # Handle commands / arguments
 while (( $# )) ; do
   case "$1" in
-    install)
+    install|add)
       _exec "${LIBEXECDIR}"/qi-install  "${@:2}"
       ;;
     remove)
@@ -109,6 +109,9 @@ while (( $# )) ; do
       case "$2" in
         install|remove|erupt|order|build)
           _exec ${LIBEXECDIR}/qi-${2} -h
+          ;;
+        add)	# Alias for 'install'
+          _exec ${LIBEXECDIR}/qi-install -h
           ;;
       esac
       shift 1
