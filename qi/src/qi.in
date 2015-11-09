@@ -22,7 +22,7 @@
 # 4   = File empty, not regular, or expected
 
 # Where to find the commands
-LIBEXECDIR=${LIBEXECDIR:-@LIBEXECDIR@/qi}
+LIBEXECDIR="${LIBEXECDIR:-@LIBEXECDIR@/qi}"
 
 # Functions
 usage() {
@@ -108,10 +108,10 @@ while (( $# )) ; do
     help)
       case "$2" in
         install|remove|erupt|order|build)
-          _exec ${LIBEXECDIR}/qi-${2} -h
+          _exec "${LIBEXECDIR}"/qi-${2} -h
           ;;
-        add)	# Alias for 'install'
-          _exec ${LIBEXECDIR}/qi-install -h
+        add)	# Help alias for 'install'
+          _exec "${LIBEXECDIR}"/qi-install -h
           ;;
       esac
       shift 1
