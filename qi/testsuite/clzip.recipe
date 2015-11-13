@@ -5,12 +5,34 @@ release=1
 
 tarname=${program}-${version}.tar.gz
 
-# Parallel jobs for the compiler
-jobs=1
+description="
+clzip - A lossless data compressor based on the LZMA algorithm.
 
+Clzip is a lossless data compressor with a user interface similar to
+the one of gzip or bzip2.  Clzip is about as fast as gzip, compresses
+most files more than bzip2, and is better than both from a data
+recovery perspective.
+
+Clzip uses the lzip file format; the files produced by clzip are fully
+compatible with lzip-1.4 or newer, and can be rescued with lziprecover.
+
+Clzip is in fact a C language version of lzip, intended for embedded
+devices or systems lacking a C++ compiler.
+
+"
+
+notes="NOTES: This package was installed as lzip."
+
+homepage=http://lzip.nongnu.org/clzip.html
+licenses=GPLv2+
+
+# Remote source(s)
 fetch=(
   http://download.savannah.gnu.org/releases/lzip/clzip/$tarname
 )
+
+# Parallel jobs for the compiler
+jobs=1
 
 build() {
   set -o errexit;	# Exit immediately on any error.
@@ -20,6 +42,6 @@ build() {
   ./configure CFLAGS="$CFLAGS"
 
   make -j${jobs}
-  make -j${jobs} install DESTDIR="$destdir"
+  make -j${jobs} install-as-lzip DESTDIR="$destdir"
 }
 

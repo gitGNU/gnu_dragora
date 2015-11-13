@@ -221,19 +221,19 @@ for package in "$@" ; do
      "Possibly the file system is in read-only mode."
   fi
 
-  # Show the description file using fold(1).
+  # Show the description file using fold(1) to give format.
   #
   # Get the name of the package removing the last two segments "-"
   pkgname="${name%-*-*}"	# Removes -version-arch+build.
 
-  if [[ -f ${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description ]] && \
-     [[ -s ${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description ]]
-  then
-    fold -w 72 \
-     "${packagedir}/${name}/var/lib/qi/descriptions/${pkgname}.description" 2> /dev/null
-  else
-    warn "\n\tWARNING: The description file is empty or is not available.\n"
+  # Check recipe's availability for description and notes
+  if [[ -f ${packagedir}/${name}/var/lib/qi/recipes/${pkgname}.recipe ]] ; then
+    (
+      cd "${packagedir}/${name}"/var/lib/qi/recipes &&
+      showVar description notes ${pkgname}.recipe | fold -w 72
+    )
   fi
-  unset name pkgname
+
+  unset pkgname name
 done
 
