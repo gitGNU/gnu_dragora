@@ -18,7 +18,9 @@ INSTALL_PROGRAM = ${INSTALL} -p -m 755
 INSTALL_DATA    = ${INSTALL} -p -m 644
 INSTALL_DIR     = ${INSTALL} -d -m 755
 
-functions_in	= src/functions/config.in src/functions/helpers.in
+functions_in	= src/functions/helpers.in src/functions/readconfig.in \
+                  src/functions/showvar.in
+
 scripts_in	= src/qi-build.in src/qi-erupt.in src/qi-install.in \
                   src/qi-order.in src/qi-remove.in
 

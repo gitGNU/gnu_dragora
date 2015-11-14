@@ -58,8 +58,9 @@ isignal() {
 readonly fndir="${LIBEXECDIR}/functions"
 
 # Load (externally) internal functions
-source "${fndir}"/config   || exit 1
-source "${fndir}"/helpers  || exit 1
+source "${fndir}"/helpers	|| exit 1
+source "${fndir}"/readconfig	|| exit 1
+source "${fndir}"/showvar	|| exit 1
 
 # Default variable values
 rcfile=rcfile

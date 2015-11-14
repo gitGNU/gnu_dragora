@@ -1,0 +1,19 @@
+# Function: showVar
+# A function to print the variable values.
+#
+# Usage: showVar [variable name ...] file
+#
+# FIXME: This function is a bit quick and dirty, there are certain
+# problems with it, it allows varname="asdf' (mismatched quotes) and
+# if you have varname="something\nsomethingelse\n" it will fail to
+# print the first something.
+#
+showVar() {
+  for varname in "$@" ; do
+    sed -r -n \
+     "/^$varname=[\"\'][^\"\']*$/,/[\"\']/{//d;/^$varname=/d;p} ; s/^$varname=\"?'?([^\"\']+)\"?'?$/\1/p" "${@: -1}"
+  done
+
+  unset varname
+}
+

@@ -56,8 +56,8 @@ show_help() {
 readonly fndir="${LIBEXECDIR}/functions"
 
 # Load (externally) internal functions
-source "${fndir}"/config   || exit 1
-source "${fndir}"/helpers  || exit 1
+source "${fndir}"/helpers	|| exit 1
+source "${fndir}"/readconfig	|| exit 1
 
 unpack() {
   local file tool_verify tool_extract

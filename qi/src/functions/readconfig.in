@@ -1,5 +1,3 @@
-# Functions related with the config file.
-
 # Function: readConfig
 # Function to read and export variables in a secure way.
 #
@@ -8,7 +6,7 @@ readConfig() {
 
   while read -r variable value ; do
     case "$variable" in
-      \#*|"")	# Ignore commentary or blank lines.
+      \#*|"")   # Ignore commentary or blank lines.
         ;;
       *)
         # Iterate over the cmdLineSets array to see if the options
@@ -18,7 +16,7 @@ readConfig() {
         if (( ${#cmdLineSets[@]} > 0 )) ; then
           for array in "${cmdLineSets[@]}" ; do
             if [[ $array = $variable ]] ; then
-              continue 2;	# Continue from the beginning.
+              continue 2;       # Continue from the beginning.
             fi
           done
         fi
@@ -30,24 +28,5 @@ readConfig() {
         ;;
     esac
   done
-}
-
-# Function: showVar
-# A function to print the variable values.
-#
-# Usage: showVar [variable name ...] file
-#
-# FIXME: This function is a bit quick and dirty, there are certain
-# problems with it, it allows varname="asdf' (mismatched quotes) and
-# if you have varname="something\nsomethingelse\n" it will fail to
-# print the first something.
-#
-showVar() {
-  for varname in "$@" ; do
-    sed -r -n \
-     "/^$varname=[\"\'][^\"\']*$/,/[\"\']/{//d;/^$varname=/d;p} ; s/^$varname=\"?'?([^\"\']+)\"?'?$/\1/p" "${@: -1}"
-  done
-             
-  unset varname
 }
 
