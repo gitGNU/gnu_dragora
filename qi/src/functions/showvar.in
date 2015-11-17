@@ -9,11 +9,17 @@
 # print the first something.
 #
 showVar() {
-  for varname in "$@" ; do
+  local argv file
+
+  argv=("$@")			# All the arguments.
+  file=${argv[@]:(-1)}		# The last argument or file name.
+  unset 'argv[$#-1]'		# Removes the last argument or file name.
+
+  for v in "${argv[@]##*/}" ; do
     sed -r -n \
-     "/^$varname=[\"\'][^\"\']*$/,/[\"\']/{//d;/^$varname=/d;p} ; s/^$varname=\"?'?([^\"\']+)\"?'?$/\1/p" "${@: -1}"
+     "/^$v=[\"\'][^\"\']*$/,/[\"\']/{//d;/^$v=/d;p} ; s/^$v=\"?'?([^\"\']+)\"?'?$/\1/p" "$file"
   done
 
-  unset varname
+  unset v
 }
 
