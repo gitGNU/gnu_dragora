@@ -40,6 +40,8 @@ show_help() {
    "  -p          prune conflicts"                                         \
    "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
    "  -w          warn about the files that will be linked"                \
+   ""                                                                      \
+   "Aliases for this command: \`add'"                                      \
    ""
 }
 
