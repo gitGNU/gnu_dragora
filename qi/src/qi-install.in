@@ -22,7 +22,6 @@
 # 2   = Command execution error
 # 3   = Integrity check error for compressed files
 # 4   = File empty, not regular, or expected
-# 6   = Insufficient permissions of writing
 
 # Override locale settings
 export LC_ALL=C
@@ -198,29 +197,17 @@ for package in "$@" ; do
   echo "==> Installing package \"${name}\" in \`${packagedir}' ..."
   eval_cmd "mkdir -p "${packagedir}/$name""
 
-  if [[ -w $targetdir ]] ; then
-    if [[ ! -w ${packagedir}/$name ]] ; then
-      quit 6 \
-       "\nqi: install: You ('${USER}') don't have enough permissions to write in \`${packagedir}/${name}'." \
-       "Possibly the file system is in read-only mode."
-    fi
+  # Proceed to unpack the package
+  isignal "tar xpf "$package" -C "${packagedir}/$name"" 3
 
-    # Proceed to unpack the package
-    isignal "tar xpf "$package" -C "${packagedir}/$name"" 3
-
-    # Remove objects (files, links or directories) from the target
-    # directory that are in conflict with the package directory
-    if [[ $prune_conflicts = prune_conflicts ]] ; then
-      isignal "graft -p -D $verbose -t "$targetdir" "${packagedir}/$name""
-    fi
-
-    # Graft the package
-    isignal "graft -i $graft_options $verbose -t "$targetdir" "${packagedir}/$name""
-  else
-    quit 6 \
-     "\nqi: install: You ('${USER}') don't have enough permissions to write in \`${targetdir}'." \
-     "Possibly the file system is in read-only mode."
+  # Remove objects (files, links or directories) from the target
+  # directory that are in conflict with the package directory
+  if [[ $prune_conflicts = prune_conflicts ]] ; then
+    isignal "graft -p -D $verbose -t "$targetdir" "${packagedir}/$name""
   fi
+
+  # Graft the package
+  isignal "graft -i $graft_options $verbose -t "$targetdir" "${packagedir}/$name""
 
   # Show description and notes from the package recipe.
   #
