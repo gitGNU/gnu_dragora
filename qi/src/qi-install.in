@@ -222,19 +222,20 @@ for package in "$@" ; do
      "Possibly the file system is in read-only mode."
   fi
 
-  # Show the description file using fold(1) to give format.
+  # Show description and notes from the package recipe.
   #
   # Get the name of the package removing the last two segments "-"
   pkgname="${name%-*-*}"	# Removes -version-arch+build.
 
-  # Check recipe's availability for description and notes
-  if [[ -f ${packagedir}/${name}/var/lib/qi/recipes/${pkgname}.recipe ]] ; then
-    (
-      cd "${packagedir}/${name}"/var/lib/qi/recipes &&
-      showVar description notes ${pkgname}.recipe | fold -w 72
-    )
-  fi
+  # Include possible recipe names composed as "kernel3.10"
+  for recipe in ""${packagedir}/${name}/var/lib/qi/recipes/${pkgname}*.recipe"" ; do
+    if [[ -f $recipe ]] ; then
+      # Display the information using fold(1) to give format
+      showVar description notes "$recipe" | fold -w 72
+      break;
+    fi
+  done
 
-  unset pkgname name
+  unset name pkgname recipe
 done
 
