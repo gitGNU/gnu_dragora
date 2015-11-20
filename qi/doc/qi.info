@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre1, 29 October 2015), which is a
+This manual is for Qi (version 1.0-pre1, 19 November 2015), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015 Matias A. Fonzo
@@ -23,13 +23,14 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre1, 29 October 2015).
+This manual is for Qi (version 1.0-pre1, 19 November 2015).
 
 * Menu:
 
 * Introduction::                    Purpose, description
 * Invocation::                      Command-line interface
-* The qirc file::                   The configuration file
+* The qirc file::                   Configuration file
+* Recipes::                         Building packages
 * Packages::                        Installation, removal
 * Examine packages::                Debugging purposes
 * The .order files::                Handling the build order
@@ -241,9 +242,11 @@ The following commands are supported by `qi':
 
    * All the options can be mixed.
 
-Note: the options specified in the command-line have priority over the
-config file: `qirc'.  If there are no options, and if `qirc' is not
-present, default (internal) values will be used instead.
+Notes:
+
+   Options specified in the command-line have priority over the config
+file: `qirc'.  If there are no options, and if `qirc' is not present,
+default (internal) values will be used instead.
 
 2.1 Help Actions
 ================
@@ -258,7 +261,7 @@ If the help does not appear when a command is invoked without
 arguments, please use `qi <command> -h'.
 
 
-File: qi.info,  Node: The qirc file,  Next: Packages,  Prev: Invocation,  Up: Top
+File: qi.info,  Node: The qirc file,  Next: Recipes,  Prev: Invocation,  Up: Top
 
 3 The qirc file
 ***************
@@ -285,9 +288,64 @@ file `${sysconfdir}/qirc' to `${HOME}/.qirc' setting `${packagedir}'
 and `${targetdir}' for `$HOME'.
 
 
-File: qi.info,  Node: Packages,  Next: Examine packages,  Prev: The qirc file,  Up: Top
+File: qi.info,  Node: Recipes,  Next: Packages,  Prev: The qirc file,  Up: Top
 
-4 Packages
+4 Recipes
+*********
+
+A recipe is a file telling qi what to do.  Most often, the recipe tells
+qi how to build a binary package from a source tarball.
+
+   A recipe has two parts: a list of variable definitions and a list of
+sections.  By convention, the syntax of a section is:
+
+     section_name() {
+       section lines
+     }
+
+   The section name is followed by parentheses, one space and an opening
+brace.  The line finishing the section contains just a closing brace.
+The section names or the function names currently recognized are
+`build'.
+
+   The `build' section is an augmented shell script.  This is the main
+section which contains the instructions to build and produce a package.
+
+4.1 Variables
+=============
+
+A "variable" is a *shell variable* defined either in `qirc' or in a
+recipe to represent a string of text, called the variable's "value".
+These values are substituted by explicit request in the definitions of
+other variables or in calls to external commands.
+
+   Variables can represent lists of file names, options to pass to
+compilers, programs to run, directories to look in for source files,
+directories to write output in, or anything else you can imagine.
+
+   Definitions of variables in qi have four levels of precedence.
+Options which define variables from the command-line override those
+specified in the `qirc' file, while variables defined in the recipe
+override those specified in `qirc' taking priority over those variables
+settled by options via command-line.  Finally, some variables (outdir,
+tmpdir, worktree, tardir, netget, rsync, arch, jobs, pkgname) have
+default values if they are not defined anywhere.
+
+   Options that set variables through the command-line can only
+reference variables defined in `qirc' and variables with default values
+(tmpdir, worktree, tardir, arch, jobs).
+
+   Definitions of variables in `qirc' can only reference variables
+previously defined in `qirc' and variables with default values.
+
+   Definitions of variables in the recipe can only reference variables
+settled by command-line, variables previously defined in the recipe,
+variables defined in `qirc', and variables with default values.
+
+
+File: qi.info,  Node: Packages,  Next: Examine packages,  Prev: Recipes,  Up: Top
+
+5 Packages
 **********
 
 A package is a suite of programs usually distributed in binary form
@@ -336,7 +394,7 @@ examples below).
 
    *For more information, check the documentation for graft.*
 
-4.1 Package Installation
+5.1 Package Installation
 ========================
 
 This sort order is particularly useful just before the actual package
@@ -410,7 +468,7 @@ package directory:
 
    * It is useful to combine -p with -v or with -V.
 
-4.2 Package Removal
+5.2 Package Removal
 ===================
 
 This sort order is particularly useful just before the actual package
@@ -508,7 +566,7 @@ If a conflict exist with another package, `remove' will try to delete
 those links that are not in conflict.  It's possible to prune all the
 conflicts using the -p option.
 
-4.3 Final notes
+5.3 Final notes
 ===============
 
 Some signals like SIGINT or SIGHUP are ignored in the package
@@ -520,7 +578,7 @@ can be crucial for the proper functioning of the system.
 
 File: qi.info,  Node: Examine packages,  Next: The .order files,  Prev: Packages,  Up: Top
 
-5 Examine packages
+6 Examine packages
 ******************
 
 *erupt* is a special command to examine packages for debugging purposes:
@@ -552,7 +610,7 @@ build number of the package.
 
 File: qi.info,  Node: The .order files,  Next: Exit status,  Prev: Examine packages,  Up: Top
 
-6 The .order files
+7 The .order files
 ******************
 
 TO DO,  The .order files.
@@ -560,7 +618,7 @@ TO DO,  The .order files.
 
 File: qi.info,  Node: Exit status,  Next: GNU Free Documentation License,  Prev: The .order files,  Up: Top
 
-7 Exit Status
+8 Exit Status
 *************
 
 All the conditions of exit codes are described in this chapter:
@@ -1137,28 +1195,31 @@ Index
 
 * examine packages:                      Examine packages.    (line   6)
 * exit codes:                            Exit status.         (line   6)
-* help actions:                          Invocation.          (line 172)
+* help actions:                          Invocation.          (line 174)
 * introduction:                          Introduction.        (line   6)
 * invocation:                            Invocation.          (line   6)
 * package installation:                  Packages.            (line  55)
 * package removal:                       Packages.            (line 129)
 * packages:                              Packages.            (line   6)
+* recipes:                               Recipes.             (line   6)
 * the .order files:                      The .order files.    (line   6)
 * the qirc file:                         The qirc file.       (line   6)
+* variables:                             Recipes.             (line  27)
 
 
 
 Tag Table:
-Node: Top784
-Node: Introduction1517
-Node: Invocation3132
-Node: The qirc file6770
-Node: Packages7653
-Node: Examine packages15582
-Node: The .order files16602
-Node: Exit status16765
-Node: GNU Free Documentation License18565
-Node: Index43726
+Node: Top785
+Node: Introduction1569
+Node: Invocation3184
+Node: The qirc file6823
+Node: Recipes7705
+Node: Packages9944
+Node: Examine packages17867
+Node: The .order files18887
+Node: Exit status19050
+Node: GNU Free Documentation License20850
+Node: Index46011
 
 End Tag Table
 

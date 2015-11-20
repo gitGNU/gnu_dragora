@@ -8,7 +8,7 @@
 @comment %**end of header
 
 @set VERSION 1.0-pre1
-@set UPDATED 29 October 2015
+@set UPDATED 19 November 2015
 
 @copying
 This manual is for Qi (version @value{VERSION},
@@ -55,7 +55,8 @@ This manual is for Qi (version @value{VERSION},
 @menu
 * Introduction::                    Purpose, description
 * Invocation::                      Command-line interface
-* The qirc file::                   The configuration file
+* The qirc file::                   Configuration file
+* Recipes::                         Building packages
 * Packages::                        Installation, removal
 * Examine packages::                Debugging purposes
 * The .order files::                Handling the build order
@@ -285,7 +286,9 @@ If not specified, the default value is the Current Working Directory.
 @end itemize
 
 @noindent
-Note: the options specified in the command-line have priority over the
+Notes:
+
+Options specified in the command-line have priority over the
 config file: @file{qirc}.  If there are no options, and if @file{qirc}
 is not present, default (internal) values will be used instead.
 
@@ -337,6 +340,63 @@ The order in which Qi looks for this file is:
 If you pretend to run Qi for a specific user, you should copy the file
 @samp{$@{sysconfdir@}/qirc} to @env{$@{HOME@}/.qirc} setting
 @samp{$@{packagedir@}} and @samp{$@{targetdir@}} for @env{$HOME}.
+
+
+@node Recipes
+@chapter Recipes
+@cindex recipes
+
+A recipe is a file telling qi what to do.  Most often, the recipe
+tells qi how to build a binary package from a source tarball.
+
+A recipe has two parts: a list of variable definitions and a list of
+sections.  By convention, the syntax of a section is:
+
+@example
+section_name() @{
+  section lines
+@}
+@end example
+
+The section name is followed by parentheses, one space and an opening
+brace.  The line finishing the section contains just a closing brace.
+The section names or the function names currently recognized are
+@samp{build}.
+
+The @samp{build} section is an augmented shell script.  This is the main
+section which contains the instructions to build and produce a package.
+
+
+@section Variables
+@cindex variables
+
+A "variable" is a @strong{shell variable} defined either in @file{qirc}
+or in a recipe to represent a string of text, called the variable's
+"value".  These values are substituted by explicit request in the
+definitions of other variables or in calls to external commands.
+
+Variables can represent lists of file names, options to pass to
+compilers, programs to run, directories to look in for source files,
+directories to write output in, or anything else you can imagine.
+
+Definitions of variables in qi have four levels of precedence.
+Options which define variables from the command-line override those
+specified in the @file{qirc} file, while variables defined in the recipe
+override those specified in @file{qirc} taking priority over those
+variables settled by options via command-line.  Finally, some variables
+(outdir, tmpdir, worktree, tardir, netget, rsync, arch, jobs, pkgname)
+have default values if they are not defined anywhere.
+
+Options that set variables through the command-line can only reference
+variables defined in @file{qirc} and variables with default values
+(tmpdir, worktree, tardir, arch, jobs).
+
+Definitions of variables in @file{qirc} can only reference variables
+previously defined in @file{qirc} and variables with default values.
+
+Definitions of variables in the recipe can only reference variables
+settled by command-line, variables previously defined in the recipe,
+variables defined in @file{qirc}, and variables with default values.
 
 
 @node Packages
