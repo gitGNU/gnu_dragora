@@ -225,18 +225,8 @@ unset name fullList item PS3 newList
 
 # Iterate over pkgList to remove the packages
 for name in "${pkgList[@]}" ; do
-  if [[ ! -e ${packagedir}/$name ]] ; then
-    quit 4 "qi: remove: No such package \`${packagedir}/${name}'."
-  fi
   if [[ ! -r ${packagedir}/$name ]] ; then
-    quit 7 \
-     "\nqi: remove: You ('${USER}') don't have enough permissions to read \`${packagedir}/${name}'." \
-     "The package cannot be removed."
-  fi
-  if [[ ! -r $targetdir ]] ; then
-    quit 7 \
-     "\nqi: remove: You ('${USER}') don't have enough permissions to read \`${targetdir}'." \
-     "The package cannot be removed."
+    quit 4 "qi: remove: Cannot read package directory \"${packagedir}/${name}\"."
   fi
 
   # Remove symlinks and possible conflicts
