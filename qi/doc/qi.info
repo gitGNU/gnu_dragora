@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre1, 19 November 2015), which is a
+This manual is for Qi (version 1.0-pre1, 23 November 2015), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015 Matias A. Fonzo
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre1, 19 November 2015).
+This manual is for Qi (version 1.0-pre1, 23 November 2015).
 
 * Menu:
 
@@ -406,16 +406,13 @@ installation works:
   2. A subdirectory will try to be created if
      `${packagedir}/package_name' does not exist.
 
-  3. `${targetdir}' and `${packagedir}/package_name' are verified if
-     they are writable directories.
-
-  4. The package is decompressed in `${packagedir}' using its name for
+  3. The package is decompressed in `${packagedir}' using its name for
      the subdirectory.
 
-  5. graft(1) is used to install symbolic links from the package
+  4. graft(1) is used to install symbolic links from the package
      installation directory to the target directory.
 
-  6. If the file of description exists, and if it's not empty, the
+  5. If the file of description exists, and if it's not empty, the
      package description will be displayed.
 
 
@@ -484,16 +481,13 @@ deinstallation works:
      package.  If more than one package name matches, a menu of
      selection is generated to choose the packages.
 
-  3. `${packagedir}/package_name' and `${targetdir}' are verified if
-     they are readable directories.
-
-  4. graft(1) is used to remove symbolic links from the package
+  3. graft(1) is used to remove symbolic links from the package
      installation directory to the target directory.  By default, if
      there are a conflict with another package, it will remove those
      links that are not in conflict.  It's possible to prune all the
      conflicts using the -p option.
 
-  5. Finally, the package directory is deleted if the option -k is not
+  4. Finally, the package directory is deleted if the option -k is not
      specified.
 
 
@@ -671,23 +665,6 @@ All the conditions of exit codes are described in this chapter:
      This exit code is used for reporting about empty or undefined
      variables.  Usually, variables of the recipe and assigned arrays
      that are tested.
-
-`6'
-     *Insufficient permissions of writing (installation)*
-
-     No enough permissions to write in `${targetdir}' or
-     `${packagedir}/${name}'.
-
-        * Where `${name}' is the name of the directory where the
-          package is installed.
-
-`7'
-     *Insufficient permissions of reading (deinstallation)*
-
-     No enough permissions to read in `${packagedir}/${name}' or
-     `${targetdir}'.
-
-        * Where `${name}' is the package directory to remove.
 
 `10'
      *Network manager error*
@@ -1199,7 +1176,7 @@ Index
 * introduction:                          Introduction.        (line   6)
 * invocation:                            Invocation.          (line   6)
 * package installation:                  Packages.            (line  55)
-* package removal:                       Packages.            (line 129)
+* package removal:                       Packages.            (line 126)
 * packages:                              Packages.            (line   6)
 * recipes:                               Recipes.             (line   6)
 * the .order files:                      The .order files.    (line   6)
@@ -1215,11 +1192,11 @@ Node: Invocation3184
 Node: The qirc file6823
 Node: Recipes7705
 Node: Packages9944
-Node: Examine packages17867
-Node: The .order files18887
-Node: Exit status19050
-Node: GNU Free Documentation License20850
-Node: Index46011
+Node: Examine packages17655
+Node: The .order files18675
+Node: Exit status18838
+Node: GNU Free Documentation License20174
+Node: Index45335
 
 End Tag Table
 
