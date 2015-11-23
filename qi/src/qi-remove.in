@@ -21,7 +21,6 @@
 # 1   = Minor common errors (e.g: help usage, support not available)
 # 2   = Command execution error
 # 4   = File empty, not regular, or expected
-# 7   = Insufficient permissions of reading
 
 # Override locale settings
 export LC_ALL=C
