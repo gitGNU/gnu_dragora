@@ -219,8 +219,8 @@ for package in "$@" ; do
   # Include possible recipe names composed as "kernel3.10"
   for recipe in ""${packagedir}/${name}/var/lib/qi/recipes/${pkgname}*.recipe"" ; do
     if [[ -f $recipe ]] ; then
-      # Display the information using fold(1) to give format
-      showVar description notes "$recipe" | fold -w 72
+      # Display information using fold(1) to give format
+      showVar description notes homepage licenses "$recipe" | fold -w 72
       break;
     fi
   done
