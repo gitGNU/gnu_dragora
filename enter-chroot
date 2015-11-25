@@ -82,10 +82,9 @@ trap 'echo ; unmountSeries' EXIT
 echo "==> Entering chroot (${rootdir}) ..."
 chroot "$rootdir" /tools/bin/env -i \
   PATH=/usr/bin:/usr/sbin:/tools/bin \
-  SHELL=/bin/sh \
   HOME=/root \
   TERM="${TERM:-linux}" \
   LC_ALL=$LC_ALL \
   PS1='\u:\w\$ ' \
- /tools/bin/sh --login
+ /tools/bin/bash --login +h
 
