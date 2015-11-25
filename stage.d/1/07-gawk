@@ -15,7 +15,7 @@ tar xf "${worktree}"/sources/gawk-${version}.tar.lz -C "${tmpdir}"/sources
 cd "${tmpdir}"/sources/gawk-${version}
 
 # Import and export toolchain variables
-. "${worktree}"/bootstrap.d/env.d/cross-env
+. "${worktree}"/stage.d/env.d/cross-env
 
 ./configure \
  --prefix=/tools \

@@ -1,0 +1,111 @@
+# Build recipe for GCC.
+#
+# Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program=gcc
+version=5.2.0
+release=1
+
+tarname=${program}-${version}.tar.lz
+
+docs=""COPYING* README""
+docdir=/usr/share/doc/${program}-${version}
+
+machine_type="$(cc -dumpmachine)"
+
+build {
+  cd "$srcdir"
+
+  patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes
+  patch -Np1 -i "${patchdir}"/gcc/gcc-4.9.0-musl.diff
+
+  # Avoid specific Glibc code
+  ( cd libstdc++-v3/config/os && \
+    mv gnu-linux gnu-linux.orig ; \
+    cp -r generic gnu-linux ; \
+    cp gnu-linux.orig/arm-eabi-extra.ver gnu-linux ; \
+  )
+  ( cd libitm/config && \
+    mv linux/x86 linux/x86_glibc ; \
+    cp -r generic linux/x86 ; \
+  )
+
+  rm -rf ../gcc-build
+  mkdir ../gcc-build
+  cd ../gcc-build
+
+  ../${program}-${version}/configure $configure_args \
+   --enable-threads=posix \
+   --enable-__cxa_atexit \
+   --enable-clocale=generic \
+   --enable-languages=c,c++ \
+   --enable-multilib \
+   --enable-libitm \
+   --enable-libssp \
+   --enable-tls \
+   --disable-shared \
+   --disable-nls \
+   --disable-libstdcxx-pch \
+   --disable-libmudflap \
+   --disable-libsanitizer \
+   --disable-install-libiberty \
+   --with-system-zlib \
+   --with-gmp=/usr \
+   --with-mpfr=/usr \
+   --with-mpc=/usr \
+   --build=$machine_type
+
+  make -j${jobs} BOOT_LDFLAGS='-static' LDFLAGS='-static'
+  make -j${jobs} install DESTDIR="$destdir"
+
+  # To compatibility
+  ( cd "${destdir}"/usr/bin || exit 1
+    mv gcc gcc-${version}
+    ln -sf gcc-${version} gcc
+    ln -sf gcc cc ; \
+    ln -sf gcc-${version} ${machine_type}-gcc
+    ln -sf gcc-${version} ${machine_type}-gcc-${version}
+    mv g++ g++-gcc-${version}
+    ln -sf g++-gcc-${version} g++
+    ln -sf g++ c++
+    ln -sf g++-gcc-${version} ${machine_type}-g++
+    ln -sf g++-gcc-${version} ${machine_type}-c++
+  )
+  (
+    mkdir -p "${destdir}"/lib${libSuffix} && \
+    cd "${destdir}"/lib${libSuffix} && ln -sf ../bin/cpp .
+  )
+
+  # Compress info documents (if needed)
+  if [[ -d ${destdir}/usr/share/info ]] ; then
+    rm -f "${destdir}"/usr/share/info/dir
+    gzip -9 ""${destdir}/usr/share/info/*""
+  fi
+
+  # Compress and link manual pages (if needed)
+  if [[ -d ${destdir}/usr/share/man ]] ; then
+    ( cd "${destdir}"/usr/share/man && \
+      find . -type f -exec gzip -9 '{}' \; && \
+      find . -type l | while read -r file ; do
+        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+        rm -- "$file"
+      done
+    )
+  fi
+
+  # Copy the documentation
+  ( mkdir -p "${destdir}${docdir}"
+    cd "${tmpdir}"/${program}-${version} && \
+    cp -a "$docs" "${destdir}${docdir}"
+  )
+
+  # Delete temporary build directory
+  cd "$srcdir"
+  if [[ -d ../gcc-build ]] ; then
+    rm -rf ../gcc-build
+  fi
+}
+

@@ -1,0 +1,72 @@
+# Build recipe for mpfr.
+#
+# Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program=mpfr
+version=3.1.3
+release=1
+
+tarname=${program}-${version}.tar.bz2
+
+description="
+mpfr - Library for multiple-precision floating point.
+
+The MPFR library is a C library for multiple-precision
+floating-point computations with correct rounding.
+
+"
+
+homepage=http://www.mpfr.org
+licenses="GPLv3+, LGPLv3+"
+
+# Remote source(s)
+fetch=(
+  http://www.mpfr.org/mpfr-current/$tarname
+)
+
+docs=""AUTHORS BUGS COPYING* ChangeLog NEWS PATCHES README TODO VERSION""
+docdir=/usr/share/doc/${program}-${version}
+
+machine_type="$(cc -dumpmachine)"
+
+build {
+  cd "$srcdir"
+
+  # Accumulative patchset
+  #patch -Np1 -i "${patchdir}"/mpfr/allpatches
+
+  ./configure $configure_args \
+   --docdir=$docdir \
+   --disable-shared \
+   --enable-thread-safe \
+   --with-gmp=/usr \
+   --build="$machine_type"
+
+  make -j${jobs}
+  make check
+  make -j${jobs} install DESTDIR="$destdir"
+
+  # Compress info documents (if needed)
+  if [[ -d ${destdir}/usr/share/info ]] ; then
+    rm -f "${destdir}"/usr/share/info/dir
+    gzip -9 ""${destdir}/usr/share/info/*""
+  fi
+
+  # Compress and link manual pages (if needed)
+  if [[ -d ${destdir}/usr/share/man ]] ; then
+    ( cd "${destdir}"/usr/share/man && \
+      find . -type f -exec gzip -9 '{}' \; && \
+      find . -type l | while read -r file ; do
+        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+        rm -- "$file"
+      done
+    )
+  fi
+
+  # Copy the documentation
+  mkdir -p "${destdir}${docdir}" && cp -a "$docs" "${destdir}${docdir}"
+}
+

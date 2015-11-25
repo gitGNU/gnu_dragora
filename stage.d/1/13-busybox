@@ -16,7 +16,7 @@ cd "${tmpdir}"/sources
 cd busybox-${version} || cd busybox
 
 # Import and export toolchain variables
-. "${worktree}"/bootstrap.d/env.d/cross-env
+. "${worktree}"/stage.d/env.d/cross-env
 
 # Patch including lzip support
 patch -Np1 -i "${worktree}"/patches/busybox/busybox-1.23.1_lzip-1.patch

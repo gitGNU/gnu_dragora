@@ -1,0 +1,108 @@
+# Build recipe for binutils.
+#
+# Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program=binutils
+version=2.25.1
+release=1
+
+tarname=${program}-${version}.tar.bz2
+
+description="
+binutils - The GNU binary utilities.
+
+Binutils is a collection of programming tools for the manipulation
+of object code in various object file formats.  These tools consist
+of the GNU linker (ld), the GNU assembler (as) and the profiler
+(gprof).  There is also a collection of other binary tools like the
+disassembler (objdump).
+
+"
+
+homepage=https://www.gnu.org/software/binutils
+licenses="GPLv3+, LGPLv3+"
+
+# Remote source(s)
+fetch=(
+  http://ftp.gnu.org/gnu/binutils/$tarname
+)
+
+docs=""COPYING* README""
+docdir=/usr/share/doc/${program}-${version}
+
+machine_type="$(cc -dumpmachine)"
+
+build {
+  cd "$srcdir"
+
+  # Suppress the installation of the outdated standards.info file,
+  # the newer one is provided by autoconf
+  rm -f etc/standards.info
+  sed -i '/^INFO/s/standards.info //' etc/Makefile.in
+
+  rm -rf ../binutils-build
+  mkdir ../binutils-build
+  cd ../binutils-build
+
+  CFLAGS="$CFLAGS -D_GNU_SOURCE" \
+  ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
+   --with-docdir="$docdir" \
+   --enable-multilib \
+   --disable-shared \
+   --disable-werror \
+   --disable-nls \
+   --build="$machine_type"
+
+  make -j${jobs} tooldir=/usr/"${machine_type}"
+  make -k check
+  make -j${jobs} install tooldir=/usr/"${machine_type}" DESTDIR="$destdir"
+
+  # Include the libiberty header
+  mkdir -p "${destdir}"/usr/include && \
+  cp ../binutils-${version}/include/libiberty.h "${destdir}"/usr/include
+
+  # Replace hard-links with relative soft-links
+  ( cd "${destdir}"/usr/bin && \
+    rm -f ld ; ln -sf ld.bfd ld ; \
+  )
+  ( cd "${destdir}/usr/${machine_type}/bin" && \
+    for file in * ; do \
+      if [[ -x ../../bin/$file ]] ; then
+        rm -f "$file" && ln -s "../../bin/$file" .
+      fi
+    done
+  )
+
+  # Compress info documents (if needed)
+  if [[ -d ${destdir}/usr/share/info ]] ; then
+    rm -f "${destdir}"/usr/share/info/dir
+    gzip -9 ""${destdir}/usr/share/info/*""
+  fi
+
+  # Compress and link manual pages (if needed)
+  if [[ -d ${destdir}/usr/share/man ]] ; then
+    ( cd "${destdir}"/usr/share/man && \
+      find . -type f -exec gzip -9 '{}' \; && \
+      find . -type l | while read -r file ; do
+        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+        rm -- "$file"
+      done
+    )
+  fi
+
+  # Copy the documentation
+  ( mkdir -p ${destdir}${docdir} ; \
+    cd ${tmpdir}/${program}-${version} && \
+    cp -a $docs ${destdir}${docdir} ; \
+  )
+
+  # Delete temporary build directory
+  cd "$srcdir"
+  if [[ -d ../binutils-build ]] ; then
+    rm -rf ../binutils-build
+  fi
+}
+

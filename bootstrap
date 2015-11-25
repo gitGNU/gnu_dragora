@@ -151,7 +151,7 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.1" \
+       "bootstrap 2.2" \
        "Copyright (C) 2014, 2015  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
@@ -272,17 +272,17 @@ umask 022
 mkdirIfNot "${tmpdir}/sources" "$crossdir" "$rootdir"
 
 # Process the files from stage number
-for file in ""${CWD}/bootstrap.d/${stage}/${@:-??-*}"" ; do
+for file in ""${CWD}/stage.d/${stage}/${@:-??-*}"" ; do
 
   # Get the basename
   file="${file##*/}"
 
-  if [ ! -f "${CWD}/bootstrap.d/${stage}/$file" ] ; then
-    echo "bootstrap: File '${CWD}/bootstrap.d/${stage}/$file' not found or not regular." 1>&2
+  if [ ! -f "${CWD}/stage.d/${stage}/$file" ] ; then
+    echo "bootstrap: File '${CWD}/stage.d/${stage}/$file' not found or not regular." 1>&2
     exit 1
   fi
 
-  if [ ! -x "${CWD}/bootstrap.d/${stage}/$file" ] ; then
+  if [ ! -x "${CWD}/stage.d/${stage}/$file" ] ; then
     echo "bootstrap: I won't build '${stage}/$file'.  File not executable." 1>&2
     continue;
   fi
@@ -305,7 +305,7 @@ for file in ""${CWD}/bootstrap.d/${stage}/${@:-??-*}"" ; do
 
   # Load script
   echo "==> File \"${file##*/}\" from stage $stage in process ..."
-  . "${CWD}/bootstrap.d/${stage}/$file"
+  . "${CWD}/stage.d/${stage}/$file"
 
   # Back to the current working directory
   if ! cd "$CWD" 2> /dev/null ; then

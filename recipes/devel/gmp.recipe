@@ -1,0 +1,72 @@
+# Build recipe for gmp.
+#
+# Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program=gmp
+version=6.1.0
+release=1
+
+tarname=${program}-${version}.tar.lz
+
+description="
+gmp - GNU multiple precision arithmetic library.
+
+GMP is a free library for arbitrary precision arithmetic, operating
+on signed integers, rational numbers, and floating-point numbers.
+There is no practical limit to the precision except the ones implied
+by the available memory in the machine GMP runs on.
+
+GMP has a rich set of functions, and the functions have a regular
+interface.
+
+"
+
+homepage=https://gmplib.org
+licenses="GPLv2+, GPLv3+, LGPLv3+"
+
+# Remote source(s)
+fetch=(
+  https://gmplib.org/download/gmp/$tarname
+)
+
+docs=""AUTHORS COPYING* ChangeLog NEWS README""
+docdir=/usr/share/doc/${program}-${version}
+
+machine_type="$(cc -dumpmachine)"
+
+build {
+  cd "$srcdir"
+
+  ./configure $configure_args \
+   --build=$machine_type \
+   --disable-shared \
+   --enable-cxx
+
+  make -j${jobs}
+  make check
+  make -j${jobs} install DESTDIR="$destdir"
+
+  # Compress info documents (if needed)
+  if [[ -d ${destdir}/usr/share/info ]] ; then
+    rm -f "${destdir}"/usr/share/info/dir
+    gzip -9 ""${destdir}/usr/share/info/*""
+  fi
+
+  # Compress and link manual pages (if needed)
+  if [[ -d ${destdir}/usr/share/man ]] ; then
+    ( cd "${destdir}"/usr/share/man && \
+      find . -type f -exec gzip -9 '{}' \; && \
+      find . -type l | while read -r file ; do
+        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+        rm -- "$file"
+      done
+    )
+  fi
+
+  # Copy the documentation
+  mkdir -p "${destdir}${docdir}" && cp -a "$docs" "${destdir}${docdir}"
+}
+

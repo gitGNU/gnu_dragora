@@ -1,0 +1,69 @@
+# Build recipe for flex.
+#
+# Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
+#
+# This recipe is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+program=flex
+version=2.6.0
+release=1
+
+tarname=${program}-${version}.tar.bz2
+
+description="
+flex - The fast lexical analyser generator.
+
+Flex is a fast lexical analyser generator.  It is a tool for
+generating programs that perform pattern-matching on text.
+
+"
+
+homepage=http://www.gnu.org/software/flex
+licenses=Custom
+
+# Remote source(s)
+fetch=(
+  http://downloads.sourceforge.net/sourceforge/flex/$tarname
+)
+
+docdir=/usr/share/doc/${program}-${version}
+
+machine_type="$(cc -dumpmachine)"
+
+build {
+  cd "$srcdir"
+
+  LDFLAGS="-Wl,-static" \
+  ./configure $configure_args \
+   --docdir="$docdir" \
+   --disable-nls \
+   --build="$machine_type"
+
+  make -j${jobs}
+  make -j${jobs} install DESTDIR="$destdir"
+
+  # To compatibility with flex's predecessor, lex
+  if [[ -f ${archive}/flex/bin/lex ]] ; then
+    install -m 755 "${archive}"/flex/bin/lex "${destdir}"/usr/bin && \
+    ln -s libfl.a "${destdir}"/usr/lib${libSuffix}/libl.a
+  fi
+
+  # Compress info documents (if needed)
+  if [[ -d ${destdir}/usr/share/info ]] ; then
+    rm -f "${destdir}"/usr/share/info/dir
+    gzip -9 ""${destdir}/usr/share/info/*""
+  fi
+
+  # Compress and link manual pages (if needed)
+  if [[ -d ${destdir}/usr/share/man ]] ; then
+    ( cd "${destdir}"/usr/share/man && \
+      find . -type f -exec gzip -9 '{}' \; && \
+      find . -type l | while read -r file ; do
+        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+        rm -- "$file"
+      done
+    )
+  fi
+}
+
