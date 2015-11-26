@@ -16,7 +16,7 @@ docdir=/usr/share/doc/${program}-${version}
 
 machine_type="$(cc -dumpmachine)"
 
-build {
+build() {
   cd "$srcdir"
 
   patch -Np0 -i "${patchdir}"/gcc/gcc-nofixincludes

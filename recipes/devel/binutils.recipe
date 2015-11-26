@@ -35,7 +35,7 @@ docdir=/usr/share/doc/${program}-${version}
 
 machine_type="$(cc -dumpmachine)"
 
-build {
+build() {
   cd "$srcdir"
 
   # Suppress the installation of the outdated standards.info file,

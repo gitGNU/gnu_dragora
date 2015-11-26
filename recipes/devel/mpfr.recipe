@@ -32,7 +32,7 @@ docdir=/usr/share/doc/${program}-${version}
 
 machine_type="$(cc -dumpmachine)"
 
-build {
+build() {
   cd "$srcdir"
 
   # Accumulative patchset

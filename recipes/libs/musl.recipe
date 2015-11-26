@@ -28,7 +28,7 @@ fetch=(
   http://www.musl-libc.org/releases/$tarname
 )
 
-build {
+build() {
   cd "$srcdir"
 
   ./configure $configure_args \

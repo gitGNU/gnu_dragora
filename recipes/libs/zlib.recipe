@@ -33,7 +33,7 @@ fetch=(
 docs=""ChangeLog FAQ README doc/*.txt""
 docdir=/usr/share/doc/${program}-${version}
 
-build {
+build() {
   cd "$srcdir"
 
   ./configure --prefix=/usr --static
