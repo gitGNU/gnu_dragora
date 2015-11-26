@@ -79,11 +79,6 @@
 |   |   |   `-- man8/
 |   |   `-- pkgconfig -> ../lib/pkgconfig/
 |   `-- src/
-|       `-- dragora/
-|           |-- archive/
-|           |-- patches/
-|           |-- recipes/
-|           `-- sources/
 `-- var/
     |-- cache/
     |   `-- man/
@@ -98,4 +93,4 @@
     |   `-- mail/
     `-- tmp/
 
-94 directories, 4 files
+89 directories, 4 files

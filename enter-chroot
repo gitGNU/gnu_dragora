@@ -1,5 +1,5 @@
 #! /bin/sh
-#  Copyright (C) 2012-2015  Matias A. Fonzo
+#  Copyright (C) 2012-2015  Matias A. Fonzo, selk@dragora.org.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@ CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
 
 # Functions
 unmountSeries() {
-  for node in "${rootdir}"/usr/src/dragora/archive \
-              "${rootdir}"/usr/src/dragora/patches \
-              "${rootdir}"/usr/src/dragora/recipes \
-              "${rootdir}"/usr/src/dragora/sources \
+  for node in "${rootdir}"/usr/src/qi/archive \
+              "${rootdir}"/usr/src/qi/patches \
+              "${rootdir}"/usr/src/qi/recipes \
+              "${rootdir}"/usr/src/qi/sources \
               "${rootdir}"/sys \
               "${rootdir}"/proc \
               "${rootdir}"/dev/shm \
@@ -64,10 +64,15 @@ rootdir="$(readlink /tools | sed -e 's/\/tools//')"
 unmountSeries
 
 echo "==> Mounting working directory ..."
-mount -o bind "${CWD}"/archive  "${rootdir}"/usr/src/dragora/archive
-mount -o bind "${CWD}"/patches  "${rootdir}"/usr/src/dragora/patches
-mount -o bind "${CWD}"/recipes  "${rootdir}"/usr/src/dragora/recipes
-mount -o bind "${CWD}"/sources  "${rootdir}"/usr/src/dragora/sources
+mkdir -p \
+ "${rootdir}"/usr/src/qi/archive \
+ "${rootdir}"/usr/src/qi/patches \
+ "${rootdir}"/usr/src/qi/recipes \
+ "${rootdir}"/usr/src/qi/sources
+mount -o bind "${CWD}"/archive  "${rootdir}"/usr/src/qi/archive
+mount -o bind "${CWD}"/patches  "${rootdir}"/usr/src/qi/patches
+mount -o bind "${CWD}"/recipes  "${rootdir}"/usr/src/qi/recipes
+mount -o bind "${CWD}"/sources  "${rootdir}"/usr/src/qi/sources
 
 echo "==> Mounting virtual file systems ..."
 mount -o bind /dev      "${rootdir}"/dev
