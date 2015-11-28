@@ -13,7 +13,6 @@ kernels/
 packages/
 packages64/
 plus/
-qi/src/
 source/
 syslinux/
 testing/
