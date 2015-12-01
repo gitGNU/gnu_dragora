@@ -17,3 +17,6 @@ cd "${tmpdir}"/sources/qi-${version}
 make prefix=/tools
 make prefix=/tools install
 
+# Add temporary and compatible config file with busybox
+cat "${worktree}"/archive/qi/etc/qirc > /tools/etc/qirc
+
