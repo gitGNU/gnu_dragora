@@ -87,7 +87,7 @@ unpack() {
     fi
 
     echo "==> Checking integrity of '${file}' ..."
-    eval_cmd "$tool_verify "$file" > /dev/null" 3
+    eval_cmd 3 "$tool_verify "$file" > /dev/null"
 
     # Generate a check sum or update it according to the timestamp of the source
     if [[ ! -e "${file}.sha1sum" || $file -nt ${file}.sha1sum ]] ; then
@@ -96,7 +96,7 @@ unpack() {
     fi
 
     echo "==> Unpacking source '${file}' ..."
-    eval_cmd "$tool_extract "$file"" 3
+    eval_cmd 3 "$tool_extract "$file""
   done
 }
 
@@ -329,11 +329,11 @@ for recipe ; do
         case "$address" in
           rsync://*)
             eval_cmd "cd "$tardir""
-            eval_cmd "$rsync "$address"" 10
+            eval_cmd 10 "$rsync "$address""
             ;;
           *://*)
             eval_cmd "cd "$tardir""
-            eval_cmd "$netget "$address"" 10
+            eval_cmd 10 "$netget "$address""
             ;;
           *)
             quit 1 "qi: build: Source file '${file_name}' cannot be obtained, protocol not supported.";

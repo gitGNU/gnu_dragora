@@ -29,17 +29,24 @@ quit() {
 # Function: eval_cmd
 # Evaluates the execution of a command, returns 2 or a given exit code.
 #
-# Usage: eval_cmd <arguments> [exit code]
+# Usage: eval_cmd [exit code] <arguments>
 #
 eval_cmd() {
-  local command="$1"
-  shift 1
+  local status string
 
-  eval "$command" || {
+  # Check if the exit status is given
+  if [[ "$1" != *[^0-9]* ]] ; then
+    status="$1"
+    shift 1
+  fi
+
+  string="$*"	# Expands as a single argument.
+
+  eval "$string" || {
     printf '%s\n' "" \
-     "Error executing '$command'." \
+     "Error executing '$string'." \
      "Return status = $?" 1>&2
-    exit "${1:-2}"
+    exit "${status:-2}"
   }
 }
 
