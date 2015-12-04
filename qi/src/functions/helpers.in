@@ -10,19 +10,23 @@ warn() {
 }
 
 # Function: quit
-# Quit (die) with either the exit status of a command, or a given exit code.
+# Quit with either the exit status of a command or a given exit code.
 #
 # Usage: quit [exit code] [message ...]
 #
 quit() {
   local status="$?"
+
+  shopt -s extglob
   case "$1" in
-    [0-9])
+    +([0-9]))	# Assign if it's a digit:
       status="$1"
       shift 1
       ;;
   esac
-  warn "$@"
+  shopt -u extglob
+
+  warn "$@"	# Print message.
   exit "$status"
 }
 
