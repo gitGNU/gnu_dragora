@@ -18,12 +18,10 @@ quit() {
   local status="$?"
 
   shopt -s extglob
-  case "$1" in
-    +([0-9]))	# Assign if it's a digit:
-      status="$1"
-      shift 1
-      ;;
-  esac
+  if [[ $1 = +([0-9]) ]] ; then	# Assign if it's a digit:
+    status="$1"
+    shift 1
+  fi
   shopt -u extglob
 
   warn "$@"	# Print message.
