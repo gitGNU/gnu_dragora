@@ -329,11 +329,11 @@ for recipe ; do
         case "$address" in
           rsync://*)
             eval_cmd "cd "$tardir""
-            eval_cmd 10 "$rsync "$address""
+            eval_cmd 10 ""${rsync//[\"\']/}" "$address""
             ;;
           *://*)
             eval_cmd "cd "$tardir""
-            eval_cmd 10 "$netget "$address""
+            eval_cmd 10 ""${netget//[\"\']/}" "$address""
             ;;
           *)
             quit 1 "qi: build: Source file '${file_name}' cannot be obtained, protocol not supported.";
