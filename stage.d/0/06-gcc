@@ -5,17 +5,17 @@
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
-version=5.2.0
+version=5.3.0
 
 echo "Unpacking gcc-${version} ..."
 rm -rf "${tmpdir}"/sources/gcc-${version}
-tar xf "${worktree}"/sources/gcc-${version}.tar.lz -C "${tmpdir}"/sources
+tar xf "${worktree}"/sources/gcc-${version}.tar.bz2 -C "${tmpdir}"/sources
 
 # Build instructions
 cd "${tmpdir}"/sources/gcc-${version}
 
 patch -Np0 -i "${worktree}"/patches/gcc/gcc-nofixincludes
-patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.2.0-combined.diff
+patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.3.0.diff
 
 # Build GCC built-in prerequisites
 for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.bz2 "${worktree}"/sources/mpc-*.tar.gz ; do
@@ -42,13 +42,6 @@ for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.
   mv "${name}-${vern}" "$name"
 done
 unset file name vern
-
-# Provide an (official) updated version of the config.sub file 
-# in order to match correctly the target triplet for a musl OS.
-#
-# This is until new versions could provide the updated file.
-#
-cp -f "${worktree}"/patches/common/config.sub gmp/configfsf.sub
 
 # Build in a separate directory
 rm -rf ../gcc-build
