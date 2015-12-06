@@ -193,14 +193,14 @@ for package in "$@" ; do
 
   # Check the integrity of the tarball
   echo "==> Checking integrity of '${name}.tlz' ..."
-  isignal "tar -tf "$package" > /dev/null" 3
+  isignal 3 "tar -tf "$package" > /dev/null"
 
   # To install the package
   echo "==> Installing package \"${name}\" in \`${packagedir}' ..."
   eval_cmd "mkdir -p "${packagedir}/$name""
 
   # Proceed to unpack the package
-  isignal "tar xpf "$package" -C "${packagedir}/$name"" 3
+  isignal 3 "tar xpf "$package" -C "${packagedir}/$name""
 
   # Remove objects (files, links or directories) from the target
   # directory that are in conflict with the package directory
