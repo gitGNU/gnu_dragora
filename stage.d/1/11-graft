@@ -9,7 +9,7 @@ version=2.8
 
 echo "Unpacking make-${version} ..."
 rm -rf "${tmpdir}"/sources/graft-${version}
-tar xf "${worktree}"/sources/graft-${version}.tar.lz -C "${tmpdir}"/sources
+tar xf "${worktree}"/sources/graft-${version}.tar.gz -C "${tmpdir}"/sources
 
 # Build instructions
 cd "${tmpdir}"/sources/graft-${version}

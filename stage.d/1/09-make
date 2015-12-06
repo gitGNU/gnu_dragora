@@ -9,7 +9,7 @@ version=4.1
 
 echo "Unpacking make-${version} ..."
 rm -rf "${tmpdir}"/sources/make-${version}
-tar xf "${worktree}"/sources/make-${version}.tar.lz -C "${tmpdir}"/sources
+tar xf "${worktree}"/sources/make-${version}.tar.bz2 -C "${tmpdir}"/sources
 
 # Build instructions
 cd "${tmpdir}"/sources/make-${version}

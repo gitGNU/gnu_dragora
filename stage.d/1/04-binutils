@@ -9,7 +9,7 @@ version=2.25.1
 
 echo "Unpacking binutils-${version} ..."
 rm -rf "${tmpdir}"/sources/binutils-${version}
-tar xf "${worktree}"/sources/binutils-${version}.tar.lz -C "${tmpdir}"/sources
+tar xf "${worktree}"/sources/binutils-${version}.tar.bz2 -C "${tmpdir}"/sources
 
 # Build instructions
 cd "${tmpdir}"/sources/binutils-${version}

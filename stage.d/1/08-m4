@@ -9,7 +9,7 @@ version=1.4.17
 
 echo "Unpacking m4-${version} ..."
 rm -rf "${tmpdir}"/sources/m4-${version}
-tar xf "${worktree}"/sources/m4-${version}.tar.lz -C "${tmpdir}"/sources
+tar xf "${worktree}"/sources/m4-${version}.tar.bz2 -C "${tmpdir}"/sources
 
 # Build instructions
 cd "${tmpdir}"/sources/m4-${version}

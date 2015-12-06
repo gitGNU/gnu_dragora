@@ -9,7 +9,7 @@ version=1.1.12
 
 echo "Unpacking musl-${version} ..."
 rm -rf "${tmpdir}"/sources/musl-${version}
-tar xf "${worktree}"/sources/musl-${version}.tar.lz -C "${tmpdir}"/sources
+tar xf "${worktree}"/sources/musl-${version}.tar.gz -C "${tmpdir}"/sources
 
 # Build instructions
 cd "${tmpdir}"/sources/musl-${version}

@@ -34,7 +34,7 @@ do \
 done
 
 # Build GCC built-in prerequisites
-for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.lz "${worktree}"/sources/mpc-*.tar.lz ; do
+for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.bz2 "${worktree}"/sources/mpc-*.tar.gz ; do
   if [ ! -e "$file" ] ; then
     echo "The built-in prerequisite \`${file##*/}' for GCC is required." 1>&2
     exit 1
