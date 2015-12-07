@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre1, 23 November 2015), which is a
+This manual is for Qi (version 1.0-pre2, 7 December 2015), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015 Matias A. Fonzo
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre1, 23 November 2015).
+This manual is for Qi (version 1.0-pre2, 7 December 2015).
 
 * Menu:
 
@@ -1186,17 +1186,17 @@ Index
 
 
 Tag Table:
-Node: Top785
-Node: Introduction1569
-Node: Invocation3184
-Node: The qirc file6823
-Node: Recipes7705
-Node: Packages9944
-Node: Examine packages17655
-Node: The .order files18675
-Node: Exit status18838
-Node: GNU Free Documentation License20174
-Node: Index45335
+Node: Top784
+Node: Introduction1567
+Node: Invocation3182
+Node: The qirc file6821
+Node: Recipes7703
+Node: Packages9942
+Node: Examine packages17653
+Node: The .order files18673
+Node: Exit status18836
+Node: GNU Free Documentation License20172
+Node: Index45333
 
 End Tag Table
 
