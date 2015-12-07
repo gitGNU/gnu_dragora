@@ -22,7 +22,7 @@ CWD=$(pwd)
 TMP=${TMP:-/tmp/sources}
 OUT=${OUT:-/tmp/packages}
 
-V=1.4.13
+V=1.4.18
 ARCH=${ARCH:-x86_64}
 B=1
 
@@ -59,7 +59,7 @@ find . \
     -perm 400    \
  \) -exec chmod 644 {} +
 
-patch -p1 -i ${CWD}/libpng-1.4.13-apng.patch
+patch -p1 -i ${CWD}/libpng-${V}-apng.patch
 
 CFLAGS="$DCFLAGS" \
 ./configure \
