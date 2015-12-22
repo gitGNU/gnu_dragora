@@ -38,6 +38,7 @@ show_help() {
    "  -P          package installation tree"                               \
    "  -T          target directory for linking"                            \
    "  -p          prune conflicts"                                         \
+   "  -r          read package from the named pipe"                        \
    "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
    "  -w          warn about the files that will be linked"                \
    ""                                                                      \
@@ -68,6 +69,7 @@ rcfile=rcfile
 packagedir=/usr/packages
 targetdir=/
 prune_conflicts=no_prune_conflicts
+read_pipe=noread_pipe
 verbose=""
 warn=nowarn
 
@@ -76,7 +78,7 @@ warn=nowarn
 # An indexed array is created when an option is set.  It helps to the
 # command line in order to take precedence over the config file
 
-while getopts ":hNpvVw P:T:" option ; do
+while getopts ":hNprvVw P:T:" option ; do
   case "$option" in
     (N)
       rcfile=no_rcfile
@@ -91,6 +93,9 @@ while getopts ":hNpvVw P:T:" option ; do
       ;;
     (p)
       prune_conflicts=prune_conflicts
+      ;;
+    (r)
+      read_pipe=read_pipe
       ;;
     (v)
       verbose=-v
@@ -108,19 +113,19 @@ while getopts ":hNpvVw P:T:" option ; do
      :)
       quit 1 \
        "The option '-${OPTARG}' requires an argument" \
-       "Usage: qi install [-hNpvVw] [-P <dir>] [-T <dir>] package(s).tlz"
+       "Usage: qi install [-hNprvVw] [-P <dir>] [-T <dir>] package(s).tlz"
       ;;
     \?)
       quit 1 \
        "qi: install: illegal option -- '-${OPTARG}'" \
-       "Usage: qi install [-hNpvVw] [-P <dir>] [-T <dir>] package(s).tlz"
+       "Usage: qi install [-hNprvVw] [-P <dir>] [-T <dir>] package(s).tlz"
       ;;
   esac
 done
 shift "$((OPTIND - 1))"
 
 # If there are no arguments, one package is required
-if (( $# == 0 )) ; then
+if (( $# == 0 )) && [[ $read_pipe != read_pipe ]] ; then
   quit 4 \
    "\nqi: install: You must specify at least one package." \
    "Try 'qi install -h' for more information."
@@ -133,8 +138,9 @@ fi
 
 # Read configuration file
 if [[ $rcfile = rcfile ]] ; then
-  # To mark some variables, redefinitions is not allowed in the config
-  readonly prune_conflicts verbose warn
+  # To mark some variables.  Redefinitions of this
+  # variables are not allowed from the config file
+  readonly prune_conflicts read_pipe verbose warn
 
   # Check existence, from where to read
   if [[ -e ~/.qirc ]] ; then
@@ -165,6 +171,19 @@ eval_cmd "mkdir -p "$packagedir" "$targetdir""
 graft_options="-u -l ${packagedir}/graft-log"
 if (( $UID == 0 )) ; then
   graft_options="-P -l ${packagedir}/graft-log"
+fi
+
+# Read package from the named pipe if -r was given (client/reader)
+if [[ $read_pipe = read_pipe ]] ; then
+  until [[ -p /var/tmp/qi-pipe ]] ; do
+    echo "qi: install: PIPE: Waiting for server to create the pipe ..."
+    sleep 1;
+  done
+
+  set --	# Unset positional parameters, setting '#' to zero.
+  while IFS="" read -r filename ; do
+    set -- "$@" "$filename"
+  done < /var/tmp/qi-pipe
 fi
 
 # Main loop
@@ -211,7 +230,7 @@ for package in "$@" ; do
   # Graft the package
   isignal "graft -i $graft_options $verbose -t "$targetdir" "${packagedir}/$name""
 
-  # Show description and notes from the package recipe.
+  # Show package information from the recipe.
   #
   # Get the name of the package removing the last two segments "-"
   pkgname="${name%-*-*}"	# Removes -version-arch+build.
@@ -219,12 +238,17 @@ for package in "$@" ; do
   # Include possible recipe names composed as "kernel3.10"
   for recipe in ""${packagedir}/${name}/var/lib/qi/recipes/${pkgname}*.recipe"" ; do
     if [[ -f $recipe ]] ; then
-      # Display information using fold(1) to give format
+      # Display information using fold(1) for fancy format
       showVar description notes homepage licenses "$recipe" | fold -w 72
       break;
     fi
   done
 
   unset name pkgname recipe
+
+  # Make confirmation if -r was used
+  if [[ $read_pipe = read_pipe ]] ; then
+    echo OK > /var/tmp/qi-pipe
+  fi
 done
 

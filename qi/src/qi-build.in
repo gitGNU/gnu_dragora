@@ -38,6 +38,7 @@ show_help() {
    ""                                                                    \
    "Build command options:"                                              \
    "  -h          display this help and exit"                            \
+   "  -C          create named pipe for communicate package name"        \
    "  -N          don't read runtime configuration file"                 \
    "  -S          don't strip unneeded or debugging symbols from files"  \
    "  -k          keep (don't delete) srcdir and destdir"                \
@@ -101,6 +102,7 @@ unpack() {
 }
 
 # Default variable values
+create_pipe=nocreate_pipe
 rcfile=rcfile
 strip=strip
 keepdir=nokeepdir
@@ -120,10 +122,13 @@ rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-ch
 # An indexed array is created when an option is set.  It helps to the
 # command line in order to take precedence over the config file
 
-while getopts ":hNSkni o:t:w:z:a:j:" option ; do
+while getopts ":hCNSkni o:t:w:z:a:j:" option ; do
   case "$option" in
     (k)
       keepdir=keepdir
+      ;;
+    (C)
+      create_pipe=create_pipe
       ;;
     (N)
       rcfile=no_rcfile
@@ -169,12 +174,12 @@ while getopts ":hNSkni o:t:w:z:a:j:" option ; do
      :)
       quit 1 \
        "The option '-${OPTARG}' requires an argument" \
-       "Usage: qi build [-hNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+       "Usage: qi build [-hCNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
       ;;
     \?)
       quit 1 \
        "qi: build: illegal option -- '-${OPTARG}'" \
-       "Usage: qi build [-hNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+       "Usage: qi build [-hCNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
       ;;
   esac
 done
@@ -187,9 +192,9 @@ if (( $# == 0 )) ; then
    "Try 'qi build -h' for more information."
 fi
 
-# To mark some variables, redefinitions
-# is not allowed in the config, recipes
-readonly nopkg keepdir increment_release
+# To mark some variables.  Redefinitions of this variables
+# are not allowed from the config, or from the recipes
+readonly create_pipe nopkg keepdir increment_release
 
 # Read configuration file
 if [[ $rcfile = rcfile ]] ; then
@@ -236,8 +241,8 @@ PRD="qi-build-${USER}-$RANDOM$$"
 
 eval_cmd "mkdir -p -m 700 "${tmpdir}"/$PRD"
 
-# To remove directory when it leaves
-trap 'eval_cmd "rm -rf "${tmpdir}"/$PRD"' EXIT
+# To remove directory and pipe when it leaves
+trap 'eval_cmd "rm -rf "${tmpdir}"/$PRD" /var/tmp/qi-pipe' EXIT
 
 # Save all exported variables
 export -p > "${tmpdir}"/${PRD}/default_env$$
@@ -420,10 +425,6 @@ for recipe ; do
     # Make the package
     eval_cmd \
      "cd "$destdir" && tar -c ./* | lzip -9v > "${outdir}/${pkgname}.tlz""
-
-    # Create the package list
-    echo "==> Saving full package name path in /var/tmp/pkglist ..."
-    eval_cmd "echo \"${outdir}/${pkgname}.tlz\" > /var/tmp/pkglist"
   fi
 
   # Save variables of the current recipe and possible exported functions
@@ -446,6 +447,10 @@ for recipe ; do
     rmIfDir "${tmpdir}/${srcdir}" "$destdir"
   fi
 
+  # Save pkgname before restoring the variables,
+  # this will be used to send the pkgname via pipe
+  s_pkgname="$pkgname"
+
   # Deactivate variables used in the recipe
   source "${tmpdir}"/${PRD}/substraction$$
 
@@ -453,5 +458,29 @@ for recipe ; do
   source "${tmpdir}/${PRD}/default_env$$"
 
   echo "<== Done [ ${CWD}/$recipe ]"
+
+  # Create named pipe if -C is given (server/writer)
+  if [[ $create_pipe = create_pipe ]] ; then
+    if [[ ! -p /var/tmp/qi-pipe ]] ; then
+      eval_cmd "mkfifo -m 077 /var/tmp/qi-pipe"
+    fi
+
+    while sleep 1 ; do
+      printf '%s\n' \
+        "qi: build: PIPE: Sending full package name to /var/tmp/qi-pipe ..." \
+        "qi: build: PIPE: Waiting for confirmation ..."
+      eval_cmd "echo \"${outdir}/${s_pkgname}.tlz\" > /var/tmp/qi-pipe"
+
+      # Wait to read an answer or confirmation
+      read -r REPLY < /var/tmp/qi-pipe
+      if [[ $REPLY = OK ]] ; then
+        echo "$REPLY"	# The client answered.
+        break;
+      fi
+    done
+    unset REPLY;
+  fi
+
+  unset s_pkgname
 done
 

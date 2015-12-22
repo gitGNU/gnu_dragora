@@ -45,6 +45,7 @@ usage() {
    "  -P          package installation tree"                               \
    "  -T          target directory for linking"                            \
    "  -p          prune conflicts"                                         \
+   "  -r          read package from the named pipe"                        \
    "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
    "  -w          warn about the files that will be linked"                \
    ""                                                                      \
@@ -56,6 +57,7 @@ usage() {
    "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
    ""                                                                      \
    "Options for command 'build':"                                          \
+   "  -C          create named pipe for communicate package name"          \
    "  -S          don't strip unneeded or debugging symbols from files"    \
    "  -k          keep (don't delete) srcdir and destdir"                  \
    "  -n          don't create a .tlz package"                             \
