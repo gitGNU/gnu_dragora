@@ -24,25 +24,25 @@
 # For more information, type: info qi 'order file'
 #
 
-kernel/linux-headers
+kernel/linux-headers.recipe
 
-libs/musl
+libs/musl.recipe
 
-devel/m4
+devel/m4.recipe
 
-libs/gmp
+libs/gmp.recipe
 
-libs/mpfr
+libs/mpfr.recipe
 
-libs/mpc
+libs/mpc.recipe
 
-libs/zlib
+libs/zlib.recipe
 
-devel/flex
+devel/flex.recipe
 
-devel/bison
+devel/bison.recipe
 
-devel/binutils
+devel/binutils.recipe
 
-devel/gcc
+devel/gcc.recipe
 
