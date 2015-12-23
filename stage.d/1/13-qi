@@ -5,15 +5,11 @@
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
 
-version=1.0-pre1
+version=1.0-pre2
 
-echo "Unpacking make-${version} ..."
-rm -rf "${tmpdir}"/sources/qi-${version}
-tar xf "${worktree}"/sources/qi-${version}.tar.lz -C "${tmpdir}"/sources
+echo "Making qi-${version} ..."
 
-# Build instructions
-cd "${tmpdir}"/sources/qi-${version}
-
+cd "${CWD}"/qi
 make prefix=/tools
 make prefix=/tools install
 
