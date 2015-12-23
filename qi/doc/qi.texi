@@ -1,0 +1,803 @@
+\input texinfo   @c -*-texinfo-*-
+@comment $Id@w{$}
+@comment %**start of header
+@setfilename qi.info
+@settitle Qi Manual
+@documentencoding ISO-8859-1
+@syncodeindex pg cp
+@comment %**end of header
+
+@set VERSION 1.0-pre2
+@set UPDATED 7 December 2015
+
+@copying
+This manual is for Qi (version @value{VERSION},
+@value{UPDATED}), which is a simple source builder and package manager.
+
+Copyright @copyright{} 2015 Matias A. Fonzo
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
+@end quotation
+@end copying
+
+@dircategory Texinfo documentation system
+@direntry
+* Qi: (qi).                     Source builder and package manager.
+@end direntry
+
+@titlepage
+@finalout
+@title Qi
+@subtitle for version @value{VERSION}, @value{UPDATED}
+@author Matias A. Fonzo (@email{selk@@dragora.org})
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@ifnottex
+@node Top
+@top
+
+This manual is for Qi (version @value{VERSION},
+@value{UPDATED}).
+@end ifnottex
+
+@menu
+* Introduction::                    Purpose, description
+* Invocation::                      Command-line interface
+* The qirc file::                   Configuration file
+* Recipes::                         Building packages
+* Packages::                        Installation, removal
+* Examine packages::                Debugging purposes
+* The .order files::                Handling the build order
+* Exit status::                     Exit codes, conditions
+* GNU Free Documentation License::
+* Index::
+@end menu
+
+@sp 1
+The Qi home page can be found at @uref{http://www.dragora.org}.
+@w{Send bug reports or suggestions to @email{dragora-devel@@nongnu.org}.}
+
+
+@node Introduction
+@chapter Introduction
+@cindex introduction
+
+Qi is a source builder and a package manager:
+
+It contains a set of tools where the main command is @command{qi}, a wrapping
+guide for the rest of the commands.  It follows the philosophy of the
+simplicity without adding too many features, such as those that can be
+found in popular package managers.  Basically it does two things:
+builds packages and manages them.
+
+The building part can get or retrieve source code from remote sites
+without the intervention of the developer or package maintainer.  It
+downloads the source, reads the checksum, and annotates the same one in
+the recipe.  This is done by the @samp{build} command, checking the
+integrity of the source and creating the checksum or updating it
+without losing focus.
+
+   Qi constructs the sources using recipe names, files that contain
+specific instructions to build every source.  As result, a binary
+package is obtained which can be installed, removed, upgraded, or
+inspected in the system.  The software packages produced by Qi have the
+.tlz extension; where, tar(1) is used for packaging, and lzip(1) is used
+as the only compression format in the package redistribution.
+
+The packages are managed thanks to an external tool called graft(1),
+which provides a mechanism for managing multiple packages under a
+single directory hierarchy, it was inspired by both Depot (Carnegie
+Mellon University) and Stow (Bob Glickstein).  In this aspect, Qi acts
+as a complement of Graft: it can work with packages, check them, solve
+conflicts, and more...
+
+
+@node Invocation
+@chapter Invocation
+@cindex invocation
+
+The synopsis to invoke Qi is:
+
+@example
+qi <command> [options] [package|recipe|order] ...
+@end example
+
+@noindent
+The following commands are supported by @command{qi}:
+
+@table @samp
+
+@item install
+Install packages to the system (.tlz).
+
+@item remove
+Remove packages of the system.
+
+@item erupt
+Examine packages for debugging purposes.
+
+@item order
+Resolves the build order through .order files.
+
+@item build
+Build packages using recipe files.
+
+@sp 1
+There are global or common options for the commands, as well as specific to each one.
+
+@sp 1
+@noindent
+@strong{Global options:}
+
+@item -h
+Show options for the given command and exit.
+
+@item -N
+Don't read runtime configuration file @file{qirc}.
+
+
+@sp 1
+@noindent
+@strong{Options for command @samp{install}:}
+
+@item -P
+Package installation tree.
+
+This option sets @samp{$@{packagedir@}}.
+@sp 1
+The default value for @strong{packagedir} is /usr/packages.
+
+@item -T
+Target directory for linking.
+
+This option sets @samp{$@{targetdir@}}.
+@sp 1
+The default value for @strong{targetdir} is /.
+
+@item -p
+Prune conflicts.
+
+@item -v
+graft(1) verbosity (use -V instead for more verbosity).
+
+@item -w
+Warn about the files that will be linked.
+
+
+@sp 1
+@noindent
+@strong{Options for command @samp{remove}:}
+
+@item -P
+Package (de)installation tree.
+
+This option sets @samp{$@{packagedir@}}.
+@sp 1
+The default value for @strong{packagedir} is /usr/packages.
+
+@item -T
+Target directory for unlinking.
+
+This option sets @samp{$@{targetdir@}}.
+@sp 1
+The default value for @strong{targetdir} is /.
+
+@item -k
+Keep (don't delete) the package directory.
+
+@item -p
+Prune conflicts.
+
+@item -v
+graft(1) verbosity (use -V instead for more verbosity).
+
+
+@sp 1
+@noindent
+@strong{Options for command @samp{build}:}
+
+@item -S
+Don't strip unneeded or debugging symbols from files.
+
+This option sets @samp{$@{strip@}}.
+@sp 1
+The default value for @strong{strip} is strip.
+
+@item -k
+Keep (don't delete) @samp{$@{srcdir@}} and @samp{$@{destdir@}} after the
+build.
+
+@item -n
+Don't create a .tlz package.
+
+@item -o
+Where the produced packages are written.
+
+This option sets @samp{$@{outdir@}}.
+@sp 1
+The default value for @strong{outdir} is /var/cache/qi/packages.
+
+@item -t
+Temporary directory for compilation.
+
+This option sets @samp{$@{tmpdir@}}.
+@sp 1
+The default value for @strong{tmpdir} is /tmp/sources.
+
+@item -w
+Working directory tree for archive, patches, recipes.
+
+This option sets @samp{$@{worktree@}}.
+@sp 1
+The default value for @strong{worktree} is /usr/src/qi.
+
+@item -z
+Where to find the compressed sources.
+
+This option sets @samp{$@{tardir@}}.
+@sp 1
+The default value for @strong{tardir} is /usr/src/qi/sources.
+
+@item -a
+Architecture to use.
+
+This option sets @samp{$@{arch@}}.
+
+The default value is obtained via uname(1): @samp{uname -m}.
+
+@item -i
+Increment release number when a package is produced.
+
+@item -j
+Parallel jobs for the compiler
+
+This option sets @samp{$@{jobs@}}.
+@sp 1
+The default value for @strong{jobs} is 1.
+
+
+@sp 1
+@noindent
+@strong{Options for command @samp{erupt}:}
+
+@item -d
+Decompression directory.
+
+If not specified, the default value is the Current Working Directory.
+
+
+@end table
+
+
+@itemize @bullet
+@item All the options can be mixed.
+@end itemize
+
+@noindent
+Notes:
+
+Options specified in the command-line have priority over the
+config file: @file{qirc}.  If there are no options, and if @file{qirc}
+is not present, default (internal) values will be used instead.
+
+@section Help Actions
+@cindex help actions
+
+There are several levels of help in which the help is showed.  If @command{qi}
+is invoked without arguments, then the general help appears.  Which is
+also equivalent to @samp{qi help}.
+@sp 1
+Type @samp{qi help <command>} for more information on a specific
+command.
+
+@noindent
+If the help does not appear when a command is invoked without
+arguments, please use @samp{qi <command> -h}.
+
+@node The qirc file
+@chapter The qirc file
+@cindex the qirc file
+
+@file{qirc} is the configuration file for Qi used at runtime during the
+installation, removal of a package or when a recipe is built.  This
+file is optional, and it can be useful to define variables and
+configure external tools (such as a download manager) for default use.
+
+@itemize @bullet
+@item The variables are declared as @samp{name=value}.
+@end itemize
+
+@noindent
+The options specified in the command-line can override the values
+specified in the configuration file.  For more information,
+@ref{Invocation}.
+
+@noindent
+The order in which Qi looks for this file is:
+
+@enumerate
+@item
+@env{$@{HOME@}/.qirc}
+@- Effective user.
+
+@item
+@samp{$@{sysconfdir@}/qirc}
+@- System-wide.
+@end enumerate
+
+If you pretend to run Qi for a specific user, you should copy the file
+@samp{$@{sysconfdir@}/qirc} to @env{$@{HOME@}/.qirc} setting
+@samp{$@{packagedir@}} and @samp{$@{targetdir@}} for @env{$HOME}.
+
+
+@node Recipes
+@chapter Recipes
+@cindex recipes
+
+A recipe is a file telling qi what to do.  Most often, the recipe
+tells qi how to build a binary package from a source tarball.
+
+A recipe has two parts: a list of variable definitions and a list of
+sections.  By convention, the syntax of a section is:
+
+@example
+section_name() @{
+  section lines
+@}
+@end example
+
+The section name is followed by parentheses, one space and an opening
+brace.  The line finishing the section contains just a closing brace.
+The section names or the function names currently recognized are
+@samp{build}.
+
+The @samp{build} section is an augmented shell script.  This is the main
+section which contains the instructions to build and produce a package.
+
+
+@section Variables
+@cindex variables
+
+A "variable" is a @strong{shell variable} defined either in @file{qirc}
+or in a recipe to represent a string of text, called the variable's
+"value".  These values are substituted by explicit request in the
+definitions of other variables or in calls to external commands.
+
+Variables can represent lists of file names, options to pass to
+compilers, programs to run, directories to look in for source files,
+directories to write output in, or anything else you can imagine.
+
+Definitions of variables in qi have four levels of precedence.
+Options which define variables from the command-line override those
+specified in the @file{qirc} file, while variables defined in the recipe
+override those specified in @file{qirc} taking priority over those
+variables settled by options via command-line.  Finally, some variables
+(outdir, tmpdir, worktree, tardir, netget, rsync, arch, jobs, pkgname)
+have default values if they are not defined anywhere.
+
+Options that set variables through the command-line can only reference
+variables defined in @file{qirc} and variables with default values
+(tmpdir, worktree, tardir, arch, jobs).
+
+Definitions of variables in @file{qirc} can only reference variables
+previously defined in @file{qirc} and variables with default values.
+
+Definitions of variables in the recipe can only reference variables
+settled by command-line, variables previously defined in the recipe,
+variables defined in @file{qirc}, and variables with default values.
+
+
+@node Packages
+@chapter Packages
+@cindex packages
+
+A package is a suite of programs usually distributed in binary form
+which may also contain manual pages, documentation, or any other file
+associated to a specific software.
+
+The Qi package format is a simple redistributable tar(1) archive
+compressed with lzip(1).  The package extension ends in ".tlz".
+
+@noindent
+Both package installation and package deinstallation are managed using
+@samp{$@{packagedir@}} and @samp{$@{targetdir@}}:
+
+@samp{$@{packagedir@}} is a common directory tree where the package contents
+is decompressed (resides).  By default the tree is located at
+@strong{/usr/packages}.
+
+@samp{$@{targetdir@}} is a target directory where the links will be
+made taking @samp{$@{packagedir@}/package_name} into account.
+
+  Packages are installed in self-contained directory trees and symbolic
+links from a common area are made to the package files.  This allows
+multiple versions of the same package to co-exist on the one system.
+
+@noindent
+Note: all the links to install or to remove a package is handled using
+graft(1).  Since multiple packages can be installed or removed at the
+same time, certain conflicts may arise between the packages.  According
+to the User's Guide of Graft, a conflict is defined as one of the
+following conditions:
+
+@itemize @bullet
+@item If the package object is a directory and the target object exists
+but is not a directory.
+
+@item If the package object is not a directory and the target object
+exists and is not a symbolic link.
+
+@item If the package object is not a directory and the target object
+exists and is a symbolic link to something other than the package
+object.
+@end itemize
+
+@noindent
+The Qi's default behavior is to not proceed with the installation
+when a conflict occurs.  But when a package that is going to be removed
+is in conflict with another package, graft(1) removes those parts that
+are not in conflict, leaving the links belonging to the original
+package.  This behavior can be changed if the option -p is specified
+(see the examples below).
+
+  @strong{For more information, check the documentation for graft.}
+
+@section Package Installation
+@cindex package installation
+
+This sort order is particularly useful just before the actual package
+installation, because it helps you to understand how the package
+installation works:
+
+@enumerate
+@item The integrity of a package is checked.
+
+@item A subdirectory will try to be created if
+@samp{$@{packagedir@}/package_name} does not exist.
+
+@item The package is decompressed in @samp{$@{packagedir@}} using its
+name for the subdirectory.
+
+@item graft(1) is used to install symbolic links from the package
+installation directory to the target directory.
+
+@item If the file of description exists, and if it's not empty, the
+package description will be displayed.
+
+@end enumerate
+
+@noindent
+@strong{Examples:}
+
+@noindent
+@emph{Usage:} qi install [-hNpvVw] [-P <dir>] [-T <dir>] package(s).tlz
+
+To install a single package, simply type:
+
+@smallexample
+qi install coreutils-8.24-x86_64+1.tlz
+@end smallexample
+
+This shows:
+
+@example
+Processing '/etc/qirc' ...
+==> Checking integrity of 'coreutils-8.24-x86_64+1.tlz' ...
+==> Installing package 'coreutils-8.24-x86_64+1' in `/usr/packages' ...
+coreutils - The GNU core utilities.
+
+The GNU core utilities are the basic file, shell and text manipulation
+utilities of the GNU operating system.  These are the core utilities
+which are expected to exist on every operating system.
+
+@end example
+
+Multiple packages can be passed in a single invocation of @samp{qi
+install}:
+
+@smallexample
+qi install gcc-4.9.3-x86_64+1.tlz rafaela-2.2-i486+1.tlz ...
+@end smallexample
+
+Warn about the files that will be linked:
+
+@smallexample
+qi install -w gcc-4.9.3-x86_64+1.tlz
+@end smallexample
+
+@itemize @bullet
+@item This is a useful option to verify the content of a package before
+installing it.
+@end itemize
+
+Seeing what happens when a package is installed (verbose mode):
+
+@smallexample
+qi install -v mariana-3.0-x86_64+1.tlz
+@end smallexample
+
+@itemize @bullet
+@item For a more detailed (long) output, you can use the -V option.
+@end itemize
+
+Installing in a different directory tree and target:
+
+@smallexample
+qi install -P /tmp/pkgdir -T /tmp/targetdir lzip-1.17-i486+1.tlz
+@end smallexample
+
+Forcing the package installation removing objects (files, links or
+directories) from the target directory that are in conflict with the
+package directory:
+
+@smallexample
+qi install -p zutils-1.4-x86_64+1.tlz
+@end smallexample
+
+@itemize @bullet
+@item It is useful to combine -p with -v or with -V.
+@end itemize
+
+
+@section Package Removal
+@cindex package removal
+
+This sort order is particularly useful just before the actual package
+deinstallation, because it helps you to understand how the package
+deinstallation works:
+
+@enumerate
+@item The packages are searched by name in @samp{$@{packagedir@}}.
+Complete package names like "program-version-arch+release.tlz" or
+short names divided by segments "-" are accepted.
+
+@item If the specified name cannot be found at @samp{$@{packagedir@}},
+@emph{remove} will try to find it expanding it, completing the
+name of the package.  If more than one package name matches, a menu of
+selection is generated to choose the packages.
+
+@item graft(1) is used to remove symbolic links from the package
+installation directory to the target directory.  By default, if there
+are a conflict with another package, it will remove those links that are
+not in conflict.  It's possible to prune all the conflicts using the -p
+option.
+
+@item Finally, the package directory is deleted if the option -k is not
+specified.
+
+@end enumerate
+
+@noindent
+@strong{Examples:}
+
+@noindent
+@emph{Usage:} qi remove [-hNkpvV] [-P <dir>] [-T <dir>] package(s)
+
+@noindent
+Where <package(s)>, partial names or complete package names can be
+specified:
+
+@itemize @minus
+@item program-version-arch+1.tlz
+@item program-version-arch+1
+@item program-version-arch
+@item program-version
+@item program
+@end itemize
+
+To remove a package, just execute the command:
+
+@smallexample
+qi remove xz
+@end smallexample
+
+This will show:
+
+@example
+Processing '/etc/qirc' ...
+==> Removing links of 'xz-5.2.1-x86_64+1' ...
+Uninstalling links from / to /usr/packages/xz-5.2.1-x86_64+1
+Processing   /usr/packages/xz-5.2.1-x86_64+1
+Processing   /usr/packages/xz-5.2.1-x86_64+1/usr
+Processing   /usr/packages/xz-5.2.1-x86_64+1/usr/bin
+UNLINK       /usr/bin/lzcat
+UNLINK       /usr/bin/lzmainfo
+UNLINK       /usr/bin/xzfgrep
+UNLINK       /usr/bin/xzdec
+UNLINK       /usr/bin/lzdiff
+UNLINK       /usr/bin/xzdiff
+UNLINK       /usr/bin/unlzma
+UNLINK       /usr/bin/xzegrep
+UNLINK       /usr/bin/xzless
+UNLINK       /usr/bin/xzcat
+UNLINK       /usr/bin/xz
+...
+<== Removing package directory `/usr/packages/xz-5.2.1-x86_64+1' ...
+Deleting /usr/packages/xz-5.2.1-x86_64+1 ...
+1 package(s) removed = xz-5.2.1-x86_64+1
+@end example
+
+If two or more versions of the same package are found, you can choose the
+packages through the selection menu:
+
+@example
+qi remove xz
+Processing '/etc/qirc' ...
+
+The following package names were found according to your input:
+
+1) xz-5.0.8-i486+1
+2) xz-5.2.1-x86_64+1
+3) xz-5.2.0-x86_64+2
+4) All
+Pick a number, press <ENTER> to continue, or 'c' to confirm:
+@end example
+
+If you pick a number followed by @key{ENTER}, you can continue selecting
+individual packages (let's say 1 and 3).  Once you are ready, press 'c'
+to confirm.  The last option selects all the packages.
+
+@itemize @bullet
+@item Press @key{CTRL}+C to bail out.
+@end itemize
+
+@noindent
+If a conflict exist with another package, @samp{remove} will try to
+delete those links that are not in conflict.  It's possible to prune
+all the conflicts using the -p option.
+
+
+@section Final notes
+@cindex packages
+
+Some signals like SIGINT or SIGHUP are ignored in the package
+installation, deinstallation.  The purpose of this is to ignore the
+cancellation while a package is installed or removed (e.g. Ctrl+C,
+terminal window closed).  Since installation or removal of a package
+can be crucial for the proper functioning of the system.
+
+
+@node Examine packages
+@chapter Examine packages
+@cindex examine packages
+
+@strong{erupt} is a special command to examine packages for debugging
+purposes:
+
+@noindent
+@emph{Usage:} qi install [-h] [-d <dir>] package.tlz
+
+@itemize @bullet
+@item This is equivalent to the shell instruction:
+
+@code{( umask 000 ; cd directory/ && tar -xvf package.tlz )}
+
+The permissions are set to "u=rwx,g=rwx,o=rwx" and the package content
+is decompressed inside a directory.
+@end itemize
+
+
+@itemize @bullet
+@item The specified package must be a regular file.
+
+@item Only one package can be passed per-invocation.
+
+@item A pre-existing directory is required to operate.
+
+@item If you don't provide a different directory name using the -d
+option, the package is decompressed in the Current Working Directory.
+The root directory (/) cannot be used for these purposes.
+@end itemize
+
+@noindent
+If you make some changes to the directory where the package is
+decompressed, and has in mind to repackage.  We suggest increase the
+build number of the package.
+
+
+@node The .order files
+@chapter The .order files
+@cindex the .order files
+
+TO DO,  The .order files.
+
+
+@node Exit status
+@chapter Exit Status
+@cindex exit codes
+
+All the conditions of exit codes are described in this chapter:
+
+@table @samp
+
+@item 0
+@strong{Successful completion (no errors)}
+
+@item 1
+@strong{Minor common errors}
+
+@itemize @minus
+@item Illegal option.
+
+@item Option requires an argument.
+
+@item Internal function to load not found.
+
+@item Program (prerequisite) is not available.
+@end itemize
+
+@item 2
+@strong{Command execution error}
+
+An external command to execute is evaluated, and if it fails:
+returns 2.
+
+@item 3
+@strong{Integrity check error for compressed files}
+
+Compressed files means:
+
+@itemize @minus
+@item All the tarballs supported by tar(1).
+
+@item Zip files supported by unzip(1).
+@end itemize
+
+@item 4
+@strong{File empty, not regular, or expected}
+
+It is expected:
+
+@itemize @minus
+@item A binary package (.tlz).
+
+@item An installed package to remove.
+
+@item A recipe file.
+
+@item A file of order (.order).
+@end itemize
+
+@item 5
+@strong{Empty or not defined variable}
+
+This exit code is used for reporting about empty or undefined variables.
+Usually, variables of the recipe and assigned arrays that are tested.
+
+@item 10
+@strong{Network manager error}
+
+Exit status from the execution of the network manager tool and its
+arguments.
+
+@end table
+
+@noindent
+Error messages are reported on standard error.
+
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+
+@include fdl.texi
+
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@bye
+

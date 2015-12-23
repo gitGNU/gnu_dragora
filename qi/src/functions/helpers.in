@@ -1,0 +1,73 @@
+# Functions as helpers for the internal programs or to use in the recipes.
+
+# Function: warn
+# Print warning messages to stderr, allows escape sequences.
+#
+# Usage: warn [message ...]
+#
+warn() {
+  printf '%b\n' "$@" 1>&2
+}
+
+# Function: quit
+# Quit with either the exit status of a command or a given exit code.
+#
+# Usage: quit [exit code] [message ...]
+#
+quit() {
+  local status="$?"
+
+  shopt -s extglob
+  if [[ $1 = +([0-9]) ]] ; then	# Assign if it's a digit:
+    status="$1"
+    shift 1
+  fi
+  shopt -u extglob
+
+  warn "$@"	# Print message.
+  exit "$status"
+}
+
+# Function: eval_cmd
+# Evaluates the execution of a command, returns 2 or a given exit code.
+#
+# Usage: eval_cmd [exit code] <arguments>
+#
+eval_cmd() {
+  local status string
+
+  # Check if the exit status is given
+  if [[ "$1" != *[^0-9]* ]] ; then
+    status="$1"
+    shift 1
+  fi
+
+  string="$*"	# Expands as a single argument.
+
+  eval "$string" || {
+    printf '%s\n' "" \
+     "Error executing '$string'." \
+     "Return status = $?" 1>&2
+    exit "${status:-2}"
+  }
+}
+
+# Function: rmIfDir
+# Deletes directories if they exist before
+#
+# Usage: rmIfDir [directory_name ...]
+#
+rmIfDir() {
+  local directory
+
+  for directory in "$@" ; do
+    if [[ -d $directory ]] ; then
+      echo "Deleting $directory ..."
+      eval_cmd "rm -rf "$directory""
+    fi
+  done
+}
+
+# Mark functions as read-only (unmodifiable)
+readonly -f warn quit eval_cmd rmIfDir
+

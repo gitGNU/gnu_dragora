@@ -1,0 +1,156 @@
+#! /bin/bash
+#  The Qi package manager
+#
+#  Copyright (C) 2015  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# EXIT STATUS
+# 0   = Successful completion
+# 1   = Minor common errors (e.g: help usage, support not available)
+# 4   = File empty, not regular, or expected
+
+# Where to find the commands
+LIBEXECDIR="${LIBEXECDIR:-@LIBEXECDIR@/qi}"
+
+# Functions
+usage() {
+  printf '%s\n' \
+   "Usage: qi <command> [options] [package|recipe|order] ..."              \
+   "The Qi package manager."                                               \
+   ""                                                                      \
+   "Commands:"                                                             \
+   "  install     install packages to the system (.tlz)"                   \
+   "  remove      remove packages of the system"                           \
+   "  erupt       examine packages for debugging purposes"                 \
+   "  order       resolves the build order through .order files"           \
+   "  build       build packages using recipe files"                       \
+   ""                                                                      \
+   "Global options:"                                                       \
+   "  -h          show options for the given command and exit"             \
+   "  -N          don't read runtime configuration file"                   \
+   ""                                                                      \
+   "Options for command 'install':"                                        \
+   "  -P          package installation tree"                               \
+   "  -T          target directory for linking"                            \
+   "  -p          prune conflicts"                                         \
+   "  -r          read package from the named pipe"                        \
+   "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
+   "  -w          warn about the files that will be linked"                \
+   ""                                                                      \
+   "Options for command 'remove':"                                         \
+   "  -P          package (de)installation tree"                           \
+   "  -T          target directory for unlinking"                          \
+   "  -k          keep (don't delete) the package directory"               \
+   "  -p          prune conflicts"                                         \
+   "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
+   ""                                                                      \
+   "Options for command 'build':"                                          \
+   "  -C          create named pipe for communicate package name"          \
+   "  -S          don't strip unneeded or debugging symbols from files"    \
+   "  -k          keep (don't delete) srcdir and destdir"                  \
+   "  -n          don't create a .tlz package"                             \
+   "  -o          where the produced packages are written"                 \
+   "  -t          temporary directory for compilation"                     \
+   "  -w          working directory tree for archive, patches, recipes"    \
+   "  -z          where to find the compressed sources"                    \
+   "  -a          architecture to use"                                     \
+   "  -i          increment release number when a package is produced"     \
+   "  -j          parallel jobs for the compiler"                          \
+   ""                                                                      \
+   "Options for command 'erupt':"                                          \
+   "  -d          decompression directory"                                 \
+   ""                                                                      \
+   "Type 'qi help <command>' for more information on a specific command."
+}
+
+_exec() {
+  if [[ -f $1 ]] ; then
+    if [[ -x $1 ]] ; then
+      exec env LIBEXECDIR="$LIBEXECDIR" "$1" "${@:2}"
+    else
+      echo "qi: ${1}: Cannot execute: Permission denied." 1>&2
+      exit 4
+    fi
+  else
+    echo "qi: ${1}: File not found or not regular." 1>&2
+    exit 4
+  fi
+}
+
+# Handle commands / arguments
+while (( $# )) ; do
+  case "$1" in
+    install|add)
+      _exec "${LIBEXECDIR}"/qi-install  "${@:2}"
+      ;;
+    remove)
+      _exec "${LIBEXECDIR}"/qi-remove   "${@:2}"
+      ;;
+    erupt)
+      _exec "${LIBEXECDIR}"/qi-erupt    "${@:2}"
+      ;;
+    order)
+      _exec "${LIBEXECDIR}"/qi-order    "${@:2}"
+      ;;
+    build)
+      _exec "${LIBEXECDIR}"/qi-build    "${@:2}"
+      ;;
+    help)
+      case "$2" in
+        install|remove|erupt|order|build)
+          _exec "${LIBEXECDIR}"/qi-${2} -h
+          ;;
+        add)	# Help alias for 'install'
+          _exec "${LIBEXECDIR}"/qi-install -h
+          ;;
+      esac
+      shift 1
+      break
+      ;;
+    -h|--help)
+      usage
+      exit
+      ;;
+    -V|--version|version)
+      printf '%s\n' \
+       "qi version @VERSION@" \
+       "Copyright (C) 2015 Matias A. Fonzo." \
+       "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
+       "This is free software: you are free to change and redistribute it." \
+       "There is NO WARRANTY, to the extent permitted by law."
+      exit 0
+      ;;
+    --)	# End of all options.
+      shift 1
+      break
+      ;;
+    -*)
+      echo "Unknown option: $1" 1>&2
+      usage 1>&2
+      exit 1
+      ;;
+    *)
+      echo "qi: '${1}' command not known for qi.  See 'qi -h'" 1>&2
+      exit 1
+      ;;
+  esac
+done
+
+# Show usage() when there are no arguments
+if (( $# == 0 )) ; then
+  usage
+  exit;
+fi
+

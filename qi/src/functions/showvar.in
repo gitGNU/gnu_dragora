@@ -1,0 +1,26 @@
+# Function: showVar
+# A function to print the variable values.
+#
+# Usage: showVar [variable name ...] file
+#
+# FIXME: This function is a bit quick and dirty, there are certain
+# problems with it, it allows varname="asdf' (mismatched quotes) and
+# if you have varname="something\nsomethingelse\n" it will fail to
+# print the first something.
+#
+showVar() {
+  local argv file
+
+  argv=("$@")			# All the arguments.
+  file=${argv[@]:(-1)}		# The last argument or file name.
+  unset 'argv[$#-1]'		# Removes the last argument or file name.
+
+  for v in "${argv[@]##*/}" ; do
+    sed -r -n \
+     "/^$v=[\"\'][^\"\']*$/,/[\"\']/{//d;/^$v=/d;p} ; s/^$v=\"?'?([^\"\']+)\"?'?$/\1/p" "$file"
+    echo;	# Print new line.
+  done
+
+  unset v
+}
+

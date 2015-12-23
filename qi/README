@@ -1,0 +1,65 @@
+                            +-------------+
+                            | Qi's README |
+                            +-------------+
+
+
+  1. Introduction
+  2. Installation
+  3. Contact
+
+
+  1. Introduction.
+
+Qi is a source builder and a package manager:
+
+   It contains a set of tools where the main command is `qi', a wrapping
+guide for the rest of the commands.  It follows the philosophy of the
+simplicity without adding too many features, such as those that can be
+found in popular package managers.  Basically it does two things:
+builds packages and manages them.
+
+   The building part can get or retrieve source code from remote sites
+without the intervention of the developer or package maintainer.  It
+downloads the source, reads the checksum, and annotates the same one in
+the recipe.  This is done by the `build' command, checking the
+integrity of the source and creating the checksum or updating it
+without losing focus.
+
+   Qi constructs the sources using recipe names, files that contain
+specific instructions to build every source.  As result, a binary
+package is obtained which can be installed, removed, upgraded, or
+inspected in the system.  The software packages produced by Qi have the
+.tlz extension; where, tar(1) is used for packaging, and lzip(1) is used
+as the only compression format in the package redistribution.
+
+   The packages are managed thanks to an external tool called graft(1),
+which provides a mechanism for managing multiple packages under a
+single directory hierarchy, it was inspired by both Depot (Carnegie
+Mellon University) and Stow (Bob Glickstein).  In this aspect, Qi acts
+as a complement of Graft: it can work with packages, check them, solve
+conflicts, and more...
+
+  2. Installation.
+
+To make Qi, simple type:
+
+  $ make
+
+To install (and copy) the files on /usr/local:
+
+  $ make install
+
+To install in a different location other than the default, type:
+
+  $ make prefix=$HOME/qi install
+
+To install in a temporary location, you can use DESTDIR=.  This
+is useful for package distributors:
+
+  $ make DESTDIR=/tmp/qi install
+
+  3. Contact.
+
+  The Qi home page can be found at `http://www.dragora.org'.
+Send bug reports or suggestions to <dragora-devel@nongnu.org>.
+

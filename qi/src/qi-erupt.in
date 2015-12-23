@@ -1,0 +1,98 @@
+#! /bin/bash
+#  This program is part of the Qi package manager
+#
+#  Copyright (C) 2015  Matias A. Fonzo
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# EXIT STATUS
+# 0   = Successful completion
+# 1   = Minor common errors (e.g: help usage, support not available)
+# 2   = Command execution error
+# 4   = File empty, not regular, or expected
+
+# Override locale settings
+export LC_ALL=C
+
+# Functions
+show_help() {
+  printf '%s\n' \
+   "Usage: qi erupt [options] package.tlz"                         \
+   "Examine packages for debugging purposes."                      \
+   ""                                                              \
+   "Defaults for the options are specified in brackets."           \
+   ""                                                              \
+   "Erupt command options:"                                        \
+   "  -h          display this help and exit"                      \
+   "  -d          decompression directory [${directory}]"          \
+   ""                                                              \
+   "If you don't provide a different directory name, the current"  \
+   "working directory will be used to decompress the package."     \
+   ""
+}
+
+# Directory of functions
+fndir="${LIBEXECDIR}/functions"
+
+# Load (externally) internal functions
+source "${fndir}"/helpers  || exit 1
+
+# Default variable values
+directory="$PWD"
+
+# Handle command-line options
+while getopts ":h d:" option ; do
+  case "$option" in
+    (d)
+      directory="$OPTARG"
+      ;;
+    (h)
+      show_help
+      exit 0
+      ;;
+     :)
+      quit 1 \
+       "The option '-${OPTARG}' requires an argument" \
+       "Usage: qi erupt [-h] [-d <dir>] package.tlz"
+      ;;
+    \?)
+      quit 1 \
+       "qi: erupt: illegal option -- '-${OPTARG}'" \
+       "Usage: qi erupt [-h] [-d <dir>] package.tlz"
+      ;;
+  esac
+done
+shift "$((OPTIND - 1))"
+
+# If there are no arguments, one package is required
+if (( $# == 0 )) ; then
+  quit 4 \
+   "\nqi: erupt: You must specify at least one package." \
+   "Try 'qi erupt -h' for more information."
+fi
+
+# Sanity check: check for a valid directory (the root is not allowed)
+if [[ ! -d $directory ]] || [[ $directory = / ]] ; then
+  quit 1 \
+   "qi: erupt: The directory \`${directory}' is not a valid directory."
+fi
+
+# Sanity check: simple integrity check
+if [[ ! -f $1 ]] ; then
+  quit 4 "qi: erupt: File '${1}' not found or not regular."
+fi
+
+echo "==> Erupting package \'${1##*/}\' on the directory \`${directory}' ..."
+eval_cmd "( umask 000 ; cd "$directory" && tar -xvf "$1" )"
+
