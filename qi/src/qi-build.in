@@ -313,7 +313,8 @@ for recipe ; do
       export libSuffix=64
       ;;
   esac
-  pkgname=${pkgname:-$program-$version-$arch+$release}
+  pkgname=${pkgname:-$program}
+  full_pkgname="${pkgname}-${version}-${arch}+${release}"
   full_tarname="${tardir}/$tarname"
 
   echo "==> Preparing temporary directories ..."
@@ -373,7 +374,7 @@ for recipe ; do
 
   # If for some reason destdir is empty, the package won't be created
   if rmdir "$destdir" 2> /dev/null ; then
-    warn "qi: build: WARNING: ${pkgname}.tlz: Won't be created, 'destdir' is empty."
+    warn "qi: build: WARNING: ${full_pkgname}.tlz: Won't be created, 'destdir' is empty."
     nopkg=nopkg
     strip=nostrip
   fi
@@ -412,7 +413,7 @@ for recipe ; do
 
   # Package creation
   if [[ $nopkg != nopkg ]] ; then
-    echo "==> Creating package \"${pkgname}.tlz\" in \`${outdir}' ..."
+    echo "==> Creating package \"${full_pkgname}.tlz\" in \`${outdir}' ..."
 
     # Recipe edition when release is incremented
     if [[ $increment_release = increment_release ]] ; then
@@ -424,7 +425,7 @@ for recipe ; do
 
     # Make the package
     eval_cmd \
-     "cd "$destdir" && tar -c ./* | lzip -9v > "${outdir}/${pkgname}.tlz""
+     "cd "$destdir" && tar -c ./* | lzip -9v > "${outdir}/${full_pkgname}.tlz""
   fi
 
   # Save variables of the current recipe and possible exported functions
@@ -449,7 +450,7 @@ for recipe ; do
 
   # Save pkgname before restoring the variables,
   # this will be used to send the pkgname via pipe
-  s_pkgname="$pkgname"
+  s_full_pkgname="$full_pkgname"
 
   # Deactivate variables used in the recipe
   source "${tmpdir}"/${PRD}/substraction$$
@@ -469,7 +470,7 @@ for recipe ; do
       printf '%s\n' \
         "qi: build: PIPE: Sending full package name to /var/tmp/qi-pipe ..." \
         "qi: build: PIPE: Waiting for confirmation ..."
-      eval_cmd "echo \"${outdir}/${s_pkgname}.tlz\" > /var/tmp/qi-pipe"
+      eval_cmd "echo \"${outdir}/${s_full_pkgname}.tlz\" > /var/tmp/qi-pipe"
 
       # Wait to read an answer or confirmation
       read -r REPLY < /var/tmp/qi-pipe
@@ -481,6 +482,6 @@ for recipe ; do
     unset REPLY;
   fi
 
-  unset s_pkgname
+  unset s_full_pkgname
 done
 
