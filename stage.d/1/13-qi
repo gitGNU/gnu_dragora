@@ -13,3 +13,5 @@ cd "${CWD}"/qi
 make prefix=/tools
 make prefix=/tools install
 
+make clean;	# Leave it clean.
+
