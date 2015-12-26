@@ -43,3 +43,7 @@
 # Download manager for the RSYNC protocol
 #rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-changes"
 
+## THIRD SECTION:  Custom variables.
+#
+# Mostly used for Dragora GNU/Linux-Libre
+configure_args=--prefix=/usr --libexecdir=/usr/libexec --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --includedir=/usr/include --localstatedir=/var --mandir=/usr/share/man --infodir=/usr/share/info
