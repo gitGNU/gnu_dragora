@@ -19,6 +19,7 @@ abstraction of the deflate compression algorithm used in their
 gzip file compression program.
 
 Zlib was written by Jean-loup Gailly and Mark Adler.
+
 "
 
 homepage=http://zlib.net

@@ -21,6 +21,7 @@ Bison can also generate IELR(1) or canonical LR(1) parser tables.
 Once you are proficient with Bison, you can use it to develop a wide
 range of language parsers, from those used in simple desk calculators
 to complex programming languages.
+
 "
 
 homepage=https://www.gnu.org/software/bison
