@@ -1,4 +1,4 @@
-b# Build recipe for m4.
+# Build recipe for m4.
 #
 # Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
 #
@@ -40,7 +40,7 @@ docdir=/usr/share/doc/${program}-${version}
 build() {
   cd "$srcdir"
 
-  #patch -Np1 -i "${patchdir}"/m4/update-freadahead
+  patch -Np1 -i "${worktree}"/patches/m4/update-freadahead
 
   LDFLAGS="-Wl,-static,--verbose=99" \
   ./configure $configure_args \
