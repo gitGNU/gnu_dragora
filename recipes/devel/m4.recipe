@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program=m4
-version=1.4.17
+version=1.4.16
 release=1
 
 tarname=${program}-${version}.tar.bz2
@@ -40,7 +40,14 @@ docdir=/usr/share/doc/${program}-${version}
 build() {
   cd "$srcdir"
 
-  patch -Np1 -i "${worktree}"/patches/m4/update-freadahead
+  set -o errexit;       # Exit immediately on any error.
+
+  # Run fixer script
+  "${worktree}"/patches/gnulibfix lib/
+
+  # Avoid: ./stdio.h:477:1: error: 'gets' undeclared here (not in a function)
+  #  _GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");
+  sed -i -e '/gets is a/d' lib/stdio.in.h
 
   LDFLAGS="-Wl,-static,--verbose=99" \
   ./configure $configure_args \
@@ -55,18 +62,20 @@ build() {
     gzip -9 ""${destdir}/usr/share/info/*""
   fi
 
-  # Compress and link manual pages (if needed)
+  # Compress manual pages (if needed)
   if [[ -d ${destdir}/usr/share/man ]] ; then
     ( cd "${destdir}"/usr/share/man && \
       find . -type f -exec gzip -9 '{}' \; && \
       find . -type l | while read -r file ; do
-        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
-        rm -- "$file"
+        if [[ -n $file ]] ; then
+          ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+          rm -- "$file"
+        fi
       done
     )
   fi
 
   # Copy the documentation
-  mkdir -p "${destdir}${docdir}" && cp -a "$docs" "${destdir}${docdir}"
+  mkdir -p "${destdir}${docdir}" && cp -a $docs "${destdir}${docdir}"
 }
 
