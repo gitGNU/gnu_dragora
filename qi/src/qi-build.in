@@ -103,7 +103,7 @@ unpack() {
 }
 
 # Default variable values
-autoerror_detection=autoerror_detection
+avoid_errors=noavoid_errors
 create_pipe=nocreate_pipe
 rcfile=rcfile
 strip=strip
@@ -130,7 +130,7 @@ while getopts ":hACNSkni o:t:w:z:a:j:" option ; do
       keepdir=keepdir
       ;;
     (A)
-      autoerror_detection=avoid_autoerror_detection
+      avoid_errors=avoid_errors
       ;;
     (C)
       create_pipe=create_pipe
@@ -239,7 +239,7 @@ fi
 # We prepare to export specific variables that will serve to restore
 # their values when one stops processing a recipe and place is given
 # to the following one
-export arch jobs strip
+export avoid_errors arch jobs strip
 
 # Create a Private Randomized Directory
 PRD="qi-build-${USER}-$RANDOM$$"
@@ -371,7 +371,7 @@ for recipe ; do
   eval_cmd "chmod -R u+w,go-w,a+rX-s "${tmpdir}/${srcdir}""
 
   # Exit immediately on any error before build()
-  if [[ $autoerror_detection != avoid_autoerror_detection ]] ; then
+  if [[ $avoid_errors != avoid_errors ]] ; then
     set -o errexit	# Exit immediately on any error.
   else
     warn "WARNING: Automatic detection of errors will be avoided."
