@@ -9,6 +9,7 @@ program=linux
 version=4.1.10
 release=1
 pkgname=linux-headers
+strip=nostrip
 
 tarname=${program}-libre-${version}-gnu.tar.lz
 
