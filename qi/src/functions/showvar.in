@@ -18,7 +18,6 @@ showVar() {
   for v in "${argv[@]##*/}" ; do
     sed -r -n \
      "/^$v=[\"\'][^\"\']*$/,/[\"\']/{//d;/^$v=/d;p} ; s/^$v=\"?'?([^\"\']+)\"?'?$/\1/p" "$file"
-    echo;	# Print new line.
   done
 
   unset v
