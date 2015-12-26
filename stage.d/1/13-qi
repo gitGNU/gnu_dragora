@@ -10,6 +10,7 @@ version=1.0-pre2
 echo "Making qi-${version} ..."
 
 cd "${CWD}"/qi
+make clean
 make prefix=/tools
 make prefix=/tools install
 
