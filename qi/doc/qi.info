@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre2, 7 December 2015), which is a
+This manual is for Qi (version 1.0-pre2, 26 December 2015), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015 Matias A. Fonzo
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre2, 7 December 2015).
+This manual is for Qi (version 1.0-pre2, 26 December 2015).
 
 * Menu:
 
@@ -137,6 +137,9 @@ The following commands are supported by `qi':
 `-p'
      Prune conflicts.
 
+`-r'
+     Read package from the named pipe.
+
 `-v'
      graft(1) verbosity (use -V instead for more verbosity).
 
@@ -171,6 +174,12 @@ The following commands are supported by `qi':
 
 
      *Options for command `build':*
+
+`-A'
+     Avoid automatic error detection.
+
+`-C'
+     Create named pipe for communicate package name.
 
 `-S'
      Don't strip unneeded or debugging symbols from files.
@@ -1172,7 +1181,7 @@ Index
 
 * examine packages:                      Examine packages.    (line   6)
 * exit codes:                            Exit status.         (line   6)
-* help actions:                          Invocation.          (line 174)
+* help actions:                          Invocation.          (line 183)
 * introduction:                          Introduction.        (line   6)
 * invocation:                            Invocation.          (line   6)
 * package installation:                  Packages.            (line  55)
@@ -1186,17 +1195,17 @@ Index
 
 
 Tag Table:
-Node: Top784
-Node: Introduction1567
-Node: Invocation3182
-Node: The qirc file6821
-Node: Recipes7703
-Node: Packages9942
-Node: Examine packages17653
-Node: The .order files18673
-Node: Exit status18836
-Node: GNU Free Documentation License20172
-Node: Index45333
+Node: Top785
+Node: Introduction1569
+Node: Invocation3184
+Node: The qirc file6971
+Node: Recipes7853
+Node: Packages10092
+Node: Examine packages17803
+Node: The .order files18823
+Node: Exit status18986
+Node: GNU Free Documentation License20322
+Node: Index45483
 
 End Tag Table
 

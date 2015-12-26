@@ -35,8 +35,6 @@ fetch=(
 jobs=1
 
 build() {
-  set -o errexit;	# Exit immediately on any error.
-
   cd "$srcdir"
 
   ./configure CFLAGS="$CFLAGS"

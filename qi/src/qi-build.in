@@ -38,6 +38,7 @@ show_help() {
    ""                                                                    \
    "Build command options:"                                              \
    "  -h          display this help and exit"                            \
+   "  -A          avoid automatic error detection"                       \
    "  -C          create named pipe for communicate package name"        \
    "  -N          don't read runtime configuration file"                 \
    "  -S          don't strip unneeded or debugging symbols from files"  \
@@ -102,6 +103,7 @@ unpack() {
 }
 
 # Default variable values
+autoerror_detection=autoerror_detection
 create_pipe=nocreate_pipe
 rcfile=rcfile
 strip=strip
@@ -122,10 +124,13 @@ rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-ch
 # An indexed array is created when an option is set.  It helps to the
 # command line in order to take precedence over the config file
 
-while getopts ":hCNSkni o:t:w:z:a:j:" option ; do
+while getopts ":hACNSkni o:t:w:z:a:j:" option ; do
   case "$option" in
     (k)
       keepdir=keepdir
+      ;;
+    (A)
+      autoerror_detection=avoid_autoerror_detection
       ;;
     (C)
       create_pipe=create_pipe
@@ -174,12 +179,12 @@ while getopts ":hCNSkni o:t:w:z:a:j:" option ; do
      :)
       quit 1 \
        "The option '-${OPTARG}' requires an argument" \
-       "Usage: qi build [-hCNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+       "Usage: qi build [-hACNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
       ;;
     \?)
       quit 1 \
        "qi: build: illegal option -- '-${OPTARG}'" \
-       "Usage: qi build [-hCNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+       "Usage: qi build [-hACNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
       ;;
   esac
 done
@@ -365,12 +370,18 @@ for recipe ; do
   # Set sane permissions
   eval_cmd "chmod -R u+w,go-w,a+rX-s "${tmpdir}/${srcdir}""
 
+  # Exit immediately on any error before build()
+  if [[ $autoerror_detection != avoid_autoerror_detection ]] ; then
+    set -o errexit	# Exit immediately on any error.
+  else
+    warn "WARNING: Automatic detection of errors will be avoided."
+  fi
+
   # Run the build function
   echo "==> Running build() ..."
   build
 
-  # If has been declared, deactivate the errexit flag for these recipes
-  set +o errexit
+  set +o errexit	# Deactivate shell option.
 
   # If for some reason destdir is empty, the package won't be created
   if rmdir "$destdir" 2> /dev/null ; then
