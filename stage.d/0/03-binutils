@@ -19,7 +19,7 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-AR="ar" \
+AR="ar" AS="as" \
 ../binutils-${version}/configure \
  --prefix="$crossdir" \
  --host=$host \

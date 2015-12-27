@@ -51,6 +51,7 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
+AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c \
