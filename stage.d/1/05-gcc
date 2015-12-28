@@ -94,7 +94,7 @@ cd ../gcc-build
 
 sed -i.orig "/^host_\(GMP\|ISL\|CLOOG\)\(LIBS\|INC\)/s:/tools:$crossdir:g" Makefile
 
-make -j${jobs} AS_FOR_target="$AS" LD_FOR_target="$LD"
+make -j${jobs} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD"
 make install
 
 # Symlink for compatibility
