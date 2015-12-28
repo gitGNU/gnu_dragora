@@ -92,8 +92,6 @@ cd ../gcc-build
  --without-cloog \
  $GCC_OPTS $MULTILIB
 
-sed -i.orig "/^host_\(GMP\|ISL\|CLOOG\)\(LIBS\|INC\)/s:/tools:$crossdir:g" Makefile
-
 make -j${jobs} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD"
 make install
 
