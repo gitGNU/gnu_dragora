@@ -11,9 +11,9 @@ http://busybox.net/downloads/busybox-1.24.1.tar.bz2
 http://downloads.sourceforge.net/sourceforge/flex/flex-2.6.0.tar.bz2
 http://linux-libre.fsfla.org/pub/linux-libre/releases/4.1.10-gnu/linux-libre-4.1.10-gnu.tar.lz
 http://peters.gormand.com.au/Home/tools/graft/graft-2.8.tar.gz
-http://www.cpan.org/src/5.0/perl-5.22.0.tar.gz
+http://www.cpan.org/src/5.0/perl-5.22.1.tar.gz
 http://www.mpfr.org/mpfr-current/mpfr-3.1.3.tar.bz2
 http://www.musl-libc.org/releases/musl-1.1.12.tar.gz
 http://zlib.net/zlib-1.2.8.tar.gz
+https://github.com/arsv/perl-cross/releases/download/1.0.2/perl-5.22.1-cross-1.0.2.tar.gz
 https://gmplib.org/download/gmp/gmp-6.1.0.tar.lz
-https://raw.github.com/arsv/perl-cross/releases/perl-5.22.0-cross-1.0.1.tar.gz
