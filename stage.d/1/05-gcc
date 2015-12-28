@@ -79,8 +79,6 @@ cd ../gcc-build
  --target=$TARGET \
  --with-local-prefix=/tools \
  --with-native-system-header-dir=/tools/include \
- --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
- --with-mpfr-lib="${PWD}"/mpfr/src/.libs \
  --disable-shared \
  --disable-nls \
  --disable-libgomp \

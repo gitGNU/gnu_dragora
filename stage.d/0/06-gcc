@@ -61,8 +61,6 @@ AR="ar" \
  --host=$host \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
- --with-mpfr-include="${PWD}"/../gcc-${version}/mpfr/src \
- --with-mpfr-lib="${PWD}"/mpfr/src/.libs \
  --disable-nls \
  --disable-libmudflap \
  --disable-libsanitizer \
