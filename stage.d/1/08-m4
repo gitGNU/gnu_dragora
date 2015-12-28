@@ -14,6 +14,9 @@ tar xf "${worktree}"/sources/m4-${version}.tar.bz2 -C "${tmpdir}"/sources
 # Build instructions
 cd "${tmpdir}"/sources/m4-${version}
 
+cp -f "${worktree}"/patches/common/config.guess build-aux/config.guess
+cp -f "${worktree}"/patches/common/config.sub build-aux/config.sub
+
 patch -Np1 -i "${worktree}"/patches/m4/update-freadahead
 
 # Import and export toolchain variables
