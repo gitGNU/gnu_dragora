@@ -43,11 +43,10 @@ build() {
   patch -Np1 -i "${worktree}"/patches/m4/update-freadahead
 
   LDFLAGS="-Wl,-static,--verbose=99" \
-  ./configure $configure_args \
-   ac_cv_libsigsegv=no
+  ./configure $configure_args --build="$MACHTYPE"
 
-  make -j${jobs}
-  make -j${jobs} install DESTDIR="$destdir"
+  make -j${jobs} -k
+  make -j${jobs} -k install DESTDIR="$destdir"
 
   # Compress info documents (if needed)
   if [[ -d ${destdir}/usr/share/info ]] ; then
@@ -60,13 +59,15 @@ build() {
     ( cd "${destdir}"/usr/share/man && \
       find . -type f -exec gzip -9 '{}' \; && \
       find . -type l | while read -r file ; do
-        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
-        rm -- "$file"
+        if [[ -n $file ]] ; then
+          ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+          rm -- "$file"
+        fi
       done
     )
   fi
 
   # Copy the documentation
-  mkdir -p "${destdir}${docdir}" && cp -a "$docs" "${destdir}${docdir}"
+  mkdir -p "${destdir}${docdir}" && cp -a $docs "${destdir}${docdir}"
 }
 
