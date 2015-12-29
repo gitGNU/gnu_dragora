@@ -69,6 +69,6 @@ AR="ar" \
  --without-cloog \
  $GCC_OPTS $MULTILIB
 
-make -j${jobs}
+make -j${jobs} AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld"
 make install
 
