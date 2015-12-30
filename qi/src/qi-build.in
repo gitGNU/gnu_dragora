@@ -83,18 +83,18 @@ unpack() {
         quit 1 "qi: build: ${file}: Unsupported file format, extension '${file#*.}'.";
     esac
 
-    echo "==> Checking SHA1 sum ..."
-    if [[ -f ${file}.sha1sum ]] ; then
-      eval_cmd "( cd "$tardir" && sha1sum -c "${file}.sha1sum" )"
+    echo "==> Checking SHA1 sums ..."
+    if [[ -f ${file}.sha1 ]] ; then
+      eval_cmd "( cd "$tardir" && sha1sum -c "${file}.sha1" )"
     fi
 
     echo "==> Checking integrity of '${file}' ..."
     eval_cmd 3 "$tool_verify "$file" > /dev/null"
 
     # Generate a check sum or update it according to the timestamp of the source
-    if [[ ! -e "${file}.sha1sum" || $file -nt ${file}.sha1sum ]] ; then
-      echo "==> SHA1: Creating or updating '${file}.sha1sum' ..."
-      eval_cmd "( cd "$tardir" && sha1sum "${file##*/}" > "${file}.sha1sum" )"
+    if [[ ! -e ${file}.sha1 || $file -nt ${file}.sha1 ]] ; then
+      echo "==> SHA1: Creating or updating '${file}.sha1' ..."
+      eval_cmd "( cd "$tardir" && sha1sum "${file##*/}" > "${file}.sha1" )"
     fi
 
     echo "==> Unpacking source '${file}' ..."
