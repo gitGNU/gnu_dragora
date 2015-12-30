@@ -6,8 +6,10 @@
 # to copy, distribute and modify it.
 
 program=gmp
-version=6.1.0
+version=6.0.0a
 release=1
+
+srcdir=gmp-6.0.0
 
 tarname=${program}-${version}.tar.lz
 
@@ -35,13 +37,11 @@ fetch=(
 docs=""AUTHORS COPYING* ChangeLog NEWS README""
 docdir=/usr/share/doc/${program}-${version}
 
-machine_type="$(cc -dumpmachine)"
-
 build() {
   cd "$srcdir"
 
   ./configure $configure_args \
-   --build=$machine_type \
+   --build="$MACHTYPE" \
    --disable-shared \
    --enable-cxx
 
@@ -56,17 +56,17 @@ build() {
   fi
 
   # Compress and link manual pages (if needed)
-  if [[ -d ${destdir}/usr/share/man ]] ; then
-    ( cd "${destdir}"/usr/share/man && \
-      find . -type f -exec gzip -9 '{}' \; && \
-      find . -type l | while read -r file ; do
-        ln -sf "$(readlink "$file").gz" "${file}.gz" && \
-        rm -- "$file"
-      done
-    )
-  fi
+  #if [[ -d ${destdir}/usr/share/man ]] ; then
+  #  ( cd "${destdir}"/usr/share/man && \
+  #    find . -type f -exec gzip -9 '{}' \; && \
+  #    find . -type l | while read -r file ; do
+  #      ln -sf "$(readlink "$file").gz" "${file}.gz" && \
+  #      rm -- "$file"
+  #    done
+  #  )
+  #fi
 
   # Copy the documentation
-  mkdir -p "${destdir}${docdir}" && cp -a "$docs" "${destdir}${docdir}"
+  #mkdir -p "${destdir}${docdir}" && cp -a "$docs" "${destdir}${docdir}"
 }
 
