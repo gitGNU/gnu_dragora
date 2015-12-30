@@ -94,7 +94,7 @@ unpack() {
     # Generate a check sum or update it according to the timestamp of the source
     if [[ ! -e "${file}.sha1sum" || $file -nt ${file}.sha1sum ]] ; then
       echo "==> SHA1: Creating or updating '${file}.sha1sum' ..."
-      eval_cmd "( cd "$tardir" && sha1sum "$file" > "${file}.sha1sum" )"
+      eval_cmd "( cd "$tardir" && sha1sum "${file##*/}" > "${file}.sha1sum" )"
     fi
 
     echo "==> Unpacking source '${file}' ..."
