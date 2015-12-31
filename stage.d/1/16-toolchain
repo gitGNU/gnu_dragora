@@ -9,6 +9,13 @@
 cat << "EOF" > /tools/bin/adjust-toolchain
 #! /bin/sh
 
+echo "${0}: Adjusting toolchain ..."
+
+mv /tools/bin/ld /tools/bin/ld-old
+mv /tools/"$(gcc -dumpmachine)"/bin/ld  /tools/"$(gcc -dumpmachine)"/bin/ld-old
+mv /tools/bin/ld-new /tools/bin/ld
+ln -sf /tools/bin/ld /tools/"$(gcc -dumpmachine)"/bin/ld
+
 gcc -dumpspecs | sed \
  -e 's@/tools/lib/ld@/lib/ld@g' \
  -e '/\*startfile_prefix_spec:/{n;s@.*@/usr/lib/ @}' \

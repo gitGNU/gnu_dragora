@@ -38,6 +38,12 @@ cd ../binutils-build
 make -j${jobs}
 make install
 
+# Make a new ld(1) containing another search path, this
+# will be handled by 16-toolchain (called from musl's recipe)
+make -C ld clean
+make -C ld LIB_PATH=/usr/lib:/lib
+cp ld/ld-new /tools/bin
+
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP
 
