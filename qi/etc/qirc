@@ -45,8 +45,8 @@
 
 # Compress Info documents and Manual pages.
 #
-# The default is to compress documents unless 'nocompress_pages' is used.
-#compress_pages=compress_pages
+# The default is to compress documents.
+#compress_pages=nocompress_pages
 
 # Default prefixes for Info documents and Manual pages.
 #
