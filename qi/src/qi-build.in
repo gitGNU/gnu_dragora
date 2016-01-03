@@ -520,7 +520,7 @@ for recipe ; do
   source "${tmpdir}"/${PRD}/substraction$$
 
   # Restore default environment for the next recipe
-  source "${tmpdir}/${PRD}/default_env$$"
+  source "${tmpdir}/${PRD}/default_env$$" 2> /dev/null
 
   echo "<== Done [ ${CWD}/$recipe ]"
 
