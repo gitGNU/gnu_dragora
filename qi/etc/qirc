@@ -43,9 +43,14 @@
 # Download manager for the RSYNC protocol
 #rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-changes"
 
+# Compress Info documents and Manual pages.
+#
+# The default is to compress documents unless 'nocompress_pages' is used.
+#compress_pages=compress_pages
+
 # Default prefixes for Info documents and Manual pages.
 #
-# (make sure to point the same values for configure_args=.)
+# Make sure to point the same values for configure_args=.
 #infodir=/usr/share/info
 #mandir=/usr/share/man
 
