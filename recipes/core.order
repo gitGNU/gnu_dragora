@@ -38,9 +38,9 @@ libs/mpc.recipe
 
 libs/zlib.recipe
 
-devel/flex.recipe
-
 devel/bison.recipe
+
+devel/flex.recipe
 
 devel/binutils.recipe
 
