@@ -34,6 +34,9 @@ fetch=(
 # Parallel jobs for the compiler
 jobs=1
 
+# Source documentation
+docs=( AUTHORS COPYING ChangeLog NEWS README )
+
 build() {
   cd "$srcdir"
 

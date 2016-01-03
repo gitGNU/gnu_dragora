@@ -1,7 +1,7 @@
 #! /bin/bash
 #  This program is part of the Qi package manager
 #
-#  Copyright (C) 2015  Matias A. Fonzo
+#  Copyright (C) 2015, 2016  Matias A. Fonzo
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -118,6 +118,7 @@ increment_release=noincrement_release
 jobs=1
 netget="wget --continue --wait=1 --tries=3 --no-check-certificate --passive-ftp"
 rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-changes"
+compress_pages=compress_pages
 
 # Handle command-line options.
 #
@@ -318,7 +319,10 @@ for recipe ; do
       export libSuffix=64
       ;;
   esac
-  pkgname=${pkgname:-$program}
+  infodir="${infodir:-/usr/share/info}"
+  mandir="${mandir:-/usr/share/man}"
+  docdir="${docdir:-/usr/share/doc/${program}-${version}}"
+  pkgname="${pkgname:-$program}"
   full_pkgname="${pkgname}-${version}-${arch}+${release}"
   full_tarname="${tardir}/$tarname"
 
@@ -420,6 +424,55 @@ for recipe ; do
     fi
     shopt -u globstar	# Deactivate shell option.
     unset element string fileList
+  fi
+
+  # Copy the documentation
+  if [[ $nopkg != nopkg ]] ; then
+    echo "==> Copying documentation ..."
+
+    if [[ $compress_pages != nocompress_pages ]] ; then
+      # Compress .info documents (if needed)
+      if [[ -d ${destdir}/$infodir ]] ; then
+        echo "--- Info documents:"
+        rm -f "${destdir}/${infodir}"/dir
+
+        while IFS="" read -r ; do
+          echo "${REPLY##*/}"		# Show processed file
+          eval_cmd "gzip -9 "$REPLY""	# Compress it using the max level
+        done < <(eval_cmd "find "${destdir}/${infodir}" -type f")
+        unset REPLY
+      fi
+
+      # Compress and link manual pages (if needed)
+      if [[ -d ${destdir}/$mandir ]] ; then
+        echo "--- Manual pages:"
+        eval_cmd \
+         "( cd "${destdir}/$mandir" && find . -type f -exec gzip -9 '{}' \; -print)"
+
+        # Make soft links
+        while IFS="" read -r ; do
+          eval_cmd "ln -sf -v "$(readlink -- "$REPLY").gz" "${REPLY}.gz""
+          eval_cmd "rm -v -- "$REPLY""
+        done < <(eval_cmd "find "${destdir}/$mandir" -type l")
+        unset REPLY
+      fi
+    fi
+
+    # Source documentation
+    if (( ${#docs[@]} > 0 )) ; then
+      echo "--- Source documentation:"
+      eval "mkdir -p "${destdir}/$docdir""
+
+      shopt -s globstar
+      for element in "${docs[@]}" ; do
+        eval_cmd "cp -a "$element" "${destdir}/$docdir""
+      done
+      shopt -u globstar
+      unset element docdir
+
+      echo "${#docs[@]} elements have been copied from the 'docs' array."
+      unset docs
+    fi
   fi
 
   # Package creation
