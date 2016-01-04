@@ -1,9 +1,9 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre2, 26 December 2015), which is a
+This manual is for Qi (version 1.0-pre2, 3 January 2016), which is a
 simple source builder and package manager.
 
-   Copyright (C) 2015 Matias A. Fonzo
+   Copyright (C) 2015, 2016 Matias A. Fonzo
 
      Permission is granted to copy, distribute and/or modify this
      document under the terms of the GNU Free Documentation License,
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre2, 26 December 2015).
+This manual is for Qi (version 1.0-pre2, 3 January 2016).
 
 * Menu:
 
@@ -280,7 +280,9 @@ installation, removal of a package or when a recipe is built.  This
 file is optional, and it can be useful to define variables and
 configure external tools (such as a download manager) for default use.
 
-   * The variables are declared as `name=value'.
+   * Variables are declared as `name=value'.
+
+   * Declaration of values should only take one line, no line break.
 
 The options specified in the command-line can override the values
 specified in the configuration file.  For more information, *note
@@ -1195,17 +1197,17 @@ Index
 
 
 Tag Table:
-Node: Top785
-Node: Introduction1569
-Node: Invocation3184
-Node: The qirc file6971
-Node: Recipes7853
-Node: Packages10092
-Node: Examine packages17803
-Node: The .order files18823
-Node: Exit status18986
-Node: GNU Free Documentation License20322
-Node: Index45483
+Node: Top789
+Node: Introduction1571
+Node: Invocation3186
+Node: The qirc file6973
+Node: Recipes7921
+Node: Packages10160
+Node: Examine packages17871
+Node: The .order files18891
+Node: Exit status19054
+Node: GNU Free Documentation License20390
+Node: Index45551
 
 End Tag Table
 
