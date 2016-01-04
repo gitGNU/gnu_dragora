@@ -38,10 +38,10 @@
 #jobs=1
 
 # General download manager
-#netget="wget --continue --wait=1 --tries=3 --no-check-certificate --passive-ftp"
+#netget=wget --continue --wait=1 --tries=3 --no-check-certificate --passive-ftp
 
 # Download manager for the RSYNC protocol
-#rsync="rsync --verbose --archive --copy-links --compress --progress --itemize-changes"
+#rsync=rsync --verbose --archive --copy-links --compress --progress --itemize-changes
 
 # Compress Info documents and Manual pages.
 #
