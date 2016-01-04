@@ -438,7 +438,7 @@ for recipe ; do
 
         while IFS="" read -r ; do
           echo "${REPLY##*/}"		# Show processed file
-          eval_cmd "gzip -9 "$REPLY""	# Compress it using the max level
+          eval_cmd "lzip -9 "$REPLY""	# Compress it using the max level
         done < <(eval_cmd "find "${destdir}/${infodir}" -type f")
         unset REPLY
       fi
@@ -447,11 +447,11 @@ for recipe ; do
       if [[ -d ${destdir}/$mandir ]] ; then
         echo "--- Manual pages:"
         eval_cmd \
-         "( cd "${destdir}/$mandir" && find . -type f -exec gzip -9 '{}' \; -print)"
+         "( cd "${destdir}/$mandir" && find . -type f -exec lzip -9 '{}' \; -print)"
 
         # Make soft links
         while IFS="" read -r ; do
-          eval_cmd "ln -sf -v "$(readlink -- "$REPLY").gz" "${REPLY}.gz""
+          eval_cmd "ln -sf -v "$(readlink -- "$REPLY").lz" "${REPLY}.lz""
           eval_cmd "rm -v -- "$REPLY""
         done < <(eval_cmd "find "${destdir}/$mandir" -type l")
         unset REPLY
