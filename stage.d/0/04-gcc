@@ -43,9 +43,6 @@ for file in "${worktree}"/sources/gmp-*.tar.lz "${worktree}"/sources/mpfr-*.tar.
 done
 unset file name vern
 
-# Force stack protection activation
-sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
-
 # Build in a separate directory
 rm -rf ../gcc-build
 mkdir ../gcc-build
