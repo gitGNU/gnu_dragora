@@ -20,12 +20,16 @@ patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.3.0.diff
 for file in \
  gcc/config/linux.h gcc/config/i386/linux.h gcc/config/i386/linux64.h \
  gcc/config/arm/linux-eabi.h gcc/config/arm/linux-elf.h \
- gcc/config/mips/linux64.h gcc/config/mips/linux.h \
+ gcc/config/mips/linux.h \
  gcc/config/rs6000/linux64.h gcc/config/rs6000/sysv4.h \
  gcc/config/aarch64/aarch64-linux.h \
  gcc/config/microblaze/linux.h \
  gcc/config/sh/linux.h ; \
 do \
+  if [ ! -f "$file" ] ; then
+    echo "WARNING: Non-existent file: $file" 1>&2
+    continue;
+  fi
   echo '
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
@@ -94,7 +98,7 @@ make -j${jobs} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD"
 make install
 
 # Symlink for compatibility
-ln -s gcc /tools/bin/cc
+ln -sf gcc /tools/bin/cc
 
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP
