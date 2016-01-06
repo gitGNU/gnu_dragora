@@ -1,6 +1,6 @@
 # Build recipe for linux (libre) headers.
 #
-# Copyright (C) 2015 Matias A. Fonzo, selk@dragora.org.
+# Copyright (C) 2015-2016 Matias A. Fonzo, selk@dragora.org.
 #
 # This recipe is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -8,6 +8,8 @@
 program=linux
 version=4.1.10
 release=1
+
+# Package options
 pkgname=linux-headers
 strip=nostrip
 
@@ -37,6 +39,6 @@ build() {
 
   # Remove cruft
   find "${destdir}"/usr/include \
-   -type f \( -name .install -o -name ..install.cmd \) -exec rm -f '{}' +
+   -type f \( -name .install -o -name ..install.cmd \) -exec rm -f '{}' \;
 }
 
