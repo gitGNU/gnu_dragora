@@ -18,7 +18,7 @@ build() {
   cd "$srcdir"
 
   patch -Np0 -i "${worktree}"/patches/gcc/gcc-nofixincludes
-  patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.3.0-musl.diff
+  patch -Np1 -i "${worktree}"/patches/gcc/gcc-5.3.0.diff
 
   # Create a separate build directory
   rm -rf ../gcc-build
