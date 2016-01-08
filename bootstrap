@@ -1,7 +1,7 @@
 #! /bin/sh
 #  Builder of custom stages (cross compilers, GNU/Linux distributions)
 #
-#  Copyright (C) 2014, 2015  Matias A. Fonzo
+#  Copyright (C) 2014, 2015, 2016  Matias A. Fonzo
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,10 @@ show_help() {
    "  -t          temporary directory for compilation [${tmpdir}]"        \
    ""                                                                     \
    "Some influential environment variables:"                              \
+   "  CFLAGS      C compiler flags"                                       \
+   "  CXXFLAGS    C++ compiler flags"                                     \
+   "  LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries"   \
+   "              in a nonstandard directory <lib dir>"                   \
    "  VENDOR      VENDOR to reflect on the TARGET [${VENDOR}]"            \
    "  TARGET      TARGET triplet (platform) on which code runs [auto]"    \
    "  GCC_OPTS    overrides default configure options for GCC [auto]"     \
@@ -96,18 +100,6 @@ rmIfDir() {
   done
 }
 
-# Create directories if does not exist
-mkdirIfNot() {
-  local directory
-
-  for directory in "$@" ; do
-    if [ ! -d "$directory" ] ; then
-      echo "Creating $directory ..."
-      mkdir -p "$directory"
-    fi
-  done
-}
-
 # Default variable values
 strip=strip
 arch="$(uname -m)"
@@ -119,6 +111,10 @@ jobs=1
 keepdir=nokeepdir
 stage=0
 VENDOR="${VENDOR:-dragora}"
+CFLAGS="${CFLAGS:--Os -fPIE}"
+CXXFLAGS="${CXXFLAGS:-$CFLAGS}"
+LDFLAGS="${LDFLAGS:--static}"
+LDFLAGS_BINUTILS="${LDFLAGS_BINUTILS:---static}"
 
 # Parse options
 while getopts ":hSVk a:c:j:r:s:t:" option ; do
@@ -151,8 +147,8 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.2" \
-       "Copyright (C) 2014, 2015  Matias A. Fonzo." \
+       "bootstrap 2.3" \
+       "Copyright (C) 2014, 2015, 2016  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
        "There is NO WARRANTY, to the extent permitted by law."
@@ -259,17 +255,28 @@ case "$arch" in
     exit 1;
 esac
 
+# Import custom variables from 'bootstrap.conf'
+if [ -f "${CWD}"/bootstrap.conf ] ; then
+  echo "Importing bootstrap.conf ..."
+  . "${CWD}"/bootstrap.conf
+fi
+
 # Set default path
 PATH="${crossdir}/bin:${PATH}"
 
 # Propagate variables
-export PATH
+export PATH CFLAGS CXXFLAGS LDFLAGS
+
+# Save some variables to restore it later
+SAVED_CFLAGS="$CFLAGS"
+SAVED_CXXFLAGS="$CXXFLAGS"
+SAVED_LDFLAGS="$LDFLAGS"
 
 # Set default mask
 umask 022
 
 # Create required directories (if needed)
-mkdirIfNot "${tmpdir}/sources" "$crossdir" "$rootdir"
+mkdir -p "${tmpdir}/sources" "$crossdir" "$rootdir"
 
 # Process the files from stage number
 for file in ""${CWD}/stage.d/${stage}/${@:-??-*}"" ; do
@@ -291,7 +298,7 @@ for file in ""${CWD}/stage.d/${stage}/${@:-??-*}"" ; do
   #
   # Create sysroot directory if needed, recreating symlink for the stage 0
   if [ "$stage" = "0" ] ; then
-    mkdirIfNot "${crossdir}/${TARGET}"
+    mkdir -p "${crossdir}/${TARGET}"
     if [ ! -e "${crossdir}/${TARGET}/usr" ] ; then
       ln -sf . "${crossdir}/${TARGET}/usr"
     fi
@@ -299,12 +306,12 @@ for file in ""${CWD}/stage.d/${stage}/${@:-??-*}"" ; do
 
   # Create tools directory if needed, recreating symlink for the stage 1
   if [ "$stage" = "1" ] ; then
-    mkdirIfNot "${rootdir}/tools"
+    mkdir -p "${rootdir}/tools"
     ln -sf "${rootdir}/tools" /
   fi
 
   # Load script
-  echo "==> File \"${file##*/}\" from stage $stage in process ..."
+  echo "==> File \"${file##*/}\" from stage $stage in progress ..."
   . "${CWD}/stage.d/${stage}/$file"
 
   # Back to the current working directory
@@ -320,6 +327,11 @@ for file in ""${CWD}/stage.d/${stage}/${@:-??-*}"" ; do
     rmIfDir ""${tmpdir}/sources/$name*""
     unset name
   fi
+
+  # Restore variables
+  CFLAGS="$SAVED_CFLAGS"
+  CXXFLAGS="$SAVED_CXXFLAGS"
+  LDFLAGS="$SAVED_LDFLAGS"
 done
 
 # Final steps
