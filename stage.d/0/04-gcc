@@ -1,6 +1,6 @@
 # Build script for gcc (static)
 #
-# Copyright (C) 2014, 2015 Matias A. Fonzo.
+# Copyright (C) 2014-2016 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -76,7 +76,9 @@ AR="ar" \
  --without-cloog \
  $GCC_OPTS $MULTILIB
 
-make -j${jobs} all-gcc all-target-libgcc
+make -j${jobs} BOOT_LDFLAGS="$LDFLAGS" LDFLAGS="$LDFLAGS" \
+ all-gcc all-target-libgcc
+
 make install-gcc install-target-libgcc
 
 # To prevent broken toolchains from pulling in lgcc_s

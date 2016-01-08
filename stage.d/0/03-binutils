@@ -1,6 +1,6 @@
 # Build script for binutils
 #
-# Copyright (C) 2014, 2015 Matias A. Fonzo.
+# Copyright (C) 2014-2016 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -20,11 +20,12 @@ mkdir ../binutils-build
 cd ../binutils-build
 
 AR="ar" AS="as" \
-../binutils-${version}/configure \
+../binutils-${version}/configure LDFLAGS="$LDFLAGS_BINUTILS" \
  --prefix="$crossdir" \
  --host=$host \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
+ --disable-shared \
  --disable-nls \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
