@@ -30,11 +30,14 @@ do \
     echo "WARNING: Non-existent file: $file" 1>&2
     continue;
   fi
+  sed -i \
+   -e 's@/lib\(64\)\{0,1\}\(32\)\{0,1\}/ld@/tools&@g' \
+   -e 's@/usr@/tools@g' "$file"
   echo '
 #undef STANDARD_STARTFILE_PREFIX_1
 #undef STANDARD_STARTFILE_PREFIX_2
 #define STANDARD_STARTFILE_PREFIX_1 "/tools/lib/"
-#define STANDARD_STARTFILE_PREFIX_2 ""' >> $file
+#define STANDARD_STARTFILE_PREFIX_2 ""' >> "$file"
 done
 
 # Build GCC built-in prerequisites
@@ -77,12 +80,12 @@ cd ../gcc-build
  --enable-clocale=generic \
  --enable-threads=posix \
  --enable-__cxa_atexit \
- --enable-checking=release \
  --build=$host \
  --host=$TARGET \
  --target=$TARGET \
  --with-local-prefix=/tools \
  --with-native-system-header-dir=/tools/include \
+ --disable-bootstrap \
  --disable-shared \
  --disable-nls \
  --disable-libgomp \
@@ -94,7 +97,9 @@ cd ../gcc-build
  --without-cloog \
  $GCC_OPTS $MULTILIB
 
-make -j${jobs} AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD"
+make -j${jobs} \
+ AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" \
+ BOOT_LDFLAGS="$LDFLAGS" LDFLAGS="$LDFLAGS"
 make install
 
 # Symlink for compatibility

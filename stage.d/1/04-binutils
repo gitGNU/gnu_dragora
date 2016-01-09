@@ -1,6 +1,6 @@
 # Build script for binutils
 #
-# Copyright (C) 2014-2015 Matias A. Fonzo.
+# Copyright (C) 2014-2016 Matias A. Fonzo.
 #
 # This script is free software: you have unlimited permission
 # to copy, distribute and modify it.
@@ -22,12 +22,13 @@ cd ../binutils-build
 # Import and export toolchain variables
 . "${worktree}"/stage.d/env.d/cross-env
 
-../binutils-${version}/configure \
+../binutils-${version}/configure LDFLAGS="$LDFLAGS_BINUTILS" \
  --prefix=/tools \
  --build=$host \
  --host=$TARGET \
  --target=$TARGET \
  --with-lib-path=/tools/lib \
+ --with-sysroot \
  --disable-shared \
  --disable-nls \
  --disable-werror \
@@ -42,7 +43,7 @@ make install
 # will be handled by 16-toolchain (called from musl's recipe)
 make -C ld clean
 make -C ld LIB_PATH=/usr/lib:/lib
-cp ld/ld-new /tools/bin
+cp -f ld/ld-new /tools/bin
 
 # Unset imported variables from file
 unset CC CXX AR AS LD RANLIB READELF STRIP

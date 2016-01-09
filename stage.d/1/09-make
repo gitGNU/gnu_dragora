@@ -17,6 +17,7 @@ cd "${tmpdir}"/sources/make-${version}
 # Import and export toolchain variables
 . "${worktree}"/stage.d/env.d/cross-env
 
+LDFLAGS="$LDFLAGS" \
 ./configure \
  --prefix=/tools \
  --build=$host \
