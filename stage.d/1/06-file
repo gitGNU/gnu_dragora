@@ -34,6 +34,7 @@ make clean
 # Import and export toolchain variables
 . "${worktree}"/stage.d/env.d/cross-env
 
+LDFLAGS="-Wl,${LDFLAGS}" \
 ./configure \
  --prefix=/tools \
  --build=$host \
@@ -42,7 +43,7 @@ make clean
  --disable-shared \
  --enable-static
 
-make
+make V=1
 make install
 
 # Unset imported variables from file
