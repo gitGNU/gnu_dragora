@@ -63,6 +63,7 @@ AR="ar" \
  --with-sysroot="${crossdir}"/$TARGET \
  --disable-shared \
  --disable-nls \
+ --disable-gnu-indirect-function \
  --disable-libmudflap \
  --disable-libsanitizer \
  --disable-libstdcxx-pch \

@@ -80,6 +80,7 @@ cd ../gcc-build
  --enable-clocale=generic \
  --enable-threads=posix \
  --enable-__cxa_atexit \
+ --enable-libstdcxx-time \
  --build=$host \
  --host=$TARGET \
  --target=$TARGET \
@@ -88,6 +89,7 @@ cd ../gcc-build
  --disable-bootstrap \
  --disable-shared \
  --disable-nls \
+ --disable-gnu-indirect-function \
  --disable-libgomp \
  --disable-libmudflap \
  --disable-libsanitizer \
