@@ -24,8 +24,7 @@ cd perl-${version}
 ./configure \
  --prefix=/tools \
  --target=$TARGET \
- -Uuseshrplib \
- -Uusedl \
+ --all-static \
  -Dprivlib=/tools/lib/perl5 \
  -Dsitelib=/tools/lib/perl5/site_perl \
  -A ldflags="$LDFLAGS"
