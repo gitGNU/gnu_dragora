@@ -111,7 +111,7 @@ jobs=1
 keepdir=nokeepdir
 stage=0
 VENDOR="${VENDOR:-dragora}"
-CFLAGS="${CFLAGS:--Os -fPIE}"
+CFLAGS="${CFLAGS:--Os}"
 CXXFLAGS="${CXXFLAGS:-$CFLAGS}"
 LDFLAGS="${LDFLAGS:--static}"
 LDFLAGS_BINUTILS="${LDFLAGS_BINUTILS:---static}"
@@ -147,7 +147,7 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.3" \
+       "bootstrap 2.4" \
        "Copyright (C) 2014, 2015, 2016  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
