@@ -458,6 +458,9 @@ for recipe ; do
       echo "--- Source documentation:"
       eval "mkdir -p "${destdir}/$docdir""
 
+      # Go back to the source directory for copy the documentation
+      eval_cmd "cd "${tmpdir}/${srcdir}""
+
       shopt -s globstar
       for element in "${docs[@]}" ; do
         eval_cmd "cp -a "$element" "${destdir}/$docdir""
