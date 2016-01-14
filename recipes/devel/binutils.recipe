@@ -36,36 +36,25 @@ docs=( COPYING* README )
 build() {
   cd "$srcdir"
 
-  # Suppress the installation of the outdated standards.info file,
-  # the newer one is provided by autoconf
-  rm -f etc/standards.info
-  sed -i '/^INFO/s/standards.info //' etc/Makefile.in
-
   # Create a separate build directory
   rm -rf ../binutils-build
   mkdir ../binutils-build
   cd ../binutils-build
 
-  CFLAGS="$CFLAGS -D_GNU_SOURCE" \
   ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
    --with-docdir="$docdir" \
    --enable-multilib \
    --disable-shared \
    --disable-werror \
-   --disable-nls \
    --build="$MACHTYPE"
 
   make -j${jobs} tooldir="/usr/${MACHTYPE}"
   make -k check
   make -j${jobs} install tooldir="/usr/${MACHTYPE}" DESTDIR="$destdir"
 
-  # Include the libiberty header
-  mkdir -p "${destdir}"/usr/include && \
-  cp ../binutils-${version}/include/libiberty.h "${destdir}"/usr/include
-
   # Replace hard-links with relative soft-links
   ( cd "${destdir}"/usr/bin && \
-    rm -f ld ; ln -sf ld.bfd ld ; \
+    rm -f ld ; ln -sf ld.bfd ld
   )
   ( cd "${destdir}/usr/${MACHTYPE}/bin" && \
     for file in * ; do \
@@ -76,9 +65,9 @@ build() {
   )
 
   # Delete temporary build directory
-  cd "$srcdir"
-  if [[ -d ../binutils-build ]] ; then
-    rm -rf ../binutils-build
+  cd "$tmpdir"
+  if [[ -d ./binutils-build ]] ; then
+    rm -rf ./binutils-build
   fi
 }
 
