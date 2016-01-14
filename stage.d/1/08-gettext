@@ -1,0 +1,25 @@
+# Build script for gettext-tiny
+#
+# Copyright (C) 2016 Matias A. Fonzo.
+#
+# This script is free software: you have unlimited permission
+# to copy, distribute and modify it.
+
+version=0.0.4
+
+echo "Unpacking gettext-tiny-${version} ..."
+rm -rf "${tmpdir}"/sources/gettext-tiny-${version}
+tar xf "${worktree}"/sources/gettext-tiny-${version}.tar.bz2 -C "${tmpdir}"/sources
+
+# Build instructions
+cd "${tmpdir}"/sources/gettext-tiny-${version}
+
+# Import and export toolchain variables
+. "${worktree}"/stage.d/env.d/cross-env
+
+make prefix=/tools
+make prefix=/tools install
+
+# Unset imported variables from file
+unset CC CXX AR AS LD RANLIB READELF STRIP
+
