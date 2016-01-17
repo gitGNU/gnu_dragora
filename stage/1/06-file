@@ -34,7 +34,7 @@ make clean
 # Import and export toolchain variables
 . "${worktree}"/stage.d/env.d/cross-env
 
-LDFLAGS="-Wl,${LDFLAGS}" \
+LDFLAGS="$LDFLAGS_LIBTOOL" \
 ./configure \
  --prefix=/tools \
  --build=$host \
