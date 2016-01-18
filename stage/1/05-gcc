@@ -77,10 +77,8 @@ cd ../gcc-build
 ../gcc-${version}/configure \
  --prefix=/tools \
  --enable-languages=c,c++ \
- --enable-clocale=generic \
- --enable-threads=posix \
- --enable-__cxa_atexit \
  --enable-libstdcxx-time \
+ --enable-install-libiberty \
  --build=$host \
  --host=$TARGET \
  --target=$TARGET \
@@ -90,14 +88,13 @@ cd ../gcc-build
  --disable-shared \
  --disable-nls \
  --disable-gnu-indirect-function \
- --disable-libgomp \
  --disable-libmudflap \
  --disable-libsanitizer \
  --disable-libstdcxx-pch \
  --disable-libstdcxx-verbose \
  --without-ppl \
  --without-cloog \
- $GCC_OPTS $MULTILIB
+ $MULTILIB
 
 make -j${jobs} \
  AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" \

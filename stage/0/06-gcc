@@ -52,9 +52,6 @@ AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c,c++ \
- --enable-clocale=generic \
- --enable-threads=posix \
- --enable-__cxa_atexit \
  --enable-libstdcxx-time \
  --enable-checking=release \
  --build=$host \
@@ -69,7 +66,7 @@ AR="ar" \
  --disable-libstdcxx-pch \
  --without-ppl \
  --without-cloog \
- $GCC_OPTS $MULTILIB
+ $MULTILIB
 
 make -j${jobs} \
  AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld" \

@@ -74,7 +74,7 @@ AR="ar" \
  --disable-libgomp \
  --without-ppl \
  --without-cloog \
- $GCC_OPTS $MULTILIB
+ $MULTILIB
 
 make -j${jobs} BOOT_LDFLAGS="$LDFLAGS" LDFLAGS="$LDFLAGS" \
  all-gcc all-target-libgcc
