@@ -20,7 +20,7 @@ mkdir ../binutils-build
 cd ../binutils-build
 
 # Import and export toolchain variables
-. "${worktree}"/stage.d/env.d/cross-env
+. "${worktree}"/stage/env.d/cross-env
 
 ../binutils-${version}/configure LDFLAGS="$LDFLAGS_LIBTOOL" \
  --prefix=/tools \

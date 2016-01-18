@@ -15,7 +15,7 @@ tar xf "${worktree}"/sources/make-${version}.tar.bz2 -C "${tmpdir}"/sources
 cd "${tmpdir}"/sources/make-${version}
 
 # Import and export toolchain variables
-. "${worktree}"/stage.d/env.d/cross-env
+. "${worktree}"/stage/env.d/cross-env
 
 LDFLAGS="$LDFLAGS" \
 ./configure \

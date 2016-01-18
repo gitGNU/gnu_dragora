@@ -72,7 +72,7 @@ mkdir ../gcc-build
 cd ../gcc-build
 
 # Import and export toolchain variables
-. "${worktree}"/stage.d/env.d/cross-env
+. "${worktree}"/stage/env.d/cross-env
 
 ../gcc-${version}/configure \
  --prefix=/tools \

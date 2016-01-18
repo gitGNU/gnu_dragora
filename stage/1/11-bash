@@ -22,7 +22,7 @@ for patch in "${worktree}"/patches/bash/*-??? ; do
 done
 
 # Import and export toolchain variables
-. "${worktree}"/stage.d/env.d/cross-env
+. "${worktree}"/stage/env.d/cross-env
 
 ./configure \
  --prefix=/tools \

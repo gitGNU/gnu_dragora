@@ -32,7 +32,7 @@ make install
 make clean
 
 # Import and export toolchain variables
-. "${worktree}"/stage.d/env.d/cross-env
+. "${worktree}"/stage/env.d/cross-env
 
 LDFLAGS="$LDFLAGS_LIBTOOL" \
 ./configure \
