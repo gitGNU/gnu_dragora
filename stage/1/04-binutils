@@ -22,7 +22,7 @@ cd ../binutils-build
 # Import and export toolchain variables
 . "${worktree}"/stage.d/env.d/cross-env
 
-../binutils-${version}/configure LDFLAGS="$LDFLAGS_BINUTILS" \
+../binutils-${version}/configure LDFLAGS="$LDFLAGS_LIBTOOL" \
  --prefix=/tools \
  --build=$host \
  --host=$TARGET \

@@ -20,7 +20,7 @@ mkdir ../binutils-build
 cd ../binutils-build
 
 AR="ar" AS="as" \
-../binutils-${version}/configure LDFLAGS="$LDFLAGS_BINUTILS" \
+../binutils-${version}/configure LDFLAGS="$LDFLAGS_LIBTOOL" \
  --prefix="$crossdir" \
  --host=$host \
  --target=$TARGET \
