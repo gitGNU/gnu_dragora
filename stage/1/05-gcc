@@ -77,7 +77,7 @@ cd ../gcc-build
 ../gcc-${version}/configure \
  --prefix=/tools \
  --enable-languages=c,c++ \
- --enable-libstdcxx-time \
+ --enable-clocale=generic \
  --enable-install-libiberty \
  --build=$host \
  --host=$TARGET \
@@ -92,6 +92,7 @@ cd ../gcc-build
  --disable-libsanitizer \
  --disable-libstdcxx-pch \
  --disable-libstdcxx-verbose \
+ --disable-libstdcxx-time \
  --without-ppl \
  --without-cloog \
  $MULTILIB
