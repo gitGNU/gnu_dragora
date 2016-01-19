@@ -52,7 +52,9 @@ AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c,c++ \
+ --enable-clocale=generic \
  --enable-libstdcxx-time \
+ --enable-libstdcxx-verbose \
  --enable-checking=release \
  --build=$host \
  --host=$host \
