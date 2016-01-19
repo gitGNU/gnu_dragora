@@ -47,6 +47,11 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
+# Don't optimize GCC at this point, saving build time
+CFLAGS="-O0 -g0"
+CXXFLAGS="-O0 -g0"
+export CFLAGS CXXFLAGS
+
 AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
