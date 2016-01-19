@@ -67,7 +67,7 @@ AR="ar" \
  --disable-libstdcxx-pch \
  --without-ppl \
  --without-cloog \
- $MULTILIB
+ $GCC_OPTS $MULTILIB
 
 make -j${jobs} \
  AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld" \

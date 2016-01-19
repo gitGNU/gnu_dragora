@@ -94,7 +94,7 @@ cd ../gcc-build
  --disable-libstdcxx-time \
  --without-ppl \
  --without-cloog \
- $MULTILIB
+ $GCC_OPTS $MULTILIB
 
 make -j${jobs} \
  AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" \
