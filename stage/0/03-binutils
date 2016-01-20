@@ -25,6 +25,7 @@ AR="ar" AS="as" \
  --host=$host \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
+ --enable-64-bit-bfd \
  --disable-shared \
  --disable-nls \
  --disable-ppl-version-check \

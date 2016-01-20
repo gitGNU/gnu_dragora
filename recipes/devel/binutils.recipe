@@ -43,6 +43,7 @@ build() {
 
   ../${program}-${version}/configure LDFLAGS="--static" $configure_args \
    --with-docdir="$docdir" \
+   --enable-64-bit-bfd \
    --enable-multilib \
    --disable-shared \
    --disable-werror \

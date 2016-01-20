@@ -29,6 +29,7 @@ cd ../binutils-build
  --target=$TARGET \
  --with-lib-path=/tools/lib \
  --with-sysroot \
+ --enable-64-bit-bfd \
  --disable-shared \
  --disable-nls \
  --disable-werror \
