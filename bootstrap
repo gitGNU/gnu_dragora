@@ -32,32 +32,29 @@ CWD="$(cd "$(dirname -- "$0" 2> /dev/null)" ; printf %s "$PWD")"
 # Functions
 show_help() {
   printf '%s\n' \
-   "Usage: $0 [options] [file ...]"                                       \
-   "Builder of custom stages."                                            \
-   ""                                                                     \
-   "Defaults for the options are specified in brackets."                  \
-   ""                                                                     \
-   "Options:"                                                             \
-   "  -h          display this help and exit"                             \
-   "  -V          output version information and exit"                    \
-   "  -S          don't strip unneeded or debugging symbols from files"   \
-   "  -a          architecture to use [${arch}]"                          \
-   "  -c          output directory for the cross compiler [${crossdir}]"  \
-   "  -j          parallel jobs for the compiler [${jobs}]"               \
-   "  -k          keep (don't delete) source directory"                   \
-   "  -r          output directory for the root system [${rootdir}]"      \
-   "  -s          sets the stage number to build [${stage}]"              \
-   "  -t          temporary directory for compilation [${tmpdir}]"        \
-   ""                                                                     \
-   "Some influential environment variables:"                              \
-   "  CFLAGS      C compiler flags"                                       \
-   "  CXXFLAGS    C++ compiler flags"                                     \
-   "  LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries"   \
-   "              in a nonstandard directory <lib dir>"                   \
-   "  VENDOR      VENDOR to reflect on the TARGET [${VENDOR}]"            \
-   "  TARGET      TARGET triplet (platform) on which code runs [auto]"    \
-   "  GCC_OPTS    overrides default configure options for GCC [auto]"     \
-   "  MULTILIB    overrides default MULTILIB options for GCC [auto]"      \
+   "Usage: $0 [options] [file ...]"                                                  \
+   "Builder of custom stages."                                                       \
+   ""                                                                                \
+   "Defaults for the options are specified in brackets."                             \
+   ""                                                                                \
+   "Options:"                                                                        \
+   "  -h          display this help and exit"                                        \
+   "  -V          output version information and exit"                               \
+   "  -S          don't strip unneeded or debugging symbols from files"              \
+   "  -a          architecture to use [${arch}]"                                     \
+   "  -c          output directory for cross compiler(s) [${crossdir}]"              \
+   "  -i          include path of a previous cross-compiler for static compilation"  \
+   "  -j          parallel jobs for the compiler [${jobs}]"                          \
+   "  -k          keep (don't delete) source directory"                              \
+   "  -r          output directory for the root system [${rootdir}]"                 \
+   "  -s          sets the stage number to build [${stage}]"                         \
+   "  -t          temporary directory for compilation [${tmpdir}]"                   \
+   ""                                                                                \
+   "Some influential environment variables:"                                         \
+   "  VENDOR      VENDOR to reflect on the TARGET triplet"                           \
+   "  TARGET      TARGET triplet (platform) on which code runs [auto]"               \
+   "  GCC_OPTS    overrides default configure options for GCC [auto]"                \
+   "  MULTILIB    overrides default MULTILIB options for GCC [auto]"                 \
    ""
 }
 
@@ -104,20 +101,15 @@ rmIfDir() {
 strip=strip
 arch="$(uname -m)"
 tmpdir=/tmp/bootstrap
-crossdir="${tmpdir}/cross"
+crossdir="${tmpdir}/compiler"
 rootdir="${tmpdir}/root"
 worktree="$CWD"
 jobs=1
 keepdir=nokeepdir
 stage=0
-VENDOR="${VENDOR:-dragora}"
-CFLAGS="${CFLAGS:--Os}"
-CXXFLAGS="${CXXFLAGS:-$CFLAGS}"
-LDFLAGS="${LDFLAGS:--static}"
-LDFLAGS_LIBTOOL=--static
 
 # Parse options
-while getopts ":hSVk a:c:j:r:s:t:" option ; do
+while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
   case "$option" in
     S)
       strip=nostrip
@@ -127,6 +119,9 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     c)
       crossdir="$OPTARG"
+      ;;
+    i)
+      includepath="$OPTARG"
       ;;
     j)
       jobs="$OPTARG"
@@ -147,7 +142,7 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.5" \
+       "bootstrap 2.6" \
        "Copyright (C) 2014, 2015, 2016  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
@@ -161,93 +156,88 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
     :)
       printf '%s\n' \
        "The option '-${OPTARG}' requires an argument" \
-       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
+       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-i <path>] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
       exit 1
       ;;
     \?)
       printf '%s\n' \
        "bootstrap: illegal option -- '-${OPTARG}'" \
-       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
+       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-i <path> ] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
       exit 1
       ;;
   esac
 done
 shift "$((OPTIND - 1))"
 
-# Prepare settings.
-#
-# Compose the host name changing it to "cross"
-host="$(cc -dumpmachine | sed 's/-[^-]*/-cross/')"
-
 # Establish appropriate settings for each supported architecture
 case "$arch" in
   i?86)
     MUSL_ARCH=i386
     LINUX_ARCH=x86
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musl}"
-    GCC_OPTS="${GCC_OPTS:---with-arch=${arch}}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
+    GCC_OPTS="${GCC_OPTS:---with-arch=${arch} --with-tune=i686}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   x86_64)
     MUSL_ARCH=x86_64
     LINUX_ARCH=x86_64
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
     GCC_OPTS="${GCC_OPTS:---with-arch=x86-64 --with-tune=generic --enable-long-long}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   x32)
     MUSL_ARCH=x32
     LINUX_ARCH=x86_64
-    TARGET="${TARGET:-x86_64-x32-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-x86_64-x32-${VENDOR}linux-musl}"
     MULTILIB="${MULTILIB:---enable-multilib --with-multilib-list=mx32}"
     ;;
   armhf)
     MUSL_ARCH=arm
     LINUX_ARCH=arm
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musleabihf}"
+    TARGET="${TARGET:-arm-${VENDOR}linux-musleabihf}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   arm*)
     MUSL_ARCH=arm
     LINUX_ARCH=arm
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musleabi}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musleabi}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   aarch64*)
     MUSL_ARCH=arm
     LINUX_ARCH=arm64
-    TARGET="${TARGET:-aarch64-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-aarch64-${VENDOR}linux-musl}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   mips*)
     MUSL_ARCH=mips
     LINUX_ARCH=mips
-    TARGET="${TARGET:=${arch}-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:=${arch}-${VENDOR}linux-musl}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   powerpc*|ppc*)
     MUSL_ARCH=powerpc
     LINUX_ARCH=powerpc
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
     GCC_OPTS="${GCC_OPTS:---with-long-double-64 --enable-secureplt}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   or1k*)
     MUSL_ARCH=or1k
     LINUX_ARCH=openrisc
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   sh*)
     MUSL_ARCH=sh
     LINUX_ARCH=sh
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   microblaze)
     MUSL_ARCH=microblaze
     LINUX_ARCH=microblaze
-    TARGET="${TARGET:-${arch}-${VENDOR}-linux-musl}"
+    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
     MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
     ;;
   *)
@@ -255,28 +245,29 @@ case "$arch" in
     exit 1;
 esac
 
-# Import custom variables from 'bootstrap.conf'
-if [ -f "${CWD}"/bootstrap.conf ] ; then
-  echo "Importing bootstrap.conf ..."
-  . "${CWD}"/bootstrap.conf
-fi
+# Compose 'crossdir' adding the target triplet
+crossdir="${crossdir}/$TARGET"
 
 # Set default path
 PATH="${crossdir}/bin:${PATH}"
 
-# Propagate variables
-export PATH CFLAGS CXXFLAGS LDFLAGS
+# To prefix 'includepath' if -i was given
+if [ -n "$includepath" ] ; then
+  if [ -d "${includepath}/bin" ] ; then
+    PATH="${includepath}/bin:${crossdir}/bin:${PATH}"
+  else
+    echo "bootstrap: A valid \"${includepath}/bin\" directory is required." 1>&2
+    exit 1
+  fi
+fi
 
-# Save some variables to restore it later
-SAVED_CFLAGS="$CFLAGS"
-SAVED_CXXFLAGS="$CXXFLAGS"
-SAVED_LDFLAGS="$LDFLAGS"
+export PATH
 
 # Set default mask
 umask 022
 
-# Create required directories (if needed)
-mkdir -p "${tmpdir}/sources" "$crossdir" "$rootdir"
+# Create required directories
+mkdir -p "${tmpdir}/sources"
 
 # Process the files from stage number
 for file in ""${CWD}/stage/${stage}/${@:-??-*}"" ; do
@@ -296,7 +287,7 @@ for file in ""${CWD}/stage/${stage}/${@:-??-*}"" ; do
 
   # Stage pre-settings.
   #
-  # Create sysroot directory if needed, recreating symlink for the stage 0
+  # Create sysroot directory, recreating symlink for the stage 0
   if [ "$stage" = "0" ] ; then
     mkdir -p "${crossdir}/${TARGET}"
     if [ ! -e "${crossdir}/${TARGET}/usr" ] ; then
@@ -327,11 +318,6 @@ for file in ""${CWD}/stage/${stage}/${@:-??-*}"" ; do
     rmIfDir ""${tmpdir}/sources/$name*""
     unset name
   fi
-
-  # Restore variables
-  CFLAGS="$SAVED_CFLAGS"
-  CXXFLAGS="$SAVED_CXXFLAGS"
-  LDFLAGS="$SAVED_LDFLAGS"
 done
 
 # Final steps
