@@ -19,20 +19,16 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-AR="ar" AS="as" \
-../binutils-${version}/configure LDFLAGS="$LDFLAGS_LIBTOOL" \
+../binutils-${version}/configure \
  --prefix="$crossdir" \
- --host=$host \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
  --enable-64-bit-bfd \
- --disable-shared \
  --disable-nls \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
  $MULTILIB
 
-make configure-host
 make -j${jobs} MAKEINFO="true"
 make MAKEINFO="true" install
 

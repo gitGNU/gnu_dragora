@@ -47,7 +47,6 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
-AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c,c++ \
@@ -55,11 +54,9 @@ AR="ar" \
  --enable-libstdcxx-time \
  --enable-libstdcxx-verbose \
  --enable-checking=release \
- --build=$host \
- --host=$host \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
- --disable-shared \
+ --disable-symvers \
  --disable-nls \
  --disable-gnu-indirect-function \
  --disable-libmudflap \
@@ -69,9 +66,6 @@ AR="ar" \
  --without-cloog \
  $GCC_OPTS $MULTILIB
 
-make -j${jobs} \
- AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld" \
- BOOT_LDFLAGS="$LDFLAGS" LDFLAGS="$LDFLAGS"
-
+make -j${jobs} AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld"
 make install
 

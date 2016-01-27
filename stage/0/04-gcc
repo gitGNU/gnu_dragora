@@ -47,18 +47,10 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
-# Don't optimize GCC at this point, saving build time
-CFLAGS="-O0 -g0"
-CXXFLAGS="-O0 -g0"
-export CFLAGS CXXFLAGS
-
-AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c \
  --enable-checking=release \
- --build=$host \
- --host=$host \
  --target=$TARGET \
  --with-sysroot="${crossdir}"/$TARGET \
  --with-newlib \
@@ -80,9 +72,7 @@ AR="ar" \
  --without-cloog \
  $GCC_OPTS $MULTILIB
 
-make -j${jobs} BOOT_LDFLAGS="$LDFLAGS" LDFLAGS="$LDFLAGS" \
- all-gcc all-target-libgcc
-
+make -j${jobs} all-gcc all-target-libgcc
 make install-gcc install-target-libgcc
 
 # To prevent broken toolchains from pulling in lgcc_s
