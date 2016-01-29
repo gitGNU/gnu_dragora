@@ -41,7 +41,7 @@ show_help() {
    "  -h          display this help and exit"                                        \
    "  -V          output version information and exit"                               \
    "  -S          don't strip unneeded or debugging symbols from files"              \
-   "  -a          architecture to use [${arch}]"                                     \
+   "  -a          target architecture [${arch}]"                                     \
    "  -c          output directory for cross compiler(s) [${crossdir}]"              \
    "  -i          include path of a previous cross-compiler for static compilation"  \
    "  -j          parallel jobs for the compiler [${jobs}]"                          \
@@ -51,11 +51,13 @@ show_help() {
    "  -t          temporary directory for compilation [${tmpdir}]"                   \
    ""                                                                                \
    "Some influential environment variables:"                                         \
-   "  VENDOR      VENDOR to reflect on the TARGET triplet"                           \
-   "  TARGET      TARGET triplet (platform) on which code runs [auto]"               \
-   "  GCC_OPTS    overrides default configure options for GCC [auto]"                \
-   "  MULTILIB    overrides default MULTILIB options for GCC [auto]"                 \
-   ""
+   "  VENDOR      VENDOR to reflect on the target triplet"                           \
+   ""                                                                                \
+   "Target architectures:"
+   for file in ""${CWD}/bootstrap.d/target/*"" ; do
+     printf %s "${file##*/} "
+   done
+   unset file ; echo
 }
 
 # To check if the specified argument is a valid number
@@ -73,7 +75,7 @@ stripFiles() {
     # protects embedded whitespace in filenames
     quote() { sed 's/./\\&/g' ; }
 
-    local directory="$1"
+    directory="$1"
 
     echo "==> Stripping binaries and libraries in \`$directory' (if any) ..."
     find "$directory" -type f | quote | xargs file | \
@@ -82,6 +84,8 @@ stripFiles() {
 
     find "$directory" -type f | quote | xargs file | grep 'current ar archive' | \
      cut -f 1 -d : | quote | xargs strip --strip-debug 2> /dev/null || true
+
+    unset directory
   fi
 }
 
@@ -142,7 +146,7 @@ while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.6" \
+       "bootstrap 2.7" \
        "Copyright (C) 2014, 2015, 2016  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
@@ -169,84 +173,19 @@ while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
 done
 shift "$((OPTIND - 1))"
 
-# Establish appropriate settings for each supported architecture
-case "$arch" in
-  i?86)
-    MUSL_ARCH=i386
-    LINUX_ARCH=x86
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
-    GCC_OPTS="${GCC_OPTS:---with-arch=${arch} --with-tune=i686}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  x86_64)
-    MUSL_ARCH=x86_64
-    LINUX_ARCH=x86_64
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
-    GCC_OPTS="${GCC_OPTS:---with-arch=x86-64 --with-tune=generic --enable-long-long}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  x32)
-    MUSL_ARCH=x32
-    LINUX_ARCH=x86_64
-    TARGET="${TARGET:-x86_64-x32-${VENDOR}linux-musl}"
-    MULTILIB="${MULTILIB:---enable-multilib --with-multilib-list=mx32}"
-    ;;
-  armhf)
-    MUSL_ARCH=arm
-    LINUX_ARCH=arm
-    TARGET="${TARGET:-arm-${VENDOR}linux-musleabihf}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  arm*)
-    MUSL_ARCH=arm
-    LINUX_ARCH=arm
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musleabi}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  aarch64*)
-    MUSL_ARCH=arm
-    LINUX_ARCH=arm64
-    TARGET="${TARGET:-aarch64-${VENDOR}linux-musl}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  mips*)
-    MUSL_ARCH=mips
-    LINUX_ARCH=mips
-    TARGET="${TARGET:=${arch}-${VENDOR}linux-musl}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  powerpc*|ppc*)
-    MUSL_ARCH=powerpc
-    LINUX_ARCH=powerpc
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
-    GCC_OPTS="${GCC_OPTS:---with-long-double-64 --enable-secureplt}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  or1k*)
-    MUSL_ARCH=or1k
-    LINUX_ARCH=openrisc
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  sh*)
-    MUSL_ARCH=sh
-    LINUX_ARCH=sh
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  microblaze)
-    MUSL_ARCH=microblaze
-    LINUX_ARCH=microblaze
-    TARGET="${TARGET:-${arch}-${VENDOR}linux-musl}"
-    MULTILIB="${MULTILIB:---disable-multilib --with-multilib-list=}"
-    ;;
-  *)
-    echo "bootstrap: Unrecognized architecture '$arch'." 1>&2
-    exit 1;
-esac
+# Load target
+if [ -f "${CWD}/bootstrap.d/target/$arch" ] ; then
+  echo "Loading target: $arch ..."
+  . "${CWD}/bootstrap.d/target/$arch"
+else
+  printf '%s\n' \
+    "Unrecognized architecture -- '$arch'" \
+    "Try '$0 -h' for more information." 1>&2
+  exit 1
+fi
 
 # Compose 'crossdir' adding the target triplet
-crossdir="${crossdir}/$TARGET"
+crossdir="${crossdir}/$target"
 
 # Set default path
 PATH="${crossdir}/bin:${PATH}"
@@ -270,17 +209,16 @@ umask 022
 mkdir -p "${tmpdir}/sources"
 
 # Process the files from stage number
-for file in ""${CWD}/stage/${stage}/${@:-??-*}"" ; do
+for file in ""${CWD}/bootstrap.d/stage/${stage}/${@:-??-*}"" ; do
 
-  # Get the basename
-  file="${file##*/}"
+  file="${file##*/}"	# Get the basename
 
-  if [ ! -f "${CWD}/stage/${stage}/$file" ] ; then
-    echo "bootstrap: File '${CWD}/stage/${stage}/$file' not found or not regular." 1>&2
+  if [ ! -f "${CWD}/bootstrap.d/stage/${stage}/$file" ] ; then
+    echo "bootstrap: File '${CWD}/bootstrap.d/stage/${stage}/$file' not found or not regular." 1>&2
     exit 1
   fi
 
-  if [ ! -x "${CWD}/stage/${stage}/$file" ] ; then
+  if [ ! -x "${CWD}/bootstrap.d/stage/${stage}/$file" ] ; then
     echo "bootstrap: I won't build '${stage}/$file'.  File not executable." 1>&2
     continue;
   fi
@@ -289,9 +227,9 @@ for file in ""${CWD}/stage/${stage}/${@:-??-*}"" ; do
   #
   # Create sysroot directory, recreating symlink for the stage 0
   if [ "$stage" = "0" ] ; then
-    mkdir -p "${crossdir}/${TARGET}"
-    if [ ! -e "${crossdir}/${TARGET}/usr" ] ; then
-      ln -sf . "${crossdir}/${TARGET}/usr"
+    mkdir -p "${crossdir}/$target"
+    if [ ! -e "${crossdir}/${target}/usr" ] ; then
+      ln -sf . "${crossdir}/${target}/usr"
     fi
   fi
 
@@ -303,7 +241,7 @@ for file in ""${CWD}/stage/${stage}/${@:-??-*}"" ; do
 
   # Load script
   echo "==> File \"${file##*/}\" from stage $stage in progress ..."
-  . "${CWD}/stage/${stage}/$file"
+  . "${CWD}/bootstrap.d/stage/${stage}/$file"
 
   # Back to the current working directory
   if ! cd "$CWD" 2> /dev/null ; then
