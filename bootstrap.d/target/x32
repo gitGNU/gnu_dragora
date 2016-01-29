@@ -1,5 +1,5 @@
 #
-# x32: x86_64 ABI using 32-bit 32-bit integers, longs and pointers.
+# x32: x86_64 ABI using 32-bit integers, longs and pointers.
 #
 
 # Architecture names (where to look for the headers)
