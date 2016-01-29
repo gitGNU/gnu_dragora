@@ -1,0 +1,16 @@
+#
+# mips: MIPS r4k big endian.
+#
+
+# Architecture names (where to look for the headers)
+larch=mips	# Libc architecture.
+karch=mips	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options="--disable-optimize"
+binutils_options=""
+gcc_options=""
+
+# Target platform
+target="mips-${VENDOR}linux-musl"
+

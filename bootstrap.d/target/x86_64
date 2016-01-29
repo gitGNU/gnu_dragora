@@ -1,0 +1,16 @@
+#
+# x86_64: x86_64 with generic optimization.
+#
+
+# Architecture names (where to look for the headers)
+larch=x86_64	# Libc architecture.
+karch=x86_64	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options="--enable-64-bit-bfd"
+gcc_options="--with-arch=x86-64 --with-tune=generic --enable-long-long"
+
+# Target platform
+target="x86_64-${VENDOR}linux-musl"
+

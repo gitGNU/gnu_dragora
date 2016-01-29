@@ -1,0 +1,16 @@
+#
+# i586: i586 optimized for i686+ processors.
+#
+
+# Architecture names (where to look for the headers)
+larch=i386	# Libc architecture.
+karch=x86	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options=""
+gcc_options="--with-arch=i586 --with-tune=i686"
+
+# Target platform
+target="i586-${VENDOR}linux-musl"
+

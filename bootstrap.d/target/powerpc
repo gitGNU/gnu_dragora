@@ -1,0 +1,16 @@
+#
+# powerpc: 
+#
+
+# Architecture names (where to look for the headers)
+larch=powerpc	# Libc architecture.
+karch=powerpc	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options=""
+gcc_options="--enable-secureplt"
+
+# Target platform
+target="powerpc-${VENDOR}linux-musl"
+

@@ -1,0 +1,16 @@
+#
+# or1k: OpenRISC 1000.
+#
+
+# Architecture names (where to look for the headers)
+larch=or1k	# Libc architecture.
+karch=openrisc	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options=""
+gcc_options=""
+
+# Target platform
+target="or1k-${VENDOR}linux-musl"
+

@@ -1,0 +1,16 @@
+#
+# x32: x86_64 ABI using 32-bit 32-bit integers, longs and pointers.
+#
+
+# Architecture names (where to look for the headers)
+larch=x32	# Libc architecture.
+karch=x86_64	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options="--enable-64-bit-bfd"
+gcc_options=""
+
+# Target platform
+target="x86_64-x32-${VENDOR}linux-musl"
+

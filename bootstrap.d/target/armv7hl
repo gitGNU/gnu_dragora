@@ -1,0 +1,16 @@
+#
+# armv7hl: ARM hardfloat v7.
+#
+
+# Architecture names (where to look for the headers)
+larch=arm	# Libc architecture.
+karch=arm	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options="--enable-64-bit-bfd"
+gcc_options="--with-arch=armv7-a --with-float=hard --with-fpu=vfpv3-d16"
+
+# Target platform
+target="arm-${VENDOR}linux-musleabihf"
+

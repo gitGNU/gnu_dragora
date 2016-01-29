@@ -1,0 +1,17 @@
+#
+# microblaze: Soft microprocessor core designed for Xilinx FPGAs
+#             from Xilinx (32-bit).
+#
+
+# Architecture names (where to look for the headers)
+larch=microblaze	# Libc architecture.
+karch=microblaze	# Kernel architecture.
+
+# Extra options for 'configure'
+musl_options=""
+binutils_options=""
+gcc_options=""
+
+# Target platform
+target="microblaze-${VENDOR}linux-musl"
+
