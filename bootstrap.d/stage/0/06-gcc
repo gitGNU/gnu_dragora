@@ -53,9 +53,11 @@ cd ../gcc-build
  --enable-clocale=generic \
  --enable-libstdcxx-time \
  --enable-libstdcxx-verbose \
+ --enable-tls \
  --enable-checking=release \
- --target=$TARGET \
- --with-sysroot="${crossdir}"/$TARGET \
+ --target=$target \
+ --with-sysroot="${crossdir}"/$target \
+ --disable-multilib \
  --disable-symvers \
  --disable-nls \
  --disable-gnu-indirect-function \
@@ -64,8 +66,8 @@ cd ../gcc-build
  --disable-libstdcxx-pch \
  --without-ppl \
  --without-cloog \
- $GCC_OPTS $MULTILIB
+ $gcc_options
 
-make -j${jobs} AS_FOR_TARGET="${TARGET}-as" LD_FOR_TARGET="${TARGET}-ld"
+make -j${jobs} AS_FOR_target="${target}-as" LD_FOR_target="${target}-ld"
 make install
 

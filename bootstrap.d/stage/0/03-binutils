@@ -21,13 +21,13 @@ cd ../binutils-build
 
 ../binutils-${version}/configure \
  --prefix="$crossdir" \
- --target=$TARGET \
- --with-sysroot="${crossdir}"/$TARGET \
- --enable-64-bit-bfd \
+ --target=$target \
+ --with-sysroot="${crossdir}"/$target \
  --disable-nls \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
- $MULTILIB
+ --disable-multilib \
+ $binutils_options
 
 make -j${jobs} MAKEINFO="true"
 make MAKEINFO="true" install

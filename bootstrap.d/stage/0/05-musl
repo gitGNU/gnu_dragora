@@ -14,13 +14,13 @@ tar xf "${worktree}"/sources/musl-${version}.tar.gz -C "${tmpdir}"/sources
 # Build instructions
 cd "${tmpdir}"/sources/musl-${version}
 
-CC="${TARGET}-gcc" \
-CROSS_COMPILE="${TARGET}-" \
+CC="${target}-gcc" \
+CROSS_COMPILE="${target}-" \
 ./configure \
  --prefix=/usr \
  --syslibdir=/lib \
- --enable-optimize=size
+ $musl_options
 
 make -j${jobs}
-make install DESTDIR="${crossdir}"/$TARGET
+make install DESTDIR="${crossdir}"/$target
 

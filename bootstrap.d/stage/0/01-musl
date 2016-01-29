@@ -14,5 +14,5 @@ tar xf "${worktree}"/sources/musl-${version}.tar.gz -C "${tmpdir}"/sources
 # Build instructions
 cd "${tmpdir}"/sources/musl-${version}
 
-make install-headers prefix="${crossdir}"/$TARGET ARCH="$MUSL_ARCH"
+make install-headers prefix="${crossdir}"/$target ARCH="$larch"
 

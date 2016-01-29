@@ -51,10 +51,11 @@ cd ../gcc-build
  --prefix="$crossdir" \
  --enable-languages=c \
  --enable-checking=release \
- --target=$TARGET \
- --with-sysroot="${crossdir}"/$TARGET \
+ --target=$target \
+ --with-sysroot="${crossdir}"/$target \
  --with-newlib \
  --without-headers \
+ --disable-multilib \
  --disable-nls \
  --disable-shared \
  --disable-threads \
@@ -70,11 +71,11 @@ cd ../gcc-build
  --disable-libgomp \
  --without-ppl \
  --without-cloog \
- $GCC_OPTS $MULTILIB
+ $gcc_options
 
 make -j${jobs} all-gcc all-target-libgcc
 make install-gcc install-target-libgcc
 
 # To prevent broken toolchains from pulling in lgcc_s
-ln -sf libgcc.a "$("${TARGET}-gcc" -print-libgcc-file-name | sed 's/libgcc/&_eh/')"
+ln -sf libgcc.a "$("${target}-gcc" -print-libgcc-file-name | sed 's/libgcc/&_eh/')"
 
