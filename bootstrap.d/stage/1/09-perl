@@ -23,11 +23,11 @@ cd perl-${version}
 
 ./configure \
  --prefix=/tools \
- --target=$TARGET \
+ --target=$target \
  --all-static \
  -Dprivlib=/tools/lib/perl5 \
  -Dsitelib=/tools/lib/perl5/site_perl \
- -A ldflags="$LDFLAGS"
+ -A ldflags="-static"
 
 make
 

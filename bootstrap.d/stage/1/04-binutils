@@ -20,22 +20,21 @@ mkdir ../binutils-build
 cd ../binutils-build
 
 # Import and export toolchain variables
-. "${worktree}"/stage/env.d/cross-env
+. "${worktree}"/bootstrap.d/stage/env.d/cross-env
 
-../binutils-${version}/configure LDFLAGS="$LDFLAGS_LIBTOOL" \
+../binutils-${version}/configure LDFLAGS="--static" \
  --prefix=/tools \
- --build=$host \
- --host=$TARGET \
- --target=$TARGET \
+ --host=$target \
+ --target=$target \
  --with-lib-path=/tools/lib \
  --with-sysroot \
- --enable-64-bit-bfd \
  --disable-shared \
  --disable-nls \
  --disable-werror \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
- $MULTILIB
+ --disable-multilib \
+ $binutils_options
 
 make -j${jobs}
 make install

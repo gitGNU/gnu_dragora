@@ -15,13 +15,12 @@ tar xf "${worktree}"/sources/make-${version}.tar.bz2 -C "${tmpdir}"/sources
 cd "${tmpdir}"/sources/make-${version}
 
 # Import and export toolchain variables
-. "${worktree}"/stage/env.d/cross-env
+. "${worktree}"/bootstrap.d/stage/env.d/cross-env
 
-LDFLAGS="$LDFLAGS" \
+LDFLAGS="-static" \
 ./configure \
  --prefix=/tools \
- --build=$host \
- --host=$TARGET \
+ --host=$target \
  --disable-nls \
  --without-guile
 

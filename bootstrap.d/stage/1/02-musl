@@ -15,16 +15,14 @@ tar xf "${worktree}"/sources/musl-${version}.tar.gz -C "${tmpdir}"/sources
 cd "${tmpdir}"/sources/musl-${version}
 
 # Import and export toolchain variables
-. "${worktree}"/stage/env.d/cross-env
+. "${worktree}"/bootstrap.d/stage/env.d/cross-env
 
-unset CFLAGS LDFLAGS
-
-CROSS_COMPILE="${TARGET}-" \
+CROSS_COMPILE="${target}-" \
 ./configure \
  --prefix=/tools \
  --syslibdir=/tools/lib \
- --host=$TARGET \
- --enable-optimize
+ --host=$target \
+ $musl_options
 
 make -j${jobs}
 make install DESTDIR="$rootdir"

@@ -21,7 +21,6 @@ cp -f "${worktree}"/patches/common/config.sub config.sub
 # to cross-compile "file" matching the same version
 ./configure \
  --prefix="$crossdir" \
- --build=$host \
  --disable-fsect-man5 \
  --disable-shared \
  --enable-static
@@ -32,13 +31,12 @@ make install
 make clean
 
 # Import and export toolchain variables
-. "${worktree}"/stage/env.d/cross-env
+. "${worktree}"/bootstrap.d/stage/env.d/cross-env
 
-LDFLAGS="$LDFLAGS_LIBTOOL" \
+LDFLAGS="--static" \
 ./configure \
  --prefix=/tools \
- --build=$host \
- --host=$TARGET \
+ --host=$target \
  --disable-fsect-man5 \
  --disable-shared \
  --enable-static

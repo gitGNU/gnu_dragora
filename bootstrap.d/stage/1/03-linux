@@ -15,8 +15,8 @@ tar xf "${worktree}"/sources/linux-libre-${version}-gnu*.tar.lz -C "${tmpdir}"/s
 cd "${tmpdir}"/sources/linux-${version}
 
 make mrproper
-make headers_check ARCH="$LINUX_ARCH"
-make headers_install ARCH="$LINUX_ARCH" INSTALL_HDR_PATH=dest
+make headers_check ARCH="$karch"
+make headers_install ARCH="$karch" INSTALL_HDR_PATH=dest
 
 # Copy headers
 mkdir -p "${rootdir}"/tools/include

@@ -18,7 +18,7 @@ patch -Np1 -i "${worktree}"/patches/gettext-tiny/gettext-tiny-noop.patch
 patch -Np1 -i "${worktree}"/patches/gettext-tiny/gettext-tiny-msgmerge-configure.patch
 
 # Import and export toolchain variables
-. "${worktree}"/stage/env.d/cross-env
+. "${worktree}"/bootstrap.d/stage/env.d/cross-env
 
 make prefix=/tools
 make prefix=/tools install

@@ -22,12 +22,11 @@ for patch in "${worktree}"/patches/bash/*-??? ; do
 done
 
 # Import and export toolchain variables
-. "${worktree}"/stage/env.d/cross-env
+. "${worktree}"/bootstrap.d/stage/env.d/cross-env
 
 ./configure \
  --prefix=/tools \
- --build=$host \
- --host=$TARGET \
+ --host=$target \
  --enable-static-link \
  --disable-nls \
  --without-bash-malloc
