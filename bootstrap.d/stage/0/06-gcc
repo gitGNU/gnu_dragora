@@ -68,6 +68,6 @@ cd ../gcc-build
  --without-cloog \
  $gcc_options
 
-make -j${jobs} AS_FOR_target="${target}-as" LD_FOR_target="${target}-ld"
+make -j${jobs} AS_FOR_TARGET="${target}-as" LD_FOR_TARGET="${target}-ld"
 make install
 
