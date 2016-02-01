@@ -85,7 +85,6 @@ cd ../gcc-build
  --target=$target \
  --with-local-prefix=/tools \
  --with-native-system-header-dir=/tools/include \
- --disable-multilib \
  --disable-bootstrap \
  --disable-shared \
  --disable-symvers \
@@ -98,7 +97,8 @@ cd ../gcc-build
  --disable-libstdcxx-time \
  --without-ppl \
  --without-cloog \
- $gcc_options
+ $gcc_options \
+ $multilib_options
 
 make -j${jobs} \
  AS_FOR_TARGET="$AS" LD_FOR_TARGET="$LD" \

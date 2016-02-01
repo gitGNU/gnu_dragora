@@ -10,6 +10,7 @@ karch=mips	# Kernel architecture.
 musl_options="--disable-optimize"
 binutils_options=""
 gcc_options=""
+multilib_options="--disable-multilib --with-multilib-list="
 
 # Target platform
 target="mips-${VENDOR}linux-musl"

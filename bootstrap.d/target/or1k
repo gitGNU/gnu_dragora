@@ -10,6 +10,7 @@ karch=openrisc	# Kernel architecture.
 musl_options=""
 binutils_options=""
 gcc_options=""
+multilib_options="--disable-multilib --with-multilib-list="
 
 # Target platform
 target="or1k-${VENDOR}linux-musl"

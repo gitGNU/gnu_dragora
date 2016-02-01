@@ -10,6 +10,7 @@ karch=x86	# Kernel architecture.
 musl_options=""
 binutils_options=""
 gcc_options="--with-arch=i586 --with-tune=i686"
+multilib_options="--disable-multilib --with-multilib-list="
 
 # Target platform
 target="i586-${VENDOR}linux-musl"

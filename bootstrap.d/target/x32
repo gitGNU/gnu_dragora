@@ -10,6 +10,7 @@ karch=x86_64	# Kernel architecture.
 musl_options=""
 binutils_options="--enable-64-bit-bfd"
 gcc_options=""
+multilib_options="--disable-multilib --with-multilib-list"
 
 # Target platform
 target="x86_64-x32-${VENDOR}linux-musl"

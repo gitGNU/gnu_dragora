@@ -26,8 +26,8 @@ cd ../binutils-build
  --disable-nls \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
- --disable-multilib \
- $binutils_options
+ $binutils_options \
+ $multilib_options
 
 make -j${jobs} MAKEINFO="true"
 make MAKEINFO="true" install

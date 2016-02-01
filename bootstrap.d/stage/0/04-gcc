@@ -55,7 +55,6 @@ cd ../gcc-build
  --with-sysroot="${crossdir}"/$target \
  --with-newlib \
  --without-headers \
- --disable-multilib \
  --disable-nls \
  --disable-shared \
  --disable-threads \
@@ -71,7 +70,8 @@ cd ../gcc-build
  --disable-libgomp \
  --without-ppl \
  --without-cloog \
- $gcc_options
+ $gcc_options \
+ $multilib_options
 
 make -j${jobs} all-gcc all-target-libgcc
 make install-gcc install-target-libgcc

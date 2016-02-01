@@ -11,6 +11,7 @@ karch=microblaze	# Kernel architecture.
 musl_options=""
 binutils_options=""
 gcc_options=""
+multilib_options="--disable-multilib --with-multilib-list="
 
 # Target platform
 target="microblaze-${VENDOR}linux-musl"

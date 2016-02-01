@@ -10,6 +10,7 @@ karch=arm	# Kernel architecture.
 musl_options=""
 binutils_options="--enable-64-bit-bfd"
 gcc_options="--with-arch=armv7-a --with-float=hard --with-fpu=vfpv3-d16"
+multilib_options="--disable-multilib --with-multilib-list="
 
 # Target platform
 target="arm-${VENDOR}linux-musleabihf"
