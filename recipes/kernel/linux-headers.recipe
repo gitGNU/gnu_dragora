@@ -6,7 +6,7 @@
 # to copy, distribute and modify it.
 
 program=linux
-version=3.18.25
+version=4.4.1
 release=1
 
 # Package options
