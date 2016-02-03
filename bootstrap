@@ -50,7 +50,8 @@ show_help() {
    "  -t          temporary directory for compilation [${tmpdir}]"                   \
    ""                                                                                \
    "Some influential environment variables:"                                         \
-   "  VENDOR      VENDOR to reflect on the target triplet"                           \
+   "  VENDOR      vendor to reflect on the target triplet (compose it"               \
+   "              using \"-\" as suffix)"                                            \
    ""                                                                                \
    "Target architectures:"
    for file in ""${CWD}/bootstrap.d/target/*"" ; do
@@ -142,7 +143,7 @@ while getopts ":hSVk a:c:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.8" \
+       "bootstrap 2.9" \
        "Copyright (C) 2014, 2015, 2016  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
@@ -179,6 +180,10 @@ else
     "Try '$0 -h' for more information." 1>&2
   exit 1
 fi
+
+# Reduce the possibility for host and target to be the same,
+# otherwise, cross-compiling won't work.
+host="$(cc -dumpmachine | sed 's/-[^-]*/-cross/')"
 
 # Compose 'crossdir' adding the target triplet
 crossdir="${crossdir}/$target"

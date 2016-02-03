@@ -47,10 +47,13 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
+AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c \
  --enable-checking=release \
+ --build=$host \
+ --host=$host \
  --target=$target \
  --with-sysroot="${crossdir}"/$target \
  --with-newlib \
@@ -73,7 +76,9 @@ cd ../gcc-build
  $gcc_options \
  $multilib_options
 
-make -j${jobs} all-gcc all-target-libgcc
+make -j${jobs} BOOT_LDFLAGS="-static" LDFLAGS="-static" \
+ all-gcc all-target-libgcc
+
 make install-gcc install-target-libgcc
 
 # To prevent broken toolchains from pulling in lgcc_s

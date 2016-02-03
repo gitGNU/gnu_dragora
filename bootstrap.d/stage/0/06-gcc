@@ -47,6 +47,7 @@ rm -rf ../gcc-build
 mkdir ../gcc-build
 cd ../gcc-build
 
+AR="ar" \
 ../gcc-${version}/configure \
  --prefix="$crossdir" \
  --enable-languages=c,c++ \
@@ -55,8 +56,11 @@ cd ../gcc-build
  --enable-libstdcxx-verbose \
  --enable-tls \
  --enable-checking=release \
+ --build=$host \
+ --host=$host \
  --target=$target \
  --with-sysroot="${crossdir}"/$target \
+ --disable-shared \
  --disable-symvers \
  --disable-nls \
  --disable-gnu-indirect-function \
@@ -68,6 +72,9 @@ cd ../gcc-build
  $gcc_options \
  $multilib_options
 
-make -j${jobs} AS_FOR_TARGET="${target}-as" LD_FOR_TARGET="${target}-ld"
+make -j${jobs} \
+ AS_FOR_TARGET="${target}-as" LD_FOR_TARGET="${target}-ld" \
+ BOOT_LDFLAGS="-static" LDFLAGS="-static"
+
 make install
 

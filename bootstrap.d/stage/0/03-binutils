@@ -19,10 +19,13 @@ rm -rf ../binutils-build
 mkdir ../binutils-build
 cd ../binutils-build
 
-../binutils-${version}/configure \
+AR="ar" AS="as" \
+../binutils-${version}/configure LDFLAGS="--static" \
  --prefix="$crossdir" \
+ --host=$host \
  --target=$target \
  --with-sysroot="${crossdir}"/$target \
+ --disable-shared \
  --disable-nls \
  --disable-ppl-version-check \
  --disable-cloog-version-check \
