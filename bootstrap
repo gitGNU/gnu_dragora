@@ -43,7 +43,6 @@ show_help() {
    "  -S          don't strip unneeded or debugging symbols from files"              \
    "  -a          target architecture [${arch}]"                                     \
    "  -c          output directory for cross compiler(s) [${crossdir}]"              \
-   "  -i          include path of a previous cross-compiler for static compilation"  \
    "  -j          parallel jobs for the compiler [${jobs}]"                          \
    "  -k          keep (don't delete) source directory"                              \
    "  -r          output directory for the root system [${rootdir}]"                 \
@@ -57,7 +56,7 @@ show_help() {
    for file in ""${CWD}/bootstrap.d/target/*"" ; do
      printf %s "${file##*/} "
    done
-   unset file ; echo
+   echo
 }
 
 # To check if the specified argument is a valid number
@@ -113,7 +112,7 @@ keepdir=nokeepdir
 stage=0
 
 # Parse options
-while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
+while getopts ":hSVk a:c:j:r:s:t:" option ; do
   case "$option" in
     S)
       strip=nostrip
@@ -123,9 +122,6 @@ while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
       ;;
     c)
       crossdir="$OPTARG"
-      ;;
-    i)
-      includepath="$OPTARG"
       ;;
     j)
       jobs="$OPTARG"
@@ -146,7 +142,7 @@ while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
       ;;
     V)
       printf '%s\n' \
-       "bootstrap 2.7" \
+       "bootstrap 2.8" \
        "Copyright (C) 2014, 2015, 2016  Matias A. Fonzo." \
        "License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl.html>" \
        "This is free software: you are free to change and redistribute it." \
@@ -160,13 +156,13 @@ while getopts ":hSVk a:c:i:j:r:s:t:" option ; do
     :)
       printf '%s\n' \
        "The option '-${OPTARG}' requires an argument" \
-       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-i <path>] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
+       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
       exit 1
       ;;
     \?)
       printf '%s\n' \
        "bootstrap: illegal option -- '-${OPTARG}'" \
-       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-i <path> ] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
+       "Usage: $0 [-hSVk] [-a <arch>] [-c <crossdir>] [-j <jobs>] [-r <rootdir>] [-s <stage>] [-t <tmpdir>] [file ...]" 1>&2
       exit 1
       ;;
   esac
@@ -189,17 +185,6 @@ crossdir="${crossdir}/$target"
 
 # Set default path
 PATH="${crossdir}/bin:${PATH}"
-
-# To prefix 'includepath' if -i was given
-if [ -n "$includepath" ] ; then
-  if [ -d "${includepath}/bin" ] ; then
-    PATH="${includepath}/bin:${crossdir}/bin:${PATH}"
-  else
-    echo "bootstrap: A valid \"${includepath}/bin\" directory is required." 1>&2
-    exit 1
-  fi
-fi
-
 export PATH
 
 # Set default mask
