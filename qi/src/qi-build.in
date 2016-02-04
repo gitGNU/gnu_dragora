@@ -372,7 +372,7 @@ for recipe ; do
     eval_cmd "chown -R 0:0 "${tmpdir}/${srcdir}""
   fi
   # Set sane permissions
-  eval_cmd "chmod -R u+w,go-w,a+rX-s "${tmpdir}/${srcdir}" || true"
+  eval_cmd "chmod -R u+w,go-w,a+rX-s "${tmpdir}/${srcdir}""
 
   # Exit immediately on any error before build()
   if [[ $avoid_errors != avoid_errors ]] ; then
