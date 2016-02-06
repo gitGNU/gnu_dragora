@@ -1,7 +1,7 @@
 #! /bin/bash
 #  This program is part of the Qi package manager
 #
-#  Copyright (C) 2015  Matias A. Fonzo
+#  Copyright (C) 2015, 2016  Matias A. Fonzo
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -160,72 +160,74 @@ if (( $UID == 0 )) ; then
   graft_options="-l ${packagedir}/graft-log"
 fi
 
-# Save the arguments in an array, getting the base name
-# and stripping package extension
-pkgList=( $(_basename "$@" .tlz) )
+# Create an array with the given package names
+for package in "$@" ; do
+  pkgList+=( $(_basename "$package" .tlz) )
+done
+unset package _basename
 
-# The purpose here is to iterate over the package names
-# in order to check its availability.  If the given name
-# does not exist, we will try to look by its long name,
-# expanding it.  Offering the possibility to choose which
-# package to remove.
+# Check the availability of the package looking for a match in
+# the database, trying to find the package for its long name,
+# like "name-version-arch+build"
 for name in "${pkgList[@]}" ; do
-
-  # Check the availability of the package looking for a match in the
-  # database.  Trying to find the package for its long name, like
-  # "name-version-arch+build"
-  if [[ ! -e ${packagedir}/$name ]] ; then
-    for package in ""${packagedir}/${name}*"" ; do
-      [[ -d $package ]] || continue;
-      package="${package##*/}"
-      if printf %s "$package" | grep -qwo "$name" ; then
-        fullList+=( $package )
-      fi
-    done
-    unset package
-
-    # No packages to select, use the last one
-    if (( ${#fullList[@]} == 1 )) ; then
-      pkgList=( ${fullList[*]} )
-      break;
+  for package in ""${packagedir}/${name}*"" ; do
+    if [[ ! -d $package ]] ; then
+      continue;	# Package must be a directory.
     fi
 
-    # If more than one, give the possibility to choose the package(s)
-    if (( ${#fullList[@]} > 1 )) ; then
-      printf '%s\n' "" \
-       "The following package names were found according to your input:" \
-       ""
-      PS3="Pick a number, press <ENTER> to continue, or 'c' to confirm: "
-      select item in "${fullList[@]}" All ; do
-        if [[ $item ]] ; then
-          if [[ $item = All ]] ; then
-            pkgList=( ${fullList[*]} )
-            break 2;	# Break the two loops.
-          fi
-          newList+=( $item )
-          printf '%s\n' "Your selection: ${newList[*]}"
-        elif [[ $REPLY =~ [cC] ]] ; then
-          break;
-        else
-          printf '%s\n' "Invalid selection."
-        fi
-      done
+    package="${package##*/}"
 
-      # Assign selected packages to the package list
-      if (( ${#newList[@]} )) ; then
-        pkgList=( ${newList[*]} )
-      else
-        quit 1 "qi: remove: 0 packages have been selected."
-      fi
+    # Print package name to match with itself the given argument
+    if printf %s "$package" | grep -qwo "$name" ; then
+      foundList+=( $package )
     fi
+  done
+done
+unset -v name package
+
+# Assign packages found to the list
+if (( ${#foundList[@]} )) ; then
+  pkgList=( ${foundList[*]} )
+  unset -v foundList
+fi
+
+# Give possibility to choose the packages
+while (( ${#pkgList[@]} > 1 )) ; do
+  printf '%s\n' "" \
+   "The following package names were found ..."                 \
+   ""                                                           \
+   "Enter the number of the package you want to remove:"        \
+   ""                                                           \
+   "Confirm the selection using the last item.  If no package"  \
+   "is selected and 'Confirm/All' is chosen, all the packages"  \
+   "will be removed.  Press Ctrl+C to leave the menu."          \
+   ""
+  select item in "${pkgList[@]}" Confirm/All ; do
+    if [[ -n $item ]] ; then
+      if [[ $item = Confirm/All ]] ; then
+        break 2;	# Break the two loops.
+      fi
+      newList+=( $item )
+      printf '%s\n' "Your selection: ${newList[*]}"	# Continue.
+    else
+      printf '%s\n' "Invalid selection."		# Continue.
+    fi
+  done
+  unset -v item
+
+  # Assign selected packages to the package list
+  if (( ${#newList[@]} )) ; then
+    pkgList=( ${newList[*]} )
+    unset -v newList
+  else
+    quit 1 "qi: remove: 0 packages have been selected."
   fi
 done
-unset name fullList item PS3 newList
 
-# Iterate over pkgList to remove the packages
+# Iterate over the list in order to remove the packages
 for name in "${pkgList[@]}" ; do
   if [[ ! -r ${packagedir}/$name ]] ; then
-    quit 4 "qi: remove: Cannot read package directory \"${packagedir}/${name}\"."
+    quit 4 "qi: remove: Cannot read package directory \`${packagedir}/${name}*'."
   fi
 
   # Remove symlinks and possible conflicts
@@ -242,6 +244,5 @@ for name in "${pkgList[@]}" ; do
     rmIfDir "${packagedir}/$name"
   fi
 done
-
-echo "${#pkgList[@]} package(s) removed = ${pkgList[*]}"
+printf '%s\n' "" "${#pkgList[@]} package(s) removed = ${pkgList[*]}" ""
 
