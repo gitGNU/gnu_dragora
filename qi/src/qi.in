@@ -1,7 +1,7 @@
 #! /bin/bash
 #  The Qi package manager
 #
-#  Copyright (C) 2015  Matias A. Fonzo
+#  Copyright (C) 2015, 2016  Matias A. Fonzo
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ usage() {
    "  -P          package (de)installation tree"                           \
    "  -T          target directory for unlinking"                          \
    "  -k          keep (don't delete) the package directory"               \
+   "  -n          non-interactive mode"                                    \
    "  -p          prune conflicts"                                         \
    "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
    ""                                                                      \
