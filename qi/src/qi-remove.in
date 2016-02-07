@@ -43,9 +43,6 @@ show_help() {
    ""
 }
 
-# A function to reflect the base name
-_basename() { local name="${1##*/}" ; printf %s "${name%$2}"; }
-
 # Ignore some signals during the removal
 isignal() {
   trap "" HUP INT
@@ -166,9 +163,9 @@ fi
 
 # Create an array with the given package names
 for package in "$@" ; do
-  pkgList+=( $(_basename "$package" .tlz) )
+  pkgList+=( $(basename "$package" .tlz) )
 done
-unset package _basename
+unset -v package
 
 # Check the availability of the package looking for a match in
 # the database, trying to find the package for its long name,
@@ -176,7 +173,7 @@ unset package _basename
 for name in "${pkgList[@]}" ; do
   for package in ""${packagedir}/${name}*"" ; do
     if [[ ! -d $package ]] ; then
-      continue;	# Package must be a directory.
+      quit 4 "qi: remove: Cannot find package directory \`${package}'."
     fi
 
     package="${package##*/}"
@@ -232,7 +229,7 @@ unset -v non_interactive
 # Iterate over the list in order to remove the packages
 for name in "${pkgList[@]}" ; do
   if [[ ! -r ${packagedir}/$name ]] ; then
-    quit 4 "qi: remove: Cannot read package directory \`${packagedir}/${name}*'."
+    quit 4 "qi: remove: Cannot read package directory \`${packagedir}/${name}'."
   fi
 
   # Remove symlinks and possible conflicts
