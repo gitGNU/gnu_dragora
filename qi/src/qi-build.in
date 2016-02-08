@@ -245,10 +245,10 @@ export avoid_errors arch jobs strip
 # Create a Private Randomized Directory
 PRD="${HOME}/qi-build-${RANDOM}$$"
 
-eval_cmd "mkdir -p -m 700 "$PRD"
+eval_cmd "mkdir -p -m 700 "$PRD""
 
 # To remove directory and pipe when it leaves
-trap 'eval_cmd "rm -rf "$PRD" /var/tmp/qi-pipe' EXIT
+trap 'eval_cmd "rm -rf "$PRD" /var/tmp/qi-pipe"' EXIT
 
 # Save all exported variables
 export -p > "${PRD}/default_env$$"
