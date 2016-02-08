@@ -359,7 +359,7 @@ for recipe ; do
          "touch "$file_name" && sha1sum "$file_name" > "${file_name}.sha1sum""
       fi
     done
-    unset address file_name fetch
+    unset -v address file_name fetch
   else
     warn "qi: build: WARNING: Array 'fetch' empty.  No source(s) will be downloaded."
   fi
@@ -423,7 +423,7 @@ for recipe ; do
       warn "qi: build: WARNING: No elements or symbols found to strip."
     fi
     shopt -u globstar	# Deactivate shell option.
-    unset element string fileList
+    unset -v element string fileList
   fi
 
   # Copy the documentation
@@ -449,7 +449,7 @@ for recipe ; do
           eval_cmd "ln -sf -v "$(readlink -- "$REPLY").lz" "${REPLY}.lz""
           eval_cmd "rm -- "$REPLY""
         done < <(eval_cmd "find "${destdir}/$mandir" -type l")
-        unset REPLY
+        unset -v REPLY
       fi
     fi
 
@@ -466,10 +466,10 @@ for recipe ; do
         eval_cmd "cp -a "$element" "${destdir}/$docdir""
       done
       shopt -u globstar
-      unset element docdir
+      unset -v element docdir
 
       echo "${#docs[@]} elements have been copied from the 'docs' array."
-      unset docs
+      unset -v docs
     fi
   fi
 
@@ -541,7 +541,7 @@ for recipe ; do
         break;
       fi
     done
-    unset REPLY;
+    unset -v REPLY;
   fi
 
   unset s_full_pkgname
