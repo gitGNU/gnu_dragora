@@ -243,15 +243,15 @@ fi
 export avoid_errors arch jobs strip
 
 # Create a Private Randomized Directory
-PRD="qi-build-${USER}-$RANDOM$$"
+PRD="${HOME}/qi-build-${RANDOM}$$"
 
-eval_cmd "mkdir -p -m 700 "${tmpdir}"/$PRD"
+eval_cmd "mkdir -p -m 700 "$PRD"
 
 # To remove directory and pipe when it leaves
-trap 'eval_cmd "rm -rf "${tmpdir}"/$PRD" /var/tmp/qi-pipe' EXIT
+trap 'eval_cmd "rm -rf "$PRD" /var/tmp/qi-pipe' EXIT
 
 # Save all exported variables
-export -p > "${tmpdir}"/${PRD}/default_env$$
+export -p > "${PRD}/default_env$$"
 
 # Mark some variables as read only.
 #
@@ -491,7 +491,7 @@ for recipe ; do
   fi
 
   # Save variables of the current recipe and possible exported functions
-  eval_cmd "cd "${tmpdir}"/$PRD && export -p > recipe_env$$"
+  eval_cmd "cd "$PRD" && export -p > recipe_env$$"
 
   # Prints the lines only in recipe_env but not in default_env, extracting
   # the name of the variable and function for easy deactivation
@@ -515,10 +515,10 @@ for recipe ; do
   s_full_pkgname="$full_pkgname"
 
   # Deactivate variables used in the recipe
-  source "${tmpdir}"/${PRD}/substraction$$
+  source "${PRD}/substraction$$"
 
   # Restore default environment for the next recipe
-  source "${tmpdir}/${PRD}/default_env$$" 2> /dev/null
+  source "${PRD}/default_env$$" 2> /dev/null
 
   echo "<== Done [ ${CWD}/$recipe ]"
 
