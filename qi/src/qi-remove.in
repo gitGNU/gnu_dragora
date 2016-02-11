@@ -43,6 +43,14 @@ show_help() {
    ""
 }
 
+# A function to reflect the base name (without newline)
+_basename() {
+  local path="$1"
+  path="${path%"${path##*[!/]}"}"	# Strip trailing '/' slashes.
+  path="${path##*/}"			# Strip off pathname.
+  printf %s "${path%$2}"		# Also strip off extension, if any.
+}
+
 # Ignore some signals during the removal
 isignal() {
   trap "" HUP INT
@@ -163,9 +171,9 @@ fi
 
 # Create an array with the given package names
 for package in "$@" ; do
-  pkgList+=( $(basename "$package" .tlz) )
+  pkgList+=( $(_basename "$package" .tlz) )
 done
-unset -v package
+unset -v package _basename
 
 # Check the availability of the package looking for a match in
 # the database, trying to find the package for its long name,
