@@ -8,7 +8,7 @@
 @comment %**end of header
 
 @set VERSION 1.0-pre2
-@set UPDATED 7 February 2016
+@set UPDATED 11 February 2016
 
 @copying
 This manual is for Qi (version @value{VERSION},
@@ -213,9 +213,6 @@ graft(1) verbosity (use -V instead for more verbosity).
 @sp 1
 @noindent
 @strong{Options for command @samp{build}:}
-
-@item -A
-Avoid automatic error detection.
 
 @item -C
 Create named pipe for communicate package name.

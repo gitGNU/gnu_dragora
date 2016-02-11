@@ -38,7 +38,6 @@ show_help() {
    ""                                                                    \
    "Build command options:"                                              \
    "  -h          display this help and exit"                            \
-   "  -A          avoid automatic error detection"                       \
    "  -C          create named pipe for communicate package name"        \
    "  -N          don't read runtime configuration file"                 \
    "  -S          don't strip unneeded or debugging symbols from files"  \
@@ -103,7 +102,6 @@ unpack() {
 }
 
 # Default variable values
-avoid_errors=noavoid_errors
 create_pipe=nocreate_pipe
 rcfile=rcfile
 strip=strip
@@ -125,13 +123,10 @@ compress_pages=compress_pages
 # An indexed array is created when an option is set.  It helps to the
 # command line in order to take precedence over the config file
 
-while getopts ":hACNSkni o:t:w:z:a:j:" option ; do
+while getopts ":hCNSkni o:t:w:z:a:j:" option ; do
   case "$option" in
     (k)
       keepdir=keepdir
-      ;;
-    (A)
-      avoid_errors=avoid_errors
       ;;
     (C)
       create_pipe=create_pipe
@@ -180,12 +175,12 @@ while getopts ":hACNSkni o:t:w:z:a:j:" option ; do
      :)
       quit 1 \
        "The option '-${OPTARG}' requires an argument" \
-       "Usage: qi build [-hACNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+       "Usage: qi build [-hCNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
       ;;
     \?)
       quit 1 \
        "qi: build: illegal option -- '-${OPTARG}'" \
-       "Usage: qi build [-hACNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
+       "Usage: qi build [-hCNSkni] [-otwz <dir>] [-a <arch>] [-j <jobs>] [recipe ...]"
       ;;
   esac
 done
@@ -240,7 +235,7 @@ fi
 # We prepare to export specific variables that will serve to restore
 # their values when one stops processing a recipe and place is given
 # to the following one
-export avoid_errors arch jobs strip
+export arch jobs strip
 
 # Create a Private Randomized Directory
 PRD="${HOME}/qi-build-${RANDOM}$$"
@@ -374,17 +369,10 @@ for recipe ; do
   # Set sane permissions
   eval_cmd "chmod -R u+w,go-w,a+rX-s "${tmpdir}/${srcdir}""
 
-  # Exit immediately on any error before build()
-  if [[ $avoid_errors != avoid_errors ]] ; then
-    set -o errexit	# Exit immediately on any error.
-  else
-    warn "WARNING: Automatic detection of errors will be avoided."
-  fi
-
   # Run the build function
   echo "==> Running build() ..."
-  build
-
+  set -o errexit;	# Exit immediately on any error by default.
+  build			# Run build().
   set +o errexit	# Deactivate shell option.
 
   # If for some reason destdir is empty, the package won't be created

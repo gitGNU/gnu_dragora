@@ -58,7 +58,6 @@ usage() {
    "  -v          graft(1) verbosity (use -V instead for more verbosity)"  \
    ""                                                                      \
    "Options for command 'build':"                                          \
-   "  -A          avoid automatic error detection"                         \
    "  -C          create named pipe for communicate package name"          \
    "  -S          don't strip unneeded or debugging symbols from files"    \
    "  -k          keep (don't delete) srcdir and destdir"                  \

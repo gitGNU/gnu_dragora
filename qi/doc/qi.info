@@ -1,6 +1,6 @@
 This is qi.info, produced by makeinfo version 4.13 from qi.texi.
 
-This manual is for Qi (version 1.0-pre2, 7 February 2016), which is a
+This manual is for Qi (version 1.0-pre2, 11 February 2016), which is a
 simple source builder and package manager.
 
    Copyright (C) 2015, 2016 Matias A. Fonzo
@@ -23,7 +23,7 @@ File: qi.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Qi Manual
 *********
 
-This manual is for Qi (version 1.0-pre2, 7 February 2016).
+This manual is for Qi (version 1.0-pre2, 11 February 2016).
 
 * Menu:
 
@@ -177,9 +177,6 @@ The following commands are supported by `qi':
 
 
      *Options for command `build':*
-
-`-A'
-     Avoid automatic error detection.
 
 `-C'
      Create named pipe for communicate package name.
@@ -1186,7 +1183,7 @@ Index
 
 * examine packages:                      Examine packages.    (line   6)
 * exit codes:                            Exit status.         (line   6)
-* help actions:                          Invocation.          (line 186)
+* help actions:                          Invocation.          (line 183)
 * introduction:                          Introduction.        (line   6)
 * invocation:                            Invocation.          (line   6)
 * package installation:                  Packages.            (line  55)
@@ -1200,17 +1197,17 @@ Index
 
 
 Tag Table:
-Node: Top790
-Node: Introduction1573
-Node: Invocation3188
-Node: The qirc file7008
-Node: Recipes7956
-Node: Packages10195
-Node: Examine packages17906
-Node: The .order files18926
-Node: Exit status19089
-Node: GNU Free Documentation License20425
-Node: Index45586
+Node: Top791
+Node: Introduction1575
+Node: Invocation3190
+Node: The qirc file6966
+Node: Recipes7914
+Node: Packages10153
+Node: Examine packages17864
+Node: The .order files18884
+Node: Exit status19047
+Node: GNU Free Documentation License20383
+Node: Index45544
 
 End Tag Table
 
