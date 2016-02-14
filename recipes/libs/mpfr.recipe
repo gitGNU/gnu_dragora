@@ -11,17 +11,6 @@ release=1
 
 tarname=${program}-${version}.tar.bz2
 
-description="
-mpfr - Library for multiple-precision floating point.
-
-The MPFR library is a C library for multiple-precision
-floating-point computations with correct rounding.
-
-"
-
-homepage=http://www.mpfr.org
-licenses="GPLv3+, LGPLv3+"
-
 # Remote source(s)
 fetch=(
   http://www.mpfr.org/mpfr-current/$tarname

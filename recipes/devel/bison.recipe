@@ -11,22 +11,6 @@ release=1
 
 tarname=${program}-${version}.tar.gz
 
-description="
-bison - GNU parser generator.
-
-Bison is a general-purpose parser generator that converts an annotated
-context-free grammar into a deterministic LR or generalized LR (GLR)
-parser employing LALR(1) parser tables. As an experimental feature,
-Bison can also generate IELR(1) or canonical LR(1) parser tables.
-Once you are proficient with Bison, you can use it to develop a wide
-range of language parsers, from those used in simple desk calculators
-to complex programming languages.
-
-"
-
-homepage=https://www.gnu.org/software/bison
-licenses=GPLv3+
-
 # Remote source(s)
 fetch=(
   http://ftp.gnu.org/gnu/bison/$tarname

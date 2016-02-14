@@ -11,17 +11,6 @@ release=1
 
 tarname=${program}-${version}.tar.bz2
 
-description="
-flex - The fast lexical analyser generator.
-
-Flex is a fast lexical analyser generator.  It is a tool for
-generating programs that perform pattern-matching on text.
-
-"
-
-homepage=http://www.gnu.org/software/flex
-licenses=Custom
-
 # Remote source(s)
 fetch=(
   http://downloads.sourceforge.net/sourceforge/flex/$tarname

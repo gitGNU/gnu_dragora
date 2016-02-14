@@ -11,20 +11,6 @@ release=1
 
 tarname=${program}-${version}.tar.gz
 
-description="
-zlib - A compression data library.
-
-Zlib is a software library used for data compression, and is an
-abstraction of the deflate compression algorithm used in their
-gzip file compression program.
-
-Zlib was written by Jean-loup Gailly and Mark Adler.
-
-"
-
-homepage=http://zlib.net
-licenses=Custom
-
 # Remote source(s)
 fetch=(
   http://zlib.net/$tarname

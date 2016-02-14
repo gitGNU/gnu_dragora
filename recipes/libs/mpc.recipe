@@ -11,18 +11,6 @@ release=1
 
 tarname=${program}-${version}.tar.gz
 
-description="
-mpc - Library for the arithmetic of complex numbers.
-
-The MPC package contains a library for the arithmetic of complex
-numbers with arbitrarily high precision and correct rounding of the
-result.
-
-"
-
-homepage=http://www.multiprecision.org
-licenses=LGPLv3+
-
 # Remote source(s)
 fetch=(
   ftp://ftp.gnu.org/gnu/mpc/$tarname

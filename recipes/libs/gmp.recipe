@@ -13,22 +13,6 @@ srcdir=gmp-6.0.0
 
 tarname=${program}-${version}.tar.lz
 
-description="
-gmp - GNU multiple precision arithmetic library.
-
-GMP is a free library for arbitrary precision arithmetic, operating
-on signed integers, rational numbers, and floating-point numbers.
-There is no practical limit to the precision except the ones implied
-by the available memory in the machine GMP runs on.
-
-GMP has a rich set of functions, and the functions have a regular
-interface.
-
-"
-
-homepage=https://gmplib.org
-licenses="GPLv2+, GPLv3+, LGPLv3+"
-
 # Remote source(s)
 fetch=(
   https://gmplib.org/download/gmp/$tarname

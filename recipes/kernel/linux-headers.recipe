@@ -15,16 +15,6 @@ strip=nostrip
 
 tarname=${program}-libre-${version}-gnu.tar.lz
 
-description="
-linux-headers - The GNU Linux libre kernel headers.
-
-The GNU Linux libre kernel headers.
-
-"
-
-homepage=http://www.fsfla.org/ikiwiki/selibre/linux-libre
-licenses=GPLv2+
-
 # Remote source(s)
 fetch=(
   http://linux-libre.fsfla.org/pub/linux-libre/releases/${version}-gnu/$tarname
