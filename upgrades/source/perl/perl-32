@@ -1,0 +1,138 @@
+#!/bin/bash
+#  Copyright (C) 2009-2011  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2016  Lucas Sköldqvist, <frusen@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=5.14.2
+ARCH=${ARCH:-i486}
+B=2
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-perl
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/perl-${V}
+lzip -cd ${CWD}/perl-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/perl-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+patch -Np1 -i ${CWD}/CVE-2016-2381.patch
+
+./Configure -des \
+ -Dprefix=/usr \
+ -Dvendorprefix=/usr \
+ -Dvendorlib=/usr/lib/perl5/vendor_perl \
+ -Dvendorarch=/usr/lib/perl5/vendor_perl \
+ -Dman1dir=/usr/man/man1 \
+ -Dman3dir=/usr/man/man3 \
+ -Dpager="/usr/bin/less -isr" \
+ -Dusethreads -Duseithreads \
+ -Doptimize="$DCFLAGS" \
+ -Duseshrplib \
+ -Darchname=${ARCH}-linux-gnu
+
+make $JOBS
+if [[ -n $CHECK ]]; then
+  make test;
+fi
+make install DESTDIR=$PKG
+
+# Fix permissions of the package:
+( cd $PKG
+  find . -perm 555 | xargs chmod 755
+  find . -perm 444 | xargs chmod 644
+)
+
+mkdir -p ${PKG}/usr/lib/perl5/vendor_perl/${V}/${ARCH}-linux-gnu-thread-multi
+
+# Replace hard links:
+( cd ${PKG}/usr/bin
+  mv perl perl${V}
+  ln -sf perl${V} perl
+  ln -sf c2ph pstruct
+  ln -sf s2p psed
+)
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || :
+  find . -type f | xargs file | awk '/current ar archive/' | \
+   cut -f 1 -d : | xargs strip --strip-debug 2> /dev/null || :
+)
+
+# Compress and link manpages:
+( cd ${PKG}/usr/man
+  find . -type f -exec gzip -9Nf '{}' +
+  find . -type l | while read file ; do
+    ln -sf $(readlink $file).gz ${file}.gz
+    rm $file
+  done
+)
+
+# Replace hard links:
+( cd ${PKG}/usr/man/man1
+  ln -sf c2ph.1.gz pstruct.1.gz
+  ln -sf s2p.1.gz psed.1.gz
+)
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/perl-${V}
+cp -a \
+ AUTHORS Artistic Changes Copying MANIFEST \
+ README README.linux README.micro \
+ ${PKG}/usr/doc/perl-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+cd $PKG
+makepkg -l ${OUT}/perl-${V}-${ARCH}-${B}.tlz
+
