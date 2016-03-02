@@ -1,5 +1,6 @@
 #!/bin/bash
 #  Copyright (C) 2010-2014  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2016  Matias A. Fonzo, <selk@dragora.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -40,7 +41,7 @@ OUT=${OUT:-/tmp/packages}
 
 V=2.13_20110720
 ARCH=${ARCH:-x86_64}
-B=12
+B=13
 
 # Flags for the compiler:
 DCFLAGS=${DCFLAGS:=-O3 -mtune=generic}
@@ -90,6 +91,7 @@ zcat ${CWD}/patches/no-archive.diff.gz | patch -p0 --verbose
 patch -Np1 --verbose -i ${CWD}/patches/CVE-2011-1658
 patch -Np1 --verbose -i ${CWD}/patches/CVE-2011-4609
 patch -Np1 --verbose -i ${CWD}/patches/CVE-2012-3480
+patch -Np1 --verbose -i ${CWD}/patches/CVE-2015-7547
 
 # The ldd shell script contains Bash-specific syntax, so:
 sed -i 's|@BASH@|/bin/bash|' elf/ldd.bash.in
