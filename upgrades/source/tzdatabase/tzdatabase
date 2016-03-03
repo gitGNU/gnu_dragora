@@ -66,7 +66,11 @@ if [[ $ARCH = x86_64 ]]; then
   libSuffix=64
 fi
 
-make install TOPDIR=/usr TZDIR=/usr/share/zoneinfo DESTDIR=$PKG
+make install \
+     TOPDIR=/usr \
+     TZDIR=/usr/share/zoneinfo \
+     ETCDIR=/usr/bin \
+     DESTDIR=$PKG
 
 strip -g $PKG/usr/lib${libSuffix}/libtz.a
 
