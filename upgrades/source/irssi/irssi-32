@@ -1,0 +1,129 @@
+#!/bin/bash
+#  Copyright (C) 2009-2011  Matias A. Fonzo, <selk@dragora.org>
+#  Copyright (C) 2016       Lucas Sköldqvist, <frusen@dragora.org>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+CWD=$(pwd)
+
+TMP=${TMP:-/tmp/sources}
+OUT=${OUT:-/tmp/packages}
+
+V=0.8.20
+ARCH=${ARCH:-i486}
+B=1
+
+# Flags for the compiler:
+DCFLAGS=${DCFLAGS:=-O2 -march=i486 -mtune=i686}
+
+# Parallel jobs for the compiler:
+JOBS=${JOBS:=-j4}
+
+PKG=${TMP}/package-irssi
+
+rm -rf $PKG
+mkdir -p $PKG $OUT
+
+echo "Uncompressing the tarball..."
+rm -rf ${TMP}/irssi-${V}
+lzip -cd ${CWD}/irssi-${V}.tar.lz | tar -xvf - -C $TMP
+
+cd ${TMP}/irssi-${V}
+
+# Set sane ownerships and permissions:
+chown -R 0:0 .
+find . \
+ \( -perm 2777 -o \
+    -perm 777  -o \
+    -perm 775  -o \
+    -perm 711  -o \
+    -perm 555  -o \
+    -perm 511     \
+ \) -exec chmod 755 {} + \
+  -o \
+ \( -perm 666 -o \
+    -perm 664 -o \
+    -perm 600 -o \
+    -perm 444 -o \
+    -perm 440 -o \
+    -perm 400    \
+ \) -exec chmod 644 {} +
+
+# Add the updated script:
+cp ${CWD}/buf.pl scripts/
+
+CFLAGS="$DCFLAGS" \
+./configure \
+ --prefix=/usr \
+ --sysconfdir=/etc/irssi \
+ --docdir=/usr/doc/irssi-${V} \
+ --mandir=/usr/man \
+ --disable-static \
+ --enable-ipv6 \
+ --enable-ssl \
+ --with-textui \
+ --with-socks \
+ --with-proxy \
+ --with-bot \
+ --with-perl-lib=/usr/lib/perl5/vendor_perl \
+ --build=${ARCH}-dragora-linux-gnu
+
+make $JOBS
+make install DESTDIR=$PKG
+
+# Fix permissions, again:
+( cd $PKG
+  find . -type f -perm 444 | xargs chmod 644
+  find . -type f -perm 555 | xargs chmod 755
+)
+
+# Handle config file:
+mv ${PKG}/etc/irssi/irssi.conf{,.new}
+
+# Remove the temporary directory from the inventory file of Perl:
+perlVersion=$(eval $(perl -V:version); printf "$version")
+
+find ${PKG}/usr -type f -name '.packlist' -exec \
+ sed -i "s#$PKG##g" '{}' +
+
+find ${PKG}/usr -type f -name 'perllocal.pod' -delete
+
+# Strip binaries & libraries:
+( cd $PKG
+  find . -type f | xargs file | awk '/ELF/ && /executable/ || /shared object/' | \
+   cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+)
+
+# Compress man-pages:
+gzip -9N ${PKG}/usr/man/man?/*.?
+
+# Add the documentation:
+mkdir -p ${PKG}/usr/doc/irssi-${V}
+cp -a \
+ COPYING AUTHORS ChangeLog NEWS README.md TODO \
+ ${PKG}/usr/doc/irssi-${V}
+
+# Copy the description files:
+mkdir -p ${PKG}/description
+cp ${CWD}/description/* ${PKG}/description
+
+# Add the post-install script:
+mkdir -p ${PKG}/install
+zcat ${CWD}/post-install.gz > ${PKG}/install/post-install
+
+cd $PKG
+makepkg -l ${OUT}/irssi-${V}-${ARCH}-${B}.tlz
+
